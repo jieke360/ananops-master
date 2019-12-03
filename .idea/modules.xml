@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ananop-zipkin/ananop-zipkin.iml" filepath="$PROJECT_DIR$/ananop-zipkin/ananop-zipkin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ananops-common/ananops-common.iml" filepath="$PROJECT_DIR$/ananops-common/ananops-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ananops-discovery/ananops-discovery.iml" filepath="$PROJECT_DIR$/ananops-discovery/ananops-discovery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ananops-eureka/ananops-eureka.iml" filepath="$PROJECT_DIR$/ananops-eureka/ananops-eureka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ananops-gateway/ananops-gateway.iml" filepath="$PROJECT_DIR$/ananops-gateway/ananops-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ananops-generator/ananops-generator.iml" filepath="$PROJECT_DIR$/ananops-generator/ananops-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ananops-monitor/ananops-monitor.iml" filepath="$PROJECT_DIR$/ananops-monitor/ananops-monitor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ananops-provider/ananops-provider.iml" filepath="$PROJECT_DIR$/ananops-provider/ananops-provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ananops-provider-api/ananops-provider-api.iml" filepath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-api.iml" />
+    </modules>
+  </component>
+</project>
