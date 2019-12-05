@@ -7,11 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ananops-security-core" />
+        <module name="ananops-provider-mdc" />
         <module name="ananops-provider-sdk-api" />
         <module name="ananops-gateway" />
         <module name="ananops-eureka" />
         <module name="ananops-security-app" />
         <module name="ananops-provider-tpc-api" />
+        <module name="ananops-zipkin" />
         <module name="ananops-provider-mdc-api" />
         <module name="ananops-security-feign" />
         <module name="ananops-provider-uac-api" />
@@ -26,12 +28,12 @@
         <module name="ananops-common-zk" />
         <module name="ananops-discovery" />
         <module name="ananops-provider-tpc" />
-        <module name="ananop-zipkin" />
         <module name="ananops-common-config" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ananop-seureka" target="1.8" />
+      <module name="ananop-zipkin" target="1.8" />
       <module name="ananopseureka" target="1.8" />
     </bytecodeTargetLevel>
   </component>

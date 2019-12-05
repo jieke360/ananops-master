@@ -18,6 +18,7 @@
         <module>ananops-provider-uac</module>
         <module>ananops-provider-opc</module>
         <module>ananops-provider-tpc</module>
+        <module>ananops-provider-mdc</module>
     </modules>
 
     <properties>

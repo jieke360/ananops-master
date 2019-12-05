@@ -41,7 +41,7 @@ public class HandleWaitingConfirmMessageJob extends AbstractBaseDataflowJob<Stri
 	private TpcMqMessageService tpcMqMessageService;
 	@Resource
 	private UacRpcService uacRpcService;
-	@Value("${paascloud.message.handleTimeout}")
+	@Value("${ananops.message.handleTimeout}")
 	private int timeOutMinute;
 	private static final String PID_UAC = "PID_UAC";
 

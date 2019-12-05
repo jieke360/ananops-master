@@ -8,9 +8,6 @@
     <artifactId>ananops-master</artifactId>
     <version>1.0</version>
     <modules>
-        <module>ananops-monitor</module>
-        <module>ananop-zipkin</module>
-        <module>ananops-gateway</module>
         <module>ananops-provider-api</module>
         <module>ananops-common</module>
         <module>ananops-provider</module>
@@ -18,6 +15,8 @@
         <module>ananops-eureka</module>
         <module>ananops-discovery</module>
         <module>ananops-gateway</module>
+        <module>ananops-monitor</module>
+        <module>ananops-zipkin</module>
     </modules>
 
     <packaging>pom</packaging>

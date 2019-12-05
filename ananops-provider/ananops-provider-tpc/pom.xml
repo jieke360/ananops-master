@@ -31,12 +31,10 @@
         <dependency>
             <groupId>com.ananops.provider.api</groupId>
             <artifactId>ananops-provider-opc-api</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.ananops.provider.api</groupId>
             <artifactId>ananops-provider-mdc-api</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -93,12 +91,10 @@
         <dependency>
             <groupId>com.ananops.provider.api</groupId>
             <artifactId>ananops-provider-tpc-api</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.ananops.provider.api</groupId>
             <artifactId>ananops-provider-uac-api</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.retry</groupId>

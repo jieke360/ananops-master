@@ -35,7 +35,7 @@ public class HandleUserTokenJobListener implements ElasticJobListener {
 
 	private AtomicLong startTime = new AtomicLong();
 	private AtomicLong endTimestamp = new AtomicLong();
-	@Value("paascloud.dingTalk.webhookToken.jobListener")
+	@Value("ananops.dingTalk.webhookToken.jobListener")
 	private String webhookToken;
 
 	/**

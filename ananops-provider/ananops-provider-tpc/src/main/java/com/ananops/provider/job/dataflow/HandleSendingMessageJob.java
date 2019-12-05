@@ -43,12 +43,12 @@ import java.util.List;
 public class HandleSendingMessageJob extends AbstractBaseDataflowJob<TpcMqMessage> {
 	@Resource
 	private TpcMqMessageService tpcMqMessageService;
-	@Value("${paascloud.message.handleTimeout}")
+	@Value("${ananops.message.handleTimeout}")
 	private int timeOutMinute;
-	@Value("${paascloud.message.maxSendTimes}")
+	@Value("${ananops.message.maxSendTimes}")
 	private int messageMaxSendTimes;
 
-	@Value("${paascloud.message.resendMultiplier}")
+	@Value("${ananops.message.resendMultiplier}")
 	private int messageResendMultiplier;
 	@Resource
 	private TpcMqConfirmMapper tpcMqConfirmMapper;
