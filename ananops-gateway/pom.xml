@@ -9,12 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ananops.gateway</groupId>
+    <groupId>com.ananops</groupId>
     <artifactId>ananops-gateway</artifactId>
     <packaging>jar</packaging>
-    <name>ananops-gateway</name>
-    <description>gateway</description>
 
+    <name>ananops-gateway</name>
+    <description>Demo project for Spring Boot</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,46 +23,40 @@
     </properties>
 
     <dependencies>
-        <!--配置中心-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
-        <!--监控系统健康-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!--网关-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-zuul</artifactId>
         </dependency>
-        <!--工具类-->
         <dependency>
-            <groupId>com.liuzm.paascloud.common</groupId>
-            <artifactId>paascloud-common-util</artifactId>
+            <groupId>com.ananops.common</groupId>
+            <artifactId>ananops-common-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.liuzm.paascloud.common</groupId>
-            <artifactId>paascloud-common-core</artifactId>
+            <groupId>com.ananops.common</groupId>
+            <artifactId>ananops-common-core</artifactId>
         </dependency>
-        <!--监控管理-->
         <dependency>
             <groupId>de.codecentric</groupId>
             <artifactId>spring-boot-admin-starter-client</artifactId>
         </dependency>
-        <!--安全相关-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-security</artifactId>
         </dependency>
-        <!--oauth2-->
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
-        <!--jwtToken-->
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-jwt</artifactId>
@@ -73,17 +67,14 @@
             <artifactId>swagger-butler-core</artifactId>
             <version>1.1.0</version>
         </dependency>
-        <!--日志采集-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-zipkin</artifactId>
         </dependency>
-        <!--消息队列-->
         <dependency>
             <groupId>org.springframework.amqp</groupId>
             <artifactId>spring-rabbit</artifactId>
         </dependency>
-        <!--日志,需要编写对应的日志配置文件-->
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
@@ -124,6 +115,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>

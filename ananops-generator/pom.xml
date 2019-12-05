@@ -20,8 +20,8 @@
         <!-- MyBatis Generator -->
         <!-- Java接口和实体类 -->
         <targetJavaProject>${basedir}/src/main/java</targetJavaProject>
-        <targetMapperPackage>com.paascloud.uac.mapper</targetMapperPackage>
-        <targetModelPackage>com.paascloud.uac.domain</targetModelPackage>
+        <targetMapperPackage>com.ananops.uac.mapper</targetMapperPackage>
+        <targetModelPackage>com.ananops.uac.domain</targetModelPackage>
         <!-- XML生成路径 -->
         <targetResourcesProject>${basedir}/src/main/resources</targetResourcesProject>
         <targetXMLPackage>mapper</targetXMLPackage>

@@ -12,15 +12,23 @@
     <groupId>com.ananops.provider.api</groupId>
     <artifactId>ananops-provider-api</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>ananops-provider-uac-api</module>
+        <module>ananops-provider-mdc-api</module>
+        <module>ananops-provider-omc-api</module>
+        <module>ananops-provider-opc-api</module>
+        <module>ananops-provider-sdk-api</module>
+        <module>ananops-provider-tpc-api</module>
+    </modules>
 
     <dependencies>
         <dependency>
-            <groupId>com.liuzm.paascloud.common</groupId>
-            <artifactId>paascloud-common-base</artifactId>
+            <groupId>com.ananops.common</groupId>
+            <artifactId>ananops-common-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.liuzm.paascloud.common</groupId>
-            <artifactId>paascloud-security-feign</artifactId>
+            <groupId>com.ananops.common</groupId>
+            <artifactId>ananops-security-feign</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>

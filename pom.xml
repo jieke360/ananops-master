@@ -8,8 +8,6 @@
     <artifactId>ananops-master</artifactId>
     <version>1.0</version>
     <modules>
-        <module>ananops-eureka</module>
-        <module>ananops-discovery</module>
         <module>ananops-monitor</module>
         <module>ananop-zipkin</module>
         <module>ananops-gateway</module>
@@ -17,6 +15,9 @@
         <module>ananops-common</module>
         <module>ananops-provider</module>
         <module>ananops-generator</module>
+        <module>ananops-eureka</module>
+        <module>ananops-discovery</module>
+        <module>ananops-gateway</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -48,8 +49,8 @@
         <druid.version>1.0.29</druid.version>
         <mapper.version>3.4.0</mapper.version>
         <springframework.version>4.3.8.RELEASE</springframework.version>
-        <paascloud.security.version>1.0</paascloud.security.version>
-        <paascloud.version>1.0</paascloud.version>
+        <ananops.security.version>1.0</ananops.security.version>
+        <ananops.version>1.0</ananops.version>
         <elastic-job.version>2.1.5</elastic-job.version>
         <curator.version>2.10.0</curator.version>
         <mysql.version>5.1.39</mysql.version>
@@ -73,18 +74,7 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>paascloud-lib-rep</id>
-            <url>http://139.199.125.217:8081/content/repositories/paascloud-lib-rep/</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <name>User Project Snapshot</name>
-            <url>http://139.199.125.217:8081/content/repositories/snapshots/</url>
-            <uniqueVersion>true</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
+
 
     <dependencyManagement>
         <dependencies>
@@ -110,29 +100,29 @@
             </dependency>
             <!-- paas cloud start -->
             <dependency>
-                <groupId>com.liuzm.paascloud.common</groupId>
-                <artifactId>paascloud-common-base</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.common</groupId>
+                <artifactId>ananops-common-base</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.common</groupId>
-                <artifactId>paascloud-common-core</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.common</groupId>
+                <artifactId>ananops-common-core</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.common</groupId>
-                <artifactId>paascloud-common-util</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.common</groupId>
+                <artifactId>ananops-common-util</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.common</groupId>
-                <artifactId>paascloud-common-zk</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.common</groupId>
+                <artifactId>ananops-common-zk</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.common</groupId>
-                <artifactId>paascloud-security-app</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.common</groupId>
+                <artifactId>ananops-security-app</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <!-- paas cloud end -->
             <!-- swagger cloud start -->
@@ -259,34 +249,34 @@
                 <version>3.0.7</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.provider.api</groupId>
-                <artifactId>paascloud-provider-uac-api</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.provider.api</groupId>
+                <artifactId>ananops-provider-uac-api</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.provider.api</groupId>
-                <artifactId>paascloud-provider-mdc-api</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.provider.api</groupId>
+                <artifactId>ananops-provider-mdc-api</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.provider.api</groupId>
-                <artifactId>paascloud-provider-omc-api</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.provider.api</groupId>
+                <artifactId>ananops-provider-omc-api</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.provider.api</groupId>
-                <artifactId>paascloud-provider-tpc-api</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.provider.api</groupId>
+                <artifactId>ananops-provider-tpc-api</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.provider.api</groupId>
-                <artifactId>paascloud-provider-opc-api</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.provider.api</groupId>
+                <artifactId>ananops-provider-opc-api</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.liuzm.paascloud.provider.api</groupId>
-                <artifactId>paascloud-provider-sdk-api</artifactId>
-                <version>${paascloud.version}</version>
+                <groupId>com.ananops.provider.api</groupId>
+                <artifactId>ananops-provider-sdk-api</artifactId>
+                <version>${ananops.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mybatis</groupId>

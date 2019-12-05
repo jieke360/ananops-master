@@ -10,8 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ananops.eureka</groupId>
-    <artifactId>ananops-eureka</artifactId>
+    <artifactId>ananops.eureka</artifactId>
     <packaging>jar</packaging>
+
+    <name>paascloud-eureka</name>
+    <description>Demo project for Spring Boot</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -60,6 +63,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
