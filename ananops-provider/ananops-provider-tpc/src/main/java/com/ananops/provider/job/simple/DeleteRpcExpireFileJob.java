@@ -13,7 +13,7 @@ package com.ananops.provider.job.simple;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
-import com.paascloud.elastic.lite.annotation.ElasticJobConfig;
+import com.ananops.elastic.lite.annotation.ElasticJobConfig;
 import com.ananops.provider.service.OpcRpcService;
 import lombok.extern.slf4j.Slf4j;
 

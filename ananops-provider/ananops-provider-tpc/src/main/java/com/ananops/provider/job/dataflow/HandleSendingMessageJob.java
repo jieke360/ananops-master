@@ -13,9 +13,9 @@ package com.ananops.provider.job.dataflow;
 
 import com.google.common.collect.Lists;
 import com.ananops.DateUtil;
-import com.paascloud.elastic.lite.JobParameter;
-import com.paascloud.elastic.lite.annotation.ElasticJobConfig;
-import com.paascloud.elastic.lite.job.AbstractBaseDataflowJob;
+import com.ananops.elastic.lite.JobParameter;
+import com.ananops.elastic.lite.annotation.ElasticJobConfig;
+import com.ananops.elastic.lite.job.AbstractBaseDataflowJob;
 import com.ananops.provider.mapper.TpcMqConfirmMapper;
 import com.ananops.provider.model.domain.TpcMqMessage;
 import com.ananops.provider.model.dto.MessageTaskQueryDto;

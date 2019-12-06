@@ -89,7 +89,7 @@ ananops:
       tokenStore: jwt
   zk:
     zkAddressList: paascloud-provider-zk:2181
-    namespace: paascloud-elastic-job
+    namespace: ananops-elastic-job
   job:
     task:
       dingTalk:

@@ -17,6 +17,7 @@
         <module>ananops-gateway</module>
         <module>ananops-monitor</module>
         <module>ananops-zipkin</module>
+        <module>elastic-job-lite-starter-parent</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -379,8 +380,13 @@
                 </exclusions>
             </dependency>
 
-            <dependency>
+            <!--<dependency>
                 <groupId>com.liuzm.paascloud</groupId>
+                <artifactId>elastic-job-lite-starter</artifactId>
+                <version>1.0</version>
+            </dependency>-->
+            <dependency>
+                <groupId>com.ananops</groupId>
                 <artifactId>elastic-job-lite-starter</artifactId>
                 <version>1.0</version>
             </dependency>

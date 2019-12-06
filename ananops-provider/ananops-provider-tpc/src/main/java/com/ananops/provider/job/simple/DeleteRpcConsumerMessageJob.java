@@ -18,7 +18,7 @@ import com.ananops.base.constant.AliyunMqTopicConstants;
 import com.ananops.base.dto.ShardingContextDto;
 import com.ananops.config.properties.PaascloudProperties;
 import com.ananops.core.generator.UniqueIdGenerator;
-import com.paascloud.elastic.lite.annotation.ElasticJobConfig;
+import com.ananops.elastic.lite.annotation.ElasticJobConfig;
 import com.ananops.provider.model.dto.TpcMqMessageDto;
 import com.ananops.provider.service.TpcMqMessageService;
 import lombok.extern.slf4j.Slf4j;
