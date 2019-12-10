@@ -10,55 +10,15 @@ spring:
       username: admin
       password: admin
 
-  datasource:
-    url: jdbc:mysql://paascloud-db-mysql:3306/paascloud_zipkin?characterEncoding=utf8&useSSL=false
-    schema: classpath:/mysql.sql
-  sleuth:
-    enabled: false
-  zipkin:
-    locator:
-      discovery:
-        enabled: true
+
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://root:root@paascloud-eureka:8761/eureka/
+      defaultZone: http://root:root@ananops-eureka:8761/eureka/
   instance:
     instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${server.port}
 
 
 
 
-zipkin:
-  collector:
-    rabbitmq:
-      addresses: paascloud-mq-rabbit:5672
-      username: guest
-      password: guest
-      queue: zipkin
-  storage:
-    type: mysql
-
-security:
-  oauth2:
-    client:
-      clientId: ananops-client-zipkin
-      clientSecret: ananopsClientSecret
-      access-token-uri: http://paascloud-gateway:7979/uac/oauth/token
-      user-authorization-uri: http://paascloud-gateway:7979/uac/oauth/authorize
-    resource:
-      user-info-uri: http://paascloud-gateway:7979/uac/user
-      prefer-token-info: false
-      jwt:
-        key-uri: http://paascloud-provider-uac:8000/oauth/token_key
-
-ananops:
-  oauth2:
-    client:
-      id: ${security.oauth2.resource.id}
-      accessTokenUrl: ${security.oauth2.client.access-token-uri}
-      clientId: ${security.oauth2.client.clientId}
-      clientSecret: ${security.oauth2.client.clientSecret}
-      clientAuthenticationScheme: header
-      tokenStore: jwt

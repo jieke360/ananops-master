@@ -5,14 +5,14 @@ spring:
     config:
       server:
         native:
-          search-locations: /home/songof/下载/paascloud-config-repo
+          search-locations: E:/AnanOps/ananops-config-repo
 #        git:
-#          uri: https://github.com/paascloud/paascloud-config-repo.git
-#          username:
-#          password:
-#          search-paths: /*
-#          default-label: ${spring.profiles.active}
-#          basedir: /data/config/paascloud-config-repo
+#        uri: https://github.com/SongOf/ananops-config-repo/tree/chenghao/ananops-config-repo.git
+#        username:
+#        password:
+#        search-paths: /*
+#        default-label: ${spring.profiles.active}
+#        basedir: /data/config/ananops-config-repo
     inetutils:
       ignoredInterfaces:
         - docker0
@@ -30,6 +30,6 @@ encrypt:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://root:root@paascloud-eureka:8761/eureka/
+      defaultZone: http://root:root@ananops-eureka:8761/eureka/
   instance:
     instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${server.port}
