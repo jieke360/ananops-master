@@ -7,5 +7,5 @@ spring:
   application:
     name: ananops-zipkin
   datasource:
-    username: songof
+    username: root
     password: 123456

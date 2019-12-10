@@ -10,11 +10,14 @@ spring:
       username: admin
       password: admin
 
+
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://root:root@paascloud-eureka:8761/eureka/
+      defaultZone: http://root:root@ananops-eureka:8761/eureka/
   instance:
     instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${server.port}
 #management:
 #  context-path: /
+
+

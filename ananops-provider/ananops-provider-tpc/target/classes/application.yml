@@ -7,5 +7,5 @@ spring:
   application:
     name: ananops-provider-tpc
   datasource:
-    username: songof
+    username: root
     password: 123456
