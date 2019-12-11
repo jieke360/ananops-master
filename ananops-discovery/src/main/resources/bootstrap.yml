@@ -1,13 +1,13 @@
 spring:
-  profiles: #配置中心本地路径
+  profiles:
     active: native
   cloud:
     config:
       server:
         native:
-          search-locations: E:/AnanOps/ananops-config-repo
+          search-locations: E:/AnanOps/ananops-config-repo   #配置文件本地路径
 #        git:
-#        uri: https://github.com/SongOf/ananops-config-repo/ananops-config-repo.git
+#        uri: https://github.com/SongOf/ananops-config-repo/ananops-config-repo.git  #配置文件git地址
 #        username:
 #        password:
 #        search-paths: /*
