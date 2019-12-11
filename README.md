@@ -98,6 +98,7 @@
 3. 安装zookeeper
 4. 安装rabbitmq
 5. 安装rocketmq
+6. 安装第三方jar包
 
 
 ```
@@ -122,10 +123,10 @@ Redis默认无密码，如本地有密码需自行修改，修改位置
 ### 微服务启动顺序
 
 ```
-1. paascloud-eureka
-2. paascloud-discovery
-3. paascloud-provider-uac
-4. paascloud-gateway
+1. ananops-eureka
+2. ananops-discovery
+3. ananops-provider-uac
+4. ananops-gateway
 5. 剩下微服务无启动数序要求
 
 说明：开启微服务前需要先把redis、zookeeper、rabbitmq、rocketmq 启动起来
