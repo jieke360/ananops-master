@@ -20,6 +20,7 @@
         <module name="ananops-provider-mdc-api" />
         <module name="ananops-security-feign" />
         <module name="ananops-provider-omc-api" />
+        <module name="ananops-provider-ioc" />
         <module name="elastic-job-lite-starter" />
         <module name="ananops-monitor" />
         <module name="ananops-common-core" />

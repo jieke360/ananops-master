@@ -25,6 +25,7 @@
     <file url="file://$PROJECT_DIR$/ananops-provider-api/ananops-provider-tpc-api" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ananops-provider-api/ananops-provider-uac-api" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ananops-provider/ananops-provider-imc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ananops-provider/ananops-provider-ioc" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ananops-provider/ananops-provider-mdc" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ananops-provider/ananops-provider-opc" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ananops-provider/ananops-provider-tpc" charset="UTF-8" />
