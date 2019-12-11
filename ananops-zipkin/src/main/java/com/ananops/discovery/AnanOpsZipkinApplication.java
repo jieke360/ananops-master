@@ -24,7 +24,7 @@ import zipkin.server.EnableZipkinServer;
 @EnableDiscoveryClient
 @SpringBootApplication
 @EnableZipkinServer
-public class PaasCloudZipkinApplication {
+public class AnanOpsZipkinApplication {
 
 	/**
 	 * The entry point of application.
@@ -32,6 +32,6 @@ public class PaasCloudZipkinApplication {
 	 * @param args the input arguments
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(PaasCloudZipkinApplication.class, args);
+		SpringApplication.run(AnanOpsZipkinApplication.class, args);
 	}
 }

@@ -7,7 +7,7 @@ spring:
         native:
           search-locations: E:/AnanOps/ananops-config-repo
 #        git:
-#        uri: https://github.com/SongOf/ananops-config-repo/tree/chenghao/ananops-config-repo.git
+#        uri: https://github.com/SongOf/ananops-config-repo/ananops-config-repo.git
 #        username:
 #        password:
 #        search-paths: /*

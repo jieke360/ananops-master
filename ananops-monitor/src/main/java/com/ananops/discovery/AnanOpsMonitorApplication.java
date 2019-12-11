@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Bean;
 @EnableHystrixDashboard
 @EnableCircuitBreaker
 @EnableAdminServer
-public class PaasCloudMonitorApplication {
+public class AnanOpsMonitorApplication {
 
 	/**
 	 * Hazelcast config config.
@@ -57,6 +57,6 @@ public class PaasCloudMonitorApplication {
 	 * @param args the input arguments
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(PaasCloudMonitorApplication.class, args);
+		SpringApplication.run(AnanOpsMonitorApplication.class, args);
 	}
 }

@@ -7,5 +7,5 @@ spring:
   application:
     name: ananops-provider-mdc
   datasource:
-    username: songof
+    username: root
     password: 123456

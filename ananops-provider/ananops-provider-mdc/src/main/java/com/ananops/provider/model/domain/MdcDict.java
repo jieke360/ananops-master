@@ -26,7 +26,7 @@ import javax.persistence.Table;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Table(name = "pc_mdc_dict")
+@Table(name = "an_mdc_dict")
 @Alias(value = "mdcDict")
 public class MdcDict extends BaseEntity {
 
