@@ -1,0 +1,10 @@
+server:
+  port: 9300
+spring:
+  profiles:
+    active: dev
+  application:
+    name: ananops-provider-ioc
+  datasource:
+    username: root
+    password: 123456
