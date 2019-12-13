@@ -170,7 +170,7 @@
         SELECT DISTINCT
         m.url as url
         FROM
-        pc_uac_role r,  an_uac_role_menu rm, an_uac_menu m, an_uac_user u , an_uac_role_user ur
+        an_uac_role r,  an_uac_role_menu rm, an_uac_menu m, an_uac_user u , an_uac_role_user ur
         WHERE
         1=1
         and	r.id = rm.role_id

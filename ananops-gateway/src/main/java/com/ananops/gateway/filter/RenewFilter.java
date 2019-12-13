@@ -95,8 +95,9 @@ public class RenewFilter extends ZuulFilter {
 		}
 		OAuth2AccessToken oAuth2AccessToken = jwtTokenStore.readAccessToken(token);
 		int expiresIn = oAuth2AccessToken.getExpiresIn();
-
+		log.info("expiresIn:"+ expiresIn);
 		if (expiresIn < EXPIRES_IN) {
+			log.info("expiresIn < EXPIRES_IN");
 			HttpServletResponse servletResponse = requestContext.getResponse();
 			servletResponse.addHeader("Renew-Header", "true");
 		}
