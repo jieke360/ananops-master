@@ -225,7 +225,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 
 		// 1. 先取消对该角色的用户绑定(不包含超级管理员用户)
 		List<UacRoleUser> userRoles = uacRoleUserService.listByRoleId(roleId);
-
+		logger.info("角色用户关系表："+userRoles);
 		if (PublicUtil.isNotEmpty(userRoles)) {
 			uacRoleUserService.deleteExcludeSuperMng(roleId, GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID);
 		}

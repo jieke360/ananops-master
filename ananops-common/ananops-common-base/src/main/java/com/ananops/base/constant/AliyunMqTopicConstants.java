@@ -1,13 +1,4 @@
-/*
- * Copyright (c) 2018. ananops.net All Rights Reserved.
- * 项目名称：paascloud快速搭建企业级分布式微服务平台
- * 类名称：AliyunMqTopicConstants.java
- * 创建人：刘兆明
- * 联系方式：ananops.net@gmail.com
- * 开源地址: https://github.com/paascloud
- * 博客地址: http://blog.paascloud.net
- * 项目官网: http://paascloud.net
- */
+
 package com.ananops.base.constant;
 
 import com.google.common.collect.Lists;
@@ -55,11 +46,13 @@ public class AliyunMqTopicConstants {
 		/**
 		 * Mdc topic mq topic enum.
 		 */
+
 		MDC_TOPIC("MDC_TOPIC", "MDC_TOPIC"),
 		/**
 		 * Imc topic mq topic enum.
 		 */
 		IMC_TOPIC("IMC_TOPIC","IMC_TOPIC"),;
+
 
 		MqTopicEnum(String topic, String topicName) {
 			this.topic = topic;
@@ -147,6 +140,7 @@ public class AliyunMqTopicConstants {
 		/**
 		 * 删除附件信息
 		 */
+
 		DELETE_ATTACHMENT("DELETE_ATTACHMENT", MqTopicEnum.MDC_TOPIC.getTopic(), "删除附件信息"),
 		/**
 		 * 编辑巡检任务
@@ -156,6 +150,7 @@ public class AliyunMqTopicConstants {
 		 * 修改巡检任务状态
 		 */
 		MODIFY_INSPECTION_TASK_STATUS("MODIFY_INSPECTION_TASK_STATUS",MqTopicEnum.IMC_TOPIC.getTopic(),"修改巡检任务的状态"),;
+
 		/**
 		 * The Tag.
 		 */
