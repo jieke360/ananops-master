@@ -28,12 +28,12 @@
             <version>4.1.0-incubating</version>
         </dependency>
         <dependency>
-            <groupId>com.liuzm.paascloud.provider.api</groupId>
-            <artifactId>paascloud-provider-sdk-api</artifactId>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-sdk-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.liuzm.paascloud.provider.api</groupId>
-            <artifactId>paascloud-provider-tpc-api</artifactId>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-tpc-api</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.swagger2markup</groupId>
