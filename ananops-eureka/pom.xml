@@ -13,7 +13,7 @@
     <artifactId>ananops.eureka</artifactId>
     <packaging>jar</packaging>
 
-    <name>paascloud-eureka</name>
+    <name>ananops-eureka</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
