@@ -28,7 +28,7 @@ import java.util.List;
 public class BindUserRolesDto implements Serializable {
 
 	private static final long serialVersionUID = -9149237379943908522L;
-	@ApiModelProperty(value = "角色ID")
+	@ApiModelProperty(value = "用户ID")
 	private Long userId;
 
 	@ApiModelProperty(value = "需要绑定的角色ID集合")
