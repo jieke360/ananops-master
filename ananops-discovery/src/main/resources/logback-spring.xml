@@ -6,9 +6,8 @@
   <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
   <!-- 开启后可以通过jmx动态控制日志级别(springboot Admin的功能) -->
   <!--<jmxConfigurator/>-->
-
   <springProperty scope="context" name="springAppName" source="spring.application.name"/>
-  <property name="LOG_PATH" value="${ananops.log.discoveryFilePath}"/>
+  <property name="LOG_PATH" value="/home/songof/data/logs/ananops/${springAppName}"/>
   <property name="LOG_FILE" value="${springAppName}"/>
 
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
