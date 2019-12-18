@@ -40,10 +40,6 @@
             <artifactId>swagger2markup</artifactId>
         </dependency>
         <dependency>
-            <groupId>ch.netzwerg</groupId>
-            <artifactId>paleo-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
         </dependency>
