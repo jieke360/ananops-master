@@ -33,5 +33,5 @@ eureka:
       defaultZone: http://root:root@ananops-eureka:8761/eureka/
   instance:
     prefer-ip-address: true
-    ip-address: 123.56.46.27
-    non-secure-port: 8080
+    ip-address: www.ananops.com
+    non-secure-port: 29992

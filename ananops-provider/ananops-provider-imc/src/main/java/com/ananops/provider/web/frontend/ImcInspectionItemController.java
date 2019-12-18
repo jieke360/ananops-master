@@ -9,11 +9,13 @@ import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.dto.ImcAddInspectionItemDto;
 import com.ananops.provider.model.dto.ImcItemChangeStatusDto;
+import com.ananops.provider.model.dto.ItemDto;
 import com.ananops.provider.model.dto.ItemLogQueryDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.vo.ItemLogVo;
 import com.ananops.provider.service.ImcInspectionItemLogService;
 import com.ananops.provider.service.ImcInspectionItemService;
+import com.ananops.provider.service.ImcItemQueryFeignApi;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
@@ -38,6 +40,9 @@ public class ImcInspectionItemController extends BaseController {
 
     @Resource
     ImcInspectionItemLogService imcInspectionItemLogService;
+
+    @Resource
+    ImcItemQueryFeignApi imcItemQueryFeignApi;
 
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "编辑巡检任务子项记录")
@@ -95,4 +100,9 @@ public class ImcInspectionItemController extends BaseController {
         return WrapMapper.ok(imcInspectionItemService.getItemByItemStatusAndTaskId(taskId,status));
     }
 
+    @GetMapping(value = "/getItemByProjectId/{projectId}")
+    @ApiOperation(httpMethod = "GET",value = "根据项目Id查询对应的所有任务子项")
+    public Wrapper<List<ItemDto>> getItemByProjectId(@PathVariable Long projectId){
+        return imcItemQueryFeignApi.getByProjectId(projectId);
+    }
 }

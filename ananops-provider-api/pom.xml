@@ -19,6 +19,7 @@
         <module>ananops-provider-opc-api</module>
         <module>ananops-provider-sdk-api</module>
         <module>ananops-provider-tpc-api</module>
+        <module>ananops-provider-imc-api</module>
     </modules>
 
     <dependencies>

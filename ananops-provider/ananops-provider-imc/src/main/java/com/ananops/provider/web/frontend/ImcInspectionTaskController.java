@@ -86,4 +86,5 @@ public class ImcInspectionTaskController extends BaseController {
     public Wrapper<List<ImcInspectionTask>> getTaskByProjectId(@PathVariable Long projectId){
         return WrapMapper.ok(imcInspectionTaskService.getTaskByProjectId(projectId));
     }
+
 }

@@ -21,6 +21,7 @@
         <module name="ananops-provider-uac-api" />
         <module name="elastic-job-lite-starter" />
         <module name="ananops-provider-omc-api" />
+        <module name="ananops-provider-imc-api" />
         <module name="ananops-monitor" />
         <module name="ananops-common-core" />
         <module name="ananops-provider-uac" />
