@@ -19,7 +19,7 @@ public class ModifyStatusDto implements Serializable {
 	/**
 	 * 角色ID
 	 */
-	@ApiModelProperty(value = "角色ID")
+	@ApiModelProperty(value = "权限ID")
 	private Long id;
 
 	/**

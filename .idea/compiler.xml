@@ -19,6 +19,7 @@
         <module name="ananops-provider-mdc-api" />
         <module name="ananops-security-feign" />
         <module name="ananops-provider-uac-api" />
+        <module name="ananops-provider-pmc" />
         <module name="elastic-job-lite-starter" />
         <module name="ananops-provider-omc-api" />
         <module name="ananops-provider-imc-api" />

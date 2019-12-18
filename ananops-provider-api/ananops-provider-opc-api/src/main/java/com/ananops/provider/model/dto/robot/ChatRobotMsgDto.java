@@ -38,7 +38,7 @@ public class ChatRobotMsgDto implements Serializable {
 
 	/**
 	 * 此消息类型为固定markdown
-	 * {@link com.paascloud.provider.model.enums.RobotMsgTypeEnum}
+	 * {@link com.ananops.provider.model.enums.RobotMsgTypeEnum}
 	 */
 	@ApiModelProperty(value = "首屏会话透出的展示内容", required = true)
 	@JsonProperty(value = "msgtype")

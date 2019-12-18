@@ -18,6 +18,7 @@ import com.ananops.provider.model.exceptions.UacBizException;
 import com.ananops.provider.model.vo.ActionVo;
 import com.ananops.provider.model.vo.MenuVo;
 import com.ananops.provider.service.UacActionService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ import java.util.Objects;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
+@Slf4j
 public class UacActionServiceImpl extends BaseService<UacAction> implements UacActionService {
 	@Resource
 	private UacActionMapper uacActionMapper;
@@ -48,8 +50,9 @@ public class UacActionServiceImpl extends BaseService<UacAction> implements UacA
 		List<Long> menuIdList = actionMainQueryDto.getMenuIdList();
 		Long menuId = null;
 		if (PublicUtil.isNotEmpty(menuIdList)) {
-			menuId = menuIdList.get(menuIdList.size() - 1);
+			menuId = menuIdList.get(menuIdList.size() - 1);  //菜单树叶子节点
 		}
+		logger.info("menuId = "+menuId);
 		UacAction uacAction = new UacAction();
 		uacAction.setMenuId(menuId);
 		BeanUtils.copyProperties(actionMainQueryDto, uacAction);
@@ -80,7 +83,7 @@ public class UacActionServiceImpl extends BaseService<UacAction> implements UacA
 
 	@Override
 	public void batchDeleteByIdList(List<Long> deleteIdList) {
-		logger.info("批量删除角色. deleteIdList={}", deleteIdList);
+		logger.info("批量删除权限. deleteIdList={}", deleteIdList);
 		Preconditions.checkArgument(PublicUtil.isNotEmpty(deleteIdList), "删除权限ID不能为空");
 		int result = uacActionMapper.batchDeleteByIdList(deleteIdList);
 		if (result < deleteIdList.size()) {

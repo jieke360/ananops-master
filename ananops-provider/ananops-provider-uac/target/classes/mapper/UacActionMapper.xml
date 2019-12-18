@@ -120,14 +120,14 @@
         </set>
     </sql>
     <delete id="batchDeleteByIdList" parameterType="list">
-        delete from pc_uac_action
+        delete from an_uac_action
         where id in
         <foreach collection="idList" item="item" index="index" open="(" separator="," close=")">
             #{item}
         </foreach>
     </delete>
     <delete id="deleteByMenuId">
-        delete from pc_uac_action
+        delete from an_uac_action
         where menu_id = #{menuId}
     </delete>
     <select id="findAllPerms" resultType="com.ananops.provider.model.user.Perm">

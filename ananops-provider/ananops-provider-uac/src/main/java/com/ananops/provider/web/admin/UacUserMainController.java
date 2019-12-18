@@ -153,7 +153,7 @@ public class UacUserMainController extends BaseController {
 		logger.info("获取用户绑定角色页面数据. userId={}", userId);
 		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
 		Long currentUserId = loginAuthDto.getUserId();
-		if (Objects.equals(userId, currentUserId)) {
+		if (!Objects.equals(userId, currentUserId)) {
 			throw new UacBizException(ErrorCodeEnum.UAC10011023);
 		}
 

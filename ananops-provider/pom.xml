@@ -20,6 +20,7 @@
         <module>ananops-provider-tpc</module>
         <module>ananops-provider-mdc</module>
         <module>ananops-provider-imc</module>
+        <module>ananops-provider-pmc</module>
     </modules>
 
     <properties>

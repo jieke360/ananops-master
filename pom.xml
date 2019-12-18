@@ -11,6 +11,7 @@
         <module>ananops-provider-api</module>
         <module>ananops-common</module>
         <module>ananops-provider</module>
+        <module>ananops-generator</module>
         <module>ananops-eureka</module>
         <module>ananops-discovery</module>
         <module>ananops-gateway</module>
@@ -300,11 +301,10 @@
                 <version>1.1.8.4</version>
             </dependency>
             <dependency>
-                <groupId>com.aliyun.mns</groupId>
-                <artifactId>alicom-mns-receive-sdk</artifactId>
-                <version>1.0</version>
-            </dependency>
-
+               <groupId>com.aliyun.mns</groupId>
+               <artifactId>alicom-mns-receive-sdk</artifactId>
+               <version>1.0</version>
+           </dependency>
             <dependency>
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-client</artifactId>
@@ -379,11 +379,6 @@
                 </exclusions>
             </dependency>
 
-            <!--<dependency>
-                <groupId>com.liuzm.paascloud</groupId>
-                <artifactId>elastic-job-lite-starter</artifactId>
-                <version>1.0</version>
-            </dependency>-->
             <dependency>
                 <groupId>com.ananops</groupId>
                 <artifactId>elastic-job-lite-starter</artifactId>
@@ -438,7 +433,7 @@
             <dependency>
                 <groupId>io.zipkin.java</groupId>
                 <artifactId>zipkin-autoconfigure-collector-rabbitmq</artifactId>
-                <version>3.6.10-1</version>
+                <version>2.3.1</version>
             </dependency>
             <dependency>
                 <groupId>net.logstash.logback</groupId>
