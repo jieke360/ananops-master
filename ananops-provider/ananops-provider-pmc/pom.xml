@@ -11,7 +11,7 @@
 
     <artifactId>ananops-provider-pmc</artifactId>
 
-    <name>ananops-provider-ioc</name>
+    <name>ananops-provider-pmc</name>
     <description>项目管理中心</description>
     <properties>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

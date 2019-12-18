@@ -81,8 +81,11 @@ public class OptAttachmentServiceImpl extends BaseService<OptAttachment> impleme
 				Preconditions.checkArgument(multipartFile.getSize() <= GlobalConstant.FILE_MAX_SIZE, "上传文件不能大于5M");
 				InputStream inputStream = multipartFile.getInputStream();
 
-				String inputStreamFileType = FileTypeUtil.getType(inputStream);
-				CheckFileUtil.checkFileType(fileType, inputStreamFileType);
+//				String inputStreamFileType = FileTypeUtil.getType(inputStream);
+				String inputStreamFileName = multipartFile.getOriginalFilename();
+				String inputStreamName= multipartFile.getName();
+				String inputStreamFileType = FileTypeUtil.getType(inputStreamFileName);
+				//CheckFileUtil.checkFileType(fileType, inputStreamFileType);
 				OptUploadFileRespDto fileInfo;
 				if (storeDbFlag) {
 					fileInfo = this.uploadFile(multipartFile.getBytes(), fileName, fileType, filePath, bucketName, loginAuthDto);
