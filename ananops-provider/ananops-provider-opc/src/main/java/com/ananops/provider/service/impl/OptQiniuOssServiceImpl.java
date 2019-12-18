@@ -65,7 +65,7 @@ public class OptQiniuOssServiceImpl implements OpcOssService {
 	@Resource
 	private StringRedisTemplate srt;
 
-	private static final String OPEN_IMG_BUCKET = "open-img-bucket";
+	private static final String OPEN_IMG_BUCKET = "ananops-media-file";
 
 	@Override
 	@Retryable(value = Exception.class, backoff = @Backoff(delay = 5000, multiplier = 2))
