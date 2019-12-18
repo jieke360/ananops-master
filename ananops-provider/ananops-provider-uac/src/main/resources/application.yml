@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: @pom.artifactId@
+    name: ananops-provider-uac
   datasource:
     username: root
     password: 123456

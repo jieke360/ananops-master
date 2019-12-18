@@ -80,4 +80,10 @@ public class ImcInspectionTaskController extends BaseController {
         imcInspectionTaskService.modifyTaskName(taskNameChangeDto,loginAuthDto);
         return WrapMapper.ok(taskNameChangeDto);
     }
+
+    @GetMapping(value = "/getTaskByProjectId/{projectId}")
+    @ApiOperation(httpMethod = "GET",value = "根据项目查询对应的所有巡检任务")
+    public Wrapper<List<ImcInspectionTask>> getTaskByProjectId(@PathVariable Long projectId){
+        return WrapMapper.ok(imcInspectionTaskService.getTaskByProjectId(projectId));
+    }
 }

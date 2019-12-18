@@ -42,6 +42,8 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     @Resource
     ImcInspectionItemService imcInspectionItemService;
 
+
+
     /**
      * 插入一条巡检任务记录
      * @param imcAddInspectionTaskDto
@@ -67,6 +69,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             logger.info("新创建一条巡检记录：" + imcInspectionTask.toString());
             imcAddInspectionItemDtoList.forEach(item->{//保存所有巡检任务子项
                 item.setInspectionTaskId(taskId);//设置巡检任务子项对应的任务id
+                item.setDays(imcInspectionTask.getDays());
+                item.setFrequency(imcInspectionTask.getFrequency());
+                item.setScheduledStartTime(imcInspectionTask.getScheduledStartTime());
                 //创建新的任务子项，并更新返回结果
                 BeanUtils.copyProperties(imcInspectionItemService.saveInspectionItem(item,loginAuthDto),item);
             });
@@ -81,6 +86,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             //更新返回结果
             BeanUtils.copyProperties(imcInspectionTask,imcAddInspectionTaskDto);
         }
+        System.out.println(imcInspectionTask.getTaskName());
         return imcAddInspectionTaskDto;
     }
 
@@ -142,5 +148,15 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         imcInspectionTask.setUpdateInfo(loginAuthDto);
         imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
         return imcInspectionTask;
+    }
+
+    public List<ImcInspectionTask> getTaskByProjectId(Long projectId){
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",projectId);
+        if(imcInspectionTaskMapper.selectCountByExample(example)==0){//当前状态没有对应的任务
+            throw new BusinessException(ErrorCodeEnum.GL9999091);
+        }
+        return imcInspectionTaskMapper.selectByExample(example);
     }
 }

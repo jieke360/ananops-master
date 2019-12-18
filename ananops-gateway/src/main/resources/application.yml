@@ -5,8 +5,8 @@ spring:
   profiles:
     active: dev
   application:
-    name: @pom.artifactId@
+    name: ananops-gateway
 
 swagger:
-  title: @pom.artifactId@
-  description: @pom.description@
+  title: ananops-gateway
+  description: Demo project for Spring Boot

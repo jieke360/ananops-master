@@ -98,4 +98,9 @@ public class ImcAddInspectionItemDto implements Serializable {
     @ApiModelProperty(value = "巡检子项对应的维修工")
     private Long maintainerId;
 
+    /**
+     * 巡检任务子项已经执行的次数
+     */
+    @ApiModelProperty(value = "巡检任务子项已经执行的次数，初始为0")
+    private Integer count;
 }

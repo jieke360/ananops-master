@@ -95,5 +95,8 @@ public class ImcInspectionItem extends BaseEntity {
     @Column(name = "maintainer_id")
     private Long maintainerId;
 
-
+    /**
+     * 巡检任务子项已经执行的次数
+     */
+    private Integer count;
 }

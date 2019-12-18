@@ -13,6 +13,9 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/ananop-zipkin/pom.xml" />
+        <option value="$PROJECT_DIR$/ananops-generator/pom.xml" />
+        <option value="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/pom.xml" />
+        <option value="$PROJECT_DIR$/elastic-job-lite-starter-parent/elastic-job-lite-starter-imc/pom.xml" />
       </set>
     </option>
   </component>
