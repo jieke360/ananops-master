@@ -50,7 +50,7 @@ public class PmcContractController extends BaseController {
 
     @PostMapping("/getContactListByGroupId/{groupId}")
     @ApiOperation(httpMethod = "POST", value = "获取某个组织的合同列表")
-    public Wrapper getContactListByGroupId(@ApiParam(value = "组织") @PathVariable Long groupId) {
+    public Wrapper getContactListByGroupId(@ApiParam(value = "组织id") @PathVariable Long groupId) {
         List<PmcContract> pmcContractList = pmcContractService.getContactListByGroupId(groupId);
         return WrapMapper.ok(pmcContractList);
     }
@@ -69,7 +69,12 @@ public class PmcContractController extends BaseController {
         return WrapMapper.ok();
     }
 
-
+    @PostMapping("getContactByAB/{partyAId}/{partyBId}")
+    @ApiOperation(httpMethod = "POST", value = "获取甲乙双方签订的合同")
+    public Wrapper getContactByAB(@ApiParam(value = "甲方id") @PathVariable Long partyAId,@ApiParam(value = "乙方id") @PathVariable Long partyBId) {
+        List<PmcContract> pmcContractList = pmcContractService.getContactByAB(partyAId,partyBId);
+        return WrapMapper.ok(pmcContractList);
+    }
 
 
 
