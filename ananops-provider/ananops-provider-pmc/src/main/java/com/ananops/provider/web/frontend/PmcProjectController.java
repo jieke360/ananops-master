@@ -5,6 +5,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
 import com.ananops.core.utils.RequestUtil;
 import com.ananops.provider.model.domain.PmcProject;
+import com.ananops.provider.model.domain.PmcProjectUser;
 import com.ananops.provider.model.dto.PmcProjectDto;
 import com.ananops.provider.service.PmcProjectService;
 import com.ananops.wrapper.WrapMapper;
@@ -66,7 +67,7 @@ public class PmcProjectController extends BaseController {
         return WrapMapper.ok(pageInfo);
     }
 
-    @PostMapping("deleteProjectById/{id}")
+    @PostMapping("/deleteProjectById/{id}")
     @ApiOperation(httpMethod = "POST",value = "删除项目信息")
     public Wrapper deleteProjectById(@PathVariable Long id){
         log.info("删除项目信息,id={}",id);
@@ -74,5 +75,26 @@ public class PmcProjectController extends BaseController {
         return WrapMapper.ok();
     }
 
+    @PostMapping("/getProjectByUserId/{userId}")
+    @ApiOperation(httpMethod = "POST",value = "根据用户id获取项目信息")
+    public Wrapper getProjectByUserId(@PathVariable Long userId){
+        log.info("查询项目信息,userId={}",userId);
+        List<PmcProject> pmcProjectList  = pmcProjectService.getProjectByUserId(userId);
+        return WrapMapper.ok(pmcProjectList);
+    }
+
+    @PostMapping("/addProUser")
+    @ApiOperation(httpMethod = "POST",value = "添加项目用户关联信息")
+    public Wrapper addProUser(@RequestBody PmcProjectUser pmcProjectUser){
+        int result = pmcProjectService.addProUser(pmcProjectUser);
+        return WrapMapper.ok(result);
+    }
+
+    @PostMapping("/deleteProUser")
+    @ApiOperation(httpMethod = "POST",value = "删除项目用户关联信息")
+    public Wrapper deleteProUser(@RequestBody PmcProjectUser pmcProjectUser){
+        int result = pmcProjectService.deleteProUser(pmcProjectUser);
+        return WrapMapper.ok();
+    }
 
 }

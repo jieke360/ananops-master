@@ -8,11 +8,14 @@ import com.ananops.core.support.BaseService;
 import com.ananops.provider.exception.PmcBizException;
 import com.ananops.provider.mapper.PmcContractMapper;
 import com.ananops.provider.mapper.PmcProjectMapper;
+import com.ananops.provider.mapper.PmcProjectUserMapper;
 import com.ananops.provider.model.domain.PmcContract;
 import com.ananops.provider.model.domain.PmcProject;
+import com.ananops.provider.model.domain.PmcProjectUser;
 import com.ananops.provider.service.PmcProjectService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -28,6 +31,8 @@ public class PmcProjectServiceImpl extends BaseService<PmcProject> implements Pm
     PmcProjectMapper pmcProjectMapper;
     @Resource
     PmcContractMapper pmcContractMapper;
+    @Resource
+    PmcProjectUserMapper pmcProjectUserMapper;
 
 
     @Override
@@ -85,10 +90,32 @@ public class PmcProjectServiceImpl extends BaseService<PmcProject> implements Pm
     }
 
     @Override
+    public List<PmcProject> getProjectByUserId(Long userId) {
+        return pmcProjectMapper.getProjectByUserId(userId);
+    }
+
+    @Override
     public void deleteProjectById(Long projectId) {
         Integer result = pmcProjectMapper.deleteByPrimaryKey(projectId);
         if (result < 1) {
             throw new PmcBizException(ErrorCodeEnum.PMC10081002, projectId);
         }
     }
+
+
+    @Override
+    public int addProUser(PmcProjectUser pmcProjectUser) {
+        int result = 0;
+        result = pmcProjectUserMapper.insertSelective(pmcProjectUser);
+        return result;
+    }
+
+    @Override
+    public int deleteProUser(PmcProjectUser pmcProjectUser) {
+        int result = 0;
+        result = pmcProjectUserMapper.deleteByPrimaryKey(pmcProjectUser);
+        return result;
+    }
+
+
 }

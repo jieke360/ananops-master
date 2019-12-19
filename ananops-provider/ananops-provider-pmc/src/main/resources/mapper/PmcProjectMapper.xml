@@ -38,4 +38,17 @@
     <result column="last_operator_id" property="lastOperatorId" jdbcType="BIGINT" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
+
+
+  <select id="getProjectByUserId" resultMap="BaseResultMap">
+    select * from
+    an_pmc_project p,an_pmc_project_user u
+    where
+    1=1
+    and p.id = u.project_id
+    and u.user_id =  #{userId,jdbcType=BIGINT}
+  </select>
+
+
 </mapper>
+
