@@ -16,6 +16,7 @@ import com.ananops.provider.model.dto.ImcAddInspectionItemDto;
 import com.ananops.provider.model.dto.ImcAddInspectionTaskDto;
 import com.ananops.provider.model.dto.ImcTaskChangeStatusDto;
 import com.ananops.provider.model.dto.TaskNameChangeDto;
+import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
@@ -63,15 +64,23 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             List<ImcAddInspectionItemDto> imcAddInspectionItemDtoList = imcAddInspectionTaskDto.getImcAddInspectionItemDtoList();
             Long taskId = super.generateId();
             imcInspectionTask.setId(taskId);
+            //将巡检任务状态设置为等待服务商接单
+            imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
             String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(taskId),body);
             mqMessageData = new MqMessageData(body, topic, tag, key);
             imcTaskManager.saveInspectionTask(mqMessageData,imcInspectionTask,true);
             logger.info("新创建一条巡检记录：" + imcInspectionTask.toString());
             imcAddInspectionItemDtoList.forEach(item->{//保存所有巡检任务子项
                 item.setInspectionTaskId(taskId);//设置巡检任务子项对应的任务id
-                item.setDays(imcInspectionTask.getDays());
-                item.setFrequency(imcInspectionTask.getFrequency());
-                item.setScheduledStartTime(imcInspectionTask.getScheduledStartTime());
+                item.setDays(imcInspectionTask.getDays());//设置巡检任务子项对应的巡检周期
+                item.setFrequency(imcInspectionTask.getFrequency());//设置巡检任务子项对应的巡检频率
+                item.setScheduledStartTime(imcInspectionTask.getScheduledStartTime());//设置巡检任务子项的对应的计划开始时间
+                Long scheduledStartTime = item.getScheduledStartTime().getTime();//获得巡检任务子项的预计开始时间
+                Long currentTime = System.currentTimeMillis();//获得当前时间
+                if(scheduledStartTime<=currentTime){//如果计划执行时间<=当前时间，说明，巡检任务需要立即执行
+                    //将巡检任务子项的状态设置为等待巡检
+                    item.setStatus(ItemStatusEnum.WAITING_FOR_INSPECTION.getStatusNum());
+                }
                 //创建新的任务子项，并更新返回结果
                 BeanUtils.copyProperties(imcInspectionItemService.saveInspectionItem(item,loginAuthDto),item);
             });

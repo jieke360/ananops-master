@@ -10,6 +10,7 @@ import com.ananops.provider.mapper.ImcInspectionTaskMapper;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.dto.ImcAddInspectionItemDto;
+import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,6 +53,13 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         if(imcInspectionItem.isNew()){//如果是新增一条巡检任务子项记录
             Long itemId = super.generateId();
             imcInspectionItem.setId(itemId);
+            Long scheduledStartTime = imcInspectionItem.getScheduledStartTime().getTime();
+            Long currentTime = System.currentTimeMillis();
+            if(scheduledStartTime<=currentTime){
+                //如果计划执行时间<=当前时间，说明，巡检任务需要立即执行
+                //将巡检任务子项的状态设置为等待巡检
+                imcInspectionItem.setStatus(ItemStatusEnum.WAITING_FOR_INSPECTION.getStatusNum());
+            }
             imcInspectionItemMapper.insert(imcInspectionItem);
         }else{//如果是更新已经存在的巡检任务子项
             imcInspectionItemMapper.updateByPrimaryKeySelective(imcInspectionItem);

@@ -1,8 +1,10 @@
 package com.ananops.provider.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -66,13 +68,17 @@ public class ImcAddInspectionTaskDto implements Serializable {
     /**
      * 计划起始时间
      */
-    @ApiModelProperty(value = "计划起始时间")
+    @ApiModelProperty(value = "计划起始时间",example = "2019-8-24 11:11:11")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date scheduledStartTime;
 
     /**
      * 实际完成时间
      */
-    @ApiModelProperty(value = "实际完成时间")
+    @ApiModelProperty(value = "实际完成时间",example = "2019-8-24 11:11:11")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date actualFinishTime;
 
     /**
