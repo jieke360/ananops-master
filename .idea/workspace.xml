@@ -2,129 +2,105 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="273278b6-53fc-4154-861c-e24e2dfe798e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ananops-generator/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/java/com/ananops/provider/model/dto/ImcAddInspectionTaskLogDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/mappers/ImcDeviceOrderMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/mappers/ImcInspectionItemInfoMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/mappers/ImcInspectionItemLogMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/mappers/ImcInspectionItemMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/mappers/ImcInspectionReviewMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/mappers/ImcInspectionTaskLogMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/mappers/ImcInspectionTaskMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/mappers/ImcMaintenanceTaskMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/mappers/ImcPermitsInfoMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/java/com/ananops/AnanOpsIocApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/java/com/ananops/provider/config/IocWebMvcConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/java/com/ananops/provider/config/ResourceServerConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/resources/META-INF/spring-devtools.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/resources/ValidationMessages.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/resources/bootstrap.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/resources/conf/liquibase.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/resources/liquibase/index.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-ioc/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/AnanOpsPmcApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/config/PmcWebMvcConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/config/ResourceServerConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/exception/PmcBizException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/mapper/PmcContractMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/mapper/PmcInspectTaskMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/mapper/PmcProjectMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/model/domain/PmcContract.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/model/domain/PmcInspectTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/model/domain/PmcProject.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/model/dto/PmcContractDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/model/dto/PmcInspectTaskDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/model/dto/PmcProjectDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/service/PmcContractService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/service/PmcFileService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/service/PmcInspectTaskService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/service/PmcProjectService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/service/impl/PmcContractServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/service/impl/PmcFileServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/service/impl/PmcInspectTaskServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/service/impl/PmcProjectServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/web/frontend/PmcContractController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/web/frontend/PmcFileController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/web/frontend/PmcInspectTaskController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/java/com/ananops/provider/web/frontend/PmcProjectController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/META-INF/spring-devtools.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/ValidationMessages.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/application.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/banner.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/bootstrap.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/conf/liquibase.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/liquibase/index.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/mapper/PmcContractMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/mapper/PmcInspectTaskMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/src/main/resources/mapper/PmcProjectMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/templates/email/activeUserSuccessTemplate.ftl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/templates/email/activeUserTemplate.ftl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/templates/email/sendRestLoginPwdSuccessTemplate.ftl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/templates/email/sendRestLoginPwdTemplate.ftl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/templates/email/sendRestPwdCodeTemplate.ftl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/templates/email/sendRestUserEmailTemplate.ftl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/AnanOpsMdmcApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/config/MdmcWebMvcConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/config/ResourceServerConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/config/SwaggerProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/manager/MdmcTaskManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcDeviceMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcDeviceOrderMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcReviewMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcTaskItemLogMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcTaskItemMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcTaskLogMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcTaskMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcDevice.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcDeviceOrder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcReview.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcTaskItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcTaskItemLog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcTaskLog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/ItemLogQueryDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddDeviceDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddDeviceItemDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddReviewDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddTaskDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddTaskItemDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcChangeStatusDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcCheckDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcDeviceTroubleDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcItemChangeStatusDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcOrderDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcOrderOperationDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcPageDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcProcessingDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcQueryDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcResultDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcTaskItemDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcTaskItemLogDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcTaskLogDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcUpdateTaskDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/TaskLogQueryDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/enums/MdmcItemStatusEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/enums/MdmcTaskStatusEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcDeviceService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcReviewService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcTaskItemLogService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcTaskItemService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcTaskLogService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcTaskService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcDeviceServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcReviewServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskItemLogServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskItemServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskLogServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/GlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcDeviceController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcReviewController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcTaskController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcTaskItemController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/META-INF/spring-devtools.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/ValidationMessages.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/conf/liquibase.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/generator/generatorConfig-A.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/generator/generatorConfig-B.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/liquibase/index.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/mappers/MdmcDeviceMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/mappers/MdmcDeviceOrderMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/mappers/MdmcReviewMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/mappers/MdmcTaskItemLogMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/mappers/MdmcTaskItemMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/mappers/MdmcTaskLogMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/mappers/MdmcTaskMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/resources/mappers/TaskItemMapper.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/src/main/java/com/ananops/base/constant/AliyunMqTopicConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-base/src/main/java/com/ananops/base/constant/AliyunMqTopicConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/src/main/java/com/ananops/base/enums/ErrorCodeEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-base/src/main/java/com/ananops/base/enums/ErrorCodeEnum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants$ConsumerTopics.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants$ConsumerTopics.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants$MqTagEnum.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants$MqTagEnum.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants$MqTopicEnum.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants$MqTopicEnum.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants$TopicObj.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants$TopicObj.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/constant/AliyunMqTopicConstants.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/enums/ErrorCodeEnum.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-base/target/classes/com/ananops/base/enums/ErrorCodeEnum.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-config/target/classes/META-INF/spring-configuration-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-config/target/classes/META-INF/spring-configuration-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-core/src/main/java/com/ananops/core/aspect/LogAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-core/src/main/java/com/ananops/core/aspect/LogAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-core/src/main/java/com/ananops/core/interceptor/TokenInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-core/src/main/java/com/ananops/core/interceptor/TokenInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-core/target/classes/com/ananops/core/aspect/LogAspect.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-core/target/classes/com/ananops/core/aspect/LogAspect.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-core/target/classes/com/ananops/core/interceptor/TokenInterceptor.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-core/target/classes/com/ananops/core/interceptor/TokenInterceptor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-security-core/target/classes/META-INF/spring-configuration-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-security-core/target/classes/META-INF/spring-configuration-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-security-feign/target/classes/META-INF/spring-configuration-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-security-feign/target/classes/META-INF/spring-configuration-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-discovery/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-discovery/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-eureka/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-eureka/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-eureka/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-eureka/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-gateway/src/main/java/com/ananops/gateway/filter/RenewFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-gateway/src/main/java/com/ananops/gateway/filter/RenewFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-gateway/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-gateway/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-gateway/target/classes/com/ananops/gateway/filter/RenewFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-gateway/target/classes/com/ananops/gateway/filter/RenewFilter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-gateway/target/classes/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-gateway/target/classes/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-opc-api/src/main/java/com/ananops/provider/model/dto/robot/ChatRobotMsgDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-opc-api/src/main/java/com/ananops/provider/model/dto/robot/ChatRobotMsgDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/target/classes/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-imc/target/classes/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdc/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdc/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdc/target/classes/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdc/target/classes/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/src/main/java/com/ananops/provider/service/impl/OptAttachmentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/src/main/java/com/ananops/provider/service/impl/OptAttachmentServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/src/main/java/com/ananops/provider/service/impl/OptQiniuOssServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/src/main/java/com/ananops/provider/service/impl/OptQiniuOssServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/target/classes/com/ananops/provider/service/impl/OptAttachmentServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/target/classes/com/ananops/provider/service/impl/OptAttachmentServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/target/classes/com/ananops/provider/service/impl/OptQiniuOssServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/target/classes/com/ananops/provider/service/impl/OptQiniuOssServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-tpc/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-tpc/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-tpc/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-tpc/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-tpc/target/classes/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-tpc/target/classes/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/model/dto/base/ModifyStatusDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/model/dto/base/ModifyStatusDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/model/dto/user/BindUserRolesDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/model/dto/user/BindUserRolesDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/service/impl/UacActionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/service/impl/UacActionServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/service/impl/UacPermissionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/service/impl/UacPermissionServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/service/impl/UacRoleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/service/impl/UacRoleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/web/admin/UacActionMainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/web/admin/UacActionMainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/web/admin/UacUserMainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/web/admin/UacUserMainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/mapper/UacActionMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/mapper/UacActionMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/mapper/UacMenuMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/mapper/UacMenuMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/model/dto/base/ModifyStatusDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/model/dto/base/ModifyStatusDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/model/dto/user/BindUserRolesDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/model/dto/user/BindUserRolesDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/service/impl/UacActionServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/service/impl/UacActionServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/service/impl/UacPermissionServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/service/impl/UacPermissionServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/service/impl/UacRoleServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/service/impl/UacRoleServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/web/admin/UacActionMainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/web/admin/UacActionMainController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/web/admin/UacUserMainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/com/ananops/provider/web/admin/UacUserMainController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/mapper/UacActionMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/mapper/UacActionMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/mapper/UacMenuMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/target/classes/mapper/UacMenuMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-base/ananops-common-base.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-base/ananops-common-base.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-config/ananops-common-config.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-config/ananops-common-config.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-core/ananops-common-core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-core/ananops-common-core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-util/ananops-common-util.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-util/ananops-common-util.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-zk/ananops-common-zk.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-zk/ananops-common-zk.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-security-app/ananops-security-app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-security-app/ananops-security-app.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-security-core/ananops-security-core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-security-core/ananops-security-core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-security-feign/ananops-security-feign.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-security-feign/ananops-security-feign.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-discovery/ananops-discovery.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-discovery/ananops-discovery.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-gateway/ananops-gateway.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-gateway/ananops-gateway.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-mdc-api/ananops-provider-mdc-api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-mdc-api/ananops-provider-mdc-api.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-omc-api/ananops-provider-omc-api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-omc-api/ananops-provider-omc-api.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-opc-api/ananops-provider-opc-api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-opc-api/ananops-provider-opc-api.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-sdk-api/ananops-provider-sdk-api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-sdk-api/ananops-provider-sdk-api.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-tpc-api/ananops-provider-tpc-api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-tpc-api/ananops-provider-tpc-api.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-uac-api/ananops-provider-uac-api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider-api/ananops-provider-uac-api/ananops-provider-uac-api.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/ananops-provider-opc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-opc/ananops-provider-opc.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-tpc/ananops-provider-tpc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-tpc/ananops-provider-tpc.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/ananops-provider-uac.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/ananops-provider-uac.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ananops-provider/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elastic-job-lite-starter-parent/elastic-job-lite-starter/target/classes/META-INF/spring-configuration-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/elastic-job-lite-starter-parent/elastic-job-lite-starter/target/classes/META-INF/spring-configuration-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/ananops-common/target/" />
@@ -162,6 +138,7 @@
     <ignored path="$PROJECT_DIR$/elastic-job-lite-starter-parent/elastic-job-lite-starter-imc/target/" />
     <ignored path="$PROJECT_DIR$/ananops-provider-api/ananops-provider-imc-api/target/" />
     <ignored path="$PROJECT_DIR$/ananops-provider/ananops-provider-pmc/target/" />
+    <ignored path="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,11 +150,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ananops-discovery/src/main/resources/bootstrap.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="11" column="18" lean-forward="true" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
+            <state relative-caret-position="187">
+              <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcTaskController.java">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ananops-provider/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="391">
+              <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -261,15 +252,13 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="localRepository" value="E:\maven-repo" />
-        <option name="mavenHome" value="E:/maven/apache-maven-3.6.1" />
-        <option name="userSettingsFile" value="E:\maven\apache-maven-3.6.1\conf\settings.xml" />
+        <option name="localRepository" value="C:\Users\hqqds\.m2\repository" />
+        <option name="userSettingsFile" value="C:\Users\hqqds\.m2\settings.xml" />
       </MavenGeneralSettings>
     </option>
     <option name="importingSettings">
       <MavenImportingSettings>
         <option name="importAutomatically" value="true" />
-        <option name="vmOptionsForImporter" value="-Xmx768m" />
       </MavenImportingSettings>
     </option>
   </component>
@@ -309,6 +298,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -317,15 +307,27 @@
               <item name="ananops-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="ananops-master" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="ananops-master" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ananops-master" type="462c0819:PsiDirectoryNode" />
+              <item name="ananops-provider" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ananops-master" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ananops-master" type="462c0819:PsiDirectoryNode" />
+              <item name="ananops-provider-api" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1577014912162" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/elastic-job-lite-starter-parent/elastic-job-lite-starter-imc/src/main/java/com/ananops/elastic/lite" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.0" />
@@ -338,6 +340,7 @@
       <recent name="com.ananops.elastic.lite.autoconfigure" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\北安协\ananops-master\ananops-provider" />
       <recent name="D:\北京安防协会项目\ananops-master\ananops-master\elastic-job-lite-starter-parent\elastic-job-lite-starter-imc\src\main\java\com\ananops\elastic\lite" />
       <recent name="D:\北京安防协会项目\ananops-master\ananops-master\elastic-job-lite-starter-parent\elastic-job-lite-starter-imc\src\main\resources" />
     </key>
@@ -440,20 +443,28 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1576230361393</updated>
+      <workItem from="1577014415949" duration="486000" />
     </task>
     <servers />
   </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="486000" />
+  </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
+      <window_info id="Web" side_tool="true" />
       <window_info id="Image Layers" order="0" />
       <window_info id="Designer" order="1" />
       <window_info id="UI Designer" order="2" />
       <window_info id="Capture Tool" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="5" visible="true" weight="0.20911528" />
+      <window_info active="true" content_ui="combo" id="Project" order="5" visible="true" weight="0.31367293" />
       <window_info id="Structure" order="6" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Spring" />
+      <window_info anchor="bottom" id="Java Enterprise" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="0" />
       <window_info anchor="bottom" id="Stack trace to UML" order="1" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="2" weight="0.32991204" />
@@ -466,25 +477,24 @@
       <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="10" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="11" />
+      <window_info anchor="right" id="BPMNPalette" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="right" id="Bean Validation" />
       <window_info anchor="right" id="Palette" order="0" />
       <window_info anchor="right" id="Capture Analysis" order="1" />
       <window_info anchor="right" id="Theme Preview" order="2" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
-      <window_info active="true" anchor="right" id="Maven" order="4" visible="true" weight="0.12935656" />
+      <window_info anchor="right" id="Maven" order="4" visible="true" weight="0.12868632" />
       <window_info anchor="right" id="PlantUML" order="5" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="6" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="7" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="8" weight="0.25" />
     </layout>
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ananops-provider-api/ananops-provider-uac-api/src/main/java/com/ananops/provider/model/user/LoginReqDto.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-407">
-          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/java/com/ananops/provider/service/impl/UacUserTokenServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
@@ -596,13 +606,6 @@
     <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-uac/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1725" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ananops-provider/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="21" column="45" selection-start-line="21" selection-start-column="45" selection-end-line="21" selection-end-column="45" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ananops-provider-api/pom.xml">
@@ -728,16 +731,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ananops-provider-api/ananops-provider-imc-api/src/main/java/com/ananops/provider/service/ImcItemQueryFeignApi.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ananops-provider-api/ananops-provider-imc-api/src/main/java/com/ananops/provider/service/ImcItemQueryFeignApi.java" />
     <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-mdc/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="175">
@@ -769,26 +763,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/java/com/ananops/provider/web/rpc/ImcItemQueryFeiginClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="48" column="46" lean-forward="true" selection-start-line="48" selection-start-column="46" selection-end-line="48" selection-end-column="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ananops-provider-api/ananops-provider-imc-api/src/main/java/com/ananops/provider/service/hystrix/ImcItemQueryFeignHystrix.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="292">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/java/com/ananops/provider/web/rpc/ImcItemQueryFeiginClient.java" />
+    <entry file="file://$PROJECT_DIR$/ananops-provider-api/ananops-provider-imc-api/src/main/java/com/ananops/provider/service/hystrix/ImcItemQueryFeignHystrix.java" />
     <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-imc/src/main/resources/application.yml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -824,8 +800,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ananops-discovery/src/main/resources/bootstrap.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="11" column="18" lean-forward="true" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
+        <state relative-caret-position="187">
+          <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcTaskController.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ananops-provider/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
         </state>
       </provider>
     </entry>
