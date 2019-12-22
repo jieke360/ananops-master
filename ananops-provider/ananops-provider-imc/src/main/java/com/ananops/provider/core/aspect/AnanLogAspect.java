@@ -143,12 +143,12 @@ public class AnanLogAspect {
                         }
                     });
                 }
-            }else if(wrapper.getResult().getClass().getName().equals(ImcInspectionItem.class.getName())){
+            }else if(wrapper.getResult().getClass().getName().equals(ImcAddInspectionItemDto.class.getName())){
                 //如果当前的日志是巡检任务子项的
-                ImcInspectionItem imcInspectionItem = (ImcInspectionItem) wrapper.getResult();
-                taskId = imcInspectionItem.getInspectionTaskId();
-                itemId = imcInspectionItem.getId();
-                status = imcInspectionItem.getStatus();
+                ImcAddInspectionItemDto imcAddInspectionItemDto = (ImcAddInspectionItemDto) wrapper.getResult();
+                taskId = imcAddInspectionItemDto.getInspectionTaskId();
+                itemId = imcAddInspectionItemDto.getId();
+                status = imcAddInspectionItemDto.getStatus();
                 ImcInspectionItemLog imcInspectionItemLog = createItemLog(itemId,taskId,status,startTime,endTime,movement,os,browser,ipAddress);
                 LoginAuthDto loginUser = RequestUtil.getLoginUser();
                 if(imcInspectionItemLogService.createInspectionItemLog(imcInspectionItemLog,loginUser) == 1){

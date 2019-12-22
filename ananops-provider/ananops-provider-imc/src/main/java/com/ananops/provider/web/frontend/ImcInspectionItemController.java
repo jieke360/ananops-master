@@ -7,15 +7,13 @@ import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.ImcInspectionItem;
-import com.ananops.provider.model.dto.ImcAddInspectionItemDto;
-import com.ananops.provider.model.dto.ImcItemChangeStatusDto;
-import com.ananops.provider.model.dto.ItemDto;
-import com.ananops.provider.model.dto.ItemLogQueryDto;
+import com.ananops.provider.model.domain.ImcInspectionTask;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.vo.ItemLogVo;
 import com.ananops.provider.service.ImcInspectionItemLogService;
 import com.ananops.provider.service.ImcInspectionItemService;
-import com.ananops.provider.service.ImcItemQueryFeignApi;
+import com.ananops.provider.service.ImcItemFeignApi;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
@@ -42,12 +40,12 @@ public class ImcInspectionItemController extends BaseController {
     ImcInspectionItemLogService imcInspectionItemLogService;
 
     @Resource
-    ImcItemQueryFeignApi imcItemQueryFeignApi;
+    ImcItemFeignApi imcItemQueryFeignApi;
 
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "编辑巡检任务子项记录")
     @AnanLogAnnotation
-    public Wrapper<ImcInspectionItem> saveInspectionItem(@ApiParam(name = "saveInspectionItem",value = "新增一条巡检任务子项记录")@RequestBody ImcAddInspectionItemDto imcAddInspectionItemDto){
+    public Wrapper<ImcAddInspectionItemDto> saveInspectionItem(@ApiParam(name = "saveInspectionItem",value = "新增一条巡检任务子项记录")@RequestBody ImcAddInspectionItemDto imcAddInspectionItemDto){
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         return WrapMapper.ok(imcInspectionItemService.saveInspectionItem(imcAddInspectionItemDto,loginAuthDto));
     }
@@ -100,9 +98,20 @@ public class ImcInspectionItemController extends BaseController {
         return WrapMapper.ok(imcInspectionItemService.getItemByItemStatusAndTaskId(taskId,status));
     }
 
-    @GetMapping(value = "/getItemByProjectId/{projectId}")
-    @ApiOperation(httpMethod = "GET",value = "根据项目Id查询对应的所有任务子项")
-    public Wrapper<List<ItemDto>> getItemByProjectId(@PathVariable Long projectId){
-        return imcItemQueryFeignApi.getByProjectId(projectId);
+    @PostMapping(value = "/getItemByUserId")
+    @ApiOperation(httpMethod = "POST",value = "根据甲方用户的id查询对应的巡检任务子项")
+    public Wrapper<List<ImcInspectionItem>> getItemByUserId(@ApiParam(name = "getItemByUserId",value = "根据甲方用户的ID查询巡检任务子项")@RequestBody ItemQueryDto itemQueryDto){
+        return WrapMapper.ok(imcInspectionItemService.getItemByUserId(itemQueryDto));
     }
+
+    @PostMapping(value = "/getItemByUserIdAndStatus")
+    @ApiOperation(httpMethod = "POST",value = "根据甲方用户id查询指定状态的巡检任务子项")
+    public Wrapper<List<ImcInspectionItem>> getItemByUserIdAndStatus(@ApiParam(name = "getItemByUserIdAndStatus",value = "根据甲方用户id查询指定状态的巡检任务子项")@RequestBody ItemQueryDto itemQueryDto){
+        return WrapMapper.ok(imcInspectionItemService.getItemByUserIdAndStatus(itemQueryDto));
+    }
+//    @GetMapping(value = "/getItemByProjectId/{projectId}")
+//    @ApiOperation(httpMethod = "GET",value = "根据项目Id查询对应的所有任务子项")
+//    public Wrapper<List<ItemDto>> getItemByProjectId(@PathVariable Long projectId){
+//        return imcItemQueryFeignApi.getByProjectId(projectId);
+//    }
 }

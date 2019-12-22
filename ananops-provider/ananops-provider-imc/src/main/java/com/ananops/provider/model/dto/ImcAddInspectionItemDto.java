@@ -18,6 +18,11 @@ import java.util.Date;
 public class ImcAddInspectionItemDto implements Serializable {
     private static final long serialVersionUID = -3159670420426980074L;
     /**
+     * 巡检任务子项对应的甲方用户id
+     */
+    @ApiModelProperty(value = "巡检任务子项对应的甲方用户id")
+    private Long userId;
+    /**
      * 巡检任务子项ID
      */
     @ApiModelProperty(value = "巡检任务子项ID")

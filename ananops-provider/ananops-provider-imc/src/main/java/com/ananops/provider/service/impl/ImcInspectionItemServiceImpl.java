@@ -7,11 +7,16 @@ import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
 import com.ananops.provider.mapper.ImcInspectionItemMapper;
 import com.ananops.provider.mapper.ImcInspectionTaskMapper;
+import com.ananops.provider.mapper.ImcUserItemMapper;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.domain.ImcInspectionTask;
+import com.ananops.provider.model.domain.ImcUserItem;
 import com.ananops.provider.model.dto.ImcAddInspectionItemDto;
+import com.ananops.provider.model.dto.ItemQueryDto;
+import com.ananops.provider.model.dto.TaskQueryDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,16 +38,20 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
     @Resource
     private ImcInspectionTaskMapper imcInspectionTaskMapper;
 
+    @Resource
+    private ImcUserItemMapper imcUserItemMapper;
+
     /**
      *
      * @param imcAddInspectionItemDto
      * @return
      */
-    public ImcInspectionItem saveInspectionItem(ImcAddInspectionItemDto imcAddInspectionItemDto, LoginAuthDto loginAuthDto){//编辑巡检任务子项记录
+    public ImcAddInspectionItemDto saveInspectionItem(ImcAddInspectionItemDto imcAddInspectionItemDto, LoginAuthDto loginAuthDto){//编辑巡检任务子项记录
         ImcInspectionItem imcInspectionItem = new ImcInspectionItem();
         BeanUtils.copyProperties(imcAddInspectionItemDto,imcInspectionItem);
         imcInspectionItem.setUpdateInfo(loginAuthDto);
         Long taskId = imcInspectionItem.getInspectionTaskId();
+        Long userId = imcAddInspectionItemDto.getUserId();
         Example example = new Example(ImcInspectionTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
@@ -61,10 +70,17 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                 imcInspectionItem.setStatus(ItemStatusEnum.WAITING_FOR_INSPECTION.getStatusNum());
             }
             imcInspectionItemMapper.insert(imcInspectionItem);
+            //新增一条巡检任务子项和甲方用户的关系记录
+            ImcUserItem imcUserItem = new ImcUserItem();
+            imcUserItem.setItemId(itemId);
+            imcUserItem.setUserId(userId);
+            imcUserItemMapper.insert(imcUserItem);
+
         }else{//如果是更新已经存在的巡检任务子项
             imcInspectionItemMapper.updateByPrimaryKeySelective(imcInspectionItem);
         }
-        return imcInspectionItem;
+        BeanUtils.copyProperties(imcInspectionItem,imcAddInspectionItemDto);
+        return imcAddInspectionItemDto;
     }
 
     /**
@@ -114,6 +130,16 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             throw new BusinessException(ErrorCodeEnum.GL9999090);
         }
         return imcInspectionItemMapper.selectByExample(example);
+    }
+
+    public List<ImcInspectionItem> getItemByUserId(ItemQueryDto itemQueryDto){
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        return imcInspectionItemMapper.queryItemByUserId(itemQueryDto.getUserId());
+    }
+
+    public List<ImcInspectionItem> getItemByUserIdAndStatus(ItemQueryDto itemQueryDto){
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        return imcInspectionItemMapper.queryItemByUserIdAndStatus(itemQueryDto.getUserId(),itemQueryDto.getStatus());
     }
 
     public Integer setBasicInfoFromContract(){//将从合同中获取到的基本信息填写到巡检任务中

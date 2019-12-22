@@ -5,10 +5,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.ImcInspectionTask;
-import com.ananops.provider.model.dto.ImcAddInspectionTaskDto;
-import com.ananops.provider.model.dto.ImcTaskChangeStatusDto;
-import com.ananops.provider.model.dto.TaskLogQueryDto;
-import com.ananops.provider.model.dto.TaskNameChangeDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.vo.TaskLogVo;
 import com.ananops.provider.service.ImcInspectionTaskLogService;
 import com.ananops.provider.service.ImcInspectionTaskService;
@@ -66,10 +63,10 @@ public class ImcInspectionTaskController extends BaseController {
         return WrapMapper.ok(imcInspectionTaskLogService.getTaskLogsByTaskId(taskLogQueryDto));
     }
 
-    @GetMapping(value = "/getTaskByStatus/{status}")
-    @ApiOperation(httpMethod = "GET",value = "根据巡检任务的状态查询对应的任务")
-    public Wrapper<List<ImcInspectionTask>> getTaskByStatus(@PathVariable Integer status){
-        return WrapMapper.ok(imcInspectionTaskService.getTaskByStatus(status));
+    @PostMapping(value = "/getTaskByStatus")
+    @ApiOperation(httpMethod = "POST",value = "根据巡检任务的状态查询对应的任务")
+    public Wrapper<List<ImcInspectionTask>> getTaskByStatus(@ApiParam(name = "getTaskByStatus",value = "根据巡检任务的状态查询巡检任务")@RequestBody TaskQueryDto taskQueryDto){
+        return WrapMapper.ok(imcInspectionTaskService.getTaskByStatus(taskQueryDto));
     }
 
     @PostMapping(value = "/modifyTaskName")
@@ -81,10 +78,21 @@ public class ImcInspectionTaskController extends BaseController {
         return WrapMapper.ok(taskNameChangeDto);
     }
 
-    @GetMapping(value = "/getTaskByProjectId/{projectId}")
-    @ApiOperation(httpMethod = "GET",value = "根据项目查询对应的所有巡检任务")
-    public Wrapper<List<ImcInspectionTask>> getTaskByProjectId(@PathVariable Long projectId){
-        return WrapMapper.ok(imcInspectionTaskService.getTaskByProjectId(projectId));
+    @PostMapping(value = "/getTaskByProjectId")
+    @ApiOperation(httpMethod = "POST",value = "根据项目查询对应的所有巡检任务")
+    public Wrapper<List<ImcInspectionTask>> getTaskByProjectId(@ApiParam(name = "getTaskByProjectId",value = "根据项目ID查询巡检任务")@RequestBody TaskQueryDto taskQueryDto){
+        return WrapMapper.ok(imcInspectionTaskService.getTaskByProjectId(taskQueryDto));
     }
 
+    @PostMapping(value = "/getTaskByUserId")
+    @ApiOperation(httpMethod = "POST",value = "根据甲方用户的id查询对应的巡检任务")
+    public Wrapper<List<ImcInspectionTask>> getTaskByUserId(@ApiParam(name = "getTaskByUserId",value = "根据甲方用户的ID查询巡检任务")@RequestBody TaskQueryDto taskQueryDto){
+        return WrapMapper.ok(imcInspectionTaskService.getTaskByUserId(taskQueryDto));
+    }
+
+    @PostMapping(value = "/getTaskByUserIdAndStatus")
+    @ApiOperation(httpMethod = "POST",value = "根据甲方用户id查询指定状态的巡检任务")
+    public Wrapper<List<ImcInspectionTask>> getTaskByUserIdAndStatus(@ApiParam(name = "getTaskByUserIdAndStatus",value = "根据甲方用户id查询指定状态的巡检任务")@RequestBody TaskQueryDto taskQueryDto){
+        return WrapMapper.ok(imcInspectionTaskService.getTaskByUserIdAndStatus(taskQueryDto));
+    }
 }

@@ -10,16 +10,18 @@ import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
 import com.ananops.provider.manager.ImcTaskManager;
 import com.ananops.provider.mapper.ImcInspectionTaskMapper;
+import com.ananops.provider.mapper.ImcUserItemMapper;
+import com.ananops.provider.mapper.ImcUserTaskMapper;
 import com.ananops.provider.model.domain.ImcInspectionTask;
+import com.ananops.provider.model.domain.ImcUserTask;
 import com.ananops.provider.model.domain.MqMessageData;
-import com.ananops.provider.model.dto.ImcAddInspectionItemDto;
-import com.ananops.provider.model.dto.ImcAddInspectionTaskDto;
-import com.ananops.provider.model.dto.ImcTaskChangeStatusDto;
-import com.ananops.provider.model.dto.TaskNameChangeDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
+import com.github.pagehelper.PageHelper;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,12 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     @Resource
     ImcInspectionItemService imcInspectionItemService;
 
+    @Resource
+    ImcUserItemMapper imcUserItemMapper;
+
+    @Resource
+    ImcUserTaskMapper imcUserTaskMapper;
+
 
 
     /**
@@ -63,6 +71,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             //获取所有的巡检任务子项
             List<ImcAddInspectionItemDto> imcAddInspectionItemDtoList = imcAddInspectionTaskDto.getImcAddInspectionItemDtoList();
             Long taskId = super.generateId();
+            Long userId = imcAddInspectionTaskDto.getUserId();
             imcInspectionTask.setId(taskId);
             //将巡检任务状态设置为等待服务商接单
             imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
@@ -70,6 +79,11 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             mqMessageData = new MqMessageData(body, topic, tag, key);
             imcTaskManager.saveInspectionTask(mqMessageData,imcInspectionTask,true);
             logger.info("新创建一条巡检记录：" + imcInspectionTask.toString());
+            //增加一条甲方用户和巡检任务的关系记录
+            ImcUserTask imcUserTask = new ImcUserTask();
+            imcUserTask.setTaskId(taskId);
+            imcUserTask.setUserId(userId);
+            imcUserTaskMapper.insert(imcUserTask);
             imcAddInspectionItemDtoList.forEach(item->{//保存所有巡检任务子项
                 item.setInspectionTaskId(taskId);//设置巡检任务子项对应的任务id
                 item.setDays(imcInspectionTask.getDays());//设置巡检任务子项对应的巡检周期
@@ -134,13 +148,15 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return imcInspectionTask;
     }
 
-    public List<ImcInspectionTask> getTaskByStatus(Integer status){
+    public List<ImcInspectionTask> getTaskByStatus(TaskQueryDto taskQueryDto){
         Example example = new Example(ImcInspectionTask.class);
         Example.Criteria criteria = example.createCriteria();
+        Integer status = taskQueryDto.getStatus();
         criteria.andEqualTo("status",status);
         if(imcInspectionTaskMapper.selectCountByExample(example)==0){//当前状态没有对应的任务
             throw new BusinessException(ErrorCodeEnum.GL9999091);
         }
+        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
         return imcInspectionTaskMapper.selectByExample(example);
     }
 
@@ -159,13 +175,26 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return imcInspectionTask;
     }
 
-    public List<ImcInspectionTask> getTaskByProjectId(Long projectId){
+    public List<ImcInspectionTask> getTaskByProjectId(TaskQueryDto taskQueryDto){
         Example example = new Example(ImcInspectionTask.class);
         Example.Criteria criteria = example.createCriteria();
+        Long projectId = taskQueryDto.getProjectId();
         criteria.andEqualTo("projectId",projectId);
         if(imcInspectionTaskMapper.selectCountByExample(example)==0){//当前状态没有对应的任务
             throw new BusinessException(ErrorCodeEnum.GL9999091);
         }
+        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
         return imcInspectionTaskMapper.selectByExample(example);
     }
+
+    public List<ImcInspectionTask> getTaskByUserId(TaskQueryDto taskQueryDto){
+        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        return imcInspectionTaskMapper.queryTaskByUserId(taskQueryDto.getUserId());
+    }
+
+    public List<ImcInspectionTask> getTaskByUserIdAndStatus(TaskQueryDto taskQueryDto){
+        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        return imcInspectionTaskMapper.queryTaskByUserIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
+    }
+
 }
