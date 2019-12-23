@@ -22,7 +22,7 @@ public class MdmcReviewServiceImpl extends BaseService<MdmcReview> implements Md
     @Resource
     MdmcReviewMapper reviewMapper;
     @Override
-    public MdmcReview addReview(MdmcReview review, LoginAuthDto loginAuthDto) {
+    public MdmcReview addReview(MdmcReview review,LoginAuthDto loginAuthDto) {
         review.setUpdateInfo(loginAuthDto);
         Long taskId = review.getTaskId();
         Example example1 = new Example(MdmcReview.class);

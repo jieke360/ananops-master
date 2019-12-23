@@ -20,6 +20,7 @@
         <module name="ananops-provider-mdc" />
         <module name="ananops-provider-mdc-api" />
         <module name="ananops-provider-mdmc" />
+        <module name="ananops-provider-mdmc-api" />
         <module name="ananops-provider-omc-api" />
         <module name="ananops-provider-opc" />
         <module name="ananops-provider-opc-api" />
@@ -41,6 +42,7 @@
       <module name="ananop-seureka" target="1.8" />
       <module name="ananop-zipkin" target="1.8" />
       <module name="ananops-generator" target="1.8" />
+      <module name="ananops-provider-imc-api (1)" target="1.8" />
       <module name="ananops-provider-ioc" target="1.8" />
       <module name="ananopseureka" target="1.8" />
       <module name="elastic-job-lite-starter-imc" target="1.8" />

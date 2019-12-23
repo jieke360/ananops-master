@@ -8,6 +8,7 @@ import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.domain.MdmcTaskLog;
 import com.ananops.provider.model.dto.MdmcAddTaskDto;
 import com.ananops.provider.model.dto.MdmcChangeStatusDto;
+import com.ananops.provider.model.dto.MdmcStatusDto;
 import com.ananops.provider.service.MdmcTaskLogService;
 import com.ananops.provider.service.MdmcTaskService;
 import com.ananops.wrapper.WrapMapper;
@@ -55,6 +56,13 @@ public class MdmcTaskController extends BaseController {
         return WrapMapper.ok(changeStatusDto);
     }
 
+    @PostMapping(value = "/getTaskByTaskId")
+    @ApiOperation(httpMethod = "POST",value = "根据任务的状态，获取工单列表")
+    public Wrapper<List<MdmcTask>> getTaskByStatus(@RequestBody MdmcStatusDto statusDto){
+        List<MdmcTask> taskList = taskService.getTaskListByStatus(statusDto);
+        return WrapMapper.ok(taskList);
+    }
+
     @GetMapping(value = "/getTaskByTaskId/{taskId}")
     @ApiOperation(httpMethod = "GET",value = "根据任务的ID，获取当前的任务详情")
     public Wrapper<MdmcTask> getTaskByTaskId(@PathVariable Long taskId){
@@ -62,30 +70,36 @@ public class MdmcTaskController extends BaseController {
         return WrapMapper.ok(task);
     }
 
-    @GetMapping(value = "/getTaskListByUserId/{userId}")
-    @ApiOperation(httpMethod = "GET",value = "根据用户ID查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByUserId(@PathVariable Long userId){
-        List<MdmcTask> taskList=taskService.getTaskListByUserId(userId);
+    @PostMapping(value = "/getTaskListByUserId")
+    @ApiOperation(httpMethod = "POST",value = "根据用户ID查询工单列表")
+    public Wrapper<List<MdmcTask>> getTaskListByUserId(@RequestBody MdmcStatusDto statusDto){
+        List<MdmcTask> taskList=taskService.getTaskListByUserId(statusDto);
         return WrapMapper.ok(taskList);
     }
 
-    @GetMapping(value = "/getTaskListByFacilitatorId/{facilitatorId}")
-    @ApiOperation(httpMethod = "GET",value = "根据服务商ID查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByFacilitatorId(@PathVariable Long facilitatorId){
-        List<MdmcTask> taskList=taskService.getTaskListByFacilitatorId(facilitatorId);
+    @PostMapping(value = "/getTaskListByFacilitatorId")
+    @ApiOperation(httpMethod = "POST",value = "根据服务商ID查询工单列表")
+    public Wrapper<List<MdmcTask>> getTaskListByFacilitatorId(@RequestBody MdmcStatusDto statusDto){
+        List<MdmcTask> taskList=taskService.getTaskListByFacilitatorId(statusDto);
         return WrapMapper.ok(taskList);
     }
 
-    @GetMapping(value = "/getTaskListByPrincipalId/{principalId}")
-    @ApiOperation(httpMethod = "GET",value = "根据甲方ID查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByPrincipalId(@PathVariable Long principalId){
-        List<MdmcTask> taskList=taskService.getTaskListByPrincipalId(principalId);
+    @PostMapping(value = "/getTaskListByPrincipalId")
+    @ApiOperation(httpMethod = "POST",value = "根据甲方ID查询工单列表")
+    public Wrapper<List<MdmcTask>> getTaskListByPrincipalId(@RequestBody MdmcStatusDto statusDto){
+        List<MdmcTask> taskList=taskService.getTaskListByPrincipalId(statusDto);
         return WrapMapper.ok(taskList);
     }
-    @GetMapping(value = "/getTaskListByMaintainerId/{maintainerId}")
-    @ApiOperation(httpMethod = "GET",value = "根据维修工ID查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByMaintainerId(@PathVariable Long maintainerId){
-        List<MdmcTask> taskList=taskService.getTaskListByMaintainerId(maintainerId);
+    @PostMapping(value = "/getTaskListByMaintainerId")
+    @ApiOperation(httpMethod = "POST",value = "根据维修工ID查询工单列表")
+    public Wrapper<List<MdmcTask>> getTaskListByMaintainerId(@RequestBody MdmcStatusDto statusDto){
+        List<MdmcTask> taskList=taskService.getTaskListByMaintainerId(statusDto);
+        return WrapMapper.ok(taskList);
+    }
+    @PostMapping(value = "/getTaskList")
+    @ApiOperation(httpMethod = "POST",value = "返回全部工单列表")
+    public Wrapper<List<MdmcTask>> getTaskList(@RequestBody MdmcStatusDto statusDto){
+        List<MdmcTask> taskList=taskService.getTaskList(statusDto);
         return WrapMapper.ok(taskList);
     }
 }

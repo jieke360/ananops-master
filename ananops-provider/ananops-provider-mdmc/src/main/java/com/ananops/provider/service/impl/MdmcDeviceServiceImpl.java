@@ -22,9 +22,7 @@ import tk.mybatis.mapper.entity.Example;
 import javax.annotation.Resource;
 import java.util.List;
 
-/**
- * Created by rongshuai on 2019/11/26 21:43
- */
+
 @Service
 public class MdmcDeviceServiceImpl extends BaseService<MdmcDevice> implements MdmcDeviceService {
 
@@ -37,7 +35,7 @@ public class MdmcDeviceServiceImpl extends BaseService<MdmcDevice> implements Md
     @Resource
     MdmcDeviceMapper deviceMapper;
     @Override
-    public MdmcDevice saveDevice(MdmcAddDeviceDto addDeviceDto, LoginAuthDto loginAuthDto) {
+    public MdmcDevice saveDevice(MdmcAddDeviceDto addDeviceDto,LoginAuthDto loginAuthDto) {
         MdmcDevice device=new MdmcDevice();
         BeanUtils.copyProperties(addDeviceDto,device);
         device.setUpdateInfo(loginAuthDto);

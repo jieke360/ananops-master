@@ -23,7 +23,7 @@ public class MdmcDevice extends BaseEntity {
     @Column(name = "task_id")
     private Long taskId;
 
-    @Column(name = "task__item_id")
+    @Column(name = "task_item_id")
     private Long taskItemId;
 
     @Column(name = "maintainer_id")

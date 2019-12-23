@@ -4,15 +4,16 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.MdmcTaskItem;
 import com.ananops.provider.model.dto.MdmcAddTaskItemDto;
+import com.ananops.provider.model.dto.MdmcStatusDto;
 
 import java.util.List;
 
 public interface MdmcTaskItemService extends IService<MdmcTaskItem> {
 
 
-    List<MdmcTaskItem> getItemByTaskId(Long task_id);
+    List<MdmcTaskItem> getItemByTaskId(MdmcStatusDto statusDto);
 
-    List<MdmcTaskItem> getItemByItemStatusAndTaskId(Long taskId, Integer status);
+    List<MdmcTaskItem> getItemByItemStatusAndTaskId(MdmcStatusDto statusDto);
 
     MdmcTaskItem saveItem(MdmcAddTaskItemDto mdmcAddTaskItemDto, LoginAuthDto loginAuthDto);
 }

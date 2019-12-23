@@ -7,9 +7,11 @@ import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.MdmcDevice;
 import com.ananops.provider.model.domain.MdmcDeviceOrder;
 import com.ananops.provider.model.dto.MdmcAddDeviceDto;
+import com.ananops.provider.model.dto.MdmcStatusDto;
 import com.ananops.provider.service.MdmcDeviceService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
+import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -44,12 +46,13 @@ public class MdmcDeviceController extends BaseController {
         return WrapMapper.ok(deviceList);
     }
 
-    @GetMapping(value = "/getDeviceByTaskId/{taskId}")
-    @ApiOperation(httpMethod = "GET",value = "获取任务对应的备品备件订单")
-    public Wrapper<List<MdmcDevice>> getDeviceOrderByTaskId(@PathVariable Long taskId){
+    @PostMapping(value = "/getDeviceByTaskId")
+    @ApiOperation(httpMethod = "POST",value = "获取任务对应的备品备件订单")
+    public Wrapper<List<MdmcDevice>> getDeviceOrderByTaskId(@RequestBody MdmcStatusDto statusDto){
         Example example = new Example(MdmcDevice.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId",taskId);
+        criteria.andEqualTo("taskId",statusDto.getTaskId());
+        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
         List<MdmcDevice> deviceList = deviceService.selectByExample(example);
         return WrapMapper.ok(deviceList);
     }

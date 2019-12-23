@@ -11,7 +11,10 @@ import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.domain.MdmcTaskItem;
 import com.ananops.provider.model.dto.MdmcAddTaskItemDto;
 
+import com.ananops.provider.model.dto.MdmcStatusDto;
 import com.ananops.provider.service.MdmcTaskItemService;
+import com.github.pagehelper.PageHelper;
+import com.xiaoleilu.hutool.db.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -35,39 +38,41 @@ public class MdmcTaskItemServiceImpl extends BaseService<MdmcTaskItem> implement
 
 
     @Override
-    public List<MdmcTaskItem> getItemByTaskId(Long task_id) {
+    public List<MdmcTaskItem> getItemByTaskId(MdmcStatusDto statusDto) {
 
         Example example1 = new Example(MdmcTask.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        criteria1.andEqualTo("id",task_id);
+        criteria1.andEqualTo("id",statusDto.getTaskId());
         if(mdmcTaskMapper.selectCountByExample(example1)==0){
             //如果查询的任务不存在
-            throw new BusinessException(ErrorCodeEnum.GL9999098,task_id);
+            throw new BusinessException(ErrorCodeEnum.GL9999098,statusDto.getTaskId());
         }
         Example example2 = new Example(MdmcTaskItem.class);
         Example.Criteria criteria2 = example2.createCriteria();
-        criteria2.andEqualTo("taskId",task_id);
+        criteria2.andEqualTo("taskId",statusDto.getTaskId());
         List<MdmcTaskItem> taskItemList = mdmcTaskItemMapper.selectByExample(example2);
+        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
         return taskItemList;
     }
 
     @Override
-    public List<MdmcTaskItem> getItemByItemStatusAndTaskId(Long taskId, Integer status) {
+    public List<MdmcTaskItem> getItemByItemStatusAndTaskId(MdmcStatusDto statusDto) {
         Example example = new Example(MdmcTaskItem.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("taskId",taskId);
+        criteria.andEqualTo("taskId",statusDto.getTaskId());
         if(mdmcTaskItemMapper.selectCountByExample(example)==0){
             throw new BusinessException(ErrorCodeEnum.GL9999098);
         }
-        criteria.andEqualTo("status",status);
+        criteria.andEqualTo("status",statusDto.getStatus());
         if(mdmcTaskItemMapper.selectCountByExample(example)==0){
             throw new BusinessException(ErrorCodeEnum.GL9999094);
         }
+        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
         return mdmcTaskItemMapper.selectByExample(example);
     }
 
     @Override
-    public MdmcTaskItem saveItem(MdmcAddTaskItemDto mdmcAddTaskItemDto, LoginAuthDto loginAuthDto) {
+    public MdmcTaskItem saveItem(MdmcAddTaskItemDto mdmcAddTaskItemDto,LoginAuthDto loginAuthDto) {
         MdmcTaskItem taskItem=new MdmcTaskItem();
         BeanUtils.copyProperties(mdmcAddTaskItemDto,taskItem);
         taskItem.setUpdateInfo(loginAuthDto);
