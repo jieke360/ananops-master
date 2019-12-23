@@ -40,6 +40,9 @@ public class MdmcDeviceServiceImpl extends BaseService<MdmcDevice> implements Md
         BeanUtils.copyProperties(addDeviceDto,device);
         device.setUpdateInfo(loginAuthDto);
         Long taskId =device.getTaskId();
+        MdmcTask task=taskMapper.selectByPrimaryKey(taskId);
+        task.setStatus(6);
+        taskMapper.updateByPrimaryKey(task);
         Example example1 = new Example(MdmcTask.class);
         Example.Criteria criteria1 = example1.createCriteria();
         criteria1.andEqualTo("id",taskId);

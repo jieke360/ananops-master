@@ -5,6 +5,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseController;
+import com.ananops.provider.mapper.MdmcTaskItemLogMapper;
 import com.ananops.provider.model.domain.MdmcTaskItem;
 import com.ananops.provider.model.domain.MdmcTaskItemLog;
 import com.ananops.provider.model.dto.MdmcAddTaskItemDto;
@@ -34,6 +35,8 @@ public class MdmcTaskItemController extends BaseController {
     MdmcTaskItemService taskItemService;
     @Resource
     MdmcTaskItemLogService taskItemLogService;
+    @Resource
+    MdmcTaskItemLogMapper taskItemLogMapper;
 
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "编辑任务子项记录")
@@ -67,6 +70,11 @@ public class MdmcTaskItemController extends BaseController {
         taskItem.setStatus(status);
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         taskItem.setUpdateInfo(loginAuthDto);
+        MdmcTaskItemLog taskItemLog=new MdmcTaskItemLog();
+        taskItemLog.setTaskId(itemId);
+        taskItemLog.setStatus(status);
+        taskItemLog.setMovement(MdmcItemStatusEnum.getStatusMsg(status));
+        taskItemLogMapper.insert(taskItemLog);
         taskItemService.update(taskItem);
         return WrapMapper.ok(itemChangeStatusDto);
     }

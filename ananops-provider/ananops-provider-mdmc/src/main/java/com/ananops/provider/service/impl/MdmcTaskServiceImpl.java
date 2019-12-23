@@ -102,10 +102,10 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         task.setId(taskId);
         task.setStatus(status);
         task.setUpdateInfo(loginAuthDto);
-        String body = JSON.toJSONString(changeStatusDto);
-        String topic = AliyunMqTopicConstants.MqTagEnum.MODIFY_INSPECTION_TASK_STATUS.getTopic();
-        String tag = AliyunMqTopicConstants.MqTagEnum.MODIFY_INSPECTION_TASK_STATUS.getTag();
-        String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(task.getId()),body);
+//        String body = JSON.toJSONString(changeStatusDto);
+//        String topic = AliyunMqTopicConstants.MqTagEnum.MODIFY_INSPECTION_TASK_STATUS.getTopic();
+//        String tag = AliyunMqTopicConstants.MqTagEnum.MODIFY_INSPECTION_TASK_STATUS.getTag();
+//        String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(task.getId()),body);
 //        mqMessageData = new MqMessageData(body, topic, tag, key);
 //        taskManager.modifyTaskStatus(mqMessageData,task);
         taskMapper.updateByPrimaryKey(task);

@@ -34,7 +34,6 @@ public class MdmcTaskController extends BaseController {
 
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "编辑维修任务记录")
-
     public Wrapper<MdmcAddTaskDto> saveTask(@ApiParam(name = "saveTask",value = "添加维修任务记录")@RequestBody MdmcAddTaskDto mdmcAddTaskDto){
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         return WrapMapper.ok(taskService.saveTask(mdmcAddTaskDto,loginAuthDto));
@@ -49,7 +48,6 @@ public class MdmcTaskController extends BaseController {
 
     @PostMapping(value = "/modifyTaskStatusByTaskId/{taskId}")
     @ApiOperation(httpMethod = "POST",value = "更改任务的状态")
-
     public Wrapper<MdmcChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatus",value = "根据任务的ID修改任务的状态")@RequestBody MdmcChangeStatusDto changeStatusDto){
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         taskService.modifyTaskStatus(changeStatusDto,loginAuthDto);

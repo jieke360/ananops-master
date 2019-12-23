@@ -46,7 +46,7 @@ public class MdmcDeviceController extends BaseController {
     }
 
     @PostMapping(value = "/getDeviceByTaskId")
-    @ApiOperation(httpMethod = "POST",value = "获取任务对应的备品备件订单")
+    @ApiOperation(httpMethod = "POST",value = "获取任务对应的备品备件列表")
     public Wrapper<List<MdmcDevice>> getDeviceOrderByTaskId(@RequestBody MdmcStatusDto statusDto){
         Example example = new Example(MdmcDevice.class);
         Example.Criteria criteria = example.createCriteria();
