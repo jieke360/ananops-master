@@ -90,10 +90,10 @@ public class PmcProjectController extends BaseController {
         return WrapMapper.ok(result);
     }
 
-    @PostMapping("/deleteProUser")
+    @PostMapping("/deleteProUser/{projectId}")
     @ApiOperation(httpMethod = "POST",value = "删除项目用户关联信息")
-    public Wrapper deleteProUser(@RequestBody PmcProjectUser pmcProjectUser){
-        int result = pmcProjectService.deleteProUser(pmcProjectUser);
+    public Wrapper deleteProUser(@PathVariable Long projectId){
+        int result = pmcProjectService.deleteProUser(projectId);
         return WrapMapper.ok();
     }
 

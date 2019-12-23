@@ -49,6 +49,15 @@
     and u.user_id =  #{userId,jdbcType=BIGINT}
   </select>
 
-
+  <delete id="deleteProjectById" >
+    delete from
+    an_pmc_project p,an_pmc_project_user u,an_pmc_inspect_task t,an_pmc_inspect_detail d
+    where
+    1=1
+    and p.id = #{projectId}
+    and p.id = u.project_id
+    and p.id = t.project_id
+    and t.id = d.inspect_task_id
+  </delete>
 </mapper>
 

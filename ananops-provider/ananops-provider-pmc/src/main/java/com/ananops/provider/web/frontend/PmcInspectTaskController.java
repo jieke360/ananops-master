@@ -27,7 +27,7 @@ public class PmcInspectTaskController extends BaseController {
     PmcInspectTaskService pmcInspectTaskService;
 
     @PostMapping("/save")
-    @ApiOperation(httpMethod = "POST",value = "编辑巡检任务,当id为空时新增项目,不为空时为更新项目信息")
+    @ApiOperation(httpMethod = "POST",value = "编辑巡检任务,当id为空时新增巡检任务,不为空时为更新巡检任务")
     public Wrapper save(@RequestBody PmcInspectTaskDto pmcInspectTaskDto){
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         PmcInspectTask pmcInspectTask = new PmcInspectTask();
@@ -57,6 +57,11 @@ public class PmcInspectTaskController extends BaseController {
         return WrapMapper.ok();
     }
 
-
+    @PostMapping("deleteTaskByProjectId/{projectId}")
+    @ApiOperation(httpMethod = "POST",value = "删除巡检任务")
+    public Wrapper deleteTaskByProjectId(@PathVariable Long projectId){
+        pmcInspectTaskService.deleteTaskByProjectId(projectId);
+        return WrapMapper.ok();
+    }
 
 }

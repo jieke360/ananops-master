@@ -582,6 +582,11 @@ public enum ErrorCodeEnum {
 
 	//1008 项目管理
 	/**
+	 *
+	 */
+	PMC10081000(10081000, "删除失败, Id=%s"),
+
+	/**
 	 * Pdc 10081001 error code enum.
 	 */
 	PMC10081001(10081001, "更新项目信息失败, projectId=%s"),
@@ -618,8 +623,14 @@ public enum ErrorCodeEnum {
 	/**
 	 * Pdc 10021023 error code enum.
 	 */
-	PMC10081023(10081023, "改巡检任务无项目信息, projectId=%s"),
+	PMC10081023(10081023, "该巡检任务无项目信息, projectId=%s"),
 
+	/**
+	 * Pdc 10021024 error code enum.
+	 */
+	PMC10081024(10081024, "该巡检巡检详情无巡检任务信息, InspectTaskId=%s"),
+
+	PMC10081025(10081025, "更新失败, InspectDetailId=%s"),
 
 
 	;

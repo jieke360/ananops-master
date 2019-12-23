@@ -11,4 +11,6 @@ import java.util.List;
 @Component
 public interface PmcProjectMapper extends MyMapper<PmcProject> {
     List<PmcProject> getProjectByUserId(Long userId);
+
+    int deleteProjectById(Long projectId);
 }

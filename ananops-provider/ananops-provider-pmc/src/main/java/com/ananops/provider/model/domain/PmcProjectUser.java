@@ -10,9 +10,7 @@ public class PmcProjectUser {
     /**
      * 项目id
      */
-    @Id
     @Column(name = "project_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long projectId;
 
     /**

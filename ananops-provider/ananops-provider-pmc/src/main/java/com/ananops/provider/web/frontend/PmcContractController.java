@@ -32,7 +32,7 @@ public class PmcContractController extends BaseController {
     PmcContractService pmcContractService;
 
     @PostMapping("/save")
-    @ApiOperation(httpMethod = "POST", value = "编辑合同,当id为空时新增项目,不为空时为更新项目信息")
+    @ApiOperation(httpMethod = "POST", value = "编辑合同,当id为空时新增合同,不为空时为更新合同信息")
     public Wrapper saveContract(@RequestBody PmcContractDto pmcContractDto) {
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         PmcContract pmcContract = new PmcContract();

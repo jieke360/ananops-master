@@ -63,7 +63,7 @@ public class UacMenuServiceImpl extends BaseService<UacMenu> implements UacMenuS
 	public List<MenuVo> getMenuVoList(Long userId, Long applicationId) {
 		// 1.查询该用户下所有的菜单列表
 		List<MenuVo> menuVoList = Lists.newArrayList();
-		List<UacMenu> menuList;
+		List<UacMenu> menuList = Lists.newArrayList();
 		Set<UacMenu> menuSet = Sets.newHashSet();
 		// 如果是admin则返回所有的菜单
 		if (userId == 1L) {
@@ -98,7 +98,7 @@ public class UacMenuServiceImpl extends BaseService<UacMenu> implements UacMenuS
 			for (final UacMenu menu : ownMenuList) {
 				getPid(menuSet, menu, map);
 			}
-			menuList = new ArrayList<>(menuSet);
+//			menuList = new ArrayList<>(menuSet);
 		}
 		List<MenuVo> list = getMenuVo(menuList);
 		if (PublicUtil.isNotEmpty(menuVoList)) {
