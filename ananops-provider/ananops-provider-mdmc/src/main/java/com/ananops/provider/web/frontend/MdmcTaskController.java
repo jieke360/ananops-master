@@ -102,4 +102,11 @@ public class MdmcTaskController extends BaseController {
         List<MdmcTask> taskList=taskService.getTaskList(statusDto);
         return WrapMapper.ok(taskList);
     }
+
+    @PostMapping(value = "/getTaskByProjectId")
+    @ApiOperation(httpMethod = "POST",value = "根据项目id返回工单列表")
+    public Wrapper<List<MdmcTask>> getTaskListByProjectId(@RequestBody MdmcStatusDto statusDto){
+        List<MdmcTask> taskList=taskService.getTaskListByProjectId(statusDto);
+        return WrapMapper.ok(taskList);
+    }
 }

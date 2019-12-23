@@ -50,7 +50,7 @@ public class MdmcDeviceServiceImpl extends BaseService<MdmcDevice> implements Md
         Example example2 = new Example(MdmcTaskItem.class);
         Example.Criteria criteria2 = example2.createCriteria();
         criteria1.andEqualTo("id",taskItemId);
-        if(taskMapper.selectCountByExample(example1)==0){//如果备品备件订单对应的巡检任务不存在
+        if(taskMapper.selectCountByExample(example2)==0){//如果备品备件订单对应的巡检任务不存在
             throw new BusinessException(ErrorCodeEnum.GL9999097,taskItemId);
         }
 
