@@ -184,5 +184,17 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         return taskMapper.selectAll();
     }
 
+    @Override
+    public List<MdmcTask> getTaskListByProjectId(MdmcStatusDto statusDto) {
+        Example example = new Example(MdmcTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId",statusDto.getProjectId());
+        if(taskMapper.selectCountByExample(example)==0){
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+        return taskMapper.selectByExample(example);
+    }
+
 
 }

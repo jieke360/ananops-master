@@ -3,6 +3,7 @@ package com.ananops.provider.model.dto;
 import com.ananops.base.dto.BaseQuery;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,5 +30,7 @@ public class MdmcStatusDto extends BaseQuery {
     @ApiModelProperty("工单id")
     private Long taskId;
 
+    @ApiModelProperty("项目id")
+    private Long projectId;
 
 }
