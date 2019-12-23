@@ -30,4 +30,8 @@ public interface ImcInspectionTaskService extends IService<ImcInspectionTask> {
     List<ImcInspectionTask> getTaskByUserId(TaskQueryDto taskQueryDto);//根据甲方用户id查询对应的巡检任务
 
     List<ImcInspectionTask> getTaskByUserIdAndStatus(TaskQueryDto taskQueryDto);//根据甲方用户id查询指定状态的巡检任务
+
+    List<ImcInspectionTask> getTaskByFacilitatorId(TaskQueryDto taskQueryDto);//根据服务商id查询对应的巡检任务
+
+    List<ImcInspectionTask> getTaskByFacilitatorIdAndStatus(TaskQueryDto taskQueryDto);//根据服务商id查询指定状态的巡检任务
 }

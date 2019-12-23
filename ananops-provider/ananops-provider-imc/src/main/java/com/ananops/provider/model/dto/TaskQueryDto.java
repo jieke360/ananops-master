@@ -33,5 +33,10 @@ public class TaskQueryDto extends BaseQuery {
     @ApiModelProperty(value = "巡检任务对应的项目ID")
     private Long projectId;
 
+    /**
+     * 巡检任务对应的服务商id
+     */
+    @ApiModelProperty(value = "巡检任务对应的服务商ID")
+    private Long facilitatorId;
 
 }

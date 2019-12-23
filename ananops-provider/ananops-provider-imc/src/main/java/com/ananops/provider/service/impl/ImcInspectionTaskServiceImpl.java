@@ -197,4 +197,24 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return imcInspectionTaskMapper.queryTaskByUserIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
     }
 
+    public List<ImcInspectionTask> getTaskByFacilitatorId(TaskQueryDto taskQueryDto){
+        Long facilitatorId = taskQueryDto.getFacilitatorId();
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("facilitatorId",facilitatorId);
+        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        return imcInspectionTaskMapper.selectByExample(example);
+    }
+
+    public List<ImcInspectionTask> getTaskByFacilitatorIdAndStatus(TaskQueryDto taskQueryDto){
+        Long facilitatorId = taskQueryDto.getFacilitatorId();
+        Integer status = taskQueryDto.getStatus();
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("facilitatorId",facilitatorId);
+        criteria.andEqualTo("status",status);
+        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        return imcInspectionTaskMapper.selectByExample(example);
+    }
+
 }
