@@ -7,7 +7,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
-import com.ananops.provider.manager.MdmcTaskManager;
+
 import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
@@ -30,10 +30,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     MdmcTaskMapper taskMapper;
 
     @Resource
-   MdmcTaskLogMapper taskLogMapper;
-
-    @Resource
-    MdmcTaskManager taskManager;
+    MdmcTaskLogMapper taskLogMapper;
 
     @Resource
     MdmcTaskItemService taskItemService;
@@ -93,7 +90,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Long taskId = changeStatusDto.getTaskId();
         Integer status = changeStatusDto.getStatus();
         MdmcTask task = new MdmcTask();
-        Example example = new Example(ImcInspectionTask.class);
+        Example example = new Example(MdmcTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
         if(taskMapper.selectCountByExample(example)==0){//如果当前任务不存在

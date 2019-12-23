@@ -1,77 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="273278b6-53fc-4154-861c-e24e2dfe798e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-common-config/target/classes/META-INF/spring-configuration-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-common-config/target/classes/META-INF/spring-configuration-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-common/ananops-security-feign/target/classes/META-INF/spring-configuration-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-common/ananops-security-feign/target/classes/META-INF/spring-configuration-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-discovery/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-discovery/src/main/resources/bootstrap.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider-api/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider-api/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/AnanOpsMdmcApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/config/MdmcWebMvcConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/config/ResourceServerConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/config/SwaggerProperties.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/manager/MdmcTaskManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcDeviceMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcDeviceOrderMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcReviewMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcTaskItemLogMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcTaskItemMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcTaskLogMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/mapper/MdmcTaskMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcDevice.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcDeviceOrder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcReview.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcTask.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcTaskItem.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcTaskItemLog.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/domain/MdmcTaskLog.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/ItemLogQueryDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddDeviceDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddDeviceItemDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddReviewDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddTaskDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcAddTaskItemDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcChangeStatusDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcCheckDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcDeviceTroubleDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcItemChangeStatusDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcOrderDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcOrderOperationDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcPageDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcProcessingDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcQueryDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcResultDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcTaskItemDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcTaskItemLogDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcTaskLogDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/MdmcUpdateTaskDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/dto/TaskLogQueryDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/enums/MdmcItemStatusEnum.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/model/enums/MdmcTaskStatusEnum.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcDeviceService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcReviewService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcTaskItemLogService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcTaskItemService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcTaskLogService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/MdmcTaskService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcDeviceServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcReviewServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskItemLogServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskItemServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskLogServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcDeviceController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcReviewController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcTaskController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/web/frontend/MdmcTaskItemController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/conf/liquibase.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ananops-provider/ananops-provider-uac/src/main/resources/conf/liquibase.properties" afterDir="false" />
-    </list>
+    <list default="true" id="273278b6-53fc-4154-861c-e24e2dfe798e" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/ananops-common/target/" />
     <ignored path="$PROJECT_DIR$/ananops-common/ananops-common-base/target/" />
@@ -196,8 +126,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskItemServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+            <state relative-caret-position="306">
+              <caret line="72" lean-forward="true" selection-start-line="72" selection-end-line="72" />
             </state>
           </provider>
         </entry>
@@ -474,31 +404,6 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="ananops" type="462c0819:PsiDirectoryNode" />
               <item name="provider" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ananops-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ananops-master" type="462c0819:PsiDirectoryNode" />
-              <item name="ananops-provider" type="462c0819:PsiDirectoryNode" />
-              <item name="ananops-provider-mdmc" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="ananops" type="462c0819:PsiDirectoryNode" />
-              <item name="provider" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-              <item name="impl" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ananops-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ananops-master" type="462c0819:PsiDirectoryNode" />
-              <item name="ananops-provider" type="462c0819:PsiDirectoryNode" />
-              <item name="ananops-provider-mdmc" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="ananops" type="462c0819:PsiDirectoryNode" />
-              <item name="provider" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -548,7 +453,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1577073676091" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1577077822437" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/elastic-job-lite-starter-parent/elastic-job-lite-starter-imc/src/main/java/com/ananops/elastic/lite" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
@@ -717,12 +622,12 @@
       <updated>1576230361393</updated>
       <workItem from="1577014415949" duration="486000" />
       <workItem from="1577015297910" duration="4907000" />
-      <workItem from="1577069796400" duration="3806000" />
+      <workItem from="1577069796400" duration="4053000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9199000" />
+    <option name="totallyTimeSpent" value="9446000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -1093,8 +998,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ananops-provider/ananops-provider-mdmc/src/main/java/com/ananops/provider/service/impl/MdmcTaskItemServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+        <state relative-caret-position="306">
+          <caret line="72" lean-forward="true" selection-start-line="72" selection-end-line="72" />
         </state>
       </provider>
     </entry>
