@@ -50,7 +50,7 @@ public class UacRoleBindUserController extends BaseController {
 	@LogAnnotation
 	@PostMapping(value = "/bindUser")
 	@ApiOperation(httpMethod = "POST", value = "角色绑定用户")
-	public Wrapper bindUser(@ApiParam(name = "uacRoleBindUserReqDto", value = "角色绑定用户") @RequestBody RoleBindUserReqDto roleBindUserReqDto) {
+	public Wrapper bindUser(@ApiParam(name = "roleBindUserReqDto", value = "角色绑定用户") @RequestBody RoleBindUserReqDto roleBindUserReqDto) {
 		logger.info("roleBindUser={}", roleBindUserReqDto);
 		LoginAuthDto loginAuthDto = getLoginAuthDto();
 		uacRoleService.bindUser4Role(roleBindUserReqDto, loginAuthDto);

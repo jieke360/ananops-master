@@ -60,8 +60,8 @@ public class UacUserMainController extends BaseController {
 	 * @return the wrapper
 	 */
 	@PostMapping(value = "/queryListWithPage")
-	@ApiOperation(httpMethod = "POST", value = "查询角色列表")
-	public Wrapper<PageInfo> queryUserListWithPage(@ApiParam(name = "role", value = "角色信息") @RequestBody UacUser uacUser) {
+	@ApiOperation(httpMethod = "POST", value = "查询用户列表")
+	public Wrapper<PageInfo> queryUserListWithPage(@ApiParam(name = "role", value = "用户信息") @RequestBody UacUser uacUser) {
 
 		logger.info("查询用户列表uacUser={}", uacUser);
 		PageInfo pageInfo = uacUserService.queryUserListWithPage(uacUser);

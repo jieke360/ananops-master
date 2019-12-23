@@ -7,17 +7,17 @@ spring:
   datasource:
     username: root
     password: root
-  redis:
-    database: 0
-    host: ananops-db-redis
-    port: 6379
-    #password: root
-    jedis:
-      pool:
-        max-active: 8
-        max-idle: 8
-        max-wait: -1ms
-        min-idle: 0
+#  redis:
+#    database: 0
+#    host: ananops-db-redis
+#    port: 6379
+#    password: root
+#    jedis:
+#      pool:
+#        max-active: 8
+#        max-idle: 8
+#        max-wait: -1ms
+#        min-idle: 0
 logging:
   level:
     com.ananops.provider.mapper: debug

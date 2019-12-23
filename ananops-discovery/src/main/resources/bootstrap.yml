@@ -5,7 +5,7 @@ spring:
     config:
       server:
         native:
-          search-locations: /home/songof/下载/ananops-config-repo   #配置文件本地路径
+          search-locations: classpath:ananops-config-repo/   #配置文件本地路径
 #        git:
 #        uri: https://github.com/ananops/ananops-config-repo/ananops-config-repo.git  #配置文件git地址
 #        username:

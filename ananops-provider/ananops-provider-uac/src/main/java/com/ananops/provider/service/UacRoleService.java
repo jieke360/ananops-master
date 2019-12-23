@@ -14,6 +14,8 @@ package com.ananops.provider.service;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.UacRole;
+import com.ananops.provider.model.domain.UacUser;
+import com.ananops.provider.model.dto.group.GroupBindUacUserDto;
 import com.ananops.provider.model.dto.role.RoleBindActionDto;
 import com.ananops.provider.model.dto.role.RoleBindMenuDto;
 import com.ananops.provider.model.dto.role.RoleBindUserDto;
@@ -103,6 +105,16 @@ public interface UacRoleService extends IService<UacRole> {
 	 * @return the role bind user dto by role id
 	 */
 	RoleBindUserDto getRoleBindUserDto(Long roleId, Long currentUserId);
+
+	/**
+	 * 角色绑定用户获取穿梭框信息.
+	 *
+	 * @param roleId        the role id
+	 * @param currentUserId the current user id
+	 *
+	 * @return the role bind user dto by role id
+	 */
+	List<UacUser> getRoleBindUacUserDto(Long roleId, Long currentUserId);
 
 	/**
 	 * 角色绑定用户.

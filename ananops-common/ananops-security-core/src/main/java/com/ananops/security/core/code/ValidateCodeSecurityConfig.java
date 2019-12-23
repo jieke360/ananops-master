@@ -14,19 +14,19 @@ import javax.servlet.Filter;
  *
  * @author ananops.net@gmail.com
  */
-@Component("validateCodeSecurityConfig")
-public class ValidateCodeSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-	@Autowired
-	private Filter validateCodeFilter;
-
-	/**
-	 * Configure.
-	 *
-	 * @param http the http
-	 */
-	@Override
-	public void configure(HttpSecurity http) {
-		http.addFilterBefore(validateCodeFilter, AbstractPreAuthenticatedProcessingFilter.class);
-	}
-
-}
+//@Component("validateCodeSecurityConfig")
+//public class ValidateCodeSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+//	@Autowired
+//	private Filter validateCodeFilter;
+//
+//	/**
+//	 * Configure.
+//	 *
+//	 * @param http the http
+//	 */
+//	@Override
+//	public void configure(HttpSecurity http) {
+//		http.addFilterBefore(validateCodeFilter, AbstractPreAuthenticatedProcessingFilter.class);
+//	}
+//
+//}
