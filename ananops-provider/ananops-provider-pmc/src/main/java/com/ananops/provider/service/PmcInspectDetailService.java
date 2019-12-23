@@ -2,8 +2,6 @@ package com.ananops.provider.service;
 
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.PmcInspectDetail;
-import org.springframework.security.access.method.P;
-
 import java.util.List;
 
 /**

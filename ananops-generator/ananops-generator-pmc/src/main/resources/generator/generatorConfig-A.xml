@@ -44,8 +44,12 @@
 <!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
 <!--        </table>-->
 
-        <table tableName="an_pmc_project_user" domainObjectName="PmcProjectUser">
-            <generatedKey column="project_id" sqlStatement="Mysql" identity="true"/>
+<!--        <table tableName="an_pmc_project_user" domainObjectName="PmcProjectUser">-->
+<!--            <generatedKey column="project_id" sqlStatement="Mysql" identity="true"/>-->
+<!--        </table>-->
+
+        <table tableName="an_pmc_inspect_detail" domainObjectName="PmcInspectDetail">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 
 

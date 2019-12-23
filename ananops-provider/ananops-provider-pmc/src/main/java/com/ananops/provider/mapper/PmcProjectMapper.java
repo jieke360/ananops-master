@@ -12,5 +12,4 @@ import java.util.List;
 public interface PmcProjectMapper extends MyMapper<PmcProject> {
     List<PmcProject> getProjectByUserId(Long userId);
 
-    int deleteProjectById(Long projectId);
 }
