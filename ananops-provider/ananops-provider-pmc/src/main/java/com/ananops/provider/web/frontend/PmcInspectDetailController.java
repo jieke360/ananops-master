@@ -3,7 +3,7 @@ package com.ananops.provider.web.frontend;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.PmcInspectDetail;
 import com.ananops.provider.model.dto.PmcInspectDetailDto;
-import com.ananops.provider.service.PmcInspectDetailService;
+import com.ananops.provider.service.PmcInspectDetailsService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
@@ -24,7 +24,7 @@ import java.util.List;
 @Api(value = "WEB -PmcInspectDetailController", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class PmcInspectDetailController extends BaseController {
     @Autowired
-    PmcInspectDetailService pmcInspectDetailService;
+    PmcInspectDetailsService pmcInspectDetailService;
 
     @PostMapping("/save")
     @ApiOperation(httpMethod = "POST", value = "编辑巡检详情,当id为空时新增巡检任务,不为空时为更新巡检任务")

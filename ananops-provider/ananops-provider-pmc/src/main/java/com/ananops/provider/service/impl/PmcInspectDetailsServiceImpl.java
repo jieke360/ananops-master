@@ -9,8 +9,9 @@ import com.ananops.provider.mapper.PmcInspectDetailMapper;
 import com.ananops.provider.mapper.PmcInspectTaskMapper;
 import com.ananops.provider.model.domain.PmcInspectDetail;
 import com.ananops.provider.model.domain.PmcInspectTask;
-import com.ananops.provider.service.PmcInspectDetailService;
+import com.ananops.provider.service.PmcInspectDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -20,7 +21,8 @@ import java.util.List;
  * Created By ChengHao On 2019/12/23
  */
 @Service
-public class PmcInspectDetailServiceImpl extends BaseService<PmcInspectDetail> implements PmcInspectDetailService {
+@Transactional
+public class PmcInspectDetailsServiceImpl extends BaseService<PmcInspectDetail> implements PmcInspectDetailsService {
     @Resource
     PmcInspectDetailMapper pmcInspectDetailMapper;
     @Resource

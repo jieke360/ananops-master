@@ -2,13 +2,13 @@ package com.ananops.provider.service;
 
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.PmcInspectDetail;
+
 import java.util.List;
 
 /**
  * Created By ChengHao On 2019/12/23
  */
-public interface PmcInspectDetailService extends IService<PmcInspectDetail> {
-
+public interface PmcInspectDetailsService extends IService<PmcInspectDetail> {
     /**
      * 编辑巡检细节
      * @param pmcInspectDetail

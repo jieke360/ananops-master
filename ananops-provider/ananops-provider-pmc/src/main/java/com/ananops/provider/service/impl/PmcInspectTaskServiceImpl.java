@@ -8,7 +8,7 @@ import com.ananops.provider.mapper.PmcInspectTaskMapper;
 import com.ananops.provider.mapper.PmcProjectMapper;
 import com.ananops.provider.model.domain.PmcInspectTask;
 import com.ananops.provider.model.domain.PmcProject;
-import com.ananops.provider.service.PmcInspectDetailService;
+import com.ananops.provider.service.PmcInspectDetailsService;
 import com.ananops.provider.service.PmcInspectTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class PmcInspectTaskServiceImpl extends BaseService<PmcInspectTask> imple
     @Resource
     PmcProjectMapper pmcProjectMapper;
     @Resource
-    PmcInspectDetailService pmcInspectDetailService;
+    PmcInspectDetailsService pmcInspectDetailService;
 
     @Override
     public void saveDevice(PmcInspectTask pmcInspectTask, LoginAuthDto loginAuthDto) {
