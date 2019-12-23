@@ -41,6 +41,9 @@ public class MdmcReviewServiceImpl extends BaseService<MdmcReview> implements Md
         }
         Long reviewId = super.generateId();
         review.setId(reviewId);
+        MdmcTask task=taskMapper.selectByPrimaryKey(taskId);
+        task.setStatus(13);
+        taskMapper.updateByPrimaryKey(task);
         reviewMapper.insert(review);
         return review;
     }

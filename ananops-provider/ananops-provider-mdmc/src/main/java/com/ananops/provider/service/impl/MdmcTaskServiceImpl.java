@@ -74,6 +74,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(task.getId()),body);
 //            mqMessageData = new MqMessageData(body, topic, tag, key);
 //            taskManager.saveTask(mqMessageData,task,false);
+            task.setStatus(2);
             taskMapper.insert(task);
             //更新返回结果
             BeanUtils.copyProperties(task,mdmcAddTaskDto);

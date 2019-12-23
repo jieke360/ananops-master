@@ -9,7 +9,9 @@ public enum MdmcItemStatusEnum {
 
     ShenHe(2, "维修工填了备件方案，备件审核"),
 
-    Reject(3, "甲方通过备件方案");
+    Approval(3, "甲方通过备件方案"),
+
+    Reject(4,"驳回备件方案");
 
     int statusNum;
 

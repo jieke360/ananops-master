@@ -33,7 +33,15 @@ public enum MdmcTaskStatusEnum {
 
     DaiPingJia(12, "负责人支付完成，待用户评价"),
 
-    WanCheng(13, "用户评价完成，订单完成");
+    WanCheng(13, "用户评价完成，订单完成"),
+
+    Reject1(14,"服务商拒单"),
+
+    Reject2(15,"维修工拒单"),
+
+    Reject3(16,"服务商拒绝账单"),
+
+    Reject4(17,"负责人拒绝账单");
 
     int statusNum;
 

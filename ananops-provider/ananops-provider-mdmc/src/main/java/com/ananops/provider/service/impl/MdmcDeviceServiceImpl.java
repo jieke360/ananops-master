@@ -47,6 +47,9 @@ public class MdmcDeviceServiceImpl extends BaseService<MdmcDevice> implements Md
             throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
         }
         Long taskItemId=device.getTaskItemId();
+        MdmcTaskItem taskItem=taskItemMapper.selectByPrimaryKey(taskItemId);
+        taskItem.setStatus(2);
+        taskItemMapper.updateByPrimaryKey(taskItem);
         Example example2 = new Example(MdmcTaskItem.class);
         Example.Criteria criteria2 = example2.createCriteria();
         criteria1.andEqualTo("id",taskItemId);
