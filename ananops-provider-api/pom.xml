@@ -15,7 +15,6 @@
     <modules>
         <module>ananops-provider-uac-api</module>
         <module>ananops-provider-mdc-api</module>
-        <module>ananops-provider-omc-api</module>
         <module>ananops-provider-opc-api</module>
         <module>ananops-provider-sdk-api</module>
         <module>ananops-provider-tpc-api</module>
