@@ -27,47 +27,53 @@ public class PmcInspectDetailDto implements Serializable {
      * 巡检任务ID
      */
     @ApiModelProperty(value = "巡检任务ID")
-    private Long inspectTaskId;
+    private Long inspectionTaskId;
+
+    /**
+     * 巡检任务名称
+     */
+    @ApiModelProperty(value = "巡检任务名称")
+    private String inspectionTaskName;
 
     /**
      * 巡检网点
      */
     @ApiModelProperty(value = "巡检网点")
-    private String inspectWebsite;
+    private String itemName;
 
     /**
-     * 巡检人员
+     * 维修工id
      */
-    @ApiModelProperty(value = "巡检人员")
-    private String inspectPerson;
+    @Column(name = "maintainer_id")
+    private Long maintainerId;
 
     /**
-     * 巡检设备
+     * 维修工名称
      */
-    @ApiModelProperty(value = "巡检设备")
-    private String inspectDevice;
+    @ApiModelProperty(value = "维修工名称")
+    private String maintainerName;
 
     /**
-     * 巡检情况
+     * 巡检内容描述
      */
-    @ApiModelProperty(value = "巡检情况")
-    private String inspectCondition;
-
-    /**
-     * 处理结果
-     */
-    @ApiModelProperty(value = "处理结果")
-    private String dealResult;
-
-    /**
-     * 描述
-     */
+    @ApiModelProperty(value = "巡检内容描述")
     private String description;
 
     /**
-     * 预留字段
+     * 巡检结果
      */
-    @ApiModelProperty(value = "预留字段")
-    private String backup;
+    @ApiModelProperty(value = "巡检结果")
+    private String result;
+
+    /**
+     * 巡检状态
+     */
+    @ApiModelProperty(value = "巡检状态")
+    private Integer status;
+
+    /**
+     * 备注
+     */
+    private String remark;
 
 }

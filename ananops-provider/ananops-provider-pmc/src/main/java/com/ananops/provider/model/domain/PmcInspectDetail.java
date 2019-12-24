@@ -9,7 +9,6 @@ import java.util.Date;
 @Table(name = "an_pmc_inspect_detail")
 @Data
 public class PmcInspectDetail extends BaseEntity {
-
     /**
      * 名称
      */
@@ -18,49 +17,52 @@ public class PmcInspectDetail extends BaseEntity {
     /**
      * 巡检任务ID
      */
-    @Column(name = "inspect_task_id")
-    private Long inspectTaskId;
+    @Column(name = "inspection_task_id")
+    private Long inspectionTaskId;
+
+    /**
+     * 巡检任务名称
+     */
+    @Column(name = "inspection_task_name")
+    private String inspectionTaskName;
 
     /**
      * 巡检网点
      */
-    @Column(name = "inspect_website")
-    private String inspectWebsite;
+    @Column(name = "item_name")
+    private String itemName;
 
     /**
-     * 巡检人员
+     * 维修工id
      */
-    @Column(name = "inspect_person")
-    private String inspectPerson;
+    @Column(name = "maintainer_id")
+    private Long maintainerId;
 
     /**
-     * 巡检设备
+     * 维修工名称
      */
-    @Column(name = "inspect_device")
-    private String inspectDevice;
+    @Column(name = "maintainer_name")
+    private String maintainerName;
 
     /**
-     * 巡检情况
-     */
-    @Column(name = "inspect_condition")
-    private String inspectCondition;
-
-    /**
-     * 处理结果
-     */
-    @Column(name = "deal_result")
-    private String dealResult;
-
-    /**
-     * 描述
+     * 巡检内容描述
      */
     private String description;
 
     /**
-     * 预留字段
+     * 巡检结果
      */
-    private String backup;
+    private String result;
 
+    /**
+     * 巡检状态
+     */
+    private Integer status;
+
+    /**
+     * 备注
+     */
+    private String remark;
 
 
 }

@@ -34,9 +34,9 @@ public class PmcInspectDetailsServiceImpl extends BaseService<PmcInspectDetail> 
         LoginAuthDto loginAuthDto = RequestUtil.getLoginUser();
         pmcInspectDetail.setUpdateInfo(loginAuthDto);
         if (pmcInspectDetail.isNew()) {
-            PmcInspectTask pmcInspectTask = pmcInspectTaskMapper.selectByPrimaryKey(pmcInspectDetail.getInspectTaskId());
+            PmcInspectTask pmcInspectTask = pmcInspectTaskMapper.selectByPrimaryKey(pmcInspectDetail.getInspectionTaskId());
             if (pmcInspectTask == null) {
-                throw new PmcBizException(ErrorCodeEnum.PMC10081024, pmcInspectDetail.getInspectTaskId());
+                throw new PmcBizException(ErrorCodeEnum.PMC10081024, pmcInspectDetail.getInspectionTaskId());
             }
             pmcInspectDetail.setId(generateId());
             result = pmcInspectDetailMapper.insertSelective(pmcInspectDetail);
@@ -58,7 +58,7 @@ public class PmcInspectDetailsServiceImpl extends BaseService<PmcInspectDetail> 
     public List<PmcInspectDetail> getInspectDetailList(Long inspectTaskId) {
         Example example = new Example(PmcInspectDetail.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("inspectTaskId", inspectTaskId);
+        criteria.andEqualTo("inspectionTaskId", inspectTaskId);
         return pmcInspectDetailMapper.selectByExample(example);
     }
 
@@ -75,7 +75,7 @@ public class PmcInspectDetailsServiceImpl extends BaseService<PmcInspectDetail> 
     public int deleteDetailByTaskId(Long taskId) {
         Example example = new Example(PmcInspectDetail.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("inspectTaskId", taskId);
+        criteria.andEqualTo("inspectionTaskId", taskId);
         return pmcInspectDetailMapper.deleteByExample(example);
     }
 }
