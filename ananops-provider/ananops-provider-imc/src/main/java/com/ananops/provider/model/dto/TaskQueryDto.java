@@ -22,10 +22,16 @@ public class TaskQueryDto extends BaseQuery {
     private Integer status;
 
     /**
-     * 巡检任务对应的甲方用户id
+     * 巡检任务对应的用户id
      */
-    @ApiModelProperty(value = "巡检任务对应的甲方用户ID")
+    @ApiModelProperty(value = "巡检任务对应的用户ID")
     private Long userId;
+
+    /**
+     * 用户id对应的用户角色
+     */
+    @ApiModelProperty(value = "当前操作的用户角色（1：甲方，2：服务商）")
+    private Integer role;
 
     /**
      * 巡检任务对应的项目id
@@ -33,10 +39,5 @@ public class TaskQueryDto extends BaseQuery {
     @ApiModelProperty(value = "巡检任务对应的项目ID")
     private Long projectId;
 
-    /**
-     * 巡检任务对应的服务商id
-     */
-    @ApiModelProperty(value = "巡检任务对应的服务商ID")
-    private Long facilitatorId;
 
 }
