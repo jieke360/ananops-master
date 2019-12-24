@@ -15,7 +15,7 @@ public enum MdmcTaskStatusEnum {
 
     JieDan1(3, "审核通过，待服务商接单"),
 
-    JieDan2(4, "服务商已接单，待维修工接单"),
+    JieDan2(4, "服务商业务员已接单，待维修工接单"),
 
     ZhiXing(5, "维修工已接单，进入维修中"),
 
@@ -25,7 +25,7 @@ public enum MdmcTaskStatusEnum {
 
     ShenHeZhong2(8, "维修工提交维修结果，待服务商审核维修结果"),
 
-    ShenHeZhong3(9, "服务商审核账单通过，待负责人审核账单"),
+//    ShenHeZhong3(9, "服务商审核账单通过，待负责人审核账单"),
 
     DaiQueRen(10, "负责人审核账单通过，待值机员确认"),
 
@@ -35,11 +35,11 @@ public enum MdmcTaskStatusEnum {
 
     WanCheng(13, "值机员评价完成，订单完成"),
 
-    Reject1(14,"服务商拒绝工单"),
+    Reject1(14,"服务商业务员拒绝工单"),
 
     Reject2(15,"维修工拒绝工单"),
 
-    Reject3(16,"服务商拒绝账单"),
+//    Reject3(16,"服务商拒绝账单"),
 
     Reject4(17,"负责人拒绝账单");
 
