@@ -47,4 +47,6 @@ public interface MdmcTaskService extends IService<MdmcTask> {
     List<MdmcTask> getTaskListByFacilitatorIdAndStatus(MdmcStatusDto statusDto);
 
     List<MdmcTask> getTaskListByPrincipalIdAndStatus(MdmcStatusDto statusDto);
+
+    List<MdmcTask> getTaskListByIdAndStatus(MdmcQueryDto queryDto);
 }

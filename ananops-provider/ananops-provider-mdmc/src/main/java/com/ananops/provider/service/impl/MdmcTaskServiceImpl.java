@@ -140,7 +140,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId",statusDto.getUserId());
         if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
+            throw new BusinessException(ErrorCodeEnum.GL9999098,example);
         }
         PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
         return taskMapper.selectByExample(example);
@@ -275,6 +275,31 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         }
         PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
         return taskMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<MdmcTask> getTaskListByIdAndStatus(MdmcQueryDto queryDto) {
+        String roleCode=queryDto.getRoleCode();
+        Long id=queryDto.getId();
+        Integer status=queryDto.getStatus();
+        Example example = new Example(MdmcTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (status!=null){
+        criteria.andEqualTo("status",queryDto.getStatus());
+        }
+        switch (roleCode){
+            case "user_watcher":criteria.andEqualTo("userId",id);break;
+            case "user_leader":criteria.andEqualTo("principalId",id);break;
+            case "engineer":criteria.andEqualTo("maintainerId",id);break;
+            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+        }
+        if(taskMapper.selectCountByExample(example)==0){
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
+        return taskMapper.selectByExample(example);
+
     }
 
 

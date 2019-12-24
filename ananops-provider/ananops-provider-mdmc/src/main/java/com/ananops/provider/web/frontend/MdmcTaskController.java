@@ -8,6 +8,7 @@ import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.domain.MdmcTaskLog;
 import com.ananops.provider.model.dto.MdmcAddTaskDto;
 import com.ananops.provider.model.dto.MdmcChangeStatusDto;
+import com.ananops.provider.model.dto.MdmcQueryDto;
 import com.ananops.provider.model.dto.MdmcStatusDto;
 import com.ananops.provider.service.MdmcTaskLogService;
 import com.ananops.provider.service.MdmcTaskService;
@@ -68,32 +69,32 @@ public class MdmcTaskController extends BaseController {
         return WrapMapper.ok(task);
     }
 
-    @PostMapping(value = "/getTaskListByUserId")
-    @ApiOperation(httpMethod = "POST",value = "根据用户ID查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByUserId(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList=taskService.getTaskListByUserId(statusDto);
-        return WrapMapper.ok(taskList);
-    }
-
-    @PostMapping(value = "/getTaskListByFacilitatorId")
-    @ApiOperation(httpMethod = "POST",value = "根据服务商ID查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByFacilitatorId(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList=taskService.getTaskListByFacilitatorId(statusDto);
-        return WrapMapper.ok(taskList);
-    }
-
-    @PostMapping(value = "/getTaskListByPrincipalId")
-    @ApiOperation(httpMethod = "POST",value = "根据甲方ID查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByPrincipalId(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList=taskService.getTaskListByPrincipalId(statusDto);
-        return WrapMapper.ok(taskList);
-    }
-    @PostMapping(value = "/getTaskListByMaintainerId")
-    @ApiOperation(httpMethod = "POST",value = "根据维修工ID查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByMaintainerId(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList=taskService.getTaskListByMaintainerId(statusDto);
-        return WrapMapper.ok(taskList);
-    }
+//    @PostMapping(value = "/getTaskListByUserId")
+//    @ApiOperation(httpMethod = "POST",value = "根据用户ID查询工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskListByUserId(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList=taskService.getTaskListByUserId(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
+//
+//    @PostMapping(value = "/getTaskListByFacilitatorId")
+//    @ApiOperation(httpMethod = "POST",value = "根据服务商ID查询工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskListByFacilitatorId(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList=taskService.getTaskListByFacilitatorId(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
+//
+//    @PostMapping(value = "/getTaskListByPrincipalId")
+//    @ApiOperation(httpMethod = "POST",value = "根据甲方ID查询工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskListByPrincipalId(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList=taskService.getTaskListByPrincipalId(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
+//    @PostMapping(value = "/getTaskListByMaintainerId")
+//    @ApiOperation(httpMethod = "POST",value = "根据维修工ID查询工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskListByMaintainerId(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList=taskService.getTaskListByMaintainerId(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
     @PostMapping(value = "/getTaskList")
     @ApiOperation(httpMethod = "POST",value = "返回全部工单列表")
     public Wrapper<List<MdmcTask>> getTaskList(@RequestBody MdmcStatusDto statusDto){
@@ -107,31 +108,38 @@ public class MdmcTaskController extends BaseController {
         List<MdmcTask> taskList=taskService.getTaskListByProjectId(statusDto);
         return WrapMapper.ok(taskList);
     }
-    @PostMapping(value = "/getTaskListByUserIdAndStatus")
-    @ApiOperation(httpMethod = "POST",value = "根据用户id和状态查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByUserIdAndStatus(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList=taskService.getTaskListByUserIdAndStatus(statusDto);
-        return WrapMapper.ok(taskList);
-    }
+//    @PostMapping(value = "/getTaskListByUserIdAndStatus")
+//    @ApiOperation(httpMethod = "POST",value = "根据用户id和状态查询工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskListByUserIdAndStatus(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList=taskService.getTaskListByUserIdAndStatus(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
+//
+//    @PostMapping(value = "/getTaskListByMaintainerIdAndStatus")
+//    @ApiOperation(httpMethod = "POST",value = "根据维修工id和状态查询工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskListByMaintainerIdAndStatus(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList=taskService.getTaskListByMaintainerIdAndStatus(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
+//
+//    @PostMapping(value = "/getTaskListByFacilitatorIdAndStatus")
+//    @ApiOperation(httpMethod = "POST",value = "根据服务商id和状态查询工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskListByFacilitatorIdAndStatus(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList=taskService.getTaskListByFacilitatorIdAndStatus(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
+//
+//    @PostMapping(value = "/getTaskListByPrincipalIdAndStatus")
+//    @ApiOperation(httpMethod = "POST",value = "根据甲方id和状态查询工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskListByPrincipalIdAndStatus(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList=taskService.getTaskListByPrincipalIdAndStatus(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
 
-    @PostMapping(value = "/getTaskListByMaintainerIdAndStatus")
-    @ApiOperation(httpMethod = "POST",value = "根据维修工id和状态查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByMaintainerIdAndStatus(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList=taskService.getTaskListByMaintainerIdAndStatus(statusDto);
-        return WrapMapper.ok(taskList);
-    }
-
-    @PostMapping(value = "/getTaskListByFacilitatorIdAndStatus")
-    @ApiOperation(httpMethod = "POST",value = "根据服务商id和状态查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByFacilitatorIdAndStatus(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList=taskService.getTaskListByFacilitatorIdAndStatus(statusDto);
-        return WrapMapper.ok(taskList);
-    }
-
-    @PostMapping(value = "/getTaskListByPrincipalIdAndStatus")
-    @ApiOperation(httpMethod = "POST",value = "根据甲方id和状态查询工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByPrincipalIdAndStatus(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList=taskService.getTaskListByPrincipalIdAndStatus(statusDto);
+    @PostMapping(value = "/getTaskListByIdAndStatus")
+    @ApiOperation(httpMethod = "POST",value = "根据id和状态查询列表")
+    public Wrapper<List<MdmcTask>> getTaskListByIdAndStatus(@RequestBody MdmcQueryDto queryDto){
+        List<MdmcTask> taskList=taskService.getTaskListByIdAndStatus(queryDto);
         return WrapMapper.ok(taskList);
     }
 }
