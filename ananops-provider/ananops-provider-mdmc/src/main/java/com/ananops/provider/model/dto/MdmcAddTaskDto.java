@@ -16,7 +16,7 @@ import java.util.List;
 public class MdmcAddTaskDto implements Serializable {
     private static final long serialVersionUID = 7339286966929037187L;
 
-    @ApiModelProperty(value = "维修任务ID")
+    @ApiModelProperty("维修任务ID")
     private Long id;
 
     @ApiModelProperty("维修任务名称")
@@ -51,6 +51,9 @@ public class MdmcAddTaskDto implements Serializable {
 
     @ApiModelProperty("维修建议")
     private String suggestion;
+
+    @ApiModelProperty("报修人电话")
+    private String call;
 
     @ApiModelProperty("任务子项")
     private List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList;

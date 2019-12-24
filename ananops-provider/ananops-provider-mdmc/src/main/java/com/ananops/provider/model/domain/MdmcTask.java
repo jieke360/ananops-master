@@ -115,7 +115,7 @@ public class MdmcTask extends BaseEntity {
      * 报修人电话
      */
     @Column(name = "creator_call")
-    private String creator_call;
+    private String call;
 
     /**
      * 地址名称
