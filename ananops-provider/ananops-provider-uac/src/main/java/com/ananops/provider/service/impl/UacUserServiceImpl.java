@@ -170,7 +170,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
 	public PageInfo queryUserListWithPage(UacUser uacUser) {
 		PageHelper.startPage(uacUser.getPageNum(), uacUser.getPageSize());
-		uacUser.setOrderBy("created_time desc");
+		uacUser.setOrderBy("u.created_time desc");
 		List<UacUser> uacUserList = uacUserMapper.selectUserList(uacUser);
 		return new PageInfo<>(uacUserList);
 	}
