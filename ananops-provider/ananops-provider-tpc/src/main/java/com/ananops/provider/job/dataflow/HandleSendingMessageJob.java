@@ -61,7 +61,7 @@ public class HandleSendingMessageJob extends AbstractBaseDataflowJob<TpcMqMessag
 	 * @return the list
 	 */
 	@Override
-	protected List<TpcMqMessage> fetchJobData(JobParameter jobParameter) {
+	protected List<TpcMqMessage> fetchJobData(JobParameter jobParameter) {//抓取流式数据
 		MessageTaskQueryDto query = new MessageTaskQueryDto();
 		query.setCreateTimeBefore(DateUtil.getBeforeTime(timeOutMinute));
 		query.setMessageStatus(MqSendStatusEnum.SENDING.sendStatus());
@@ -79,32 +79,32 @@ public class HandleSendingMessageJob extends AbstractBaseDataflowJob<TpcMqMessag
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	protected void processJobData(List<TpcMqMessage> taskList) {
-		for (TpcMqMessage message : taskList) {
+	protected void processJobData(List<TpcMqMessage> taskList) {//处理流式数据
+		for (TpcMqMessage message : taskList) {//遍历任务列表
 
-			Integer resendTimes = message.getResendTimes();
-			if (resendTimes >= messageMaxSendTimes) {
-				tpcMqMessageService.setMessageToAlreadyDead(message.getId());
+			Integer resendTimes = message.getResendTimes();//获取消息的重发次数
+			if (resendTimes >= messageMaxSendTimes) {//如果消息的当前重发次数大于最大重发次数，说明消息已经死了
+				tpcMqMessageService.setMessageToAlreadyDead(message.getId());//修改消息的状态
 				continue;
 			}
 
-			int times = (resendTimes == 0 ? 1 : resendTimes) * messageResendMultiplier;
-			long currentTimeInMillis = Calendar.getInstance().getTimeInMillis();
-			long needTime = currentTimeInMillis - times * 60 * 1000;
-			long hasTime = message.getUpdateTime().getTime();
+			int times = (resendTimes == 0 ? 1 : resendTimes) * messageResendMultiplier;//获取消息重发的次数
+			long currentTimeInMillis = Calendar.getInstance().getTimeInMillis();//获取当前时间
+			long needTime = currentTimeInMillis - times * 60 * 1000;//获取上一次重发到现在的累计时间
+			long hasTime = message.getUpdateTime().getTime();//获取消息设置的重发时间
 			// 判断是否达到了可以再次发送的时间条件
-			if (hasTime > needTime) {
+			if (hasTime > needTime) {//如果还没到达下一次重发的时间
 				log.debug("currentTime[" + com.xiaoleilu.hutool.date.DateUtil.formatDateTime(new Date()) + "],[SENDING]消息上次发送时间[" + com.xiaoleilu.hutool.date.DateUtil.formatDateTime(message.getUpdateTime()) + "],必须过了[" + times + "]分钟才可以再发送。");
 				continue;
 			}
-
+			//如果可以进行新一次重发了
 			// 前置状态
 			List<Integer> preStatusList = Lists.newArrayList(JobTaskStatusEnum.TASK_CREATE.status());
 			// 设置任务状态为执行中
 			message.setPreStatusList(preStatusList);
 			message.setTaskStatus(JobTaskStatusEnum.TASK_EXETING.status());
-			int updateRes = tpcMqMessageService.updateMqMessageTaskStatus(message);
-			if (updateRes > 0) {
+			int updateRes = tpcMqMessageService.updateMqMessageTaskStatus(message);//更新mq消息任务的状态
+			if (updateRes > 0) {//如果mq消息任务状态更新了
 				try {
 
 					// 查询是否全部订阅者都确认了消息 是 则更新消息状态完成, 否则重发消息

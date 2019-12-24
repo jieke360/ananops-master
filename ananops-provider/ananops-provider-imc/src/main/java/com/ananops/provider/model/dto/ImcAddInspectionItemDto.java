@@ -1,9 +1,10 @@
 package com.ananops.provider.model.dto;
 
-import io.swagger.annotations.Api;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,104 +18,102 @@ import java.util.Date;
 public class ImcAddInspectionItemDto implements Serializable {
     private static final long serialVersionUID = -3159670420426980074L;
     /**
-     * 巡检任务子项的ID
+     * 巡检任务子项对应的甲方用户id
      */
-    @ApiModelProperty(value = "巡检任务子项的ID")
+    @ApiModelProperty(value = "巡检任务子项对应的甲方用户id")
+    private Long userId;
+    /**
+     * 巡检任务子项ID
+     */
+    @ApiModelProperty(value = "巡检任务子项ID")
     private Long id;
     /**
-     * 被巡检的设备ID
+     * 从属的巡检任务的ID
      */
-    @ApiModelProperty(value = "被巡检的设备ID")
-    private Long deviceId;
-
-    /**
-     * 任务子项对应的任务ID
-     */
-    @ApiModelProperty(value = "任务子项对应的任务ID")
+    @ApiModelProperty(value = "从属的巡检任务的ID")
     private Long inspectionTaskId;
-
-    /**
-     * 被巡检的设备当前的状态
-     */
-    @ApiModelProperty(value = "被巡检的设备当前的状态")
-    private Integer deviceStatus;
-
-    /**
-     * 当前巡检任务子项的状态
-     */
-    @ApiModelProperty(value = "当前巡检任务子项的状态")
-    private Integer status;
-
-    /**
-     * 被巡检设备的位置，纬度
-     */
-    @ApiModelProperty(value = "被巡检设备的位置，纬度")
-    private BigDecimal deviceLatitude;
-
-    /**
-     * 被巡检设备的位置，经度
-     */
-    @ApiModelProperty(value = "被巡检设备的位置，经度")
-    private BigDecimal deviceLongitude;
 
     /**
      * 计划开始时间
      */
-    @ApiModelProperty(value = "计划开始时间")
+    @ApiModelProperty(value = "计划开始时间",example = "2019-8-24 11:11:11")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date scheduledStartTime;
-
-    /**
-     * 计划完成时间
-     */
-    @ApiModelProperty(value = "计划完成时间")
-    private Date scheduledFinishTime;
-
-    /**
-     * 最迟完成时间
-     */
-    @ApiModelProperty(value = "最迟完成时间")
-    private Date deadline;
-
-    /**
-     * 设备类型
-     */
-    @ApiModelProperty(value = "设备类型")
-    private String deviceType;
-
-    /**
-     *设备异常描述
-     */
-    @ApiModelProperty(value = "设备异常描述")
-    private String exceptionDescription;
-
-    /**
-     * 设备异常等级
-     */
-    @ApiModelProperty(value = "设备异常等级")
-    private Integer exceptionLevel;
 
     /**
      * 实际开始时间
      */
-    @ApiModelProperty(value = "实际开始时间")
+    @ApiModelProperty(value = "实际开始时间",example = "2019-8-24 11:11:11")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date actualStartTime;
 
     /**
      * 实际完成时间
      */
-    @ApiModelProperty(value = "实际完成时间")
+    @ApiModelProperty(value = "实际完成时间",example = "2019-8-24 11:11:11")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date actualFinishTime;
 
     /**
-     * 巡检任务子项对应的维修维护任务ID
+     * 计划完成天数
      */
-    @ApiModelProperty(value = "巡检任务子项对应的维修维护任务ID")
-    private Long maintenanceTaskId;
+    @ApiModelProperty(value = "计划完成天数")
+    private Integer days;
 
     /**
-     * 巡检任务子项的描述信息
+     * 巡检周期（月）
      */
-    @ApiModelProperty(value = "巡检任务子项的描述信息")
+    @ApiModelProperty(value = "巡检周期（月）")
+    private Integer frequency;
+
+    /**
+     * 巡检子项内容描述
+     */
+    @ApiModelProperty(value = "巡检子项内容描述")
     private String description;
 
+    /**
+     * 巡检子项的巡检状态
+     */
+    @ApiModelProperty(value = "巡检子项的巡检状态")
+    private Integer status;
+
+    /**
+     * 巡检子项的位置，纬度
+     */
+    @ApiModelProperty(value = "巡检子项的位置，纬度")
+    private BigDecimal itemLatitude;
+
+    /**
+     * 巡检子项的位置，经度
+     */
+    @ApiModelProperty(value = "巡检子项的位置，经度")
+    private BigDecimal itemLongitude;
+
+    /**
+     * 巡检子项结果描述
+     */
+    @ApiModelProperty(value = "巡检子项结果描述")
+    private String result;
+
+    /**
+     * 巡检子项的名称
+     */
+    @ApiModelProperty(value = "巡检子项的名称")
+    private String itemName;
+
+    /**
+     * 巡检子项对应的维修工
+     */
+    @ApiModelProperty(value = "巡检子项对应的维修工")
+    private Long maintainerId;
+
+    /**
+     * 巡检任务子项已经执行的次数
+     */
+    @ApiModelProperty(value = "巡检任务子项已经执行的次数，初始为0")
+    private Integer count;
 }

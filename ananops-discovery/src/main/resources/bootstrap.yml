@@ -5,9 +5,9 @@ spring:
     config:
       server:
         native:
-          search-locations: classpath:ananops-config-repo/   #配置文件本地路径
+          search-locations: /home/ananops/ananops-config-repo
 #        git:
-#        uri: https://github.com/ananops/ananops-config-repo/ananops-config-repo.git  #配置文件git地址
+#        uri: https://github.com/SongOf/ananops-config-repo/ananops-config-repo.git
 #        username:
 #        password:
 #        search-paths: /*
@@ -32,4 +32,6 @@ eureka:
     serviceUrl:
       defaultZone: http://root:root@ananops-eureka:8761/eureka/
   instance:
-    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${server.port}
+    prefer-ip-address: true
+    ip-address: www.ananops.com
+    non-secure-port: 29992

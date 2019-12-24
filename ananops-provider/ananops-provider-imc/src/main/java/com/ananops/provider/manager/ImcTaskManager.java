@@ -28,7 +28,7 @@ public class ImcTaskManager {
         log.info("保存巡检任务. mqMessageData={}, imcInspectionTask={}",mqMessageData,imcInspectionTask);
         if(addFlag){//如果是巡检任务的添加
             imcInspectionTaskMapper.insert(imcInspectionTask);
-        }else{
+        }else{//如果是巡检任务的更新
             int result = imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
             if(result < 1){
                 throw new BusinessException(ErrorCodeEnum.GL9999093);
