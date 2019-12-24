@@ -4,7 +4,6 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
-import com.ananops.provider.mapper.MdmcTaskItemLogMapper;
 import com.ananops.provider.mapper.MdmcTaskItemMapper;
 import com.ananops.provider.mapper.MdmcTaskMapper;
 import com.ananops.provider.model.domain.MdmcTask;
@@ -30,9 +29,6 @@ public class MdmcTaskItemServiceImpl extends BaseService<MdmcTaskItem> implement
 
     @Resource
     MdmcTaskMapper mdmcTaskMapper;
-
-    @Resource
-    MdmcTaskItemLogMapper mdmcTaskItemLogMapper;
 
 
 
