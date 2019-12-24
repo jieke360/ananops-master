@@ -91,6 +91,7 @@ public class UserVo extends BaseVo {
 	 */
 	private Set<UacRole> roles;
 
+
 	/**
 	 * 用户拥有的菜单权限和按钮权限
 	 */
