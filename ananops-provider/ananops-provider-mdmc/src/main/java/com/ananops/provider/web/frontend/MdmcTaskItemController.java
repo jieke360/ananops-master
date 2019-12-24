@@ -71,6 +71,8 @@ public class MdmcTaskItemController extends BaseController {
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         taskItem.setUpdateInfo(loginAuthDto);
         MdmcTaskItemLog taskItemLog=new MdmcTaskItemLog();
+        Long taskItemLogId=super.generateId();
+        taskItemLog.setId(taskItemLogId);
         taskItemLog.setTaskId(itemId);
         taskItemLog.setStatus(status);
         taskItemLog.setMovement(MdmcItemStatusEnum.getStatusMsg(status));

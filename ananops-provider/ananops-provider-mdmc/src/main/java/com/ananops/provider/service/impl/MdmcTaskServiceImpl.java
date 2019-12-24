@@ -99,6 +99,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         }
         //如果当前任务存在
         changeStatusDto.setStatusMsg(MdmcTaskStatusEnum.getStatusMsg(status));
+        if (status==1){taskMapper.deleteByPrimaryKey(taskId);}
+        else if (status==14){FacilitatorTransfer();}
+        else if (status==15){MaintainerTransfer();}
         task.setId(taskId);
         task.setStatus(status);
         task.setUpdateInfo(loginAuthDto);
@@ -111,12 +114,25 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         taskMapper.updateByPrimaryKey(task);
 
         MdmcTaskLog taskLog=new MdmcTaskLog();
+        Long taskLogId = super.generateId();
+        taskLog.setId(taskLogId);
         taskLog.setTaskId(taskId);
         taskLog.setStatus(status);
         taskLog.setMovement(MdmcTaskStatusEnum.getStatusMsg(status));
         taskLogMapper.insert(taskLog);
         return task;
     }
+
+    @Override
+    public Void FacilitatorTransfer() {
+        return null;
+    }
+
+    @Override
+    public Void MaintainerTransfer() {
+        return null;
+    }
+
 
     @Override
     public List<MdmcTask> getTaskListByUserId(MdmcStatusDto statusDto) {

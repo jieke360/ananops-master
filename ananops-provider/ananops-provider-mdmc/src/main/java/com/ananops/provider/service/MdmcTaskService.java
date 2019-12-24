@@ -22,6 +22,10 @@ public interface MdmcTaskService extends IService<MdmcTask> {
 
     MdmcTask modifyTaskStatus(MdmcChangeStatusDto changeStatusDto, LoginAuthDto loginAuthDto);
 
+    Void FacilitatorTransfer();
+
+    Void MaintainerTransfer();
+
     List<MdmcTask> getTaskListByUserId(MdmcStatusDto statusDto);
 
     List<MdmcTask> getTaskListByMaintainerId(MdmcStatusDto statusDto);

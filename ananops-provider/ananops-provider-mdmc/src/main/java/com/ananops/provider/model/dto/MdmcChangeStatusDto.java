@@ -22,7 +22,7 @@ public class MdmcChangeStatusDto implements Serializable {
     private Integer status;
 
     /**
-     * 巡检任务修改后的状态描述
+     * 任务修改后的状态描述
      */
     @ApiModelProperty(value = "任务修改后的状态描述")
     private String statusMsg;
