@@ -18,47 +18,47 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author ananops.net @gmail.com
  */
-@Slf4j
-@RestController
-public class ValidateCodeController {
-
-	@Resource
-	private ValidateCodeProcessorHolder validateCodeProcessorHolder;
-
-	/**
-	 * 创建验证码，根据验证码类型不同，调用不同的 {@link ValidateCodeProcessor}接口实现
-	 *
-	 * @param request  the request
-	 * @param response the response
-	 * @param type     the type
-	 *
-	 * @throws Exception the exception
-	 */
-	@PostMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/{type}")
-	public void createCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type) throws Exception {
-		validateCodeProcessorHolder.findValidateCodeProcessor(type).create(new ServletWebRequest(request, response));
-	}
-
-	/**
-	 * Check code object.
-	 *
-	 * @param request  the request
-	 * @param response the response
-	 * @param type     the type
-	 *
-	 * @return the object
-	 */
-	@GetMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/{type}")
-	public Object checkCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type) {
-		SecurityResult result = new SecurityResult(SecurityResult.SUCCESS_CODE, "校验成功", true);
-		try {
-			validateCodeProcessorHolder.findValidateCodeProcessor(type).check(new ServletWebRequest(request, response));
-		} catch (ValidateCodeException e) {
-			result = SecurityResult.error(e.getMessage(), false);
-		} catch (Exception e) {
-			log.error("getAccessToken={}", e.getMessage(), e);
-			result = SecurityResult.error("验证码错误", false);
-		}
-		return result;
-	}
-}
+//@Slf4j
+//@RestController
+//public class ValidateCodeController {
+//
+//	@Resource
+//	private ValidateCodeProcessorHolder validateCodeProcessorHolder;
+//
+//	/**
+//	 * 创建验证码，根据验证码类型不同，调用不同的 {@link ValidateCodeProcessor}接口实现
+//	 *
+//	 * @param request  the request
+//	 * @param response the response
+//	 * @param type     the type
+//	 *
+//	 * @throws Exception the exception
+//	 */
+//	@PostMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/{type}")
+//	public void createCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type) throws Exception {
+//		validateCodeProcessorHolder.findValidateCodeProcessor(type).create(new ServletWebRequest(request, response));
+//	}
+//
+//	/**
+//	 * Check code object.
+//	 *
+//	 * @param request  the request
+//	 * @param response the response
+//	 * @param type     the type
+//	 *
+//	 * @return the object
+//	 */
+//	@GetMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/{type}")
+//	public Object checkCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type) {
+//		SecurityResult result = new SecurityResult(SecurityResult.SUCCESS_CODE, "校验成功", true);
+//		try {
+//			validateCodeProcessorHolder.findValidateCodeProcessor(type).check(new ServletWebRequest(request, response));
+//		} catch (ValidateCodeException e) {
+//			result = SecurityResult.error(e.getMessage(), false);
+//		} catch (Exception e) {
+//			log.error("getAccessToken={}", e.getMessage(), e);
+//			result = SecurityResult.error("验证码错误", false);
+//		}
+//		return result;
+//	}
+//}
