@@ -34,4 +34,10 @@ public class ItemQueryDto extends BaseQuery {
      */
     @ApiModelProperty(value = "巡检任务子项对应的巡检任务的ID")
     private Long taskId;
+
+    /**
+     * 巡检任务子项对应的工程师Id
+     */
+    @ApiModelProperty(value = "巡检任务子项对应的工程师Id")
+    private Long maintainerId;
 }

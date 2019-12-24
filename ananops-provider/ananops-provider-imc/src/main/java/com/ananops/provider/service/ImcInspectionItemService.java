@@ -25,4 +25,7 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
 
     List<ImcInspectionItem> getItemByUserIdAndStatus(ItemQueryDto itemQueryDto);//根据甲方用户Id查询指定状态的巡检任务子项
 
+    List<ImcInspectionItem> getItemByMaintainerId(ItemQueryDto itemQueryDto);//根据工程师的Id查询对应的巡检任务
+
+    List<ImcInspectionItem> getItemByMaintainerIdAndStatus(ItemQueryDto itemQueryDto);//根据工程师的Id查询指定状态的巡检任务
 }
