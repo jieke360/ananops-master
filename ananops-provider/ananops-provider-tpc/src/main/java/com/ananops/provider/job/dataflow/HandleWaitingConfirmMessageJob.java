@@ -36,7 +36,7 @@ import java.util.List;
 @Slf4j
 @Component
 @ElasticJobConfig(cron = "0 0/10 * * * ?", jobParameter = "fetchNum=1000")
-public class HandleWaitingConfirmMessageJob extends AbstractBaseDataflowJob<String> {
+public class HandleWaitingConfirmMessageJob extends AbstractBaseDataflowJob<String> {//处理等待确认消息任务
 	@Resource
 	private TpcMqMessageService tpcMqMessageService;
 	@Resource
@@ -53,7 +53,7 @@ public class HandleWaitingConfirmMessageJob extends AbstractBaseDataflowJob<Stri
 	 * @return the list
 	 */
 	@Override
-	protected List<String> fetchJobData(JobParameter jobParameter) {
+	protected List<String> fetchJobData(JobParameter jobParameter) {//抓取流式数据
 		MessageTaskQueryDto query = new MessageTaskQueryDto();
 		query.setCreateTimeBefore(DateUtil.getBeforeTime(timeOutMinute));
 		query.setMessageStatus(MqSendStatusEnum.WAIT_SEND.sendStatus());
@@ -71,7 +71,7 @@ public class HandleWaitingConfirmMessageJob extends AbstractBaseDataflowJob<Stri
 	 * @param messageKeyList the message key list
 	 */
 	@Override
-	protected void processJobData(List<String> messageKeyList) {
+	protected void processJobData(List<String> messageKeyList) {//处理流失数据，执行方法体
 		if (messageKeyList == null) {
 			return;
 		}

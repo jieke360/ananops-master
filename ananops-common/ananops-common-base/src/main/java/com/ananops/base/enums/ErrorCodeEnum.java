@@ -9,6 +9,18 @@ package com.ananops.base.enums;
  */
 public enum ErrorCodeEnum {
 	/**
+	 * Gl 9999089 error code enum.
+	 */
+	GL9999089(9999089,"没有此角色"),
+	/**
+	 * Gl 9999090 error code enum.
+	 */
+	GL9999090(9999090,"没有处于此状态的任务子项"),
+	/**
+	 * Gl 9999091 error code enum.
+	 */
+	GL9999091(9999091,"没有处于此状态的任务"),
+	/**
 	 * Gl 9999092 error code enum.
 	 */
 	GL9999092(9999092,"修改巡检任务状态失败"),
@@ -601,6 +613,7 @@ public enum ErrorCodeEnum {
 	/**
 	 * Tpc 100500015 error code enum.
 	 */
+
 	TPC100500015(10050015, "消息PID不能为空, messageKey=%s"),
 
 	//1008 项目管理
@@ -648,7 +661,6 @@ public enum ErrorCodeEnum {
 	;
 
 
-	;
 	private int code;
 	private String msg;
 

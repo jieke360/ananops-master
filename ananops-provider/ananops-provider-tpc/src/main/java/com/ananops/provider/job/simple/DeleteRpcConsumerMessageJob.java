@@ -44,7 +44,7 @@ public class DeleteRpcConsumerMessageJob implements SimpleJob {
 	 * @param shardingContext the sharding context
 	 */
 	@Override
-	public void execute(final ShardingContext shardingContext) {
+	public void execute(final ShardingContext shardingContext) {//执行此定时任务
 		ShardingContextDto shardingContextDto = new ShardingContextDto(shardingContext.getShardingTotalCount(), shardingContext.getShardingItem());
 		final TpcMqMessageDto message = new TpcMqMessageDto();
 		message.setMessageBody(JSON.toJSONString(shardingContextDto));

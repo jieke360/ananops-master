@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(ElasticJob.class)
 @ConditionalOnBean(annotation = ElasticJobConfig.class)
 @EnableConfigurationProperties(ZookeeperRegistryProperties.class)
-public class RegistryCenterConfiguration {
+public class RegistryCenterConfiguration {//注册中心的配置
 
 	private final ZookeeperRegistryProperties regCenterProperties;
 

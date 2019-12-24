@@ -13,19 +13,15 @@ public enum TaskStatusEnum {
 
     WAITING_FOR_FACILITATOR(1,"等待服务商接单"),
 
-    FACILITATOR_TOOK_ORDER(2,"服务商已接单"),
+    EXECUTING(2,"巡检任务执行中"),
 
-    WORKERS_TOOK_ORDER(3,"巡检工已全部接单"),
+    WAITING_FOR_CONFIRM(3,"巡检结果待确认"),
 
-    IN_THE_INSPECTION(4,"巡检工巡检中"),
+    WAITING_FOR_PAY(4,"巡检待付款"),
 
-    WAITING_FOR_PRINCIPAL(5,"巡检结束，等待甲方负责人审查"),
+    WAITING_FOR_REVIEW(5,"巡检已付款，等待甲方负责人评价"),
 
-    WAITING_FOR_PAY(6,"甲方负责人审查结束，等待付款"),
-
-    WAITING_FOR_REVIEW(7,"已付款，等待甲方负责人评价"),
-
-    INSPECTION_OVER(8,"已完成评价，巡检结束");
+    INSPECTION_OVER(6,"已完成评价，巡检结束");
 
     /**
      * The statusNum.

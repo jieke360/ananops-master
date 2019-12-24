@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -64,33 +65,17 @@ public class ImcInspectionTask extends BaseEntity {
     private Date scheduledStartTime;
 
     /**
-     * 实际开始时间
-     */
-    @Column(name = "actual_start_time")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date actualStartTime;
-
-    /**
-     * 计划完成时间
-     */
-    @Column(name = "scheduled_finish_time")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date scheduledFinishTime;
-
-    /**
      * 实际完成时间
      */
     @Column(name = "actual_finish_time")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date actualFinishTime;
 
     /**
-     * 最迟完成时间
+     * 计划完成天数
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date deadline;
+    private Integer days;
 
     /**
      * 巡检类型（1.按合同产生的巡检，2.甲方负责人主动发出的巡检）
@@ -102,4 +87,16 @@ public class ImcInspectionTask extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    /**
+     * 巡检任务名称
+     */
+    @Column(name = "task_name")
+    private String taskName;
+
+    /**
+     * 巡检周期（月）
+     */
+    private Integer frequency;
+
 }

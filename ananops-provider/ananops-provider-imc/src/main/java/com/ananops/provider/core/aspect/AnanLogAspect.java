@@ -5,11 +5,12 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.utils.RequestUtil;
 import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.*;
-import com.ananops.provider.model.dto.ImcItemChangeStatusDto;
-import com.ananops.provider.model.dto.ImcTaskChangeStatusDto;
+import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemLogService;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskLogService;
+import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.wrapper.Wrapper;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +27,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by rongshuai on 2019/12/9 17:42
@@ -39,9 +41,10 @@ public class AnanLogAspect {
     ImcInspectionTaskLogService imcInspectionTaskLogService;
     @Resource
     ImcInspectionItemLogService imcInspectionItemLogService;
-
     @Resource
     ImcInspectionItemService imcInspectionItemService;
+    @Resource
+    ImcInspectionTaskService imcInspectionTaskService;
 
     private ThreadLocal<Date> threadLocal = new ThreadLocal<>();
 
@@ -122,101 +125,65 @@ public class AnanLogAspect {
             }
             //获取当前操作对应的任务ID
             Wrapper wrapper = (Wrapper) result;
-            if(wrapper.getResult().getClass().getName().equals(ImcInspectionTask.class.getName())){
+            if(wrapper.getResult().getClass().getName().equals(ImcAddInspectionTaskDto.class.getName())){
                 //如果当前的日志是巡检任务的
                 ImcInspectionTaskLog imcInspectionTaskLog = new ImcInspectionTaskLog();
-                ImcInspectionTask imcInspectionTask = (ImcInspectionTask) wrapper.getResult();
-                taskId = imcInspectionTask.getId();
-                status = imcInspectionTask.getStatus();
-                imcInspectionTaskLog.setTaskId(taskId);
-                imcInspectionTaskLog.setCreatedTime(startTime);
-                imcInspectionTaskLog.setUpdateTime(endTime);
-                imcInspectionTaskLog.setMovement(movement);
-                imcInspectionTaskLog.setStatusTimestamp(endTime);
-                imcInspectionTaskLog.setStatus(status);
-                imcInspectionTaskLog.setOs(os);
-                imcInspectionTaskLog.setBrowser(browser);
-                imcInspectionTaskLog.setIpAddress(ipAddress);
+                ImcAddInspectionTaskDto imcAddInspectionTaskDto = (ImcAddInspectionTaskDto) wrapper.getResult();
+                taskId = imcAddInspectionTaskDto.getId();
+                status = imcAddInspectionTaskDto.getStatus();
                 LoginAuthDto loginUser = RequestUtil.getLoginUser();
-                if(imcInspectionTaskLogService.createInspectionTaskLog(imcInspectionTaskLog,loginUser) == 1){
+                if(imcInspectionTaskLogService.createInspectionTaskLog(createTaskLog(taskId,status,startTime,endTime,movement,os,browser,ipAddress),loginUser) == 1){
                     System.out.println("巡检任务日志创建成功" + imcInspectionTaskLog);
                 }
-            }else if(wrapper.getResult().getClass().getName().equals(ImcInspectionItem.class.getName())){
+                List<ImcAddInspectionItemDto> imcAddInspectionItemDtoList = imcAddInspectionTaskDto.getImcAddInspectionItemDtoList();
+                if(imcAddInspectionItemDtoList.size()>0){//如果在创建巡检任务的同时还创建了巡检任务子项
+                    imcAddInspectionItemDtoList.forEach(item->{
+                        ImcInspectionItemLog imcInspectionItemLog = createItemLog(item.getId(),taskId,item.getStatus(),startTime,endTime,"编辑巡检任务子项记录",os,browser,ipAddress);
+                        if(imcInspectionItemLogService.createInspectionItemLog(imcInspectionItemLog,loginUser) == 1){
+                            System.out.println("巡检任务子项日志创建成功" + imcInspectionItemLog);
+                        }
+                    });
+                }
+            }else if(wrapper.getResult().getClass().getName().equals(ImcAddInspectionItemDto.class.getName())){
                 //如果当前的日志是巡检任务子项的
-                ImcInspectionItemLog imcInspectionItemLog = new ImcInspectionItemLog();
-                ImcInspectionItem imcInspectionItem = (ImcInspectionItem) wrapper.getResult();
-                taskId = imcInspectionItem.getInspectionTaskId();
-                itemId = imcInspectionItem.getId();
-                status = imcInspectionItem.getStatus();
-                imcInspectionItemLog.setItemId(itemId);
-                imcInspectionItemLog.setTaskId(taskId);
-                imcInspectionItemLog.setCreatedTime(startTime);
-                imcInspectionItemLog.setUpdateTime(endTime);
-                imcInspectionItemLog.setMovement(movement);
-                imcInspectionItemLog.setStatusTimestamp(endTime);
-                imcInspectionItemLog.setStatus(status);
-                imcInspectionItemLog.setOs(os);
-                imcInspectionItemLog.setBrowser(browser);
-                imcInspectionItemLog.setIpAddress(ipAddress);
+                ImcAddInspectionItemDto imcAddInspectionItemDto = (ImcAddInspectionItemDto) wrapper.getResult();
+                taskId = imcAddInspectionItemDto.getInspectionTaskId();
+                itemId = imcAddInspectionItemDto.getId();
+                status = imcAddInspectionItemDto.getStatus();
+                ImcInspectionItemLog imcInspectionItemLog = createItemLog(itemId,taskId,status,startTime,endTime,movement,os,browser,ipAddress);
                 LoginAuthDto loginUser = RequestUtil.getLoginUser();
                 if(imcInspectionItemLogService.createInspectionItemLog(imcInspectionItemLog,loginUser) == 1){
                     System.out.println("巡检任务子项日志创建成功" + imcInspectionItemLog);
                 }
             }else if(wrapper.getResult().getClass().getName().equals(ImcDeviceOrder.class.getName())){
-                ImcInspectionItemLog imcInspectionItemLog = new ImcInspectionItemLog();
                 ImcDeviceOrder imcDeviceOrder = (ImcDeviceOrder) wrapper.getResult();
                 taskId = imcDeviceOrder.getInspectionTaskId();
                 itemId = imcDeviceOrder.getInspectionItemId();
-                imcInspectionItemLog.setItemId(itemId);
-                imcInspectionItemLog.setTaskId(taskId);
-                imcInspectionItemLog.setCreatedTime(startTime);
-                imcInspectionItemLog.setUpdateTime(endTime);
-                imcInspectionItemLog.setMovement(movement);
-                imcInspectionItemLog.setStatusTimestamp(endTime);
-                imcInspectionItemLog.setOs(os);
-                imcInspectionItemLog.setBrowser(browser);
-                imcInspectionItemLog.setIpAddress(ipAddress);
+                ImcInspectionItemLog imcInspectionItemLog = createItemLog(itemId,taskId,getItem(itemId).getStatus(),startTime,endTime,movement,os,browser,ipAddress);
                 LoginAuthDto loginUser = RequestUtil.getLoginUser();
                 if(imcInspectionItemLogService.createInspectionItemLog(imcInspectionItemLog,loginUser) == 1){
                     System.out.println("巡检任务子项日志创建成功" + imcInspectionItemLog);
                 }
             }else if(wrapper.getResult().getClass().getName().equals(ImcInspectionReview.class.getName())){
-                ImcInspectionTaskLog imcInspectionTaskLog = new ImcInspectionTaskLog();
                 ImcInspectionReview imcInspectionReview = (ImcInspectionReview) wrapper.getResult();
                 taskId = imcInspectionReview.getInspectionTaskId();
-                imcInspectionTaskLog.setTaskId(taskId);
-                imcInspectionTaskLog.setCreatedTime(startTime);
-                imcInspectionTaskLog.setUpdateTime(endTime);
-                imcInspectionTaskLog.setMovement(movement);
-                imcInspectionTaskLog.setStatusTimestamp(endTime);
-                imcInspectionTaskLog.setOs(os);
-                imcInspectionTaskLog.setBrowser(browser);
-                imcInspectionTaskLog.setIpAddress(ipAddress);
+                status = getTask(taskId).getStatus();
+                ImcInspectionTaskLog imcInspectionTaskLog = createTaskLog(taskId,status,startTime,endTime,movement,os,browser,ipAddress);
                 LoginAuthDto loginUser = RequestUtil.getLoginUser();
                 if(imcInspectionTaskLogService.createInspectionTaskLog(imcInspectionTaskLog,loginUser) == 1){
                     System.out.println("巡检任务日志创建成功" + imcInspectionTaskLog);
                 }
             }else if(wrapper.getResult().getClass().getName().equals(ImcTaskChangeStatusDto.class.getName())){
-                ImcInspectionTaskLog imcInspectionTaskLog = new ImcInspectionTaskLog();
                 ImcTaskChangeStatusDto imcTaskChangeStatusDto = (ImcTaskChangeStatusDto) wrapper.getResult();
                 taskId = imcTaskChangeStatusDto.getTaskId();
                 status = imcTaskChangeStatusDto.getStatus();
                 String statusMsg = imcTaskChangeStatusDto.getStatusMsg();
-                imcInspectionTaskLog.setTaskId(taskId);
-                imcInspectionTaskLog.setCreatedTime(startTime);
-                imcInspectionTaskLog.setUpdateTime(endTime);
-                imcInspectionTaskLog.setMovement(movement + "为：" + statusMsg);
-                imcInspectionTaskLog.setStatusTimestamp(endTime);
-                imcInspectionTaskLog.setStatus(status);
-                imcInspectionTaskLog.setOs(os);
-                imcInspectionTaskLog.setBrowser(browser);
-                imcInspectionTaskLog.setIpAddress(ipAddress);
+                ImcInspectionTaskLog imcInspectionTaskLog = createTaskLog(taskId,status,startTime,endTime,movement + "为：" + statusMsg,os,browser,ipAddress);
                 LoginAuthDto loginUser = RequestUtil.getLoginUser();
                 if(imcInspectionTaskLogService.createInspectionTaskLog(imcInspectionTaskLog,loginUser) == 1){
                     System.out.println("巡检任务日志创建成功" + imcInspectionTaskLog);
                 }
             }else if(wrapper.getResult().getClass().getName().equals(ImcItemChangeStatusDto.class.getName())){
-                ImcInspectionItemLog imcInspectionItemLog = new ImcInspectionItemLog();
                 ImcItemChangeStatusDto imcItemChangeStatusDto = (ImcItemChangeStatusDto) wrapper.getResult();
                 itemId = imcItemChangeStatusDto.getItemId();
                 status = imcItemChangeStatusDto.getStatus();
@@ -225,19 +192,30 @@ public class AnanLogAspect {
                 criteria.andEqualTo("id",itemId);
                 taskId = imcInspectionItemService.selectByExample(example).get(0).getInspectionTaskId();
                 String statusMsg = imcItemChangeStatusDto.getStatusMsg();
-                imcInspectionItemLog.setItemId(itemId);
-                imcInspectionItemLog.setTaskId(taskId);
-                imcInspectionItemLog.setStatus(status);
-                imcInspectionItemLog.setCreatedTime(startTime);
-                imcInspectionItemLog.setUpdateTime(endTime);
-                imcInspectionItemLog.setMovement(movement + "为：" + statusMsg);
-                imcInspectionItemLog.setStatusTimestamp(endTime);
-                imcInspectionItemLog.setOs(os);
-                imcInspectionItemLog.setBrowser(browser);
-                imcInspectionItemLog.setIpAddress(ipAddress);
+                ImcInspectionItemLog imcInspectionItemLog = createItemLog(itemId,taskId,status,startTime,endTime,movement + "为：" + statusMsg,os,browser,ipAddress);
                 LoginAuthDto loginUser = RequestUtil.getLoginUser();
                 if(imcInspectionItemLogService.createInspectionItemLog(imcInspectionItemLog,loginUser) == 1){
                     System.out.println("巡检任务子项日志创建成功" + imcInspectionItemLog);
+                }
+                if(imcInspectionTaskService.getTaskByTaskId(taskId).getStatus()==3){
+                    //如果在巡检任务子项状态改变的同时，巡检任务的状态也改变
+
+                    ImcInspectionTaskLog imcInspectionTaskLog = createTaskLog(taskId,3,startTime,endTime,"修改巡检任务状态为" + TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusMsg(),os,browser,ipAddress);
+                    if(imcInspectionTaskLogService.createInspectionTaskLog(imcInspectionTaskLog,loginUser)==1){
+                        System.out.println("巡检任务日志创建成功" + imcInspectionTaskLog);
+                    }
+                }
+            }else if(wrapper.getResult().getClass().getName().equals(TaskNameChangeDto.class.getName())){
+                TaskNameChangeDto taskNameChangeDto = (TaskNameChangeDto) wrapper.getResult();
+                taskId = taskNameChangeDto.getTaskId();
+                String taskName = taskNameChangeDto.getTaskName();
+                ImcInspectionTask imcInspectionTask = getTask(taskId);
+                status = imcInspectionTask.getStatus();
+                String details = "为" + taskName;
+                ImcInspectionTaskLog imcInspectionTaskLog = createTaskLog(taskId,status,startTime,endTime,movement + details,os,browser,ipAddress);
+                LoginAuthDto loginUser = RequestUtil.getLoginUser();
+                if(imcInspectionTaskLogService.createInspectionTaskLog(imcInspectionTaskLog,loginUser) == 1){
+                    System.out.println("巡检任务日志创建成功" + imcInspectionTaskLog);
                 }
             }
 
@@ -246,6 +224,83 @@ public class AnanLogAspect {
         }
     }
 
+    /**
+     * 根据任务Id获取对应的任务
+     * @param taskId
+     * @return
+     */
+    public ImcInspectionTask getTask(Long taskId){
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        return imcInspectionTaskService.selectByExample(example).get(0);
+    }
+
+    /**
+     * 根据任务子项Id获取对应的任务子项
+     * @param itemId
+     * @return
+     */
+    public ImcInspectionItem getItem(Long itemId){
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",itemId);
+        return imcInspectionItemService.selectByExample(example).get(0);
+    }
+
+    /**
+     * 创建巡检任务日志
+     * @param taskId
+     * @param status
+     * @param startTime
+     * @param endTime
+     * @param movement
+     * @param os
+     * @param browser
+     * @param ipAddress
+     * @return
+     */
+    public ImcInspectionTaskLog createTaskLog(Long taskId,Integer status,Date startTime,Date endTime,String movement,String os,String browser,String ipAddress){//创建一条任务的日志
+        ImcInspectionTaskLog imcInspectionTaskLog = new ImcInspectionTaskLog();
+        imcInspectionTaskLog.setTaskId(taskId);
+        imcInspectionTaskLog.setStatus(status);
+        imcInspectionTaskLog.setCreatedTime(startTime);
+        imcInspectionTaskLog.setUpdateTime(endTime);
+        imcInspectionTaskLog.setMovement(movement);
+        imcInspectionTaskLog.setStatusTimestamp(endTime);
+        imcInspectionTaskLog.setOs(os);
+        imcInspectionTaskLog.setBrowser(browser);
+        imcInspectionTaskLog.setIpAddress(ipAddress);
+        return imcInspectionTaskLog;
+    }
+
+    /**
+     * 创建巡检任务子项日志
+     * @param itemId
+     * @param taskId
+     * @param status
+     * @param startTime
+     * @param endTime
+     * @param movement
+     * @param os
+     * @param browser
+     * @param ipAddress
+     * @return
+     */
+    public ImcInspectionItemLog createItemLog(Long itemId,Long taskId,Integer status,Date startTime,Date endTime,String movement,String os,String browser,String ipAddress){
+        ImcInspectionItemLog imcInspectionItemLog = new ImcInspectionItemLog();
+        imcInspectionItemLog.setItemId(itemId);
+        imcInspectionItemLog.setTaskId(taskId);
+        imcInspectionItemLog.setCreatedTime(startTime);
+        imcInspectionItemLog.setUpdateTime(endTime);
+        imcInspectionItemLog.setMovement(movement);
+        imcInspectionItemLog.setStatusTimestamp(endTime);
+        imcInspectionItemLog.setStatus(status);
+        imcInspectionItemLog.setOs(os);
+        imcInspectionItemLog.setBrowser(browser);
+        imcInspectionItemLog.setIpAddress(ipAddress);
+        return imcInspectionItemLog;
+    }
     /**
      * 是否存在注解, 如果存在就记录日志
      */

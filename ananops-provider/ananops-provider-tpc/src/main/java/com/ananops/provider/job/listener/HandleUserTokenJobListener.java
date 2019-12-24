@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author paascloud.net @gmail.com
  */
 @Slf4j
-public class HandleUserTokenJobListener implements ElasticJobListener {
+public class HandleUserTokenJobListener implements ElasticJobListener {//事件监听器
 
 	@Resource
 	private OpcRpcService opcRpcService;
@@ -44,7 +44,7 @@ public class HandleUserTokenJobListener implements ElasticJobListener {
 	 * @param shardingContexts the sharding contexts
 	 */
 	@Override
-	public void beforeJobExecuted(ShardingContexts shardingContexts) {
+	public void beforeJobExecuted(ShardingContexts shardingContexts) {//定时任务执行前
 		log.info("beforeJobExecuted - shardingContexts={}", shardingContexts);
 		startTime.set(System.currentTimeMillis());
 	}
@@ -55,7 +55,7 @@ public class HandleUserTokenJobListener implements ElasticJobListener {
 	 * @param shardingContexts the sharding contexts
 	 */
 	@Override
-	public void afterJobExecuted(ShardingContexts shardingContexts) {
+	public void afterJobExecuted(ShardingContexts shardingContexts) {//定时任务执行后
 		log.info("afterJobExecuted - shardingContexts={}", shardingContexts);
 		endTimestamp.set(System.currentTimeMillis());
 		long exeTime = endTimestamp.get() - startTime.get();
@@ -63,7 +63,7 @@ public class HandleUserTokenJobListener implements ElasticJobListener {
 		this.sendDingTalk(message);
 	}
 
-	private void sendDingTalk(String message) {
+	private void sendDingTalk(String message) {//定时任务执行后就发送消息
 		log.info("开始发送消息. message={}", message);
 		ChatRobotMsgDto chatRobotMsgDto = ChatRobotMsgFactory.createChatRobotTextMsg(webhookToken, message, false, null);
 		boolean result = opcRpcService.sendChatRobotMsg(chatRobotMsgDto);
