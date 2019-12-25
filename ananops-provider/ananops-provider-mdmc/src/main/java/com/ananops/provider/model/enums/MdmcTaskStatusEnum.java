@@ -39,7 +39,7 @@ public enum MdmcTaskStatusEnum {
 
     Reject2(15,"维修工拒绝工单"),
 
-//    Reject3(16,"服务商拒绝账单"),
+    Reject3(16,"服务商拒绝账单"),
 
     Reject4(17,"负责人拒绝账单");
 

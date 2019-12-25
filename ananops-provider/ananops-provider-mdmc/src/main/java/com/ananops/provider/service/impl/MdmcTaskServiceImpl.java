@@ -15,6 +15,7 @@ import com.ananops.provider.model.enums.*;
 import com.ananops.provider.service.MdmcTaskItemService;
 import com.ananops.provider.service.MdmcTaskService;
 import com.github.pagehelper.PageHelper;
+import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -299,6 +300,36 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         }
         PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
         return taskMapper.selectByExample(example);
+
+    }
+
+    @Override
+    public MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto) {
+        String roleCode=queryDto.getRoleCode();
+        Long id=queryDto.getId();
+        Integer status=queryDto.getStatus();
+        Example example = new Example(MdmcTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        if (status!=null){
+            criteria.andEqualTo("status",queryDto.getStatus());
+        }
+        switch (roleCode){
+            case "user_watcher":criteria.andEqualTo("userId",id);break;
+            case "user_leader":criteria.andEqualTo("principalId",id);break;
+            case "engineer":criteria.andEqualTo("maintainerId",id);break;
+            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+        }
+        if(taskMapper.selectCountByExample(example)==0){
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
+        MdmcPageDto pageDto=new MdmcPageDto();
+        pageDto.setTaskList(taskMapper.selectByExample(example));
+        pageDto.setPageNum(queryDto.getPageNum());
+        pageDto.setPageSize(queryDto.getPageSize());
+
+        return pageDto;
 
     }
 

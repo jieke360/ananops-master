@@ -6,10 +6,7 @@ import com.ananops.core.support.BaseController;
 
 import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.domain.MdmcTaskLog;
-import com.ananops.provider.model.dto.MdmcAddTaskDto;
-import com.ananops.provider.model.dto.MdmcChangeStatusDto;
-import com.ananops.provider.model.dto.MdmcQueryDto;
-import com.ananops.provider.model.dto.MdmcStatusDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.service.MdmcTaskLogService;
 import com.ananops.provider.service.MdmcTaskService;
 import com.ananops.wrapper.WrapMapper;
@@ -17,6 +14,7 @@ import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.bouncycastle.jcajce.provider.symmetric.SEED;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,7 +93,7 @@ public class MdmcTaskController extends BaseController {
 //        List<MdmcTask> taskList=taskService.getTaskListByMaintainerId(statusDto);
 //        return WrapMapper.ok(taskList);
 //    }
-    @PostMapping(value = "/getTaskList")
+    @PostMapping(value = "/getAllTaskList")
     @ApiOperation(httpMethod = "POST",value = "返回全部工单列表")
     public Wrapper<List<MdmcTask>> getTaskList(@RequestBody MdmcStatusDto statusDto){
         List<MdmcTask> taskList=taskService.getTaskList(statusDto);
@@ -141,5 +139,12 @@ public class MdmcTaskController extends BaseController {
     public Wrapper<List<MdmcTask>> getTaskListByIdAndStatus(@RequestBody MdmcQueryDto queryDto){
         List<MdmcTask> taskList=taskService.getTaskListByIdAndStatus(queryDto);
         return WrapMapper.ok(taskList);
+    }
+
+    @PostMapping(value = "/getTaskList")
+    @ApiOperation(httpMethod = "POST",value = "分页查询列表")
+    public Wrapper<MdmcPageDto> getTaskList(@RequestBody MdmcQueryDto queryDto){
+        MdmcPageDto pageDto=taskService.getTaskListByPage(queryDto);
+        return WrapMapper.ok(pageDto);
     }
 }
