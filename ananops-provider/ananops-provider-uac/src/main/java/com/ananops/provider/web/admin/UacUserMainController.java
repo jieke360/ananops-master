@@ -11,6 +11,7 @@
 
 package com.ananops.provider.web.admin;
 
+import com.ananops.provider.model.dto.log.PageLog;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ananops.base.dto.LoginAuthDto;
@@ -94,11 +95,11 @@ public class UacUserMainController extends BaseController {
 	 */
 	@PostMapping(value = "/queryUserLogListWithPage")
 	@ApiOperation(httpMethod = "POST", value = "分页查询用户操作日志列表")
-	public Wrapper<PageInfo<UacLog>> queryUserLogListWithPage(@ApiParam(name = "user", value = "用户信息") @RequestBody UacLog log) {
+	public Wrapper<PageInfo<UacLog>> queryUserLogListWithPage(@ApiParam(name = "user", value = "用户信息") @RequestBody PageLog log) {
 
 		logger.info("分页查询用户操作日志列表");
 		PageHelper.startPage(log.getPageNum(), log.getPageSize());
-		List<UacLog> list = uacUserService.queryUserLogListWithUserId(getLoginAuthDto().getUserId());
+		List<UacLog> list = uacUserService.queryUserLogListWithUserId(log.getUserId());
 		PageInfo<UacLog> pageInfo = new PageInfo<>(list);
 		return WrapMapper.ok(pageInfo);
 	}
