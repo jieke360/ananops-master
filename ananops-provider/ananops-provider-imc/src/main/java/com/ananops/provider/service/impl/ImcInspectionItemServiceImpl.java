@@ -13,8 +13,8 @@ import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.domain.ImcUserItem;
 import com.ananops.provider.model.dto.ImcAddInspectionItemDto;
 import com.ananops.provider.model.dto.ItemQueryDto;
-import com.ananops.provider.model.dto.TaskQueryDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
+
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
@@ -85,10 +85,11 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
 
     /**
      *
-     * @param taskId
+     * @param itemQueryDto
      * @return
      */
-    public List<ImcInspectionItem> getAllItemByTaskId(Long taskId){
+    public List<ImcInspectionItem> getAllItemByTaskId(ItemQueryDto itemQueryDto){
+        Long taskId = itemQueryDto.getTaskId();
         Example example1 = new Example(ImcInspectionTask.class);
         Example.Criteria criteria1 = example1.createCriteria();
         criteria1.andEqualTo("id",taskId);
@@ -99,6 +100,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Example example2 = new Example(ImcInspectionItem.class);
         Example.Criteria criteria2 = example2.createCriteria();
         criteria2.andEqualTo("inspectionTaskId",taskId);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example2);
         return imcInspectionItems;
     }
@@ -118,7 +120,9 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         return imcInspectionItemMapper.selectByExample(example).get(0);
     }
 
-    public List<ImcInspectionItem> getItemByItemStatusAndTaskId(Long taskId,Integer status){
+    public List<ImcInspectionItem> getItemByItemStatusAndTaskId(ItemQueryDto itemQueryDto){
+        Long taskId = itemQueryDto.getTaskId();
+        Integer status = itemQueryDto.getStatus();
         Example example = new Example(ImcInspectionItem.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("inspectionTaskId",taskId);
@@ -129,6 +133,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         if(imcInspectionItemMapper.selectCountByExample(example)==0){
             throw new BusinessException(ErrorCodeEnum.GL9999090);
         }
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         return imcInspectionItemMapper.selectByExample(example);
     }
 
@@ -140,6 +145,26 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
     public List<ImcInspectionItem> getItemByUserIdAndStatus(ItemQueryDto itemQueryDto){
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         return imcInspectionItemMapper.queryItemByUserIdAndStatus(itemQueryDto.getUserId(),itemQueryDto.getStatus());
+    }
+
+    public List<ImcInspectionItem> getItemByMaintainerId(ItemQueryDto itemQueryDto){
+        Long maintainerId = itemQueryDto.getMaintainerId();
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("maintainerId",maintainerId);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        return imcInspectionItemMapper.selectByExample(example);
+    }
+
+    public List<ImcInspectionItem> getItemByMaintainerIdAndStatus(ItemQueryDto itemQueryDto){
+        Long maintainerId = itemQueryDto.getMaintainerId();
+        Integer status = itemQueryDto.getStatus();
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("maintainerId",maintainerId);
+        criteria.andEqualTo("status",status);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        return imcInspectionItemMapper.selectByExample(example);
     }
 
     public Integer setBasicInfoFromContract(){//将从合同中获取到的基本信息填写到巡检任务中

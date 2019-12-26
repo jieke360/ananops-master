@@ -11,6 +11,7 @@
 
 package com.ananops.provider.model.dto.group;
 
+import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.role.BindUserDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
