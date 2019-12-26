@@ -15,22 +15,9 @@ public class MdmcStatusDto extends BaseQuery {
     @ApiModelProperty("状态")
     private Integer status;
 
-    @ApiModelProperty("用户id")
-    private Long userId;
-
-    @ApiModelProperty("甲方id")
-    private Long principalId;
-
-    @ApiModelProperty("服务商id")
-    private Long facilitatorId;
-
-    @ApiModelProperty("维修工id")
-    private Long maintainerId;
-
     @ApiModelProperty("工单id")
     private Long taskId;
 
-    @ApiModelProperty("项目id")
-    private Long projectId;
+
 
 }

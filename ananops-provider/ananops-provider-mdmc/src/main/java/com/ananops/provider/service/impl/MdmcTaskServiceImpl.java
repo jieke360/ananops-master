@@ -1,8 +1,6 @@
 package com.ananops.provider.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.ananops.RedisKeyUtil;
-import com.ananops.base.constant.AliyunMqTopicConstants;
+
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
@@ -15,7 +13,6 @@ import com.ananops.provider.model.enums.*;
 import com.ananops.provider.service.MdmcTaskItemService;
 import com.ananops.provider.service.MdmcTaskService;
 import com.github.pagehelper.PageHelper;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -44,14 +41,18 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     @Override
     public MdmcAddTaskDto saveTask(MdmcAddTaskDto mdmcAddTaskDto,LoginAuthDto loginAuthDto) {
+
         MdmcTask task = new MdmcTask();
         BeanUtils.copyProperties(mdmcAddTaskDto,task);
         task.setUpdateInfo(loginAuthDto);
+        if (mdmcAddTaskDto.getUserId()==null){
+           throw new BusinessException(ErrorCodeEnum.GL99990003);
+        }
 //        MqMessageData mqMessageData;
 //        String body = JSON.toJSONString(mdmcAddTaskDto);
 //        String topic = AliyunMqTopicConstants.MqTagEnum.UPDATE_INSPECTION_TASK.getTopic();
 //        String tag = AliyunMqTopicConstants.MqTagEnum.UPDATE_INSPECTION_TASK.getTag();
-        if(task.isNew()){
+        if(mdmcAddTaskDto.getId()==null){
             //如果当前是新建一条任务
             //获取所有的巡检任务子项
             List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList = mdmcAddTaskDto.getMdmcAddTaskItemDtoList();
@@ -60,6 +61,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(taskId),body);
 //            mqMessageData = new MqMessageData(body, topic, tag, key);
 //            taskManager.saveTask(mqMessageData,task,true);
+            task.setStatus(2);
             taskMapper.insert(task);
             logger.info("新创建一条维修记录：" + task.toString());
             mdmcAddTaskItemDtoList.forEach(taskItem->{//保存所有任务子项
@@ -68,15 +70,23 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
                 BeanUtils.copyProperties(taskItemService.saveItem(taskItem,loginAuthDto),taskItem);
             });
             //更新返回结果
+
             BeanUtils.copyProperties(task,mdmcAddTaskDto);
             BeanUtils.copyProperties(mdmcAddTaskItemDtoList,mdmcAddTaskDto);
         }else{
+            Long taskId = mdmcAddTaskDto.getId();
+            Example example = new Example(MdmcTask.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("id",taskId);
+            List<MdmcTask> taskList =taskMapper.selectByExample(example);
+            if(taskList.size()==0){//如果没有此任务
+                throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+            }
             //如果当前是更新一条记录
 //            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(task.getId()),body);
 //            mqMessageData = new MqMessageData(body, topic, tag, key);
 //            taskManager.saveTask(mqMessageData,task,false);
-            task.setStatus(2);
-            taskMapper.insert(task);
+            taskMapper.updateByPrimaryKeySelective(task);
             //更新返回结果
             BeanUtils.copyProperties(task,mdmcAddTaskDto);
         }
@@ -84,6 +94,30 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         return mdmcAddTaskDto;
     }
 
+    @Override
+    public MdmcTaskDto modifyTask(MdmcTaskDto mdmcTaskDto) {
+        MdmcTask task = new MdmcTask();
+        BeanUtils.copyProperties(mdmcTaskDto,task);
+        Long taskId = mdmcTaskDto.getId();
+        if (taskId==null){
+            throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+        }
+        Example example = new Example(MdmcTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        List<MdmcTask> taskList =taskMapper.selectByExample(example);
+        if(taskList.size()==0){//如果没有此任务
+            throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+        }
+        //如果当前是更新一条记录
+//            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(task.getId()),body);
+//            mqMessageData = new MqMessageData(body, topic, tag, key);
+//            taskManager.saveTask(mqMessageData,task,false);
+        taskMapper.updateByPrimaryKeySelective(task);
+        //更新返回结果
+        BeanUtils.copyProperties(task,mdmcTaskDto);
+        return mdmcTaskDto;
+    }
 
 
     @Override
@@ -135,53 +169,53 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     }
 
 
-    @Override
-    public List<MdmcTask> getTaskListByUserId(MdmcStatusDto statusDto) {
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",statusDto.getUserId());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098,example);
-        }
-        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
-        return taskMapper.selectByExample(example);
-    }
-
-    @Override
-    public List<MdmcTask> getTaskListByMaintainerId(MdmcStatusDto statusDto) {
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("maintainerId",statusDto.getMaintainerId());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
-        return taskMapper.selectByExample(example);
-    }
-
-    @Override
-    public List<MdmcTask> getTaskListByFacilitatorId(MdmcStatusDto statusDto) {
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("facilitatorId",statusDto.getFacilitatorId());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
-        return taskMapper.selectByExample(example);
-    }
-
-    @Override
-    public List<MdmcTask> getTaskListByPrincipalId(MdmcStatusDto statusDto) {
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("principalId",statusDto.getPrincipalId());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
-        return taskMapper.selectByExample(example);
-    }
+//    @Override
+//    public List<MdmcTask> getTaskListByUserId(MdmcStatusDto statusDto) {
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("userId",statusDto.getUserId());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098,example);
+//        }
+//        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
+//
+//    @Override
+//    public List<MdmcTask> getTaskListByMaintainerId(MdmcStatusDto statusDto) {
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("maintainerId",statusDto.getMaintainerId());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
+//
+//    @Override
+//    public List<MdmcTask> getTaskListByFacilitatorId(MdmcStatusDto statusDto) {
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("facilitatorId",statusDto.getFacilitatorId());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
+//
+//    @Override
+//    public List<MdmcTask> getTaskListByPrincipalId(MdmcStatusDto statusDto) {
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("principalId",statusDto.getPrincipalId());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
 
     @Override
     public List<MdmcTask> getTaskListByStatus(MdmcStatusDto statusDto) {
@@ -202,81 +236,81 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         return taskMapper.selectAll();
     }
 
-    @Override
-    public List<MdmcTask> getTaskListByProjectId(MdmcStatusDto statusDto) {
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId",statusDto.getProjectId());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
-        return taskMapper.selectByExample(example);
-    }
+//    @Override
+//    public List<MdmcTask> getTaskListByProjectId(MdmcStatusDto statusDto) {
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("projectId",statusDto.getProjectId());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
 
-    @Override
-    public List<MdmcTask> getTaskListByUserIdAndStatus(MdmcStatusDto statusDto) {
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",statusDto.getUserId());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        criteria.andEqualTo("status",statusDto.getStatus());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999094);
-        }
-        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
-        return taskMapper.selectByExample(example);
-    }
-
-    @Override
-    public List<MdmcTask> getTaskListByMaintainerIdAndStatus(MdmcStatusDto statusDto) {
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("maintainerId",statusDto.getMaintainerId());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        criteria.andEqualTo("status",statusDto.getStatus());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999094);
-        }
-        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
-        return taskMapper.selectByExample(example);
-    }
-
-    @Override
-    public List<MdmcTask> getTaskListByFacilitatorIdAndStatus(MdmcStatusDto statusDto) {
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("facilitatorId",statusDto.getFacilitatorId());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        criteria.andEqualTo("status",statusDto.getStatus());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999094);
-        }
-        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
-        return taskMapper.selectByExample(example);
-    }
-
-    @Override
-    public List<MdmcTask> getTaskListByPrincipalIdAndStatus(MdmcStatusDto statusDto) {
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("principalId",statusDto.getPrincipalId());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        criteria.andEqualTo("status",statusDto.getStatus());
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999094);
-        }
-        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
-        return taskMapper.selectByExample(example);
-    }
+//    @Override
+//    public List<MdmcTask> getTaskListByUserIdAndStatus(MdmcStatusDto statusDto) {
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("userId",statusDto.getUserId());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        criteria.andEqualTo("status",statusDto.getStatus());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999094);
+//        }
+//        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
+//
+//    @Override
+//    public List<MdmcTask> getTaskListByMaintainerIdAndStatus(MdmcStatusDto statusDto) {
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("maintainerId",statusDto.getMaintainerId());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        criteria.andEqualTo("status",statusDto.getStatus());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999094);
+//        }
+//        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
+//
+//    @Override
+//    public List<MdmcTask> getTaskListByFacilitatorIdAndStatus(MdmcStatusDto statusDto) {
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("facilitatorId",statusDto.getFacilitatorId());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        criteria.andEqualTo("status",statusDto.getStatus());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999094);
+//        }
+//        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
+//
+//    @Override
+//    public List<MdmcTask> getTaskListByPrincipalIdAndStatus(MdmcStatusDto statusDto) {
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("principalId",statusDto.getPrincipalId());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        criteria.andEqualTo("status",statusDto.getStatus());
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999094);
+//        }
+//        PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
 
     @Override
     public List<MdmcTask> getTaskListByIdAndStatus(MdmcQueryDto queryDto) {
@@ -302,6 +336,50 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         return taskMapper.selectByExample(example);
 
     }
+
+//    @Override
+//    public List<MdmcTask> getTaskListByIdAndStatusArrary(MdmcStatusArrayDto statusArrayDto) {
+//        String roleCode=statusArrayDto.getRoleCode();
+//        Long id=statusArrayDto.getId();
+//        Integer[] status=statusArrayDto.getStatus();
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        List<MdmcTask> taskList=new ArrayList<>();
+//        if (status!=null){
+//            for (Integer i:status
+//                 ) {
+//
+//                criteria.andEqualTo("status",status[i]);
+//               switch (roleCode){
+//                case "user_watcher":criteria.andEqualTo("userId",id);break;
+//                case "user_leader":criteria.andEqualTo("principalId",id);break;
+//                case "engineer":criteria.andEqualTo("maintainerId",id);break;
+//                case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+//                default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+//
+//
+//
+//               }
+//            }
+//            if(taskMapper.selectCountByExample(example)==0){
+//                throw new BusinessException(ErrorCodeEnum.GL9999098);
+//            }
+//            PageHelper.startPage(statusArrayDto.getPageNum(),statusArrayDto.getPageSize());
+//            return taskMapper.selectByExample(example);
+//        }
+//        switch (roleCode){
+//            case "user_watcher":criteria.andEqualTo("userId",id);break;
+//            case "user_leader":criteria.andEqualTo("principalId",id);break;
+//            case "engineer":criteria.andEqualTo("maintainerId",id);break;
+//            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+//            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+//        }
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        PageHelper.startPage(statusArrayDto.getPageNum(),statusArrayDto.getPageSize());
+//        return taskMapper.selectByExample(example);
+//    }
 
     @Override
     public MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto) {

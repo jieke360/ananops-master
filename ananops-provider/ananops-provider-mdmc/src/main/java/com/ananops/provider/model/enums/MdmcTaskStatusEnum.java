@@ -25,7 +25,7 @@ public enum MdmcTaskStatusEnum {
 
     ShenHeZhong2(8, "维修工提交维修结果，待服务商审核维修结果"),
 
-//    ShenHeZhong3(9, "服务商审核账单通过，待负责人审核账单"),
+    ShenHeZhong3(9, "服务商审核账单通过，待负责人审核账单"),
 
     DaiQueRen(10, "负责人审核账单通过，待值机员确认"),
 

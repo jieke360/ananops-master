@@ -19,6 +19,8 @@ public interface MdmcTaskService extends IService<MdmcTask> {
 
     MdmcAddTaskDto saveTask(MdmcAddTaskDto mdmcAddTaskDto, LoginAuthDto loginAuthDto);
 
+    MdmcTaskDto modifyTask(MdmcTaskDto mdmcTaskDto);
+
 
     MdmcTask modifyTaskStatus(MdmcChangeStatusDto changeStatusDto, LoginAuthDto loginAuthDto);
 
@@ -26,29 +28,31 @@ public interface MdmcTaskService extends IService<MdmcTask> {
 
     Void MaintainerTransfer();
 
-    List<MdmcTask> getTaskListByUserId(MdmcStatusDto statusDto);
-
-    List<MdmcTask> getTaskListByMaintainerId(MdmcStatusDto statusDto);
-
-    List<MdmcTask> getTaskListByFacilitatorId(MdmcStatusDto statusDto);
-
-    List<MdmcTask> getTaskListByPrincipalId(MdmcStatusDto statusDto);
+//    List<MdmcTask> getTaskListByUserId(MdmcStatusDto statusDto);
+//
+//    List<MdmcTask> getTaskListByMaintainerId(MdmcStatusDto statusDto);
+//
+//    List<MdmcTask> getTaskListByFacilitatorId(MdmcStatusDto statusDto);
+//
+//    List<MdmcTask> getTaskListByPrincipalId(MdmcStatusDto statusDto);
 
     List<MdmcTask> getTaskListByStatus(MdmcStatusDto statusDto);
 
     List<MdmcTask> getTaskList(MdmcStatusDto statusDto);
 
-    List<MdmcTask> getTaskListByProjectId(MdmcStatusDto statusDto);
-
-    List<MdmcTask> getTaskListByUserIdAndStatus(MdmcStatusDto statusDto);
-
-    List<MdmcTask> getTaskListByMaintainerIdAndStatus(MdmcStatusDto statusDto);
-
-    List<MdmcTask> getTaskListByFacilitatorIdAndStatus(MdmcStatusDto statusDto);
-
-    List<MdmcTask> getTaskListByPrincipalIdAndStatus(MdmcStatusDto statusDto);
+//    List<MdmcTask> getTaskListByProjectId(MdmcStatusDto statusDto);
+//
+//    List<MdmcTask> getTaskListByUserIdAndStatus(MdmcStatusDto statusDto);
+//
+//    List<MdmcTask> getTaskListByMaintainerIdAndStatus(MdmcStatusDto statusDto);
+//
+//    List<MdmcTask> getTaskListByFacilitatorIdAndStatus(MdmcStatusDto statusDto);
+//
+//    List<MdmcTask> getTaskListByPrincipalIdAndStatus(MdmcStatusDto statusDto);
 
     List<MdmcTask> getTaskListByIdAndStatus(MdmcQueryDto queryDto);
+
+//    List<MdmcTask> getTaskListByIdAndStatusArrary(MdmcStatusArrayDto statusArrayDto);
 
     MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto);
 }
