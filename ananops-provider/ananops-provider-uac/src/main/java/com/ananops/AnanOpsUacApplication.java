@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 /**
- * The class Paas cloud uac application.
+ * The class ananops uac application.
  *
  * @author ananops.net@gmail.com
  */

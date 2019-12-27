@@ -13,7 +13,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
- * The class Paas cloud gateway application.
+ * The class ananops gateway application.
  *
  * @author ananops.net@gmail.com
  */
