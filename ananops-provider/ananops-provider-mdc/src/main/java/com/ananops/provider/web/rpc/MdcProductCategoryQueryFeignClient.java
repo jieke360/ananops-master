@@ -34,6 +34,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -46,6 +47,7 @@ import java.util.List;
 @RefreshScope
 @RestController
 @Api(value = "API - MdcProductCategoryQueryFeignClient", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@ApiIgnore
 public class MdcProductCategoryQueryFeignClient extends BaseService<MdcProductCategory> implements MdcProductCategoryQueryFeignApi {
 
 	@Resource

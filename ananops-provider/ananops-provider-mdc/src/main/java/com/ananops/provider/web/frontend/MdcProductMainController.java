@@ -26,6 +26,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -38,6 +39,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/product", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Api(value = "WEB - MdcProductMainController", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@ApiIgnore
 public class MdcProductMainController extends BaseController {
 
 	@Resource

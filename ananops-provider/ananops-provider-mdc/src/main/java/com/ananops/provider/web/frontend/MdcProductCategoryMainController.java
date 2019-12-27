@@ -27,6 +27,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -39,6 +40,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/category", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Api(value = "WEB - MdcProductCategoryMainController", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@ApiIgnore
 public class MdcProductCategoryMainController extends BaseController {
 
 	@Resource
