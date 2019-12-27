@@ -6,7 +6,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.config.server.EnableConfigServer;
 
 /**
- * The class Paas cloud discovery application.
+ * The class ananops discovery application.
  *
  * @author ananops.net@gmail.com
  */

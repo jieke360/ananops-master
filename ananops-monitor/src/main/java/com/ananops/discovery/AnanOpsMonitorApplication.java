@@ -14,7 +14,7 @@ import org.springframework.cloud.netflix.turbine.EnableTurbine;
 import org.springframework.context.annotation.Bean;
 
 /**
- * The class Paas cloud monitor application.
+ * The class ananops monitor application.
  *
  * @author ananops.net@gmail.com
  */
