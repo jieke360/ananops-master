@@ -16,6 +16,8 @@ import com.ananops.provider.model.domain.UacGroup;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * The interface Uac group mapper.
  *
@@ -24,4 +26,5 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface UacGroupMapper extends MyMapper<UacGroup> {
+    List<UacGroup> selectGroupListByUserId(Long userId);
 }

@@ -111,7 +111,7 @@ public class UacGroupMainController extends BaseController {
 	 */
 	@PostMapping(value = "/save")
 	@LogAnnotation
-	@ApiOperation(httpMethod = "POST", value = "修改组织信息")
+	@ApiOperation(httpMethod = "POST", value = "编辑组织信息")
 	public Wrapper editGroup(@ApiParam(name = "group", value = "组织信息") @RequestBody UacGroup group) {
 		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
 		uacGroupService.saveUacGroup(group, loginAuthDto);

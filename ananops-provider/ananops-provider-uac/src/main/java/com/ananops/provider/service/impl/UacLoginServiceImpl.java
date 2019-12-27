@@ -58,6 +58,7 @@ public class UacLoginServiceImpl implements UacLoginService {
 		}
 
 		UacUser uacUser = uacUserService.findByLoginName(loginName);
+
 		if (PublicUtil.isEmpty(uacUser)) {
 			log.info("找不到用户信息 loginName={}", loginName);
 			throw new UacBizException(ErrorCodeEnum.UAC10011002, loginName);
@@ -78,6 +79,8 @@ public class UacLoginServiceImpl implements UacLoginService {
 		loginAuthDto.setUserId(uacUser.getId());
 		loginAuthDto.setUserName(uacUser.getUserName());
 		loginAuthDto.setLoginName(uacUser.getLoginName());
+		loginAuthDto.setGroupId(uacUser.getGroupId());
+		loginAuthDto.setGroupName(uacUser.getGroupName());
 		return loginAuthDto;
 	}
 

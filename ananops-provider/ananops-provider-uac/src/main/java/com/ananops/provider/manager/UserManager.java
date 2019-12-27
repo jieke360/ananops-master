@@ -67,7 +67,7 @@ public class UserManager {
 		if (updateResult < 1) {
 			log.error("用户【 {} 】重置密码失败", update.getLoginName());
 		} else {
-			log.info("用户【 {} 】重置密码失败", update.getLoginName());
+			log.info("用户【 {} 】重置密码成功", update.getLoginName());
 		}
 	}
 
