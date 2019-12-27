@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * The class Cart list query.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @Data
 public class CartListQuery implements Serializable {

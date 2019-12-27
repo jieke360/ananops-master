@@ -39,7 +39,7 @@ import java.util.Objects;
 /**
  * The class Elastic job auto configuration.
  *
- * @author paascloud.net @gmail.com
+ * @author ananops.net @gmail.com
  */
 @Configuration
 @ConditionalOnExpression("'${elaticjob.zookeeper.server-lists}'.length() > 0")

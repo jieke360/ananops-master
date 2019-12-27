@@ -1,4 +1,3 @@
-
 package com.ananops.base.enums;
 
 

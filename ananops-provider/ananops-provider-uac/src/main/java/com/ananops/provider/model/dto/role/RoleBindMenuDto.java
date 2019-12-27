@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * The class Grant auth role.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @Data
 @ApiModel
