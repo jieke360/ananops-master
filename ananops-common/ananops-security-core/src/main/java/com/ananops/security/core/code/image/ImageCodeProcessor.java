@@ -63,8 +63,6 @@ public class ImageCodeProcessor extends AbstractValidateCodeProcessor<ImageCode>
 
 		String json = objectMapper.writeValueAsString(result);
 		HttpServletResponse response = request.getResponse();
-//		ImageIO.write(imageCode.getImage(),"JPEG",response.getOutputStream());/
-//		json = json.replaceAll("[\\s*\t\n\r]", "");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json);
 	}
