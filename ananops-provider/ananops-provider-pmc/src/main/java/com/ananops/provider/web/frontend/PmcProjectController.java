@@ -47,7 +47,7 @@ public class PmcProjectController extends BaseController {
 
     @PostMapping("/getById/{id}")
     @ApiOperation(httpMethod = "POST",value = "根据id查询项目详情")
-    public Wrapper getProjectById(@PathVariable Long id){
+    public Wrapper<PmcProject> getProjectById(@PathVariable Long id){
         log.info("查询项目详情,id={}",id);
         PmcProject pmcProject = pmcProjectService.getProjectById(id);
         return WrapMapper.ok(pmcProject);
@@ -55,14 +55,14 @@ public class PmcProjectController extends BaseController {
 
     @PostMapping("/getProjectListByGroupId/{groupId}")
     @ApiOperation(httpMethod = "POST",value = "获取某个组织的项目列表")
-    public Wrapper getProjectListByGroupId(@PathVariable Long groupId){
+    public Wrapper<List<PmcProject>> getProjectListByGroupId(@PathVariable Long groupId){
         List<PmcProject> pmcProjectList = pmcProjectService.getProjectListByGroupId(groupId);
         return WrapMapper.ok(pmcProjectList);
     }
 
     @PostMapping("/getProjectListWithPage")
     @ApiOperation(httpMethod = "POST", value = "分页获取所有项目列表")
-    public Wrapper getProjectListWithPage(@ApiParam(value = "分页排序参数") @RequestBody BaseQuery baseQuery) {
+    public Wrapper<PageInfo> getProjectListWithPage(@ApiParam(value = "分页排序参数") @RequestBody BaseQuery baseQuery) {
         PageInfo pageInfo = pmcProjectService.getProjectListWithPage(baseQuery);
         return WrapMapper.ok(pageInfo);
     }
@@ -77,7 +77,7 @@ public class PmcProjectController extends BaseController {
 
     @PostMapping("/getProjectByUserId/{userId}")
     @ApiOperation(httpMethod = "POST",value = "根据用户id获取项目信息")
-    public Wrapper getProjectByUserId(@PathVariable Long userId){
+    public Wrapper<List<PmcProject>> getProjectByUserId(@PathVariable Long userId){
         log.info("查询项目信息,userId={}",userId);
         List<PmcProject> pmcProjectList  = pmcProjectService.getProjectByUserId(userId);
         return WrapMapper.ok(pmcProjectList);

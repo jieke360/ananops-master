@@ -44,7 +44,7 @@ public class PmcInspectDetailDto implements Serializable {
     /**
      * 维修工id
      */
-    @Column(name = "maintainer_id")
+    @ApiModelProperty(value = "维修工id")
     private Long maintainerId;
 
     /**
@@ -74,6 +74,7 @@ public class PmcInspectDetailDto implements Serializable {
     /**
      * 备注
      */
+    @ApiModelProperty(value = "备注")
     private String remark;
 
 }

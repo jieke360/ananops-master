@@ -37,14 +37,14 @@ public class PmcInspectDetailController extends BaseController {
 
     @PostMapping("/getInspectDetailById/{id}")
     @ApiOperation(httpMethod = "POST", value = "根据id获取巡检详情")
-    public Wrapper getInspectDetailById(@PathVariable Long id) {
+    public Wrapper<PmcInspectDetail> getInspectDetailById(@PathVariable Long id) {
         PmcInspectDetail pmcInspectDetail = pmcInspectDetailService.getInspectDetailById(id);
         return WrapMapper.ok(pmcInspectDetail);
     }
 
     @PostMapping("/getInspectDetailList/{inspectTaskId}")
     @ApiOperation(httpMethod = "POST", value = "获取巡检任务详情")
-    public Wrapper getInspectDetailList(@PathVariable Long inspectTaskId) {
+    public Wrapper<List<PmcInspectDetail>> getInspectDetailList(@PathVariable Long inspectTaskId) {
         List<PmcInspectDetail> pmcInspectDetailList = pmcInspectDetailService.getInspectDetailList(inspectTaskId);
         return WrapMapper.ok(pmcInspectDetailList);
     }
