@@ -52,7 +52,7 @@ public interface MdmcTaskService extends IService<MdmcTask> {
 
     List<MdmcTask> getTaskListByIdAndStatus(MdmcQueryDto queryDto);
 
-//    List<MdmcTask> getTaskListByIdAndStatusArrary(MdmcStatusArrayDto statusArrayDto);
+    List<MdmcListDto> getTaskListByIdAndStatusArrary(MdmcStatusArrayDto statusArrayDto);
 
     MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto);
 }

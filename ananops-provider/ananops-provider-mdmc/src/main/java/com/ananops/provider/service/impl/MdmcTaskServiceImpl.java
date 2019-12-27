@@ -337,49 +337,47 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     }
 
-//    @Override
-//    public List<MdmcTask> getTaskListByIdAndStatusArrary(MdmcStatusArrayDto statusArrayDto) {
-//        String roleCode=statusArrayDto.getRoleCode();
-//        Long id=statusArrayDto.getId();
-//        Integer[] status=statusArrayDto.getStatus();
-//        Example example = new Example(MdmcTask.class);
-//        Example.Criteria criteria = example.createCriteria();
-//        List<MdmcTask> taskList=new ArrayList<>();
-//        if (status!=null){
-//            for (Integer i:status
-//                 ) {
-//
-//                criteria.andEqualTo("status",status[i]);
-//               switch (roleCode){
-//                case "user_watcher":criteria.andEqualTo("userId",id);break;
-//                case "user_leader":criteria.andEqualTo("principalId",id);break;
-//                case "engineer":criteria.andEqualTo("maintainerId",id);break;
-//                case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
-//                default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
-//
-//
-//
-//               }
-//            }
-//            if(taskMapper.selectCountByExample(example)==0){
-//                throw new BusinessException(ErrorCodeEnum.GL9999098);
-//            }
-//            PageHelper.startPage(statusArrayDto.getPageNum(),statusArrayDto.getPageSize());
-//            return taskMapper.selectByExample(example);
-//        }
-//        switch (roleCode){
-//            case "user_watcher":criteria.andEqualTo("userId",id);break;
-//            case "user_leader":criteria.andEqualTo("principalId",id);break;
-//            case "engineer":criteria.andEqualTo("maintainerId",id);break;
-//            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
-//            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
-//        }
-//        if(taskMapper.selectCountByExample(example)==0){
-//            throw new BusinessException(ErrorCodeEnum.GL9999098);
-//        }
-//        PageHelper.startPage(statusArrayDto.getPageNum(),statusArrayDto.getPageSize());
-//        return taskMapper.selectByExample(example);
-//    }
+    @Override
+    public List<MdmcListDto> getTaskListByIdAndStatusArrary(MdmcStatusArrayDto statusArrayDto) {
+        String roleCode=statusArrayDto.getRoleCode();
+        Long id=statusArrayDto.getId();
+        Integer[] status=statusArrayDto.getStatus();
+        Example example = new Example(MdmcTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        List<MdmcListDto> listDtoList=new ArrayList<>();
+        switch (roleCode){
+            case "user_watcher":criteria.andEqualTo("userId",id);break;
+            case "user_leader":criteria.andEqualTo("principalId",id);break;
+            case "engineer":criteria.andEqualTo("maintainerId",id);break;
+            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+        }
+        if (status!=null){
+            for (Integer i:status){
+                Example example1 = new Example(MdmcTask.class);
+                Example.Criteria criteria1 = example1.createCriteria();
+                criteria1.andEqualTo("status",i);
+                switch (roleCode){
+                    case "user_watcher":criteria1.andEqualTo("userId",id);break;
+                    case "user_leader":criteria1.andEqualTo("principalId",id);break;
+                    case "engineer":criteria1.andEqualTo("maintainerId",id);break;
+                    case "fac_service":criteria1.andEqualTo("facilitatorId",id);break;
+                    default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+                }
+                MdmcListDto listDto=new MdmcListDto();
+                listDto.setStatus(i);
+                listDto.setTaskList(taskMapper.selectByExample(example1));
+                listDtoList.add(listDto);
+            }
+        }
+       else{
+        MdmcListDto listDto1=new MdmcListDto();
+
+        listDto1.setTaskList(taskMapper.selectByExample(example));
+        listDtoList.add(listDto1);}
+        PageHelper.startPage(statusArrayDto.getPageNum(),statusArrayDto.getPageSize());
+        return listDtoList;
+    }
 
     @Override
     public MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto) {

@@ -25,6 +25,10 @@ public class MdmcReviewServiceImpl extends BaseService<MdmcReview> implements Md
     public MdmcReview addReview(MdmcReview review,LoginAuthDto loginAuthDto) {
         review.setUpdateInfo(loginAuthDto);
         Long taskId = review.getTaskId();
+        Long userId=review.getUserId();
+        if (userId==null){
+            throw new BusinessException(ErrorCodeEnum.GL99990003);
+        }
         Example example1 = new Example(MdmcReview.class);
         Example.Criteria criteria1 = example1.createCriteria();
         criteria1.andEqualTo("taskId",taskId);
@@ -34,10 +38,6 @@ public class MdmcReviewServiceImpl extends BaseService<MdmcReview> implements Md
         if(taskMapper.selectCountByExample(example2)==0){
             //当前被评论的任务不存在
             throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
-        }
-        if(reviewMapper.selectCountByExample(example2)>0){
-            //当前巡检任务已经存在评论，不能再评论了
-            throw new BusinessException(ErrorCodeEnum.GL9999099,review.getTaskId());
         }
         Long reviewId = super.generateId();
         review.setId(reviewId);

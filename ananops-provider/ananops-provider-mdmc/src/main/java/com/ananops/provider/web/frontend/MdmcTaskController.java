@@ -147,12 +147,12 @@ public class MdmcTaskController extends BaseController {
         return WrapMapper.ok(taskList);
     }
 
-//    @PostMapping(value = "/getTaskListByIdAndStatusArrary")
-//    @ApiOperation(httpMethod = "POST",value = "根据id和状态数组查询列表")
-//    public Wrapper<List<MdmcTask>> getTaskListByIdAndStatusArrary(@RequestBody MdmcStatusArrayDto statusArrayDto){
-//        List<MdmcTask> taskList=taskService.getTaskListByIdAndStatusArrary(statusArrayDto);
-//        return WrapMapper.ok(taskList);
-//    }
+    @PostMapping(value = "/getTaskListByIdAndStatusArrary")
+    @ApiOperation(httpMethod = "POST",value = "根据id和状态数组查询列表")
+    public Wrapper<List<MdmcListDto>> getTaskListByIdAndStatusArrary(@RequestBody MdmcStatusArrayDto statusArrayDto){
+        List<MdmcListDto> listDtoList=taskService.getTaskListByIdAndStatusArrary(statusArrayDto);
+        return WrapMapper.ok(listDtoList);
+    }
 
     @PostMapping(value = "/getTaskList")
     @ApiOperation(httpMethod = "POST",value = "分页查询列表")
