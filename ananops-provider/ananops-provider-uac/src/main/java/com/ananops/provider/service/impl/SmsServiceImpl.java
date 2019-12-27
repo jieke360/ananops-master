@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * The class Sms service.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @Slf4j
 @Service
