@@ -1,4 +1,3 @@
-
 package com.ananops.base.enums;
 
 
@@ -8,6 +7,10 @@ package com.ananops.base.enums;
  * @author ananops.net @gmail.com
  */
 public enum ErrorCodeEnum {
+	/**
+	 * Gl 9999089 error code enum.
+	 */
+	GL9999089(9999089,"没有此角色"),
 	/**
 	 * Gl 9999090 error code enum.
 	 */

@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * The class User modify pwd dto.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @Data
 @ApiModel(value = "用户修改密码Dto")

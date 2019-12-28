@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * The class Uac log service.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @Service
 @Transactional(rollbackFor = Exception.class)

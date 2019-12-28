@@ -95,7 +95,7 @@
             <version>2.1.2</version>
         </dependency>
        <!-- <dependency>
-            <groupId>com.liuzm.paascloud</groupId>
+            <groupId>com.liuzm.ananops</groupId>
             <artifactId>elastic-job-lite-starter</artifactId>
             <version>1.0</version>
         </dependency>-->

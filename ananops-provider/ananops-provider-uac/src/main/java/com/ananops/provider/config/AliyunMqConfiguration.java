@@ -1,20 +1,9 @@
-/*
- * Copyright (c) 2018. paascloud.net All Rights Reserved.
- * 项目名称：paascloud快速搭建企业级分布式微服务平台
- * 类名称：AliyunMqConfiguration.java
- * 创建人：刘兆明
- * 联系方式：paascloud.net@gmail.com
- * 开源地址: https://github.com/paascloud
- * 博客地址: http://blog.paascloud.net
- * 项目官网: http://paascloud.net
- */
-
 package com.ananops.provider.config;
 
 import com.ananops.PublicUtil;
 import com.ananops.base.constant.AliyunMqTopicConstants;
 import com.ananops.base.constant.GlobalConstant;
-import com.ananops.config.properties.PaascloudProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.ananops.provider.mq.consumer.listener.UacPushMessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -29,7 +18,7 @@ import javax.annotation.Resource;
 /**
  * The class Aliyun mq configuration.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @Slf4j
 @Configuration
@@ -38,7 +27,7 @@ public class AliyunMqConfiguration {
 	private UacPushMessageListener uacPushMessageListener;
 
 	@Resource
-	private PaascloudProperties paascloudProperties;
+	private AnanopsProperties AnanopsProperties;
 
 	@Resource
 	private TaskExecutor taskExecutor;
@@ -52,8 +41,8 @@ public class AliyunMqConfiguration {
 	 */
 	@Bean
 	public DefaultMQPushConsumer defaultMQPushConsumer() throws MQClientException {
-		DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(paascloudProperties.getAliyun().getRocketMq().getConsumerGroup());
-		consumer.setNamesrvAddr(paascloudProperties.getAliyun().getRocketMq().getNamesrvAddr());
+		DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(AnanopsProperties.getAliyun().getRocketMq().getConsumerGroup());
+		consumer.setNamesrvAddr(AnanopsProperties.getAliyun().getRocketMq().getNamesrvAddr());
 		consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
 
 		String[] strArray = AliyunMqTopicConstants.ConsumerTopics.UAC.split(GlobalConstant.Symbol.COMMA);

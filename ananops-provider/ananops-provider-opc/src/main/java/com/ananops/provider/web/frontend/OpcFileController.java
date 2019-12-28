@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2018. paascloud.net All Rights Reserved.
- * 项目名称：paascloud快速搭建企业级分布式微服务平台
+ * Copyright (c) 2018. ananops.net All Rights Reserved.
+ * 项目名称：ananops快速搭建企业级分布式微服务平台
  * 类名称：OpcFileController.java
  * 创建人：刘兆明
- * 联系方式：paascloud.net@gmail.com
- * 开源地址: https://github.com/paascloud
- * 博客地址: http://blog.paascloud.net
- * 项目官网: http://paascloud.net
+ * 联系方式：ananops.net@gmail.com
+ * 开源地址: https://github.com/ananops
+ * 博客地址: http://blog.ananops.net
+ * 项目官网: http://ananops.net
  */
 
 package com.ananops.provider.web.frontend;
@@ -42,7 +42,7 @@ import java.util.Map;
 /**
  * The class Opt file controller.
  *
- * @author paascloud.net @gmail.com
+ * @author ananops.net @gmail.com
  */
 @RestController
 @RequestMapping(value = "/file", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -99,7 +99,7 @@ public class OpcFileController extends BaseController {
 		String bucketName = optUploadFileReqDto.getBucketName();
 		Preconditions.checkArgument(StringUtils.isNotEmpty(fileType), "文件类型为空");
 		Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
-		optUploadFileReqDto.setFilePath("paascloud/picture/wangEditor/");
+		optUploadFileReqDto.setFilePath("ananops/picture/wangEditor/");
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		List<OptUploadFileRespDto> optUploadFileRespDtos = optAttachmentService.uploadFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto(), false);
 

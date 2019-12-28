@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * The class Uac user service.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -170,14 +170,14 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
 	public PageInfo queryUserListWithPage(UacUser uacUser) {
 		PageHelper.startPage(uacUser.getPageNum(), uacUser.getPageSize());
-		uacUser.setOrderBy("u.update_time desc");
+		uacUser.setOrderBy("u.created_time desc");
 		List<UacUser> uacUserList = uacUserMapper.selectUserList(uacUser);
 		return new PageInfo<>(uacUserList);
 	}
 
 	@Override
 	public int deleteUserById(Long userId) {
-		return 0;
+		return uacUserMapper.deleteByPrimaryKey(userId);
 	}
 
 	@Override

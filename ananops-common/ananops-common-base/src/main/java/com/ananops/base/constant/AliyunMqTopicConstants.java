@@ -1,4 +1,3 @@
-
 package com.ananops.base.constant;
 
 import com.google.common.collect.Lists;

@@ -9,19 +9,14 @@ import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
 import com.ananops.provider.manager.ImcTaskManager;
-import com.ananops.provider.mapper.ImcInspectionTaskMapper;
-import com.ananops.provider.mapper.ImcUserItemMapper;
-import com.ananops.provider.mapper.ImcUserTaskMapper;
-import com.ananops.provider.model.domain.ImcInspectionTask;
-import com.ananops.provider.model.domain.ImcUserTask;
-import com.ananops.provider.model.domain.MqMessageData;
+import com.ananops.provider.mapper.*;
+import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.github.pagehelper.PageHelper;
-import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,10 +41,16 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     ImcInspectionItemService imcInspectionItemService;
 
     @Resource
-    ImcUserItemMapper imcUserItemMapper;
+    ImcUserTaskMapper imcUserTaskMapper;
 
     @Resource
-    ImcUserTaskMapper imcUserTaskMapper;
+    ImcInspectionItemMapper imcInspectionItemMapper;
+
+    @Resource
+    ImcFacilitatorManagerTaskMapper imcFacilitatorManagerTaskMapper;
+
+    @Resource
+    ImcFacilitatorGroupTaskMapper imcFacilitatorGroupTaskMapper;
 
 
 
@@ -72,6 +73,8 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             List<ImcAddInspectionItemDto> imcAddInspectionItemDtoList = imcAddInspectionTaskDto.getImcAddInspectionItemDtoList();
             Long taskId = super.generateId();
             Long userId = imcAddInspectionTaskDto.getUserId();
+            Long facilitatorManagerId = imcAddInspectionTaskDto.getFacilitatorManagerId();
+            Long facilitatorGroupId = imcAddInspectionTaskDto.getFacilitatorGroupId();
             imcInspectionTask.setId(taskId);
             //将巡检任务状态设置为等待服务商接单
             imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
@@ -84,6 +87,17 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             imcUserTask.setTaskId(taskId);
             imcUserTask.setUserId(userId);
             imcUserTaskMapper.insert(imcUserTask);
+            //增加一条服务商管理员和巡检任务的关系记录
+            ImcFacilitatorManagerTask imcFacilitatorManagerTask = new ImcFacilitatorManagerTask();
+            imcFacilitatorManagerTask.setFacilitatorManagerId(facilitatorManagerId);
+            imcFacilitatorManagerTask.setTaskId(taskId);
+            imcFacilitatorManagerTaskMapper.insert(imcFacilitatorManagerTask);
+            //增加一条服务商组织和巡检任务的关系记录
+            ImcFacilitatorGroupTask imcFacilitatorGroupTask = new ImcFacilitatorGroupTask();
+            imcFacilitatorGroupTask.setFacilitatorGroupId(facilitatorGroupId);
+            imcFacilitatorGroupTask.setTaskId(taskId);
+            imcFacilitatorGroupTaskMapper.insert(imcFacilitatorGroupTask);
+            //保存新创建的巡检任务子项
             imcAddInspectionItemDtoList.forEach(item->{//保存所有巡检任务子项
                 item.setInspectionTaskId(taskId);//设置巡检任务子项对应的任务id
                 item.setDays(imcInspectionTask.getDays());//设置巡检任务子项对应的巡检周期
@@ -114,7 +128,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     }
 
     /**
-     *
+     * 根据巡检任务的Id获取巡检任务
      * @param taskId
      * @return
      */
@@ -123,6 +137,12 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     }
 
 
+    /**
+     * 修改巡检任务的状态
+     * @param imcTaskChangeStatusDto
+     * @param loginAuthDto
+     * @return
+     */
     public ImcInspectionTask modifyTaskStatus(ImcTaskChangeStatusDto imcTaskChangeStatusDto, LoginAuthDto loginAuthDto){
         MqMessageData mqMessageData;
         Long taskId = imcTaskChangeStatusDto.getTaskId();
@@ -148,6 +168,11 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return imcInspectionTask;
     }
 
+    /**
+     * 获得某一状态下的全部巡检任务
+     * @param taskQueryDto
+     * @return
+     */
     public List<ImcInspectionTask> getTaskByStatus(TaskQueryDto taskQueryDto){
         Example example = new Example(ImcInspectionTask.class);
         Example.Criteria criteria = example.createCriteria();
@@ -160,6 +185,12 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return imcInspectionTaskMapper.selectByExample(example);
     }
 
+    /**
+     * 修改巡检任务的名字
+     * @param taskNameChangeDto
+     * @param loginAuthDto
+     * @return
+     */
     public ImcInspectionTask modifyTaskName(TaskNameChangeDto taskNameChangeDto,LoginAuthDto loginAuthDto){
         ImcInspectionTask imcInspectionTask = new ImcInspectionTask();
         Example example = new Example(ImcInspectionTask.class);
@@ -175,6 +206,11 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return imcInspectionTask;
     }
 
+    /**
+     * 根据项目id查询对应的巡检任务
+     * @param taskQueryDto
+     * @return
+     */
     public List<ImcInspectionTask> getTaskByProjectId(TaskQueryDto taskQueryDto){
         Example example = new Example(ImcInspectionTask.class);
         Example.Criteria criteria = example.createCriteria();
@@ -187,14 +223,95 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return imcInspectionTaskMapper.selectByExample(example);
     }
 
+    /**
+     * 根据用户id获取对应的巡检任务
+     * @param taskQueryDto
+     * @return
+     */
     public List<ImcInspectionTask> getTaskByUserId(TaskQueryDto taskQueryDto){
+        Integer role = taskQueryDto.getRole();
         PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
-        return imcInspectionTaskMapper.queryTaskByUserId(taskQueryDto.getUserId());
+        switch (role){
+            case 1://如果角色是甲方用户
+                return imcInspectionTaskMapper.queryTaskByUserId(taskQueryDto.getUserId());
+            case 2://如果角色是服务商
+                return this.getTaskByFacilitatorId(taskQueryDto);
+            case 3://如果角色是服务商管理员
+                return imcInspectionTaskMapper.queryTaskByFacilitatorManagerId(taskQueryDto.getUserId());
+            case 4://如果角色是服务商组织
+                return imcInspectionTaskMapper.queryTaskByFacilitatorGroupId(taskQueryDto.getUserId());
+            default:
+                throw new BusinessException(ErrorCodeEnum.GL9999089);
+        }
     }
 
+    /**
+     * 根据用户Id查询对应状态的巡检任务
+     * @param taskQueryDto
+     * @return
+     */
     public List<ImcInspectionTask> getTaskByUserIdAndStatus(TaskQueryDto taskQueryDto){
+        Integer role = taskQueryDto.getRole();
         PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
-        return imcInspectionTaskMapper.queryTaskByUserIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
+        switch (role){
+            case 1://如果角色是甲方用户
+                return imcInspectionTaskMapper.queryTaskByUserIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
+            case 2://如果角色是服务商
+                return this.getTaskByFacilitatorIdAndStatus(taskQueryDto);
+            case 3://如果角色是服务商管理员
+                return imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
+            case 4://如果角色是服务商组织
+                return imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
+            default:
+                throw new BusinessException(ErrorCodeEnum.GL9999089);
+        }
+
     }
 
+    /**
+     * 根据服务商Id查询服务商对应的巡检任务
+     * @param taskQueryDto
+     * @return
+     */
+    public List<ImcInspectionTask> getTaskByFacilitatorId(TaskQueryDto taskQueryDto){
+        Long facilitatorId = taskQueryDto.getUserId();
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("facilitatorId",facilitatorId);
+        return imcInspectionTaskMapper.selectByExample(example);
+    }
+
+    /**
+     * 根据服务商id查询对应状态的巡检任务
+     * @param taskQueryDto
+     * @return
+     */
+    public List<ImcInspectionTask> getTaskByFacilitatorIdAndStatus(TaskQueryDto taskQueryDto){
+        Long facilitatorId = taskQueryDto.getUserId();
+        Integer status = taskQueryDto.getStatus();
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("facilitatorId",facilitatorId);
+        criteria.andEqualTo("status",status);
+        return imcInspectionTaskMapper.selectByExample(example);
+    }
+
+
+    /**
+     * 判断巡检任务是否完成
+     * @param taskId
+     * @return
+     */
+    public Boolean isTaskFinish(Long taskId){
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("inspectionTaskId",taskId);
+        List<ImcInspectionItem> imcInspectionItemList = imcInspectionItemMapper.selectByExample(example);
+        for(int i=0;i<imcInspectionItemList.size();i++){
+            if(imcInspectionItemList.get(i).getStatus()<3){//如果还有巡检任务子项没完成
+                return false;
+            }
+        }
+        return true;//如果巡检任务子项都完成了，则巡检任务也完成了
+    }
 }

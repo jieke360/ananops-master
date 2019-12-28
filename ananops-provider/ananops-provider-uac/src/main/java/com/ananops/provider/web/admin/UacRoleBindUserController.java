@@ -1,14 +1,3 @@
-/*
- * Copyright (c) 2018. paascloud.net All Rights Reserved.
- * 项目名称：paascloud快速搭建企业级分布式微服务平台
- * 类名称：UacRoleBindUserController.java
- * 创建人：刘兆明
- * 联系方式：paascloud.net@gmail.com
- * 开源地址: https://github.com/paascloud
- * 博客地址: http://blog.paascloud.net
- * 项目官网: http://paascloud.net
- */
-
 package com.ananops.provider.web.admin;
 
 import com.ananops.base.dto.LoginAuthDto;
@@ -30,7 +19,7 @@ import javax.annotation.Resource;
 /**
  * 角色绑定用户.
  *
- * @author paascloud.net @gmail.com
+ * @author ananops.net @gmail.com
  */
 @RestController
 @RequestMapping(value = "/role", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -50,7 +39,7 @@ public class UacRoleBindUserController extends BaseController {
 	@LogAnnotation
 	@PostMapping(value = "/bindUser")
 	@ApiOperation(httpMethod = "POST", value = "角色绑定用户")
-	public Wrapper bindUser(@ApiParam(name = "uacRoleBindUserReqDto", value = "角色绑定用户") @RequestBody RoleBindUserReqDto roleBindUserReqDto) {
+	public Wrapper bindUser(@ApiParam(name = "roleBindUserReqDto", value = "角色绑定用户") @RequestBody RoleBindUserReqDto roleBindUserReqDto) {
 		logger.info("roleBindUser={}", roleBindUserReqDto);
 		LoginAuthDto loginAuthDto = getLoginAuthDto();
 		uacRoleService.bindUser4Role(roleBindUserReqDto, loginAuthDto);
