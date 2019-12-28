@@ -32,10 +32,16 @@ public class MdmcTaskController extends BaseController {
     MdmcTaskLogService taskLogService;
 
     @PostMapping(value = "/save")
-    @ApiOperation(httpMethod = "POST",value = "编辑维修任务记录")
+    @ApiOperation(httpMethod = "POST",value = "创建维修任务记录")
     public Wrapper<MdmcAddTaskDto> saveTask(@ApiParam(name = "saveTask",value = "添加维修任务记录")@RequestBody MdmcAddTaskDto mdmcAddTaskDto){
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         return WrapMapper.ok(taskService.saveTask(mdmcAddTaskDto,loginAuthDto));
+    }
+
+    @PostMapping(value = "/modify")
+    @ApiOperation(httpMethod = "POST",value = "修改维修任务记录")
+    public Wrapper<MdmcTaskDto> modifyTask(@ApiParam(name = "modifyTask",value = "修改维修任务记录")@RequestBody MdmcTaskDto mdmcTaskDto){
+        return WrapMapper.ok(taskService.modifyTask(mdmcTaskDto));
     }
 
     @GetMapping(value = "/getTaskLogs/{taskId}")
@@ -100,12 +106,12 @@ public class MdmcTaskController extends BaseController {
         return WrapMapper.ok(taskList);
     }
 
-    @PostMapping(value = "/getTaskByProjectId")
-    @ApiOperation(httpMethod = "POST",value = "根据项目id返回工单列表")
-    public Wrapper<List<MdmcTask>> getTaskListByProjectId(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList=taskService.getTaskListByProjectId(statusDto);
-        return WrapMapper.ok(taskList);
-    }
+//    @PostMapping(value = "/getTaskByProjectId")
+//    @ApiOperation(httpMethod = "POST",value = "根据项目id返回工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskListByProjectId(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList=taskService.getTaskListByProjectId(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
 //    @PostMapping(value = "/getTaskListByUserIdAndStatus")
 //    @ApiOperation(httpMethod = "POST",value = "根据用户id和状态查询工单列表")
 //    public Wrapper<List<MdmcTask>> getTaskListByUserIdAndStatus(@RequestBody MdmcStatusDto statusDto){
@@ -139,6 +145,13 @@ public class MdmcTaskController extends BaseController {
     public Wrapper<List<MdmcTask>> getTaskListByIdAndStatus(@RequestBody MdmcQueryDto queryDto){
         List<MdmcTask> taskList=taskService.getTaskListByIdAndStatus(queryDto);
         return WrapMapper.ok(taskList);
+    }
+
+    @PostMapping(value = "/getTaskListByIdAndStatusArrary")
+    @ApiOperation(httpMethod = "POST",value = "根据id和状态数组查询列表")
+    public Wrapper<List<MdmcListDto>> getTaskListByIdAndStatusArrary(@RequestBody MdmcStatusArrayDto statusArrayDto){
+        List<MdmcListDto> listDtoList=taskService.getTaskListByIdAndStatusArrary(statusArrayDto);
+        return WrapMapper.ok(listDtoList);
     }
 
     @PostMapping(value = "/getTaskList")
