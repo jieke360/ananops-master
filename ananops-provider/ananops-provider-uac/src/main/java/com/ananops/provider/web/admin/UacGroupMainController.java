@@ -84,7 +84,7 @@ public class UacGroupMainController extends BaseController {
 	 * @return the wrapper
 	 */
 	@PostMapping(value = "/getTree")
-	@ApiOperation(httpMethod = "POST", value = "获取菜单树")
+	@ApiOperation(httpMethod = "POST", value = "获取组织树")
 	public Wrapper<List<MenuVo>> getTree() {
 		Long userId = super.getLoginAuthDto().getUserId();
 		List<MenuVo> tree = uacGroupService.getGroupTreeListByUserId(userId);
@@ -100,7 +100,7 @@ public class UacGroupMainController extends BaseController {
 	 */
 	@PostMapping(value = "/save")
 	@LogAnnotation
-	@ApiOperation(httpMethod = "POST", value = "修改组织信息")
+	@ApiOperation(httpMethod = "POST", value = "编辑组织信息")
 	public Wrapper editGroup(@ApiParam(name = "group", value = "组织信息") @RequestBody UacGroup group) {
 		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
 		uacGroupService.saveUacGroup(group, loginAuthDto);

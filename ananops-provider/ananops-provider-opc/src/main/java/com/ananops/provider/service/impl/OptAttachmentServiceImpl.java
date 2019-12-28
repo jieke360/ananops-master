@@ -82,9 +82,9 @@ public class OptAttachmentServiceImpl extends BaseService<OptAttachment> impleme
 				InputStream inputStream = multipartFile.getInputStream();
 
 //				String inputStreamFileType = FileTypeUtil.getType(inputStream);
-				String inputStreamFileName = multipartFile.getOriginalFilename();
-				String inputStreamName= multipartFile.getName();
-				String inputStreamFileType = FileTypeUtil.getType(inputStreamFileName);
+//				String inputStreamFileName = multipartFile.getOriginalFilename();
+//				String inputStreamName= multipartFile.getName();
+//				String inputStreamFileType = FileTypeUtil.getType(inputStreamFileName);
 				//CheckFileUtil.checkFileType(fileType, inputStreamFileType);
 				OptUploadFileRespDto fileInfo;
 				if (storeDbFlag) {

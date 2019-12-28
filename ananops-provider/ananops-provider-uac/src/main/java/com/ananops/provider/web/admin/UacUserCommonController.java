@@ -241,7 +241,7 @@ public class UacUserCommonController extends BaseController {
 	 * @return the auth tree by role id
 	 */
 	@PostMapping(value = "/getOwnAuthTree")
-	@ApiOperation(httpMethod = "POST", value = "获取权限树")
+	@ApiOperation(httpMethod = "POST", value = "获取菜单树")
 	public Wrapper<List<MenuVo>> getOwnAuthTree() {
 		List<MenuVo> tree = uacRoleService.getOwnAuthTree(getLoginAuthDto().getUserId());
 		return WrapMapper.ok(tree);
