@@ -3,6 +3,8 @@ package com.ananops.provider.job.simple;
 import com.ananops.elastic.lite.annotation.ElasticJobConfig;
 import com.ananops.provider.mapper.ImcInspectionItemMapper;
 import com.ananops.provider.model.domain.ImcInspectionItem;
+import com.ananops.provider.model.enums.ItemStatusEnum;
+import com.ananops.provider.service.ImcInspectionItemService;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,8 @@ public class TaskReminderJob implements SimpleJob {
 
     @Resource
     ImcInspectionItemMapper imcInspectionItemMapper;
+    @Resource
+    ImcInspectionItemService imcInspectionItemService;
 
 
     @Override
@@ -46,6 +50,8 @@ public class TaskReminderJob implements SimpleJob {
                     System.out.println("定时任务：" + item.getItemName());
                     //更新巡检任务子项的执行次数
                     item.setCount(passed);
+                    //将巡检任务子项状态设置为等待巡检
+                    item.setStatus(ItemStatusEnum.WAITING_FOR_INSPECTION.getStatusNum());
                     imcInspectionItemMapper.updateByPrimaryKeySelective(item);
                 }
             }

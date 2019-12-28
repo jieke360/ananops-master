@@ -1,4 +1,3 @@
-
 package com.ananops.provider.service.impl;
 import com.ananops.base.constant.AliyunSmsConstants;
 import com.ananops.provider.model.dto.sms.SmsMessage;
@@ -11,7 +10,7 @@ import javax.annotation.Resource;
 /**
  * 默认的短信验证码发送器
  *
- * @author paascloud.net @gmail.com
+ * @author ananops.net @gmail.com
  */
 @Slf4j
 public class PcSmsCodeSender implements SmsCodeSender {

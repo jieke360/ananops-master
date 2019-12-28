@@ -1,8 +1,10 @@
 package com.ananops.provider.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,6 +18,21 @@ import java.util.List;
 @ApiModel
 public class ImcAddInspectionTaskDto implements Serializable {
     private static final long serialVersionUID = -6922470629930578506L;
+    /**
+     * 巡检任务对应的服务商组织的Id
+     */
+    @ApiModelProperty(value = "巡检任务对应的服务商组织的Id")
+    private Long facilitatorGroupId;
+    /**
+     * 巡检任务对应的服务商管理员Id
+     */
+    @ApiModelProperty(value = "巡检任务对应的服务商管理员id")
+    private Long facilitatorManagerId;
+    /**
+     * 巡检任务对应的甲方用户id
+     */
+    @ApiModelProperty(value = "巡检任务对应的甲方用户id")
+    private Long userId;
     /**
      * 巡检任务ID
      */
@@ -66,13 +83,17 @@ public class ImcAddInspectionTaskDto implements Serializable {
     /**
      * 计划起始时间
      */
-    @ApiModelProperty(value = "计划起始时间")
+    @ApiModelProperty(value = "计划起始时间",example = "2019-8-24 11:11:11")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date scheduledStartTime;
 
     /**
      * 实际完成时间
      */
-    @ApiModelProperty(value = "实际完成时间")
+    @ApiModelProperty(value = "实际完成时间",example = "2019-8-24 11:11:11")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date actualFinishTime;
 
     /**
