@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <resourceExtensions />
     <annotationProcessing>
-      <profile name="Maven default annotation processors profile" enabled="true">
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="ananops-common-base" />
         <module name="ananops-common-config" />
         <module name="ananops-common-core" />
@@ -14,6 +19,7 @@
         <module name="ananops-discovery" />
         <module name="ananops-eureka" />
         <module name="ananops-gateway" />
+        <module name="ananops-generator-spc" />
         <module name="ananops-monitor" />
         <module name="ananops-provider-imc" />
         <module name="ananops-provider-imc-api" />
@@ -26,6 +32,8 @@
         <module name="ananops-provider-opc-api" />
         <module name="ananops-provider-pmc" />
         <module name="ananops-provider-sdk-api" />
+        <module name="ananops-provider-spc" />
+        <module name="ananops-provider-spc-api" />
         <module name="ananops-provider-tpc" />
         <module name="ananops-provider-tpc-api" />
         <module name="ananops-provider-uac" />
@@ -41,11 +49,48 @@
     <bytecodeTargetLevel>
       <module name="ananop-seureka" target="1.8" />
       <module name="ananop-zipkin" target="1.8" />
+      <module name="ananops-common" target="1.8" />
+      <module name="ananops-common-base" target="1.8" />
+      <module name="ananops-common-config" target="1.8" />
+      <module name="ananops-common-core" target="1.8" />
+      <module name="ananops-common-util" target="1.8" />
+      <module name="ananops-common-zk" target="1.8" />
+      <module name="ananops-discovery" target="1.8" />
+      <module name="ananops-gateway" target="1.8" />
       <module name="ananops-generator" target="1.8" />
+      <module name="ananops-generator-spc" target="1.5" />
+      <module name="ananops-master" target="1.8" />
+      <module name="ananops-monitor" target="1.8" />
+      <module name="ananops-provider" target="1.8" />
+      <module name="ananops-provider-api" target="1.8" />
+      <module name="ananops-provider-imc" target="1.8" />
+      <module name="ananops-provider-imc-api" target="1.8" />
       <module name="ananops-provider-imc-api (1)" target="1.8" />
       <module name="ananops-provider-ioc" target="1.8" />
+      <module name="ananops-provider-mdc" target="1.8" />
+      <module name="ananops-provider-mdc-api" target="1.8" />
+      <module name="ananops-provider-mdmc" target="1.8" />
+      <module name="ananops-provider-mdmc-api" target="1.8" />
+      <module name="ananops-provider-omc-api" target="1.8" />
+      <module name="ananops-provider-opc" target="1.8" />
+      <module name="ananops-provider-opc-api" target="1.8" />
+      <module name="ananops-provider-pmc" target="1.8" />
+      <module name="ananops-provider-sdk-api" target="1.8" />
+      <module name="ananops-provider-spc" target="1.8" />
+      <module name="ananops-provider-spc-api" target="1.8" />
+      <module name="ananops-provider-tpc" target="1.8" />
+      <module name="ananops-provider-tpc-api" target="1.8" />
+      <module name="ananops-provider-uac" target="1.8" />
+      <module name="ananops-provider-uac-api" target="1.8" />
+      <module name="ananops-security-app" target="1.8" />
+      <module name="ananops-security-core" target="1.8" />
+      <module name="ananops-security-feign" target="1.8" />
+      <module name="ananops-zipkin" target="1.8" />
+      <module name="ananops.eureka" target="1.8" />
       <module name="ananopseureka" target="1.8" />
+      <module name="elastic-job-lite-starter" target="1.8" />
       <module name="elastic-job-lite-starter-imc" target="1.8" />
+      <module name="elastic-job-lite-starter-parent" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

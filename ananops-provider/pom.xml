@@ -22,6 +22,7 @@
         <module>ananops-provider-imc</module>
         <module>ananops-provider-pmc</module>
         <module>ananops-provider-mdmc</module>
+        <module>ananops-provider-spc</module>
     </modules>
 
     <properties>

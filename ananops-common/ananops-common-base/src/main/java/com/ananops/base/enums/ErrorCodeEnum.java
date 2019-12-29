@@ -418,7 +418,7 @@ public enum ErrorCodeEnum {
 	/**
 	 * Mdc 10021021 error code enum.
 	 */
-	MDC10021021(10021021, "商品ID不能为空"),
+	MDC10021021(10021021, "加盟服务商ID不能为空"),
 	/**
 	 * Mdc 10021024 error code enum.
 	 */
