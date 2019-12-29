@@ -1,4 +1,3 @@
-
 package com.ananops.base.enums;
 
 
@@ -81,9 +80,18 @@ public enum ErrorCodeEnum {
 	 */
 	GL99990002(99990002, "微服务不在线,或者网络超时"),
 	/**
+	 * Gl 99990003 error code enum.
+	 */
+	GL99990003(99990003,"用户id不能为空"),
+
+	/**
+	 * Gl 99990004 error code enum.
+	 */
+	GL99990004(99990004,"任务id不能为空"),
+//	 1001 用户中心
+	/**
 	 * Uac 10010001 error code enum.
 	 */
-//	 1001 用户中心
 	UAC10010001(10010001, "会话超时,请刷新页面重试"),
 	/**
 	 * Uac 10010002 error code enum.
@@ -618,6 +626,11 @@ public enum ErrorCodeEnum {
 
 	//1008 项目管理
 	/**
+	 *
+	 */
+	PMC10081000(10081000, "删除失败, Id=%s"),
+
+	/**
 	 * Pdc 10081001 error code enum.
 	 */
 	PMC10081001(10081001, "更新项目信息失败, projectId=%s"),
@@ -654,8 +667,14 @@ public enum ErrorCodeEnum {
 	/**
 	 * Pdc 10021023 error code enum.
 	 */
-	PMC10081023(10081023, "改巡检任务无项目信息, projectId=%s"),
+	PMC10081023(10081023, "该巡检任务无项目信息, projectId=%s"),
 
+	/**
+	 * Pdc 10021024 error code enum.
+	 */
+	PMC10081024(10081024, "该巡检巡检详情无巡检任务信息, InspectTaskId=%s"),
+
+	PMC10081025(10081025, "更新失败, InspectDetailId=%s"),
 
 
 	;

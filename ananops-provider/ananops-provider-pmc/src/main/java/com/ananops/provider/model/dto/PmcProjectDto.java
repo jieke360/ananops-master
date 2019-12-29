@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -70,8 +71,26 @@ public class PmcProjectDto implements Serializable {
     /**
      * 乙方名称
      */
-    @ApiModelProperty(value = "甲方名称")
+    @ApiModelProperty(value = "乙方名称")
     private String partyBName;
+
+    /**
+     * 甲方项目负责人id
+     */
+    @ApiModelProperty(value = "甲方项目负责人id")
+    private Long aLeaderId;
+
+    /**
+     * 甲方项目负责人姓名
+     */
+    @ApiModelProperty(value = "甲方项目负责人姓名")
+    private String aLeaderName;
+
+    /**
+     * 甲方项目负责人电话
+     */
+    @ApiModelProperty(value = "甲方项目负责人电话")
+    private String aLeaderTel;
 
     /**
      * 联系人1姓名
@@ -94,7 +113,7 @@ public class PmcProjectDto implements Serializable {
     /**
      * 甲方项目负责人联系方式2
      */
-    @ApiModelProperty(value = "甲方负责人2联系方式2")
+    @ApiModelProperty(value = "甲方负责人2联系方式")
     private String partyATwo;
 
     /**
@@ -107,20 +126,26 @@ public class PmcProjectDto implements Serializable {
     /**
      * 甲方项目负责人联系方式3
      */
-    @ApiModelProperty(value = "甲方项目负责人联系方式3")
+    @ApiModelProperty(value = "甲方项目负责人3联系方式")
     private String partyAThree;
 
     /**
-     * 乙方项目负责人
+     * 乙方项目负责人ID
      */
-    @ApiModelProperty(value = "乙方项目负责人")
-    private String bName;
+    @ApiModelProperty(value = "乙方项目负责人ID")
+    private Long bLeaderId;
 
     /**
-     * 乙方负责人电话
+     * 乙方项目负责人姓名
      */
-    @ApiModelProperty(value = "乙方项目负责人联系方式")
-    private String partyBOne;
+    @ApiModelProperty(value = "乙方项目负责人姓名")
+    private String bLeaderName;
+
+    /**
+     * 乙方项目负责人电话
+     */
+    @ApiModelProperty(value = "乙方项目负责人电话")
+    private String bLeaderTel;
 
     /**
      * 乙方24小时值班电话

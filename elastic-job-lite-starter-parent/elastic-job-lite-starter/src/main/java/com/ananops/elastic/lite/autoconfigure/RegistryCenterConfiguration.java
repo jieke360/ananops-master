@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * The class Registry center configuration.
  *
- * @author paascloud.net @gmail.com
+ * @author ananops.net @gmail.com
  */
 @Configuration
 @ConditionalOnClass(ElasticJob.class)

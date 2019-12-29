@@ -1,17 +1,6 @@
-/*
- * Copyright (c) 2018. ananops.net All Rights Reserved.
- * 项目名称：paascloud快速搭建企业级分布式微服务平台
- * 类名称：SwaggerConfiguration.java
- * 创建人：刘兆明
- * 联系方式：ananops.net@gmail.com
- * 开源地址: https://github.com/paascloud
- * 博客地址: http://blog.paascloud.net
- * 项目官网: http://paascloud.net
- */
-
 package com.ananops.core.config;
 
-import com.ananops.config.properties.PaascloudProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.ananops.config.properties.SwaggerProperties;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +26,7 @@ import java.util.List;
 @EnableSwagger2
 public class SwaggerConfiguration {
 	@Resource
-	private PaascloudProperties paascloudProperties;
+	private AnanopsProperties AnanopsProperties;
 
 	/**
 	 * Reservation api docket.
@@ -68,7 +57,7 @@ public class SwaggerConfiguration {
 	}
 
 	private ApiInfo apiInfo() {
-		SwaggerProperties swagger = paascloudProperties.getSwagger();
+		SwaggerProperties swagger = AnanopsProperties.getSwagger();
 		return new ApiInfoBuilder()
 				.title(swagger.getTitle())
 				.description(swagger.getDescription())

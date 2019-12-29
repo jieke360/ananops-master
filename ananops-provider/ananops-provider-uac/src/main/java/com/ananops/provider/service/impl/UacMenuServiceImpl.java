@@ -1,14 +1,3 @@
-/*
- * Copyright (c) 2018. paascloud.net All Rights Reserved.
- * 项目名称：paascloud快速搭建企业级分布式微服务平台
- * 类名称：UacMenuServiceImpl.java
- * 创建人：刘兆明
- * 联系方式：paascloud.net@gmail.com
- * 开源地址: https://github.com/paascloud
- * 博客地址: http://blog.paascloud.net
- * 项目官网: http://paascloud.net
- */
-
 package com.ananops.provider.service.impl;
 
 import com.google.common.base.Preconditions;
@@ -46,7 +35,7 @@ import java.util.*;
 /**
  * The class Uac menu service.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -63,7 +52,7 @@ public class UacMenuServiceImpl extends BaseService<UacMenu> implements UacMenuS
 	public List<MenuVo> getMenuVoList(Long userId, Long applicationId) {
 		// 1.查询该用户下所有的菜单列表
 		List<MenuVo> menuVoList = Lists.newArrayList();
-		List<UacMenu> menuList;
+		List<UacMenu> menuList = Lists.newArrayList();
 		Set<UacMenu> menuSet = Sets.newHashSet();
 		// 如果是admin则返回所有的菜单
 		if (userId == 1L) {
@@ -98,7 +87,7 @@ public class UacMenuServiceImpl extends BaseService<UacMenu> implements UacMenuS
 			for (final UacMenu menu : ownMenuList) {
 				getPid(menuSet, menu, map);
 			}
-			menuList = new ArrayList<>(menuSet);
+//			menuList = new ArrayList<>(menuSet);
 		}
 		List<MenuVo> list = getMenuVo(menuList);
 		if (PublicUtil.isNotEmpty(menuVoList)) {

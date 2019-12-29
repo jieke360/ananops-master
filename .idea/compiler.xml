@@ -21,16 +21,19 @@
         <module name="ananops-gateway" />
         <module name="ananops-generator-spc" />
         <module name="ananops-monitor" />
+        <module name="ananops-provider-activiti" />
+        <module name="ananops-provider-bill" />
         <module name="ananops-provider-imc" />
         <module name="ananops-provider-imc-api" />
         <module name="ananops-provider-mdc" />
         <module name="ananops-provider-mdc-api" />
         <module name="ananops-provider-mdmc" />
         <module name="ananops-provider-mdmc-api" />
-        <module name="ananops-provider-omc-api" />
         <module name="ananops-provider-opc" />
         <module name="ananops-provider-opc-api" />
+        <module name="ananops-provider-payment" />
         <module name="ananops-provider-pmc" />
+        <module name="ananops-provider-pmc-api" />
         <module name="ananops-provider-sdk-api" />
         <module name="ananops-provider-spc" />
         <module name="ananops-provider-spc-api" />
@@ -62,7 +65,9 @@
       <module name="ananops-master" target="1.8" />
       <module name="ananops-monitor" target="1.8" />
       <module name="ananops-provider" target="1.8" />
+      <module name="ananops-provider-activiti" target="1.8" />
       <module name="ananops-provider-api" target="1.8" />
+      <module name="ananops-provider-bill" target="1.8" />
       <module name="ananops-provider-imc" target="1.8" />
       <module name="ananops-provider-imc-api" target="1.8" />
       <module name="ananops-provider-imc-api (1)" target="1.8" />
@@ -74,7 +79,9 @@
       <module name="ananops-provider-omc-api" target="1.8" />
       <module name="ananops-provider-opc" target="1.8" />
       <module name="ananops-provider-opc-api" target="1.8" />
+      <module name="ananops-provider-payment" target="1.8" />
       <module name="ananops-provider-pmc" target="1.8" />
+      <module name="ananops-provider-pmc-api" target="1.8" />
       <module name="ananops-provider-sdk-api" target="1.8" />
       <module name="ananops-provider-spc" target="1.8" />
       <module name="ananops-provider-spc-api" target="1.8" />

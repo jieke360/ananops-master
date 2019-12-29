@@ -1,14 +1,3 @@
-/*
- * Copyright (c) 2018. paascloud.net All Rights Reserved.
- * 项目名称：paascloud快速搭建企业级分布式微服务平台
- * 类名称：UacUserCommonController.java
- * 创建人：刘兆明
- * 联系方式：paascloud.net@gmail.com
- * 开源地址: https://github.com/paascloud
- * 博客地址: http://blog.paascloud.net
- * 项目官网: http://paascloud.net
- */
-
 package com.ananops.provider.web.admin;
 
 import com.ananops.PublicUtil;
@@ -42,7 +31,7 @@ import java.util.Set;
 /**
  * 用户管理-公共方法.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @RestController
 @RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -252,7 +241,7 @@ public class UacUserCommonController extends BaseController {
 	 * @return the auth tree by role id
 	 */
 	@PostMapping(value = "/getOwnAuthTree")
-	@ApiOperation(httpMethod = "POST", value = "获取权限树")
+	@ApiOperation(httpMethod = "POST", value = "获取菜单树")
 	public Wrapper<List<MenuVo>> getOwnAuthTree() {
 		List<MenuVo> tree = uacRoleService.getOwnAuthTree(getLoginAuthDto().getUserId());
 		return WrapMapper.ok(tree);

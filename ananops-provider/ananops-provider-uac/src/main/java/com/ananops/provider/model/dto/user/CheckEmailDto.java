@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * The class Check user name dto.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @Data
 @ApiModel
