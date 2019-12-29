@@ -33,7 +33,7 @@ public class PmcInspectTaskDto implements Serializable {
     private String projectName;
 
     /**
-     * 设备名字
+     * 任务名字称
      */
     @ApiModelProperty(value = "任务名称")
     private String taskName;
@@ -99,5 +99,6 @@ public class PmcInspectTaskDto implements Serializable {
     /**
      * 描述
      */
+    @ApiModelProperty(value = "描述")
     private String description;
 }

@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * The class Uac user menu.
  *
- * @author paascloud.net@gmail.com
+ * @author ananops.net@gmail.com
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

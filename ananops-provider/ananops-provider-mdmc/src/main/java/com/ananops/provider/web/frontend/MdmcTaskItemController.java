@@ -10,6 +10,7 @@ import com.ananops.provider.model.domain.MdmcTaskItem;
 import com.ananops.provider.model.domain.MdmcTaskItemLog;
 import com.ananops.provider.model.dto.MdmcAddTaskItemDto;
 import com.ananops.provider.model.dto.MdmcItemChangeStatusDto;
+import com.ananops.provider.model.dto.MdmcPageItemDto;
 import com.ananops.provider.model.dto.MdmcStatusDto;
 import com.ananops.provider.model.enums.MdmcItemStatusEnum;
 import com.ananops.provider.service.MdmcTaskItemLogService;
@@ -44,12 +45,12 @@ public class MdmcTaskItemController extends BaseController {
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         return WrapMapper.ok(taskItemService.saveItem(mdmcAddTaskItemDto,loginAuthDto));
     }
-    @PostMapping(value = "/getAllItemByTaskId")
-    @ApiOperation(httpMethod = "POST",value = "根据任务ID，获取其对应的全部任务子项")
-    public Wrapper<List<MdmcTaskItem>> getItemByTaskId(@RequestBody MdmcStatusDto statusDto){
-
-        return WrapMapper.ok(taskItemService.getItemByTaskId(statusDto));
-    }
+//    @PostMapping(value = "/getAllItemByTaskId")
+//    @ApiOperation(httpMethod = "POST",value = "根据任务ID，获取其对应的全部任务子项")
+//    public Wrapper<List<MdmcTaskItem>> getItemByTaskId(@RequestBody MdmcStatusDto statusDto){
+//
+//        return WrapMapper.ok(taskItemService.getItemByTaskId(statusDto));
+//    }
 
     @PostMapping(value = "/modifyItemStatusByItemId")
     @ApiOperation(httpMethod = "POST",value = "更改任务子项的状态")
@@ -91,6 +92,12 @@ public class MdmcTaskItemController extends BaseController {
     @ApiOperation(httpMethod = "POST",value = "根据任务子项对应的任务Id和状态查询任务子项")
     public Wrapper<List<MdmcTaskItem>> getItemByItemStatusAndTaskId(@RequestBody MdmcStatusDto statusDto){
         return WrapMapper.ok(taskItemService.getItemByItemStatusAndTaskId(statusDto));
+    }
+
+    @PostMapping(value = "/getItemList")
+    @ApiOperation(httpMethod = "POST",value = "根据任务子项对应的任务Id和状态查询任务子项(PC分页)")
+    public Wrapper<MdmcPageItemDto> getItemList(@RequestBody MdmcStatusDto statusDto){
+        return WrapMapper.ok(taskItemService.getItemList(statusDto));
     }
 
 

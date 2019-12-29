@@ -1,16 +1,6 @@
-/*
- * Copyright (c) 2018. paascloud.net All Rights Reserved.
- * 项目名称：paascloud快速搭建企业级分布式微服务平台
- * 类名称：UacUserMainController.java
- * 创建人：刘兆明
- * 联系方式：paascloud.net@gmail.com
- * 开源地址: https://github.com/paascloud
- * 博客地址: http://blog.paascloud.net
- * 项目官网: http://paascloud.net
- */
-
 package com.ananops.provider.web.admin;
 
+import com.ananops.provider.model.dto.log.PageLog;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ananops.base.dto.LoginAuthDto;
@@ -43,7 +33,7 @@ import java.util.Objects;
 /**
  * 用户管理主页面.
  *
- * @author paascloud.net @gmail.com
+ * @author ananops.net @gmail.com
  */
 @RestController
 @RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -94,11 +84,11 @@ public class UacUserMainController extends BaseController {
 	 */
 	@PostMapping(value = "/queryUserLogListWithPage")
 	@ApiOperation(httpMethod = "POST", value = "分页查询用户操作日志列表")
-	public Wrapper<PageInfo<UacLog>> queryUserLogListWithPage(@ApiParam(name = "user", value = "用户信息") @RequestBody UacLog log) {
+	public Wrapper<PageInfo<UacLog>> queryUserLogListWithPage(@ApiParam(name = "user", value = "用户信息") @RequestBody PageLog log) {
 
 		logger.info("分页查询用户操作日志列表");
 		PageHelper.startPage(log.getPageNum(), log.getPageSize());
-		List<UacLog> list = uacUserService.queryUserLogListWithUserId(getLoginAuthDto().getUserId());
+		List<UacLog> list = uacUserService.queryUserLogListWithUserId(log.getUserId());
 		PageInfo<UacLog> pageInfo = new PageInfo<>(list);
 		return WrapMapper.ok(pageInfo);
 	}

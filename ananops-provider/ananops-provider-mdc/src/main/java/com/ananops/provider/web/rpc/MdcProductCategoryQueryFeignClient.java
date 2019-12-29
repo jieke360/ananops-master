@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2018. paascloud.net All Rights Reserved.
- * 项目名称：paascloud快速搭建企业级分布式微服务平台
+ * Copyright (c) 2018. ananops.net All Rights Reserved.
+ * 项目名称：ananops快速搭建企业级分布式微服务平台
  * 类名称：MdcProductCategoryQueryFeignClient.java
  * 创建人：刘兆明
- * 联系方式：paascloud.net@gmail.com
- * 开源地址: https://github.com/paascloud
- * 博客地址: http://blog.paascloud.net
- * 项目官网: http://paascloud.net
+ * 联系方式：ananops.net@gmail.com
+ * 开源地址: https://github.com/ananops
+ * 博客地址: http://blog.ananops.net
+ * 项目官网: http://ananops.net
  */
 
 package com.ananops.provider.web.rpc;
@@ -34,6 +34,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -41,11 +42,12 @@ import java.util.List;
 /**
  * The class Mdc product category query feign client.
  *
- * @author paascloud.net @gmail.com
+ * @author ananops.net @gmail.com
  */
 @RefreshScope
 @RestController
 @Api(value = "API - MdcProductCategoryQueryFeignClient", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@ApiIgnore
 public class MdcProductCategoryQueryFeignClient extends BaseService<MdcProductCategory> implements MdcProductCategoryQueryFeignApi {
 
 	@Resource
