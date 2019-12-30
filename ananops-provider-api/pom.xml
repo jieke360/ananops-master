@@ -20,11 +20,8 @@
         <module>ananops-provider-tpc-api</module>
         <module>ananops-provider-imc-api</module>
         <module>ananops-provider-mdmc-api</module>
-<<<<<<< HEAD
         <module>ananops-provider-spc-api</module>
-=======
         <module>ananops-provider-pmc-api</module>
->>>>>>> fc766c252a4ec73d8901774481ee9656ec854b9f
     </modules>
 
     <dependencies>
