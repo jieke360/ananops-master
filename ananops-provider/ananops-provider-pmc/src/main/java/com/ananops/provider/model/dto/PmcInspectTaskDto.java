@@ -54,7 +54,7 @@ public class PmcInspectTaskDto implements Serializable {
      * 巡检情况
      */
     @ApiModelProperty(value = "巡检情况")
-    private Integer inspectionCondition;
+    private String inspectionCondition;
 
     /**
      * 处理结果

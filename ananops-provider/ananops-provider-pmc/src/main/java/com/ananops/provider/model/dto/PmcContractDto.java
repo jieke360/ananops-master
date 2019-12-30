@@ -122,6 +122,12 @@ public class PmcContractDto implements Serializable {
     private Integer paymentType;
 
     /**
+     * 支付金额
+     */
+    @ApiModelProperty(value = "支付金额")
+    private Long paymentMoney;
+
+    /**
      * 项目金额
      */
     @ApiModelProperty(value = "项目金额")

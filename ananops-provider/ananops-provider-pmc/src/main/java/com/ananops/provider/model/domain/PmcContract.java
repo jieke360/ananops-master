@@ -134,6 +134,13 @@ public class PmcContract extends BaseEntity {
     private Integer paymentType;
 
     /**
+     * 支付金额
+     */
+    @ApiModelProperty(value = "支付金额")
+    @Column(name = "payment_money")
+    private Long paymentMoney;
+
+    /**
      * 项目金额
      */
     @ApiModelProperty(value = "项目金额")

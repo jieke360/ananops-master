@@ -185,7 +185,7 @@ public class PmcProjectDto implements Serializable {
      * 项目是否作废（0-有效，1-作废）
      */
     @ApiModelProperty(value = "项目是否作废（0-有效，1-作废）")
-    private Integer isDestory;
+    private Integer isDestroy;
 
     /**
      * 描述
