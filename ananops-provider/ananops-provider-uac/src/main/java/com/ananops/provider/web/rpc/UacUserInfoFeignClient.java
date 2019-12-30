@@ -32,7 +32,6 @@ public class UacUserInfoFeignClient extends BaseController implements UacUserInf
     private UacRoleService uacRoleService;
 
     @Override
-    @PostMapping(value = "/queryUserInfo/{id}")
     @ApiOperation(httpMethod = "POST", value = "根据用户id查询用户详细信息")
     public Wrapper<UserInfoDto> queryUserInfoById(@RequestParam Long id) {
         logger.info("根据用户id查询用户详细信息");
