@@ -34,7 +34,7 @@
  public class TokenStoreConfig {
 
      /**
-      * 使用redis存储token的配置，只有在paascloud.security.oauth2.tokenStore配置为redis时生效
+      * 使用redis存储token的配置，只有在ananops.security.oauth2.tokenStore配置为redis时生效
       */
      @Configuration
      @ConditionalOnProperty(prefix = "ananops.security.oauth2", name = "tokenStore", havingValue = "redis")
