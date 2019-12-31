@@ -11,7 +11,7 @@ package com.ananops.provider.config;
 import com.ananops.PublicUtil;
 import com.ananops.base.constant.AliyunMqTopicConstants;
 import com.ananops.base.constant.GlobalConstant;
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.ananops.provider.mq.consumer.listener.UacPushMessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -35,7 +35,7 @@ public class AliyunMqConfiguration {
 	private UacPushMessageListener uacPushMessageListener;
 
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 
 	@Resource
 	private TaskExecutor taskExecutor;

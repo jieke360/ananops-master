@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2019. ananops.net All Rights Reserved.
  * 项目名称：ananops平台
- * 类名称：AnanOpsProperties.java
+ * 类名称：AnanopsProperties.java
  * 创建人：ananops
  * 联系方式：ananops.net@gmail.com
 
@@ -23,7 +23,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Data
 @ConfigurationProperties(prefix = GlobalConstant.ROOT_PREFIX)
-public class AnanOpsProperties {
+public class AnanopsProperties {
 	private ReliableMessageProperties message = new ReliableMessageProperties();
 	private AliyunProperties aliyun = new AliyunProperties();
 	private AsyncTaskProperties task = new AsyncTaskProperties();

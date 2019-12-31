@@ -11,7 +11,7 @@
 
 package com.ananops.core.config;
 
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.ananops.core.registry.RegistryCenterFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ import java.net.InetAddress;
 @Slf4j
 public class ZookeeperInitRunner implements CommandLineRunner {
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 	@Value("${spring.application.name}")
 	private String applicationName;
 

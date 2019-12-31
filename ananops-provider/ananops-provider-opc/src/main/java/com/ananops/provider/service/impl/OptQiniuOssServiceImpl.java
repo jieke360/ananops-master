@@ -9,7 +9,7 @@
 package com.ananops.provider.service.impl;
 
 
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -56,7 +56,7 @@ public class OptQiniuOssServiceImpl implements OpcOssService {
 	@Resource
 	private Auth auth;
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 	@Resource
 	private UploadManager uploadManager;
 	@Resource

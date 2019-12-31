@@ -8,7 +8,7 @@
 
 package com.ananops.provider.config;
 
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.qiniu.common.Zone;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.UploadManager;
@@ -29,7 +29,7 @@ import javax.annotation.Resource;
 public class QiniuOssConfiguration {
 
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 
 	/**
 	 * Auth auth.

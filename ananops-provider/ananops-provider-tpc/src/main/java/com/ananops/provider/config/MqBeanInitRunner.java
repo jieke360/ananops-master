@@ -10,7 +10,7 @@ package com.ananops.provider.config;
 
 import com.alibaba.fastjson.JSON;
 import com.ananops.base.constant.GlobalConstant;
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.ananops.core.registry.RegistryCenterFactory;
 import com.ananops.core.registry.base.CoordinatorRegistryCenter;
 import com.ananops.core.registry.base.ReliableMessageRegisterDto;
@@ -39,7 +39,7 @@ import java.util.List;
 @Slf4j
 public class MqBeanInitRunner implements CommandLineRunner {
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 	@Resource
 	private MqProducerChangeListener producerChangeListener;
 	@Resource

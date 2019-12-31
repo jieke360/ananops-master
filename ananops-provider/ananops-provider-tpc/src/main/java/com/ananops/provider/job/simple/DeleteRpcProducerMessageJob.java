@@ -2,7 +2,7 @@
 package com.ananops.provider.job.simple;
 
 import com.alibaba.fastjson.JSON;
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.ananops.base.constant.AliyunMqTopicConstants;
@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 public class DeleteRpcProducerMessageJob implements SimpleJob {
 
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 	@Resource
 	private TpcMqMessageService tpcMqMessageService;
 

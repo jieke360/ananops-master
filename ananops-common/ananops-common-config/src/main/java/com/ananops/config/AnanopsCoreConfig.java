@@ -11,7 +11,7 @@
 package com.ananops.config;
 
 
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,6 +21,6 @@ import org.springframework.context.annotation.Configuration;
  * @author ananops.net @gmail.com
  */
 @Configuration
-@EnableConfigurationProperties(AnanOpsProperties.class)
-public class AnanOpsCoreConfig {
+@EnableConfigurationProperties(AnanopsProperties.class)
+public class AnanopsCoreConfig {
 }

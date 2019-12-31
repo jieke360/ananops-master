@@ -1,11 +1,11 @@
 package com.ananops.core.registry;
 
+import com.ananops.config.properties.AnanopsProperties;
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 import com.ananops.config.properties.AliyunProperties;
-import com.ananops.config.properties.AnanOpsProperties;
 import com.ananops.config.properties.ZookeeperProperties;
 import com.ananops.core.generator.IncrementIdGenerator;
 import com.ananops.core.registry.base.CoordinatorRegistryCenter;
@@ -53,7 +53,7 @@ public final class RegistryCenterFactory {
 	 * @param host                the host
 	 * @param app                 the app
 	 */
-	public static void startup(AnanOpsProperties ananOpsProperties, String host, String app) {
+	public static void startup(AnanopsProperties ananOpsProperties, String host, String app) {
 		//初始化用于协调分布式服务的注册中心
 		CoordinatorRegistryCenter coordinatorRegistryCenter = createCoordinatorRegistryCenter(ananOpsProperties.getZk());
 		RegisterDto dto = new RegisterDto(app, host, coordinatorRegistryCenter);
@@ -64,7 +64,7 @@ public final class RegistryCenterFactory {
 		registerMq(ananOpsProperties, host, app);
 	}
 	//注册rocketmq生产者消费者
-	private static void registerMq(AnanOpsProperties ananOpsProperties, String host, String app) {
+	private static void registerMq(AnanopsProperties ananOpsProperties, String host, String app) {
 		CoordinatorRegistryCenter coordinatorRegistryCenter = createCoordinatorRegistryCenter(ananOpsProperties.getZk());
 		AliyunProperties.RocketMqProperties rocketMq = ananOpsProperties.getAliyun().getRocketMq();
 		//生产者和消费者

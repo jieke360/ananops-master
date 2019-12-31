@@ -11,7 +11,7 @@
 
 package com.ananops.core.config;
 
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.ananops.config.properties.SwaggerProperties;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +37,7 @@ import java.util.List;
 @EnableSwagger2
 public class SwaggerConfiguration {
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 
 	/**
 	 * Reservation api docket.

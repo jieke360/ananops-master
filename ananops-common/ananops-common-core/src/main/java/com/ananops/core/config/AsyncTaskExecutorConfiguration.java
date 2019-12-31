@@ -2,7 +2,7 @@
 
 package com.ananops.core.config;
 
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -28,7 +28,7 @@ import java.util.concurrent.Executor;
 public class AsyncTaskExecutorConfiguration implements AsyncConfigurer {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 
 	@Override
 	@Bean(name = "taskExecutor")

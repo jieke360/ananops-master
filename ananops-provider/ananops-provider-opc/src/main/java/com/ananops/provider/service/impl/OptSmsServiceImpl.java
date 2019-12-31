@@ -15,7 +15,7 @@ import com.aliyuncs.exceptions.ClientException;
 import com.google.common.base.Preconditions;
 import com.ananops.base.constant.GlobalConstant;
 import com.ananops.base.enums.ErrorCodeEnum;
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.ananops.provider.exceptions.OpcBizException;
 import com.ananops.provider.service.OptSmsService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class OptSmsServiceImpl implements OptSmsService {
 	@Resource
 	private IAcsClient iAcsClient;
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 	@Value("${spring.profiles.active}")
 	private String profile;
 

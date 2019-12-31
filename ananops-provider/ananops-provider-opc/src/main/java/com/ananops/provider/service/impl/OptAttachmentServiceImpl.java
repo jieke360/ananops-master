@@ -8,7 +8,7 @@
 
 package com.ananops.provider.service.impl;
 
-import com.ananops.config.properties.AnanOpsProperties;
+import com.ananops.config.properties.AnanopsProperties;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.ananops.PublicUtil;
@@ -52,7 +52,7 @@ public class OptAttachmentServiceImpl extends BaseService<OptAttachment> impleme
 	@Resource
 	private OpcOssService optOssService;
 	@Resource
-	private AnanOpsProperties ananOpsProperties;
+	private AnanopsProperties ananOpsProperties;
 
 	@Override
 	public List<OptUploadFileRespDto> uploadFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto, boolean storeDbFlag) {
