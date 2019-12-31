@@ -98,7 +98,7 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-            <!-- paas cloud start -->
+            <!-- ananops cloud start -->
             <dependency>
                 <groupId>com.ananops.common</groupId>
                 <artifactId>ananops-common-base</artifactId>
@@ -124,7 +124,7 @@
                 <artifactId>ananops-security-app</artifactId>
                 <version>${ananops.version}</version>
             </dependency>
-            <!-- paas cloud end -->
+            <!-- ananops cloud end -->
             <!-- swagger cloud start -->
             <dependency>
                 <groupId>io.springfox</groupId>
