@@ -1,7 +1,13 @@
+/*
+ * Copyright (c) 2019. ananops.com All Rights Reserved.
+ * 项目名称：ananops平台
+ * 类名称：UacLoginServiceImpl.java
+ * 创建人：ananops
+ * 平台官网: http://ananops.com
+ */
+
 package com.ananops.provider.service.impl;
 
-import com.ananops.provider.model.domain.UacRole;
-import com.ananops.provider.service.UacRoleService;
 import com.google.common.base.Preconditions;
 import com.ananops.PublicUtil;
 import com.ananops.base.dto.LoginAuthDto;
@@ -27,15 +33,13 @@ import java.util.List;
 /**
  * The class Uac login service.
  *
- * @author ananops.net@gmail.com
+ * @author ananops.com@gmail.com
  */
 @Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class UacLoginServiceImpl implements UacLoginService {
 
-	@Resource
-	private UacRoleService uacRoleService;
 	@Resource
 	private UacUserService uacUserService;
 	@Resource
@@ -57,14 +61,12 @@ public class UacLoginServiceImpl implements UacLoginService {
 			throw new UacBizException(ErrorCodeEnum.UAC10011002, loginName);
 		}
 
-//		LoginAuthDto loginAuthDto = this.getLoginAuthDto(uacUser);
+		LoginAuthDto loginAuthDto = this.getLoginAuthDto(uacUser);
 		List<MenuVo> menuVoList = uacMenuService.getMenuVoList(uacUser.getId(), applicationId);
 		if (PublicUtil.isNotEmpty(menuVoList) && UacConstant.MENU_ROOT.equals(menuVoList.get(0).getMenuCode())) {
 			menuVoList = menuVoList.get(0).getSubMenu();
 		}
-		List<UacRole> roleList = uacRoleService.findAllRoleInfoByUserId(uacUser.getId());
-		loginRespDto.setRoleList(roleList);
-		loginRespDto.setUser(uacUser);
+		loginRespDto.setLoginAuthDto(loginAuthDto);
 		loginRespDto.setMenuList(menuVoList);
 		return loginRespDto;
 	}

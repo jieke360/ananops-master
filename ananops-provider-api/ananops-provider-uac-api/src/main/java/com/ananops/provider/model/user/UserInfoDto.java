@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2019. ananops.com All Rights Reserved.
+ * 项目名称：ananops平台
+ * 类名称：UserInfoDto.java
+ * 创建人：ananops
+ * 平台官网: http://ananops.com
+ */
+
 package com.ananops.provider.model.user;
 
 import io.swagger.annotations.ApiModel;
@@ -10,7 +18,7 @@ import java.util.Date;
 /**
  * The class User info dto.
  *
- * @author ananops.net@gmail.com
+ * @author ananops.com@gmail.com
  */
 @Data
 @ApiModel(value = "用户注册Dto")
@@ -89,20 +97,4 @@ public class UserInfoDto implements Serializable {
 
 	@ApiModelProperty(value = "用户所属的组织名称")
 	private String groupName;
-
-	@ApiModelProperty("角色id")
-	private Long roleId;
-
-	@ApiModelProperty("角色编码")
-	private String roleCode;
-
-
-	@ApiModelProperty("角色名称")
-	private String roleName;
-
-	/**
-	 * 状态
-	 */
-	@ApiModelProperty("角色状态(启用/禁用)")
-	private String RoleStatus;
 }

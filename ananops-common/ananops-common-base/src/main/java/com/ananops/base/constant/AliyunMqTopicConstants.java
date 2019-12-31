@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2019. ananops.net All Rights Reserved.
+ * 项目名称：ananops平台
+ * 类名称：AliyunMqTopicConstants.java
+ * 创建人：ananops
+ * 联系方式：ananops.net@gmail.com
+
+
+ *  * 平台官网: http://ananops.com
+ */
 package com.ananops.base.constant;
 
 import com.google.common.collect.Lists;
@@ -45,13 +55,7 @@ public class AliyunMqTopicConstants {
 		/**
 		 * Mdc topic mq topic enum.
 		 */
-
-		MDC_TOPIC("MDC_TOPIC", "MDC_TOPIC"),
-		/**
-		 * Imc topic mq topic enum.
-		 */
-		IMC_TOPIC("IMC_TOPIC","IMC_TOPIC"),;
-
+		MDC_TOPIC("MDC_TOPIC", "MDC_TOPIC"),;
 
 		MqTopicEnum(String topic, String topicName) {
 			this.topic = topic;
@@ -139,17 +143,7 @@ public class AliyunMqTopicConstants {
 		/**
 		 * 删除附件信息
 		 */
-
-		DELETE_ATTACHMENT("DELETE_ATTACHMENT", MqTopicEnum.MDC_TOPIC.getTopic(), "删除附件信息"),
-		/**
-		 * 编辑巡检任务
-		 */
-		UPDATE_INSPECTION_TASK("UPDATE_INSPECTION_TASK",MqTopicEnum.IMC_TOPIC.getTopic(),"编辑巡检任务"),
-		/**
-		 * 修改巡检任务状态
-		 */
-		MODIFY_INSPECTION_TASK_STATUS("MODIFY_INSPECTION_TASK_STATUS",MqTopicEnum.IMC_TOPIC.getTopic(),"修改巡检任务的状态"),;
-
+		DELETE_ATTACHMENT("DELETE_ATTACHMENT", MqTopicEnum.MDC_TOPIC.getTopic(), "删除附件信息"),;
 		/**
 		 * The Tag.
 		 */

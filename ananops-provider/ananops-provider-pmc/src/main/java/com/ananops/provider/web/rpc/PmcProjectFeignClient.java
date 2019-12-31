@@ -30,11 +30,12 @@ public class PmcProjectFeignClient extends BaseController implements PmcProjectF
     public Wrapper saveProject(@RequestBody PmcProjectDto pmcProjectDto) {
 //        LoginAuthDto loginAuthDto = getLoginAuthDto();
         LoginAuthDto loginAuthDto = new LoginAuthDto();
-        loginAuthDto.setUserId((long)1);
+        loginAuthDto.setUserId((long) 1);
         loginAuthDto.setUserName("jajja");
         PmcProject pmcProject = new PmcProject();
         BeanUtils.copyProperties(pmcProjectDto, pmcProject);
         int result = pmcProjectService.saveProject(pmcProject, loginAuthDto);
         return handleResult(result);
     }
+
 }

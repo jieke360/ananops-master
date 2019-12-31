@@ -12,6 +12,7 @@ import com.ananops.provider.mapper.PmcProjectUserMapper;
 import com.ananops.provider.model.domain.PmcContract;
 import com.ananops.provider.model.domain.PmcProject;
 import com.ananops.provider.model.domain.PmcProjectUser;
+import com.ananops.provider.model.dto.PmcProjectDto;
 import com.ananops.provider.service.PmcInspectTaskService;
 import com.ananops.provider.service.PmcProjectService;
 import com.github.pagehelper.PageHelper;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -132,6 +134,19 @@ public class PmcProjectServiceImpl extends BaseService<PmcProject> implements Pm
         criteria.andEqualTo("projectId", projectId);
         result = pmcProjectUserMapper.deleteByExample(example);
         return result;
+    }
+
+    @Override
+    public List<Long> getEngineersIdByProjectId(Long projectId) {
+        List<Long> engineersId = new ArrayList<>();
+        Example example = new Example(PmcProjectUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("projectId", projectId);
+        List<PmcProjectUser> pmcProjectUserList =  pmcProjectUserMapper.selectByExample(example);
+        for (PmcProjectUser pmcProjectUser : pmcProjectUserList) {
+            engineersId.add(pmcProjectUser.getUserId());
+        }
+        return  engineersId;
     }
 
 

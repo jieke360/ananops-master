@@ -68,4 +68,12 @@ public interface PmcProjectService extends IService<PmcProject> {
      * @return
      */
     int deleteProUser(Long ProjectId);
+
+
+    /**
+     * 根据项目id获取工程师id列表
+     * @param projectId
+     * @return
+     */
+    List<Long> getEngineersIdByProjectId(Long projectId);
 }

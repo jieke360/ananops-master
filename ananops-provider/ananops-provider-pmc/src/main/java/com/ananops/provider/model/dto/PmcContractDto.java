@@ -122,6 +122,12 @@ public class PmcContractDto implements Serializable {
     private Integer paymentType;
 
     /**
+     * 支付金额
+     */
+    @ApiModelProperty(value = "支付金额")
+    private Long paymentMoney;
+
+    /**
      * 项目金额
      */
     @ApiModelProperty(value = "项目金额")
@@ -193,7 +199,7 @@ public class PmcContractDto implements Serializable {
      * 合同是否作废（0-有效，1-作废）
      */
     @ApiModelProperty(value = "合同是否作废（0-有效，1-作废）")
-    private Integer isDestory;
+    private Integer isDestroy;
 
     /**
      * 附件路径

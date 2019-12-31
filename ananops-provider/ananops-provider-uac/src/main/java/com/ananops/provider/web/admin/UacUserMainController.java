@@ -1,6 +1,13 @@
+/*
+ * Copyright (c) 2019. ananops.com All Rights Reserved.
+ * 项目名称：ananops平台
+ * 类名称：UacUserMainController.java
+ * 创建人：ananops
+ * 平台官网: http://ananops.com
+ */
+
 package com.ananops.provider.web.admin;
 
-import com.ananops.provider.model.dto.log.PageLog;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ananops.base.dto.LoginAuthDto;
@@ -33,7 +40,7 @@ import java.util.Objects;
 /**
  * 用户管理主页面.
  *
- * @author ananops.net @gmail.com
+ * @author ananops.com @gmail.com
  */
 @RestController
 @RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -84,11 +91,11 @@ public class UacUserMainController extends BaseController {
 	 */
 	@PostMapping(value = "/queryUserLogListWithPage")
 	@ApiOperation(httpMethod = "POST", value = "分页查询用户操作日志列表")
-	public Wrapper<PageInfo<UacLog>> queryUserLogListWithPage(@ApiParam(name = "user", value = "用户信息") @RequestBody PageLog log) {
+	public Wrapper<PageInfo<UacLog>> queryUserLogListWithPage(@ApiParam(name = "user", value = "用户信息") @RequestBody UacLog log) {
 
 		logger.info("分页查询用户操作日志列表");
 		PageHelper.startPage(log.getPageNum(), log.getPageSize());
-		List<UacLog> list = uacUserService.queryUserLogListWithUserId(log.getUserId());
+		List<UacLog> list = uacUserService.queryUserLogListWithUserId(getLoginAuthDto().getUserId());
 		PageInfo<UacLog> pageInfo = new PageInfo<>(list);
 		return WrapMapper.ok(pageInfo);
 	}
