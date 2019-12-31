@@ -29,7 +29,7 @@ public interface PmcProjectEngineerFeignApi {
 
     /**
      * 根据项目id获取工程师id列表
-     * @param
+     * @param projectId
      * @return
      */
     @PostMapping("/api/projectEngineer/getEngineersIdByProjectId/{projectId}")

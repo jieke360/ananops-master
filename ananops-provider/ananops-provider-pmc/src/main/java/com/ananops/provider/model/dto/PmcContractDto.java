@@ -199,7 +199,7 @@ public class PmcContractDto implements Serializable {
      * 合同是否作废（0-有效，1-作废）
      */
     @ApiModelProperty(value = "合同是否作废（0-有效，1-作废）")
-    private Integer isDestory;
+    private Integer isDestroy;
 
     /**
      * 附件路径
