@@ -1,6 +1,5 @@
 package com.ananops.provider.web.rpc;
 
-import com.ananops.PublicUtil;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.UacRole;
 import com.ananops.provider.model.domain.UacUser;
@@ -14,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 

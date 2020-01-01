@@ -97,4 +97,21 @@ public class UserInfoDto implements Serializable {
 
 	@ApiModelProperty(value = "用户所属的组织名称")
 	private String groupName;
+
+	@ApiModelProperty("角色id")
+	private Long roleId;
+
+	@ApiModelProperty("角色编码")
+	private String roleCode;
+
+
+	@ApiModelProperty("角色名称")
+	private String roleName;
+
+	/**
+	 * 状态
+	 */
+	@ApiModelProperty("角色状态(启用/禁用)")
+	private String roleStatus;
+
 }

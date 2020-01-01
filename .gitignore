@@ -1,4 +1,4 @@
 *.iml
 .idea
 target
-
+/LOG_PATH_IS_UNDEFINEDdaily/
