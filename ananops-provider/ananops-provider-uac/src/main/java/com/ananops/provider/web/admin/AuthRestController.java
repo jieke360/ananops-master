@@ -15,7 +15,7 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.constant.UacApiConstant;
 import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.user.ResetLoginPwdDto;
-import com.ananops.provider.model.user.UserRegisterDto;
+import com.ananops.provider.model.dto.user.UserRegisterDto;
 import com.ananops.provider.model.enums.UacUserStatusEnum;
 import com.ananops.provider.service.EmailService;
 import com.ananops.provider.service.SmsService;

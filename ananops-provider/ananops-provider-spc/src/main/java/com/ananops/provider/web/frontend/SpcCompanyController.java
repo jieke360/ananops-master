@@ -1,7 +1,11 @@
 package com.ananops.provider.web.frontend;
 
+import com.ananops.core.annotation.LogAnnotation;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.SpcCompany;
+import com.ananops.provider.model.dto.CompanyStatusDto;
+import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
+import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.service.SpcCompanyService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
@@ -11,10 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -33,12 +34,47 @@ public class SpcCompanyController extends BaseController {
     private SpcCompanyService spcCompanyService;
 
     @PostMapping(value = "/queryAllCompanys")
-    @ApiOperation(httpMethod = "POST", value = "获取全部加盟服务商")
-    public Wrapper<PageInfo<SpcCompany>> queryAllCompanys(@ApiParam(name = "spcCompany", value = "服务商信息") @RequestBody SpcCompany spcCompany) {
+    @ApiOperation(httpMethod = "POST", value = "获取加盟服务商列表")
+    public Wrapper<PageInfo<SpcCompany>> queryAllCompanys(@ApiParam(name = "spcCompany", value = "公司信息") @RequestBody SpcCompany spcCompany) {
         logger.info("分页查询服务商列表, spcCompany={}", spcCompany);
         PageHelper.startPage(spcCompany.getPageNum(), spcCompany.getPageSize());
         spcCompany.setOrderBy("update_time desc");
         List<SpcCompany> companyVoList = spcCompanyService.queryAllCompanys(spcCompany);
         return WrapMapper.ok(new PageInfo<>(companyVoList));
     }
+
+    /**
+     * 根据Id修改用户状态.
+     *
+     * @param modifyCompanyStatusDto the modify Company status dto
+     *
+     * @return the wrapper
+     */
+    @PostMapping(value = "/modifyCompanyStatusById")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据Id修改公司状态")
+    public Wrapper<Integer> modifyCompanyStatusById(@ApiParam(name = "modifyCompanyStatusDto", value = "公司禁用/激活Dto") @RequestBody ModifyCompanyStatusDto modifyCompanyStatusDto) {
+        logger.info(" 根据Id修改公司状态 modifyCompanyStatusDto={}", modifyCompanyStatusDto);
+        int result = spcCompanyService.modifyUserStatusById(modifyCompanyStatusDto);
+        return handleResult(result);
+    }
+
+    /**
+     * 根据公司状态分页查询公司列表.
+     *
+     * @param CompanyStatusDto
+     *
+     * @return the wrapper
+     */
+    @PostMapping(value = "/queryListWithStatus")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据公司状态分页查询公司列表")
+    public Wrapper<PageInfo<CompanyVo>> queryListWithStatus(@ApiParam(name = "companyStatusDto", value = "公司状态查询Dto") @RequestBody CompanyStatusDto companyStatusDto) {
+        logger.info("根据公司状态分页查询公司列表 companyStatusDto={}", companyStatusDto);
+        PageHelper.startPage(companyStatusDto.getPageNum(), companyStatusDto.getPageSize());
+        companyStatusDto.setOrderBy("update_time desc");
+        List<CompanyVo> companyVoList = spcCompanyService.queryListByStatus(companyStatusDto);
+        return WrapMapper.ok(new PageInfo<>(companyVoList));
+    }
+
 }

@@ -14,7 +14,7 @@ import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.UacGroup;
 import com.ananops.provider.model.dto.group.GroupBindUserDto;
 import com.ananops.provider.model.dto.group.GroupBindUserReqDto;
-import com.ananops.provider.model.user.IdStatusDto;
+import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.ananops.provider.model.vo.MenuVo;
 

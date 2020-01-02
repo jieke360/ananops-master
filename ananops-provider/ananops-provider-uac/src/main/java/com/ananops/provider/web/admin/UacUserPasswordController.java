@@ -13,7 +13,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.annotation.LogAnnotation;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.dto.user.UserModifyPwdDto;
-import com.ananops.provider.model.user.UserRegisterDto;
+import com.ananops.provider.model.dto.user.UserRegisterDto;
 import com.ananops.provider.service.UacUserService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;

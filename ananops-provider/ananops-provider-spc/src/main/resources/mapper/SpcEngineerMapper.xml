@@ -23,7 +23,7 @@
     <result column="version" property="version" jdbcType="INTEGER" />
     <result column="creator" property="creator" jdbcType="VARCHAR" />
     <result column="creator_id" property="creatorId" jdbcType="BIGINT" />
-    <result column="creator_time" property="creatorTime" jdbcType="TIMESTAMP" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
     <result column="last_operator" property="lastOperator" jdbcType="VARCHAR" />
     <result column="last_operator_id" property="lastOperatorId" jdbcType="BIGINT" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
