@@ -1,4 +1,4 @@
-package com.ananops.provider.model.dto;
+package com.ananops.provider.service.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Data
 @ApiModel
 public class ApproSubmitDto implements Serializable {
+
     @ApiModelProperty(value = "当前用户id")
     private Long userid;
 
