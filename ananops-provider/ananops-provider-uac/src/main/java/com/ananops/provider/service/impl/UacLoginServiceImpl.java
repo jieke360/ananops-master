@@ -8,6 +8,8 @@
 
 package com.ananops.provider.service.impl;
 
+import com.ananops.provider.model.domain.UacRole;
+import com.ananops.provider.service.UacRoleService;
 import com.google.common.base.Preconditions;
 import com.ananops.PublicUtil;
 import com.ananops.base.dto.LoginAuthDto;
@@ -41,6 +43,8 @@ import java.util.List;
 public class UacLoginServiceImpl implements UacLoginService {
 
 	@Resource
+	private UacRoleService uacRoleService;
+	@Resource
 	private UacUserService uacUserService;
 	@Resource
 	private UacMenuService uacMenuService;
@@ -66,6 +70,8 @@ public class UacLoginServiceImpl implements UacLoginService {
 		if (PublicUtil.isNotEmpty(menuVoList) && UacConstant.MENU_ROOT.equals(menuVoList.get(0).getMenuCode())) {
 			menuVoList = menuVoList.get(0).getSubMenu();
 		}
+		List<UacRole> roleList = uacRoleService.findAllRoleInfoByUserId(uacUser.getId());
+		loginRespDto.setRoleList(roleList);
 		loginRespDto.setLoginAuthDto(loginAuthDto);
 		loginRespDto.setMenuList(menuVoList);
 		return loginRespDto;
