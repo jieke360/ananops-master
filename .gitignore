@@ -3,6 +3,7 @@
 target
 /LOG_PATH_IS_UNDEFINEDdaily/
 .mvn
+.DS_Store
 *.class
 *.log
 *.ctxt
