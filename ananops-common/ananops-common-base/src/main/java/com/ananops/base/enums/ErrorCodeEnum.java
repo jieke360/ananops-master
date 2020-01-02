@@ -9,6 +9,50 @@ package com.ananops.base.enums;
  */
 public enum ErrorCodeEnum {
 	/**
+	 * Gl 9999089 error code enum.
+	 */
+	GL9999089(9999089,"没有此角色"),
+	/**
+	 * Gl 9999090 error code enum.
+	 */
+	GL9999090(9999090,"没有处于此状态的任务子项"),
+	/**
+	 * Gl 9999091 error code enum.
+	 */
+	GL9999091(9999091,"没有处于此状态的任务"),
+	/**
+	 * Gl 9999092 error code enum.
+	 */
+	GL9999092(9999092,"修改巡检任务状态失败"),
+	/**
+	 * Gl 9999093 error code enum.
+	 */
+	GL9999093(9999093,"更新巡检任务失败"),
+	/**
+	 * Gl 9999094 error code enum.
+	 */
+	GL9999094(9999094,"任务子项不存在此状态"),
+	/**
+	 * Gl 9999095 error code enum.
+	 */
+	GL9999095(9999095,"任务不存在此状态"),
+	/**
+	 * Gl 9999096 error code enum.
+	 */
+	GL9999096(9999096,"当前备品备件订单不存在"),
+	/**
+	 * Gl 9999097 error code enum.
+	 */
+	GL9999097(9999097,"当前任务子项不存在"),
+	/**
+	 * Gl 9999098 error code enum.
+	 */
+	GL9999098(9999098,"当前任务不存在"),
+	/**
+	 * Gl 9999099 error code enum.
+	 */
+	GL9999099(9999099,"不能重复评论"),
+	/**
 	 * Gl 99990100 error code enum.
 	 */
 	GL99990100(9999100, "参数异常"),
@@ -36,6 +80,16 @@ public enum ErrorCodeEnum {
 	 * Gl 99990002 error code enum.
 	 */
 	GL99990002(99990002, "微服务不在线,或者网络超时"),
+	/**
+	 * MDMC 99990003 error code enum.
+	 */
+	GL99990003(99990003,"用户id不能为空"),
+
+	/**
+	 * MDMC 99990004 error code enum.
+	 */
+	GL99990004(99990004,"任务id不能为空"),
+
 	/**
 	 * Uac 10010001 error code enum.
 	 */

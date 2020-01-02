@@ -55,8 +55,11 @@ public class AliyunMqTopicConstants {
 		/**
 		 * Mdc topic mq topic enum.
 		 */
-		MDC_TOPIC("MDC_TOPIC", "MDC_TOPIC"),;
-
+		MDC_TOPIC("MDC_TOPIC", "MDC_TOPIC"),
+		/**
+		 * Imc topic mq topic enum.
+		 */
+		IMC_TOPIC("IMC_TOPIC","IMC_TOPIC"),;
 		MqTopicEnum(String topic, String topicName) {
 			this.topic = topic;
 			this.topicName = topicName;
@@ -143,7 +146,15 @@ public class AliyunMqTopicConstants {
 		/**
 		 * 删除附件信息
 		 */
-		DELETE_ATTACHMENT("DELETE_ATTACHMENT", MqTopicEnum.MDC_TOPIC.getTopic(), "删除附件信息"),;
+		DELETE_ATTACHMENT("DELETE_ATTACHMENT", MqTopicEnum.MDC_TOPIC.getTopic(), "删除附件信息"),
+		/**
+		 * 编辑巡检任务
+		 */
+		UPDATE_INSPECTION_TASK("UPDATE_INSPECTION_TASK",MqTopicEnum.IMC_TOPIC.getTopic(),"编辑巡检任务"),
+		/**
+		 * 修改巡检任务状态
+		 */
+		MODIFY_INSPECTION_TASK_STATUS("MODIFY_INSPECTION_TASK_STATUS",MqTopicEnum.IMC_TOPIC.getTopic(),"修改巡检任务的状态"),;
 		/**
 		 * The Tag.
 		 */
