@@ -181,7 +181,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 
 	@Override
 	public int deleteUserById(Long userId) {
-		return 0;
+		return uacUserMapper.deleteByPrimaryKey(userId);
 	}
 
 	@Override
