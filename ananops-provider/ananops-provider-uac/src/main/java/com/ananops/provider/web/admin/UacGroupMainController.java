@@ -13,7 +13,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.annotation.LogAnnotation;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.UacGroup;
-import com.ananops.provider.model.user.IdStatusDto;
+import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.vo.MenuVo;
 import com.ananops.provider.service.UacGroupService;
 import com.ananops.wrapper.WrapMapper;

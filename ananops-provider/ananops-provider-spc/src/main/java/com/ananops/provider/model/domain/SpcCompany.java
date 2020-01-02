@@ -26,6 +26,12 @@ public class SpcCompany extends BaseEntity implements Serializable {
     private Long groupId;
 
     /**
+     * UAC用户ID
+     */
+    @Column(name = "user_id")
+    private Long userId;
+
+    /**
      * 法人姓名
      */
     @Column(name = "legal_person_name")

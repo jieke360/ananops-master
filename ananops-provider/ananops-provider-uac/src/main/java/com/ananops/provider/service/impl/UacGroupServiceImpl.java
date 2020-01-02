@@ -19,7 +19,7 @@ import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.group.GroupBindUserDto;
 import com.ananops.provider.model.dto.group.GroupBindUserReqDto;
 import com.ananops.provider.model.dto.role.BindUserDto;
-import com.ananops.provider.model.user.IdStatusDto;
+import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.enums.UacGroupStatusEnum;
 import com.ananops.provider.model.exceptions.UacBizException;
 import com.ananops.provider.model.vo.GroupZtreeVo;

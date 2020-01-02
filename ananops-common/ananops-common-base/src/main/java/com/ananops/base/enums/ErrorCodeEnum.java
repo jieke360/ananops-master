@@ -385,6 +385,10 @@ public enum ErrorCodeEnum {
 	 */
 	UAC10015009(10015009, "找不到上级组织, groupId=%s"),
 	/**
+	 * Uac 10015010 error code enum.
+	 */
+	UAC100150010(10015010, "企业统一信用代码不能为空"),
+	/**
 	 * Mdc 10021001 error code enum.
 	 */
 // 1002 数据中心

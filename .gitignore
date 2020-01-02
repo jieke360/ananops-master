@@ -2,3 +2,14 @@
 .idea
 target
 /LOG_PATH_IS_UNDEFINEDdaily/
+.mvn
+.DS_Store
+*.class
+*.log
+*.ctxt
+*.jar
+*.war
+*.nar
+*.ear
+*.tar.gz
+*.rar

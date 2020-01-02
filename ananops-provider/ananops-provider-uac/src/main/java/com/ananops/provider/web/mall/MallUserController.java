@@ -11,7 +11,7 @@ package com.ananops.provider.web.mall;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.UacUser;
-import com.ananops.provider.model.user.UserInfoDto;
+import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.service.UacUserService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
