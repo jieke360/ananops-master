@@ -8,6 +8,7 @@ package com.ananops.provider.service.impl;
 import com.ananops.provider.service.ActivitiService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.*;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
@@ -27,19 +28,23 @@ public class ActivitiServiceImpl implements ActivitiService {
     String pngFilePath = "D:\\Image" + "\\";
 
     @Override
-    public void deploy(String name, String bpmnpath, String pngpath) throws FileNotFoundException {
+    public String deploy(String name, String bpmnpath, String pngpath) throws FileNotFoundException {
 
         File bpmn = new File(bpmnpath);
         File png = new File(pngpath);
         InputStream in1 = new FileInputStream(bpmn);
         InputStream in2 = new FileInputStream(png);
 
-        processEngine.getRepositoryService()
+        Deployment deployment = processEngine.getRepositoryService()
                 .createDeployment()
                 .name(name)
                 .addInputStream("bpmn", in1)
                 .addInputStream("png", in2)
                 .deploy();
+        return processEngine.getRepositoryService()
+                .createProcessDefinitionQuery()
+                .deploymentId(deployment.getId())
+                .singleResult().toString();
     }
 
     @Override
@@ -81,15 +86,11 @@ public class ActivitiServiceImpl implements ActivitiService {
 
     //获取批注
     @Override
-    public List<Comment> getComment(String TaskId) {
+    public List<Comment> getComment(String processInstanceId) {
         List<Comment> comments = new ArrayList<>();
-        Task task = processEngine.getTaskService()
-                .createTaskQuery()
-                .taskId(TaskId)
-                .singleResult();
         ProcessInstance processInstance = processEngine.getRuntimeService()
                 .createProcessInstanceQuery()
-                .processInstanceId(task.getProcessInstanceId())
+                .processInstanceId(processInstanceId)
                 .singleResult();
         List<HistoricActivityInstance> list = processEngine.getHistoryService()
                 .createHistoricActivityInstanceQuery()
@@ -302,6 +303,9 @@ public class ActivitiServiceImpl implements ActivitiService {
                 .processInstanceId(processInstanceId)
                 .variableName(variableName)
                 .singleResult();
+         if(historicVariableInstance==null){
+            return null;
+        }
         return historicVariableInstance.getValue();
     }
 

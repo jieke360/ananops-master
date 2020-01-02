@@ -3,7 +3,10 @@ package com.ananops.provider.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.ananops.provider.mapper.BasebillMapper;
 import com.ananops.provider.model.domain.Basebill;
+import com.ananops.provider.model.dto.PmcPayDto;
 import com.ananops.provider.service.BaseService;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -25,8 +28,11 @@ public class BaseServiceImpl implements BaseService {
         String userid=jsonObject.get("userid").toString();
         String workorderid=jsonObject.get("workorderid").toString();
         String supplier=jsonObject.get("supplier").toString();
+        //TODO
         Float amount=Float.valueOf(jsonObject.get("amount").toString());
         String transactionMethod=jsonObject.get("transactionMethod").toString();
+        String payDto = jsonObject.get("payDto").toString();
+        JsonObject jsonObject1 = new JsonParser().parse(payDto).getAsJsonObject();
         Date date=new Date();
         Long time=date.getTime();
         Basebill bill = new Basebill();
@@ -34,8 +40,8 @@ public class BaseServiceImpl implements BaseService {
         String id = String.valueOf(timestamp)+userid;
         bill.setId(id);
         bill.setPaymentMethod(paymentMethod);
-        bill.setTransactionMethod(transactionMethod);
-        bill.setAmount(amount);
+        bill.setTransactionMethod(jsonObject1.get("paymentType").getAsString());
+        bill.setAmount(jsonObject1.get("paymentMoney").getAsFloat());
         bill.setUserid(userid);
         bill.setTime(time);
         bill.setSupplier(supplier);
