@@ -22,6 +22,8 @@
         <module>ananops-provider-mdmc-api</module>
         <module>ananops-provider-spc-api</module>
         <module>ananops-provider-pmc-api</module>
+        <module>ananops-provider-bill-api</module>
+        <module>ananops-provider-activiti-api</module>
     </modules>
 
     <dependencies>

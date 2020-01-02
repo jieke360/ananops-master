@@ -35,6 +35,10 @@
             <groupId>com.ananops.provider.api</groupId>
             <artifactId>ananops-provider-tpc-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-activiti-api</artifactId>
+        </dependency>
         <!--<dependency>-->
         <!--<groupId>io.github.swagger2markup</groupId>-->
         <!--<artifactId>swagger2markup</artifactId>-->

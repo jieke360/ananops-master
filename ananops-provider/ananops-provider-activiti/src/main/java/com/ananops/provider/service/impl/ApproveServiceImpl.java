@@ -27,6 +27,7 @@ public class ApproveServiceImpl implements ApproveService {
         String variableName = "agreement";
         Map<String, Object> map = new HashMap<>();
         map.put(variableName, "同意");
+        map.put("name",Uid);
         processEngine.getTaskService()
                 .complete(taskId, map);
     }
