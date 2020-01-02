@@ -1,0 +1,12 @@
+DROP DATABASE IF EXISTS `ananops_mdc`;
+CREATE DATABASE ananops_mdc;
+DROP DATABASE IF EXISTS `ananops_uac`;
+CREATE DATABASE ananops_uac;
+DROP DATABASE IF EXISTS `ananops_opc`;
+CREATE DATABASE ananops_opc;
+DROP DATABASE IF EXISTS `ananops_tpc`;
+CREATE DATABASE ananops_tpc;
+DROP DATABASE IF EXISTS `ananops_zipkin`;
+CREATE DATABASE ananops_zipkin;
+DROP DATABASE IF EXISTS `ananops_imc`;
+CREATE DATABASE ananops_imc;

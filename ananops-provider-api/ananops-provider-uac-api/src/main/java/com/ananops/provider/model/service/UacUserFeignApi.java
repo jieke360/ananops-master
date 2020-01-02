@@ -1,5 +1,6 @@
 package com.ananops.provider.model.service;
 
+import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.dto.user.UserRegisterDto;
 import com.ananops.provider.model.service.hystrix.UacUserFeignHystrix;
@@ -36,4 +37,27 @@ public interface UacUserFeignApi {
     @PostMapping(value = "/api/uac/user/getUacUserById")
     Wrapper<UserInfoDto> getUacUserById(@RequestParam("userId") Long userId);
 
+    /**
+     * 在UAC中注册添加用户,设置默认密码及状态.
+     *
+     * @return the wrapper
+     */
+    @PostMapping(value = "/api/uac/user/add")
+    Wrapper<Long> addUser(@RequestBody UserInfoDto userInfoDto);
+
+    /**
+     * 更改UAC中User的状态.
+     *
+     * @return the wrapper
+     */
+    @PostMapping(value = "/api/uac/user/modifyUserStatusById")
+    Wrapper<Integer> modifyUserStatus(IdStatusDto modifyUserStatusDto);
+
+    /**
+     * 在UAC中更新用户.
+     *
+     * @return the wrapper
+     */
+    @PostMapping(value = "/api/uac/user/save")
+    Wrapper<Long> userSave(@RequestBody UserInfoDto userInfoDto);
 }

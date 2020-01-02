@@ -1,5 +1,6 @@
 package com.ananops.provider.web.frontend;
 
+import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.annotation.LogAnnotation;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.SpcCompany;
@@ -21,7 +22,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 加盟服务商对外提供的Restful接口
+ * 服务商模块对外提供操作Company的Restful接口
  *
  * Created by bingyueduan on 2019/12/28.
  */
@@ -44,7 +45,7 @@ public class SpcCompanyController extends BaseController {
     }
 
     /**
-     * 根据Id修改用户状态.
+     * 根据Id修改公司状态.
      *
      * @param modifyCompanyStatusDto the modify Company status dto
      *
@@ -55,7 +56,7 @@ public class SpcCompanyController extends BaseController {
     @ApiOperation(httpMethod = "POST", value = "根据Id修改公司状态")
     public Wrapper<Integer> modifyCompanyStatusById(@ApiParam(name = "modifyCompanyStatusDto", value = "公司禁用/激活Dto") @RequestBody ModifyCompanyStatusDto modifyCompanyStatusDto) {
         logger.info(" 根据Id修改公司状态 modifyCompanyStatusDto={}", modifyCompanyStatusDto);
-        int result = spcCompanyService.modifyUserStatusById(modifyCompanyStatusDto);
+        int result = spcCompanyService.modifyCompanyStatusById(modifyCompanyStatusDto);
         return handleResult(result);
     }
 
@@ -77,4 +78,37 @@ public class SpcCompanyController extends BaseController {
         return WrapMapper.ok(new PageInfo<>(companyVoList));
     }
 
+    /**
+     * 根据公司Id查询公司信息.
+     *
+     * @param companyId the company id
+     *
+     * @return the spc company by id
+     */
+    @PostMapping(value = "/getSpcCompanyById/{companyId}")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据用户Id查询用户信息")
+    public Wrapper<CompanyVo> getSpcCompanyById(@ApiParam(name = "companyId", value = "公司ID") @PathVariable Long companyId) {
+        logger.info("getSpcCompanyById - 根据公司Id查询公司信息. companyId={}", companyId);
+        CompanyVo uacCompany = spcCompanyService.queryByCompanyId(companyId);
+        logger.info("getUacUserById - 根据公司Id查询公司信息. [OK] uacCompany={}", uacCompany);
+        return WrapMapper.ok(uacCompany);
+    }
+
+    /**
+     * 根据公司Id保存公司信息.
+     *
+     * @param companyVo 编辑之后的对象
+     *
+     * @return the spc company by id
+     */
+    @PostMapping(value = "/save")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据公司Id保存公司信息")
+    public Wrapper<Integer> addUacCompany(@ApiParam(name = "companyVo", value = "公司ID及详细信息") @RequestBody CompanyVo companyVo) {
+        logger.info(" 新增公司 companyVo={}", companyVo);
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        spcCompanyService.saveUacCompany(companyVo, loginAuthDto);
+        return WrapMapper.ok();
+    }
 }

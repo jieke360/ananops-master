@@ -39,7 +39,7 @@ public class GroupSaveDto implements Serializable {
      * 联系人姓名
      */
     @ApiModelProperty(value = "联系人姓名")
-    private String contactName;
+    private String contact;
 
     /**
      * 联系人电话
