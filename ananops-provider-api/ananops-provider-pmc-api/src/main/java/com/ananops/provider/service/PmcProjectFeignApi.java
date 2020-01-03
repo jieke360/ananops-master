@@ -18,6 +18,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(value = "ananops-provider-pmc",configuration = OAuth2FeignAutoConfiguration.class,fallback = PmcProjectFeignHystrix.class)
 public interface PmcProjectFeignApi {
 
+
+    /**
+     * 根据项目id获取项目信息
+     * @param projectId
+     * @return
+     */
+    @PostMapping("/api/project/getProjectById/{projectId}")
+    Wrapper<PmcProjectDto> getProjectByProjectId(@PathVariable(value = "projectId") Long projectId);
+
     /**
      * 编辑项目信息
      * @param pmcProjectDto
@@ -25,4 +34,6 @@ public interface PmcProjectFeignApi {
      */
     @PostMapping("/api/project/save")
     Wrapper saveProject(@RequestBody PmcProjectDto pmcProjectDto);
+
+
 }

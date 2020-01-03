@@ -70,6 +70,7 @@ public class UacLoginServiceImpl implements UacLoginService {
 		if (PublicUtil.isNotEmpty(menuVoList) && UacConstant.MENU_ROOT.equals(menuVoList.get(0).getMenuCode())) {
 			menuVoList = menuVoList.get(0).getSubMenu();
 		}
+		resetMenuVo(menuVoList);
 		List<UacRole> roleList = uacRoleService.findAllRoleInfoByUserId(uacUser.getId());
 		loginRespDto.setRoleList(roleList);
 		loginRespDto.setLoginAuthDto(loginAuthDto);
@@ -85,6 +86,18 @@ public class UacLoginServiceImpl implements UacLoginService {
 		loginAuthDto.setGroupId(uacUser.getGroupId());
 		loginAuthDto.setGroupName(uacUser.getGroupName());
 		return loginAuthDto;
+	}
+
+	private static void resetMenuVo(List<MenuVo> list){
+		for (MenuVo menuVo : list) {
+			List<MenuVo> subList= menuVo.getSubMenu();
+			if (subList!=null) {
+				if(subList.size()==0){
+					menuVo.setSubMenu(null);
+				}
+				resetMenuVo(subList);
+			}
+		}
 	}
 
 

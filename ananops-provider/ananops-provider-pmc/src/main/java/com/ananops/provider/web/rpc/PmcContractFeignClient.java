@@ -3,15 +3,19 @@ package com.ananops.provider.web.rpc;
 import com.ananops.PublicUtil;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.PmcContract;
+import com.ananops.provider.model.dto.PmcContractDto;
 import com.ananops.provider.model.dto.PmcPayDto;
+import com.ananops.provider.model.dto.PmcProjectDto;
 import com.ananops.provider.service.PmcContractFeignApi;
 import com.ananops.provider.service.PmcContractService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -41,5 +45,13 @@ public class PmcContractFeignClient extends BaseController implements PmcContrac
             return WrapMapper.ok(pmcPayDtoList);
         }
         return WrapMapper.ok();
+    }
+
+    @Override
+    public Wrapper<PmcContractDto> getContractById(Long contractId) {
+        PmcContract pmcContract = pmcContractService.getContractById(contractId);
+        PmcContractDto pmcContractDto = new PmcContractDto();
+        BeanUtils.copyProperties(pmcContract, pmcContractDto);
+        return WrapMapper.ok(pmcContractDto);
     }
 }
