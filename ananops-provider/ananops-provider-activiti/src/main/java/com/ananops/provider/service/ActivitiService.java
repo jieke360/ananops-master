@@ -24,7 +24,7 @@ public interface ActivitiService {
     ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 
     //部署流程
-    void deploy(String name, String bpmnpath, String pngpath) throws FileNotFoundException;
+    String deploy(String name, String bpmnpath, String pngpath) throws FileNotFoundException;
 
     //启动流程
     String start(String Uid, String processDefinitionId);

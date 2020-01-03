@@ -6,6 +6,8 @@ package com.ananops.provider.web;
  */
 
 import com.alibaba.fastjson.JSONObject;
+import com.ananops.provider.model.dto.ActiDeployDto;
+import com.ananops.provider.model.dto.ActiStartDto;
 import com.ananops.provider.service.impl.ActivitiServiceImpl;
 import com.ananops.provider.utils.WrapMapper;
 import com.ananops.provider.utils.Wrapper;
@@ -28,26 +30,27 @@ public class ActivitiController {
     ActivitiServiceImpl activitiServiceImpl;
 
     //发布流程
-    @GetMapping(value = "/deploy")
+    @PostMapping(value = "/deploy")
     @ApiOperation(httpMethod = "POST",value = "部署流程")
-    public Wrapper<String> deploy(@ApiParam(name = "name",value = "流程名称") String name,
-                                  @ApiParam(name = "bpmnpath",value = "bpmn路径") String bpmnpath,
-                                  @ApiParam(name = "pngpath",value = "png路径") String pngpath) throws Exception {
+    public Wrapper<String> deploy(@ApiParam(name = "deploy",value="部署流程") @RequestBody ActiDeployDto actiDeployDto) throws Exception {
+        String definitionId=null;
         try {
-            activitiServiceImpl.deploy(name, bpmnpath, pngpath);
+            String name=actiDeployDto.getName();
+            String bpmnpath=actiDeployDto.getBpmnpath();
+            String pngpath=actiDeployDto.getPngpath();
+            definitionId=activitiServiceImpl.deploy(name, bpmnpath, pngpath);
         } catch (Exception e) {
             return WrapMapper.error(e.getMessage());
         }
-        return WrapMapper.ok("success");
+        return WrapMapper.ok(definitionId);
     }
 
     //启动流程
-    @GetMapping(value = "/start")
+    @PostMapping(value = "/start")
     @ApiOperation(httpMethod = "POST",value = "启动流程")
-    public Wrapper<String> start(@ApiParam(name ="Uid",value = "当前用户id") Long Uid,
-                                 @ApiParam(name = "processDefinitionId",value="流程定义id") String processDefinitionId) {
+    public Wrapper<String> start(@ApiParam(name = "start",value="启动流程") @RequestBody ActiStartDto actiStartDto) {
         try {
-            activitiServiceImpl.start(String.valueOf(Uid), processDefinitionId);
+            activitiServiceImpl.start(String.valueOf(actiStartDto.getUserid()), actiStartDto.getProcessDefinitionId());
         } catch (Exception e) {
             return WrapMapper.error(e.getMessage());
         }
@@ -105,11 +108,11 @@ public class ActivitiController {
 
 
     //获取批注
-    @GetMapping(value = "/getComment")
+    @GetMapping(value = "/getComment/{processInstanceId}")
     @ApiOperation(httpMethod = "GET",value = "获取批注")
-    public Wrapper<String> comment(@ApiParam(name = "taskId",value = "任务id") String taskId) {
+    public Wrapper<String> comment(@ApiParam(name = "processInstanceId",value = "流程实例id") @RequestParam String processInstanceId) {
         JSONObject jsonObject = new JSONObject();
-        List<Comment> list = activitiServiceImpl.getComment(taskId);
+        List<Comment> list = activitiServiceImpl.getComment(processInstanceId);
         if (list != null && list.size() > 0) {
             for (Comment comment : list) {
                 String assignee = activitiServiceImpl.getAssignee(comment.getTaskId());
@@ -144,9 +147,9 @@ public class ActivitiController {
     }
 
     //获取流程图
-    @GetMapping(value = "/image")
+    @GetMapping(value = "/image/{processDefinitionId}")
     @ApiOperation(httpMethod = "GET",value = "获取流程图")
-    public Wrapper<String> getImage(@ApiParam(name = "processDefinitionId",value="流程定义id") String processDefinitionId) throws Exception {
+    public Wrapper<String> getImage(@ApiParam(name = "processDefinitionId",value="流程定义id") @RequestParam String processDefinitionId) throws Exception {
         String path = null;
         try {
             ProcessDefinition processDefinition = activitiServiceImpl.getProDef(processDefinitionId);
@@ -160,9 +163,9 @@ public class ActivitiController {
     }
 
     //普通删除流程定义表（根据部署ID）
-    @GetMapping(value = "/delete")
+    @DeleteMapping(value = "/delete/{processDefinitionId}")
     @ApiOperation(httpMethod = "DELETE",value = "一般删除流程定义表（根据部署ID）")
-    public Wrapper<String> deleteDefinitionList(@ApiParam(name = "processDefinitionId",value="流程定义id") String processDefinitionId) {
+    public Wrapper<String> deleteDefinitionList(@ApiParam(name = "processDefinitionId",value="流程定义id") @RequestParam String processDefinitionId) {
         try {
             ProcessDefinition processDefinition = activitiServiceImpl.getProDef(processDefinitionId);
             activitiServiceImpl.deleteDefinitionList(processDefinition.getDeploymentId());
@@ -173,9 +176,9 @@ public class ActivitiController {
     }
 
     //级联删除（强行删除）流程定义表
-    @GetMapping(value = "/fdelete")
+    @DeleteMapping(value = "/fdelete/{processDefinitionId}")
     @ApiOperation(httpMethod = "DELETE",value = "级联删除（强行删除）流程定义表")
-    public Wrapper<String> deleteAnyWay(@ApiParam(name = "processDefinitionId",value="流程定义id") String processDefinitionId) {
+    public Wrapper<String> deleteAnyWay(@ApiParam(name = "processDefinitionId",value="流程定义id") @RequestParam String processDefinitionId) {
         try {
             ProcessDefinition processDefinition = activitiServiceImpl.getProDef(processDefinitionId);
             activitiServiceImpl.deleteDefAnyWay(processDefinition.getDeploymentId());

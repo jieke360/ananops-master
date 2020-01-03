@@ -1,3 +1,5 @@
+
+
 package com.ananops.gateway.config;
 
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
@@ -8,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 /**
  * The class Security config.
  *
- * @author ananops.net @gmail.com
+ * @author ananops.com @gmail.com
  */
 @Configuration
 @EnableOAuth2Sso
