@@ -34,7 +34,7 @@ public class AuthSpcRestController extends BaseController {
      *
      * @return the Wrapper
      */
-    @PostMapping(value = "/registCompany")
+    @PostMapping(value = "/company/registCompany")
     @ApiOperation(httpMethod = "POST", value = "注册服务商")
     public Wrapper registerSpcCompany(CompanyRegisterDto company) {
         logger.info("注册服务商");

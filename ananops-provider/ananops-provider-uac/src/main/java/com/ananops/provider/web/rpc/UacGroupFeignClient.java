@@ -38,16 +38,19 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
     public Wrapper<Long> groupSave(@RequestBody GroupSaveDto groupSaveDto) {
         LoginAuthDto loginAuthDto = super.getLoginAuthDto();
         UacGroup uacGroup = new UacGroup();
-        uacGroup.setGroupCode(groupSaveDto.getGroupCode());
-        uacGroup.setGroupName(groupSaveDto.getGroupName());
-        uacGroup.setContact(groupSaveDto.getContactName());
-        uacGroup.setContactPhone(groupSaveDto.getContactPhone());
+        try {
+            BeanUtils.copyProperties(uacGroup, groupSaveDto);
+        } catch (Exception e) {
+            logger.error("用户组Dto与用户组状态传输Dto属性拷贝异常");
+            e.printStackTrace();
+        }
         uacGroupService.saveUacGroup(uacGroup, loginAuthDto);
         UacGroup result = uacGroupService.selectOne(uacGroup);
         return WrapMapper.ok(result.getId());
     }
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "修改Group状态")
     public Wrapper<Integer> modifyGroupStatus(@RequestBody IdStatusDto idStatusDto) {
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         int result = uacGroupService.updateUacGroupStatusById(idStatusDto, loginAuthDto);
@@ -55,6 +58,7 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
     }
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "通过状态查询Group集合")
     public Wrapper<List<GroupSaveDto>> queryListByStatus(@RequestBody GroupStatusDto groupStatusDto) {
         List<GroupSaveDto> result = new ArrayList<>();
         UacGroup uacGroup = new UacGroup();
@@ -76,5 +80,20 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
             result.add(groupSaveDto);
         }
         return WrapMapper.ok(result);
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "通过Id查询Group信息")
+    public Wrapper<GroupSaveDto> getUacGroupById(Long groupId) {
+        logger.info("根据组织Id查询组织列表");
+        GroupSaveDto groupSaveDto = new GroupSaveDto();
+        UacGroup uacGroup = uacGroupService.queryById(groupId);
+        try {
+            BeanUtils.copyProperties(groupSaveDto, uacGroup);
+        } catch (Exception e) {
+            logger.error("用户组Dto与用户组传输Dto属性拷贝异常");
+            e.printStackTrace();
+        }
+        return WrapMapper.ok(groupSaveDto);
     }
 }

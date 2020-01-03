@@ -385,10 +385,6 @@ public enum ErrorCodeEnum {
 	 */
 	UAC10015009(10015009, "找不到上级组织, groupId=%s"),
 	/**
-	 * Uac 10015010 error code enum.
-	 */
-	UAC100150010(10015010, "企业统一信用代码不能为空"),
-	/**
 	 * Mdc 10021001 error code enum.
 	 */
 // 1002 数据中心
@@ -681,10 +677,45 @@ public enum ErrorCodeEnum {
 
 	PMC10081025(10081025, "更新失败, InspectDetailId=%s"),
 
-
-	;
-
-
+	/**
+	 * 服务商管理
+	 *
+	 * Spc 100850010 error code enum.
+	 */
+	SPC100850010(100850010, "企业统一信用代码不能为空"),
+	/**
+	 * Spc 100850011 error code enum.
+	 */
+	SPC100850011(100850011, "企业法人姓名不能为空"),
+	/**
+	 * Spc 100850012 error code enum.
+	 */
+	SPC100850012(100850012, "企业基本开户行账号不能为空"),
+	/**
+	 * Spc 100850013 error code enum.
+	 */
+	SPC100850013(100850013, "企业基本开户行影印件未上传"),
+	/**
+	 * Spc 100850014 error code enum.
+	 */
+	SPC100850014(100850014, "企业营业执照类型不能为空"),
+	/**
+	 * Spc 100850015 error code enum.
+	 */
+	SPC100850015(100850015, "企业营业执照有效期不能为空"),
+	/**
+	 * Spc 100850016 error code enum.
+	 */
+	SPC100850016(100850016, "企业营业执照影印件未上传"),
+	/**
+	 * Spc 100850017 error code enum.
+	 */
+	SPC100850017(100850017, "工程师姓名不能为空"),
+	/**
+	 * Spc 100850018 error code enum.
+	 */
+	SPC100850018(100850018, "工程师身份证号码不能为空"),
+	
 	;
 	private int code;
 	private String msg;

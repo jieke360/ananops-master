@@ -1,5 +1,6 @@
 package com.ananops.provider.service.impl;
 
+import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
 import com.ananops.provider.mapper.SpcCompanyMapper;
@@ -63,19 +64,15 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
         validateRegisterInfo(company);
         // 构建UAC User注册Dto
         UserRegisterDto userRegisterDto = new UserRegisterDto();
+        GroupSaveDto groupSaveDto = new GroupSaveDto();
         try {
             BeanUtils.copyProperties(userRegisterDto, company);
+            BeanUtils.copyProperties(groupSaveDto, company);
         } catch (Exception e) {
             logger.error("服务商Dto与用户Dto属性拷贝异常");
             e.printStackTrace();
         }
         Long uacUserId = uacUserFeignApi.userRegister(userRegisterDto).getResult();
-
-        GroupSaveDto groupSaveDto = new GroupSaveDto();
-        groupSaveDto.setGroupName(company.getLoginName());
-        groupSaveDto.setGroupCode(company.getCompanyUscc());
-        groupSaveDto.setContactName(company.getContactName());
-        groupSaveDto.setContactPhone(company.getMobileNo());
         Long uacGroupId = uacGroupFeignApi.groupSave(groupSaveDto).getResult();
 
         if (!StringUtils.isEmpty(uacUserId) && !StringUtils.isEmpty(uacGroupId)) {
@@ -87,36 +84,25 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
             spcCompany.setGroupId(uacGroupId);
             spcCompany.setUserId(uacUserId);
             spcCompany.setCreatorId(id);
-            spcCompany.setCreator(company.getLoginName());
+            spcCompany.setCreator(company.getGroupName());
             spcCompany.setLastOperatorId(id);
-            spcCompany.setLastOperator(company.getLoginName());
+            spcCompany.setLastOperator(company.getGroupName());
             logger.info("注册服务商. SpcCompany={}", spcCompany);
             spcCompanyMapper.insertSelective(spcCompany);
         }
     }
 
-    private void validateRegisterInfo(CompanyRegisterDto companyRegisterDto) {
-        String mobileNo = companyRegisterDto.getMobileNo();
 
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getLoginName()), ErrorCodeEnum.UAC10011007.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getEmail()), ErrorCodeEnum.UAC10011018.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getCompanyUscc()), ErrorCodeEnum.UAC100150010.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(mobileNo), "手机号不能为空");
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getLoginPwd()), ErrorCodeEnum.UAC10011014.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getConfirmPwd()), ErrorCodeEnum.UAC10011009.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getPhoneSmsCode()), "短信验证码不能为空");
-        Preconditions.checkArgument(companyRegisterDto.getLoginPwd().equals(companyRegisterDto.getConfirmPwd()), "两次密码不一致");
-    }
 
     @Override
-    public int modifyUserStatusById(ModifyCompanyStatusDto modifyCompanyStatusDto) {
+    public int modifyCompanyStatusById(ModifyCompanyStatusDto modifyCompanyStatusDto) {
         Long companyId = modifyCompanyStatusDto.getCompanyId();
         String status = modifyCompanyStatusDto.getStatus();
         if (!StringUtils.isEmpty(companyId) && !StringUtils.isEmpty(status)) {
             Long uacGroupId = spcCompanyMapper.selectByPrimaryKey(companyId).getGroupId();
             IdStatusDto modifyGroupStatusDto = new IdStatusDto();
-            modifyCompanyStatusDto.setCompanyId(uacGroupId);
-            modifyCompanyStatusDto.setStatus(status);
+            modifyGroupStatusDto.setId(uacGroupId);
+            modifyGroupStatusDto.setStatus(Integer.valueOf(status));
             return (int)uacGroupFeignApi.modifyGroupStatus(modifyGroupStatusDto).getResult();
         }
         return 0;
@@ -143,11 +129,107 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
                 BeanUtils.copyProperties(companyVo, groupSaveDto);
                 BeanUtils.copyProperties(companyVo, spcCompany);
             } catch (Exception e) {
-                logger.error("服务商Dto与用户组Dto属性拷贝异常");
+                logger.error("queryListByStatus 服务商Dto与用户组Dto属性拷贝异常");
                 e.printStackTrace();
             }
             results.add(companyVo);
         }
         return results;
     }
+
+    @Override
+    public CompanyVo queryByCompanyId(Long companyId) {
+        logger.info("queryByCompanyId - 根据公司Id查询公司信息接口. companyId={}", companyId);
+        CompanyVo companyVo = new CompanyVo();
+        SpcCompany spcCompany = spcCompanyMapper.selectByPrimaryKey(companyId);
+        Long groupId = spcCompany.getGroupId();
+        if (!StringUtils.isEmpty(groupId)) {
+            GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(groupId).getResult();
+            try {
+                BeanUtils.copyProperties(companyVo, spcCompany);
+                BeanUtils.copyProperties(companyVo, groupSaveDto);
+            } catch (Exception e) {
+                logger.error("queryByCompanyId 服务商Dto与用户组Dto属性拷贝异常");
+                e.printStackTrace();
+            }
+        }
+        return companyVo;
+    }
+
+    @Override
+    public void saveUacCompany(CompanyVo companyVo, LoginAuthDto loginAuthDto) {
+        Long companyId = companyVo.getId();
+        SpcCompany queryResult = spcCompanyMapper.selectByPrimaryKey(companyId);
+        Long groupId = queryResult.getGroupId();
+        // 校验保存信息
+        validateCompanyVo(companyVo);
+
+        GroupSaveDto groupSaveDto = new GroupSaveDto();
+        groupSaveDto.setId(groupId);
+        try {
+            BeanUtils.copyProperties(groupSaveDto, companyVo);
+        } catch (Exception e) {
+            logger.error("服务商Dto与用户组Dto属性拷贝异常");
+            e.printStackTrace();
+        }
+        Long uacGroupId = uacGroupFeignApi.groupSave(groupSaveDto).getResult();
+
+        if (!StringUtils.isEmpty(companyId) && !StringUtils.isEmpty(uacGroupId)) {
+            Date row = new Date();
+            // 封装更新公司信息
+            SpcCompany spcCompany = new SpcCompany();
+            spcCompany.setId(companyId);
+            spcCompany.setGroupId(uacGroupId);
+            spcCompany.setLastOperatorId(loginAuthDto.getUserId());
+            spcCompany.setLastOperator(loginAuthDto.getLoginName());
+            try {
+                BeanUtils.copyProperties(spcCompany, companyVo);
+            } catch (Exception e) {
+                logger.error("服务商Dto与用户组Dto属性拷贝异常");
+                e.printStackTrace();
+            }
+            logger.info("注册服务商. SpcCompany={}", spcCompany);
+            spcCompanyMapper.insertSelective(spcCompany);
+        }
+
+    }
+
+    /**
+     * 校验注册信息
+     *
+     * @param companyRegisterDto 注册的对象
+     */
+    private void validateRegisterInfo(CompanyRegisterDto companyRegisterDto) {
+        String mobileNo = companyRegisterDto.getContactPhone();
+
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getGroupName()), ErrorCodeEnum.UAC10011007.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getEmail()), ErrorCodeEnum.UAC10011018.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getGroupCode()), ErrorCodeEnum.SPC100850010.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(mobileNo), "手机号不能为空");
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getLoginPwd()), ErrorCodeEnum.UAC10011014.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getConfirmPwd()), ErrorCodeEnum.UAC10011009.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getPhoneSmsCode()), "短信验证码不能为空");
+        Preconditions.checkArgument(companyRegisterDto.getLoginPwd().equals(companyRegisterDto.getConfirmPwd()), "两次密码不一致");
+    }
+
+
+    /**
+     * 校验保存信息
+     *
+     * @param companyVo 保存更新的对象
+     */
+    private void validateCompanyVo(CompanyVo companyVo) {
+        String mobileNo = companyVo.getContactPhone();
+
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyVo.getGroupName()), ErrorCodeEnum.UAC10011007.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyVo.getGroupCode()), ErrorCodeEnum.SPC100850010.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(mobileNo), "手机号不能为空");
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyVo.getLegalPersonName()), ErrorCodeEnum.SPC100850011.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyVo.getAccountNumber()), ErrorCodeEnum.SPC100850012.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyVo.getAccountOpeningLicense()), ErrorCodeEnum.SPC100850013.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyVo.getLicenseType()), ErrorCodeEnum.SPC100850014.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyVo.getExpirationDate()), ErrorCodeEnum.SPC100850015.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(companyVo.getBusinessLicensePhoto()), ErrorCodeEnum.SPC100850016.msg());
+    }
+
 }

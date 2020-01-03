@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import java.util.Date;
 
 /**
- * 加盟服务商查询返回的Vo
+ * 加盟服务商查询返回的公司Vo
  *
  * Created by bingyueduan on 2019/12/28.
  */

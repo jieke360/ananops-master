@@ -25,7 +25,7 @@ public class UserRegisterDto implements Serializable {
 
 	private static final long serialVersionUID = -8019925037057525804L;
 	/**
-	 * 用户名
+	 * 登录名
 	 */
 	@ApiModelProperty(value = "登录名")
 	private String loginName;

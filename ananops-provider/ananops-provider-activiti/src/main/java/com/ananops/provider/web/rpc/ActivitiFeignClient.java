@@ -1,8 +1,8 @@
 package com.ananops.provider.web.rpc;
 
 import com.ananops.core.support.BaseController;
-import com.ananops.provider.model.dto.ApproSubmitDto;
 import com.ananops.provider.service.ActivitiFeignApi;
+import com.ananops.provider.service.dto.ApproSubmitDto;
 import com.ananops.provider.service.impl.ActivitiServiceImpl;
 import com.ananops.provider.service.impl.ApproveServiceImpl;
 import com.ananops.wrapper.WrapMapper;
@@ -12,6 +12,7 @@ import org.activiti.engine.task.Task;
 import javax.annotation.Resource;
 
 public class ActivitiFeignClient extends BaseController implements ActivitiFeignApi {
+
     @Resource
     ActivitiServiceImpl activitiServiceImpl;
 
@@ -19,7 +20,7 @@ public class ActivitiFeignClient extends BaseController implements ActivitiFeign
     ApproveServiceImpl approveServiceImpl;
 
     @Override
-    public Wrapper<String> submit(com.ananops.provider.model.ApproSubmitDto approSubmitDto) {
+    public Wrapper<String> submit(ApproSubmitDto approSubmitDto) {
         String processInstanceId=null;
         try {
             String Uid = String.valueOf(approSubmitDto.getUserid());

@@ -32,4 +32,9 @@ public class UacGroupFeignHystrix implements UacGroupFeignApi {
     public Wrapper<List<GroupSaveDto>> queryListByStatus(@RequestBody GroupStatusDto groupStatusDto) {
         return null;
     }
+
+    @Override
+    public Wrapper<GroupSaveDto> getUacGroupById(Long groupId) {
+        return null;
+    }
 }

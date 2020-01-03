@@ -37,10 +37,18 @@ public interface UacGroupFeignApi {
     Wrapper<Integer> modifyGroupStatus(@RequestBody IdStatusDto idStatusDto);
 
     /**
-     * 更改UAC中Group的状态.
+     * 根据Group状态查询Group列表.
      *
      * @return the wrapper
      */
     @PostMapping(value = "/api/uac/group/queryListByStatus")
     Wrapper<List<GroupSaveDto>> queryListByStatus(@RequestBody GroupStatusDto groupStatusDto);
+
+    /**
+     * 根据Group Id查询Group信息.
+     *
+     * @return the wrapper
+     */
+    @PostMapping(value = "/api/uac/group/getUacGroupById")
+    Wrapper<GroupSaveDto> getUacGroupById(Long groupId);
 }

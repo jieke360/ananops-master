@@ -310,4 +310,11 @@ public interface UacUserService extends IService<UacUser> {
 	 * @return the uac user
 	 */
 	UacUser findUserInfoByLoginName(String loginName);
+
+	/**
+	 * 服务商添加用户信息.
+	 *
+	 * @param userInfoDto 注册的用户信息
+     */
+	void addUser(UserInfoDto userInfoDto);
 }

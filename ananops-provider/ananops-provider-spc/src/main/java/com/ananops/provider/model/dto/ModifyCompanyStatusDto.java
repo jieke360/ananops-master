@@ -18,7 +18,7 @@ public class ModifyCompanyStatusDto implements Serializable {
     private static final long serialVersionUID = -7913106103910010484L;
 
     /**
-     * 用户ID
+     * 公司ID
      */
     @ApiModelProperty(value = "公司ID")
     private Long companyId;

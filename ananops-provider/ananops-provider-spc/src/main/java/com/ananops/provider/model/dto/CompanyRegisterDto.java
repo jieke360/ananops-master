@@ -21,13 +21,13 @@ public class CompanyRegisterDto implements Serializable {
      * 用户名
      */
     @ApiModelProperty(value = "登录名")
-    private String loginName;
+    private String groupName;
 
     /**
      * 统一社会信任代码
      */
     @ApiModelProperty(value = "统一社会信任代码")
-    private String companyUscc;
+    private String groupCode;
 
     /**
      * 密码
@@ -45,13 +45,13 @@ public class CompanyRegisterDto implements Serializable {
      * 联系人姓名
      */
     @ApiModelProperty(value = "联系人姓名")
-    private String contactName;
+    private String contact;
 
     /**
      * 联系人手机号
      */
     @ApiModelProperty(value = "联系人手机号")
-    private String mobileNo;
+    private String contactPhone;
 
     /**
      * 联系人邮箱
