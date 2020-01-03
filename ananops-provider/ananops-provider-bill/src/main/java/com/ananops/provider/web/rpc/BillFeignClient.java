@@ -24,7 +24,8 @@ public class BillFeignClient extends BaseController implements BillFeignApi {
     BasebillMapper basebillMapper;
 
     @Override
-    @ApiOperation(httpMethod = "POST", value = "根据工单ID查询金额")
+    @ApiOperation(httpMethod = "GET", value = "根据工单ID查询金额")
+
     public Wrapper<Float> getAmountByWorkOrderId(Long workOrderId) {
         List<Basebill> list=new ArrayList<>();
         Example example = new Example(Basebill.class);

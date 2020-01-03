@@ -3,6 +3,7 @@ package com.ananops.provider.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.ananops.provider.mapper.BasebillMapper;
 import com.ananops.provider.model.domain.Basebill;
+import com.ananops.provider.model.dto.BillCreateDto;
 import com.ananops.provider.model.dto.PmcPayDto;
 import com.ananops.provider.service.BaseService;
 import com.google.gson.JsonObject;
@@ -22,33 +23,31 @@ public class BaseServiceImpl implements BaseService {
     BasebillMapper basebillMapper;
 
     @Override
-    public String insert(String body) {
-        JSONObject jsonObject=JSONObject.parseObject(body);
-        String paymentMethod=jsonObject.get("paymentMethod").toString();
-        String userid=jsonObject.get("userid").toString();
-        String workorderid=jsonObject.get("workorderid").toString();
-        String supplier=jsonObject.get("supplier").toString();
+    public void insert(BillCreateDto billCreateDto) {
+//        JSONObject jsonObject=JSONObject.parseObject(billCreateDto.toString());
+//        String paymentMethod=jsonObject.get("paymentMethod").toString();
+//        String userid=jsonObject.get("userid").toString();
+//        String workorderid=jsonObject.get("workorderid").toString();
+//        String supplier=jsonObject.get("supplier").toString();
         //TODO
-        Float amount=Float.valueOf(jsonObject.get("amount").toString());
-        String transactionMethod=jsonObject.get("transactionMethod").toString();
-        String payDto = jsonObject.get("payDto").toString();
-        JsonObject jsonObject1 = new JsonParser().parse(payDto).getAsJsonObject();
+//        Float amount=Float.valueOf(jsonObject.get("amount").toString());
+//        String transactionMethod=jsonObject.get("transactionMethod").toString();
+//        String payDto = jsonObject.get("payDto").toString();
+//        JsonObject jsonObject1 = new JsonParser().parse(payDto).getAsJsonObject();
         Date date=new Date();
         Long time=date.getTime();
         Basebill bill = new Basebill();
         Long timestamp = System.currentTimeMillis();
-        String id = String.valueOf(timestamp)+userid;
+        String id = String.valueOf(timestamp)+billCreateDto.getUserid();
         bill.setId(id);
-        bill.setPaymentMethod(paymentMethod);
-        bill.setTransactionMethod(jsonObject1.get("paymentType").getAsString());
-        bill.setAmount(jsonObject1.get("paymentMoney").getAsFloat());
-        bill.setUserid(userid);
+        bill.setPaymentMethod(billCreateDto.getPaymentMethod());
+        bill.setTransactionMethod(billCreateDto.getPayDto().getPaymentType().toString());
+        bill.setAmount(Float.valueOf(billCreateDto.getPayDto().getPaymentMoney()));
+        bill.setUserid(billCreateDto.getUserid());
         bill.setTime(time);
-        bill.setSupplier(supplier);
-        bill.setWorkorderid(workorderid);
+        bill.setSupplier(billCreateDto.getSupplier());
+        bill.setWorkorderid(billCreateDto.getWorkorderid());
         basebillMapper.insertSelective(bill);
-
-        return null;
     }
 
     @Override
@@ -96,5 +95,13 @@ public class BaseServiceImpl implements BaseService {
             }
         }
         return listnew;
+    }
+
+    @Override
+    public List<Basebill> getBillByWorkOrderId(String workOrderId) {
+        Example example = new Example(Basebill.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo(workOrderId);
+        return basebillMapper.selectByExample(example);
     }
 }

@@ -40,7 +40,11 @@ public class BaseBillController {
         for (PmcPayDto payDto : payDtoList) {
             abc.setPayDto(payDto);
         }
-        baseServiceImpl.insert(abc.toString());
+//        PmcPayDto payDto=new PmcPayDto();
+//        payDto.setPaymentType(2);
+//        payDto.setPaymentMoney(Long.valueOf(1000));
+//        abc.setPayDto(payDto);
+        baseServiceImpl.insert(abc);
         return  WrapMapper.ok("success");
     }
 
@@ -58,7 +62,7 @@ public class BaseBillController {
 
     @PutMapping(value = "/modifyamount")
     @ApiOperation(httpMethod = "PUT",value = "修改金额")
-    public void modifyAmount(@ApiParam(name = "modifyamount",value = "修改金额")BillModifyAmountDto billModifyAmountDto){
+    public void modifyAmount(@ApiParam(name = "modifyamount",value = "修改金额") @RequestBody BillModifyAmountDto billModifyAmountDto){
         Basebill basebill = baseServiceImpl.getBillById(billModifyAmountDto.getId());
         baseServiceImpl.modifyAmount(basebill, billModifyAmountDto.getModifyAmount());
     }
@@ -68,5 +72,11 @@ public class BaseBillController {
     public Wrapper<List<Basebill>> getAllUBillBystate(@ApiParam(name = "userid",value = "用户id") @RequestParam Long userid,
                                              @ApiParam(name = "state",value = "状态") @RequestParam String state){
         return WrapMapper.ok(baseServiceImpl.getAllUBillBystate(userid.toString(), state));
+    }
+
+    @GetMapping(value = "/getBillByWorkOrderId/{workorderid}")
+    @ApiOperation(httpMethod = "GET",value = "根据状态及用户id获取账单")
+    public Wrapper<List<Basebill>> getBillByWorkOrderId(@ApiParam(name = "workorderid",value = "工单id") @RequestParam Long workorderid){
+        return WrapMapper.ok(baseServiceImpl.getBillByWorkOrderId(workorderid.toString()));
     }
 }
