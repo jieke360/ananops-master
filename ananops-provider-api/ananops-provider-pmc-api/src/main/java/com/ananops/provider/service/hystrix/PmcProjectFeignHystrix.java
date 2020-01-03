@@ -17,6 +17,11 @@ import java.util.List;
 public class PmcProjectFeignHystrix implements PmcProjectFeignApi {
 
     @Override
+    public Wrapper<PmcProjectDto> getProjectByProjectId(Long projectId) {
+        return null;
+    }
+
+    @Override
     public Wrapper saveProject(PmcProjectDto pmcProjectDto) {
         return null;
     }
