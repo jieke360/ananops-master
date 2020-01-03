@@ -5,10 +5,10 @@
     <bean id="processEngineConfiguration"
           class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
 
-        <property name="jdbcUrl" value="jdbc:mysql://ananops-db-mysql:3306/ananops_activiti?characterEncoding=UTF-8"/>
+        <property name="jdbcUrl" value="jdbc:mysql://ananops-db-mysql:29998/ananops_activiti?characterEncoding=UTF-8"/>
         <property name="jdbcDriver" value="com.mysql.jdbc.Driver"/>
         <property name="jdbcUsername" value="root"/>
-        <property name="jdbcPassword" value="root"/>
+        <property name="jdbcPassword" value="123456"/>
 
         <property name="databaseSchemaUpdate" value="true"/>
     </bean>
