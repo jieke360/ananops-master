@@ -30,5 +30,6 @@
     <result column="last_operator" property="lastOperator" jdbcType="VARCHAR" />
     <result column="last_operator_id" property="lastOperatorId" jdbcType="BIGINT" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
   </resultMap>
 </mapper>

@@ -11,7 +11,7 @@ package com.ananops.provider.mapper;
 import com.ananops.core.mybatis.MyMapper;
 import com.ananops.provider.model.domain.UacAction;
 import com.ananops.provider.model.domain.UacMenu;
-import com.ananops.provider.model.user.Perm;
+import com.ananops.provider.model.dto.user.Perm;
 import com.ananops.provider.model.vo.ActionVo;
 import com.ananops.provider.model.vo.MenuVo;
 import org.apache.ibatis.annotations.Mapper;

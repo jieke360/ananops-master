@@ -15,7 +15,6 @@ import com.ananops.provider.model.domain.UacLog;
 import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.menu.UserMenuDto;
 import com.ananops.provider.model.dto.user.*;
-import com.ananops.provider.model.user.*;
 import com.ananops.provider.model.vo.UserBindRoleVo;
 import com.ananops.security.core.SecurityUser;
 import org.springframework.security.core.GrantedAuthority;
@@ -311,4 +310,11 @@ public interface UacUserService extends IService<UacUser> {
 	 * @return the uac user
 	 */
 	UacUser findUserInfoByLoginName(String loginName);
+
+	/**
+	 * 服务商添加用户信息.
+	 *
+	 * @param userInfoDto 注册的用户信息
+     */
+	void addUser(UserInfoDto userInfoDto);
 }

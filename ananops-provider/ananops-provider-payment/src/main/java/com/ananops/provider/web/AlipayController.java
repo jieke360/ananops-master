@@ -7,6 +7,7 @@ import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.ananops.provider.config.AlipayConfig;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,7 @@ import java.io.IOException;
 public class AlipayController {
 
 
-    @GetMapping(value = "/pay")
+    @PutMapping(value = "/pay")
     @ApiOperation(httpMethod = "PUT",value = "支付")
     public void payController(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //获得初始化的AlipayClient

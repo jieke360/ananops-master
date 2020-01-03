@@ -278,6 +278,21 @@
                 <version>${ananops.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.ananops.provider.api</groupId>
+                <artifactId>ananops-provider-pmc-api</artifactId>
+                <version>${ananops.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ananops.provider.api</groupId>
+                <artifactId>ananops-provider-activiti-api</artifactId>
+                <version>${ananops.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ananops.provider.api</groupId>
+                <artifactId>ananops-provider-bill-api</artifactId>
+                <version>${ananops.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>3.4.2</version>

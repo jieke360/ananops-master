@@ -15,7 +15,6 @@ import java.io.Serializable;
 @ApiModel
 public class CompanyDto implements Serializable {
 
-
     private static final long serialVersionUID = 4115644363221151256L;
 
     @ApiModelProperty("加盟服务商ID")

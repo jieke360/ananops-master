@@ -19,7 +19,6 @@ import com.ananops.provider.manager.UserManager;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.menu.UserMenuChildrenDto;
 import com.ananops.provider.model.dto.menu.UserMenuDto;
-import com.ananops.provider.model.user.*;
 import com.ananops.provider.model.dto.user.*;
 import com.ananops.provider.model.enums.UacEmailTemplateEnum;
 import com.ananops.provider.model.enums.UacUserSourceEnum;
@@ -34,6 +33,7 @@ import com.ananops.provider.utils.Md5Util;
 import com.ananops.security.core.SecurityUser;
 import com.xiaoleilu.hutool.date.DateUtil;
 import eu.bitwalker.useragentutils.UserAgent;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -181,7 +181,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 
 	@Override
 	public int deleteUserById(Long userId) {
-		return 0;
+		return uacUserMapper.deleteByPrimaryKey(userId);
 	}
 
 	@Override
@@ -984,6 +984,19 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		if (count > 0) {
 			throw new UacBizException(ErrorCodeEnum.UAC10011019);
 		}
+	}
 
+	@Override
+	public void addUser(UserInfoDto userInfoDto) {
+		UacUser uacUser = new UacUser();
+		try {
+			BeanUtils.copyProperties(uacUser, userInfoDto);
+		} catch (Exception e) {
+			logger.error("工程师Dto与用户Dto属性拷贝异常");
+			e.printStackTrace();
+		}
+		uacUser.setLoginPwd(Md5Util.encrypt("123456"));
+		uacUser.setStatus("0");
+		uacUserMapper.insertSelective(uacUser);
 	}
 }

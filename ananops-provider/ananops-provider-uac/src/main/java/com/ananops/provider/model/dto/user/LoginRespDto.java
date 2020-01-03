@@ -1,6 +1,7 @@
 package com.ananops.provider.model.dto.user;
 
 import com.ananops.base.dto.LoginAuthDto;
+import com.ananops.provider.model.domain.UacRole;
 import com.ananops.provider.model.vo.MenuVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,4 +23,6 @@ public class LoginRespDto implements Serializable {
 	private LoginAuthDto loginAuthDto;
 	@ApiModelProperty(value = "菜单集合")
 	private List<MenuVo> menuList;
+	@ApiModelProperty(value = "用户角色信息集合")
+	private List<UacRole> roleList;
 }
