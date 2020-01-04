@@ -83,7 +83,7 @@ public class MdmcTaskItemController extends BaseController {
     }
     @GetMapping(value = "/getItemLogs/{taskItemId}")
     @ApiOperation(httpMethod = "GET",value = "根据任务子项的ID查询对应的日志")
-    public Wrapper<List<MdmcTaskItemLog>> getTaskLogs(@PathVariable Long taskItemId){
+    public Wrapper<List<MdmcTaskItemLog>> getTaskLogs(@PathVariable("taskItemId") Long taskItemId){
         List<MdmcTaskItemLog> taskLogList=taskItemLogService.getTaskItemLogsByTaskItemId(taskItemId);
         return WrapMapper.ok(taskLogList);
     }

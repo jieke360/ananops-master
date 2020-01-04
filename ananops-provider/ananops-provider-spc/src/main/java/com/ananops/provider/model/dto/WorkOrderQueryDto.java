@@ -1,0 +1,24 @@
+package com.ananops.provider.model.dto;
+
+import io.swagger.annotations.ApiModel;
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ * 查询工单详情Dto
+ */
+@Data
+@ApiModel(value = "工单详情查询Dto")
+public class WorkOrderQueryDto implements Serializable {
+
+    /**
+     * 工单Id
+     */
+    private Long id;
+
+    /**
+     * 工单类型; 巡检(inspection)和维修维护(maintain)
+     */
+    private String type;
+}
