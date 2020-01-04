@@ -25,6 +25,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
 
@@ -185,8 +186,8 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
     }
 
     @Override
-    @ApiOperation(httpMethod = "GET", value = "根据巡检任务的ID查看巡检任务的详情")
-    public Wrapper<TaskDto> getTaskByTaskId(@ApiParam(name = "getTaskByTaskId",value = "根据巡检任务的ID获取巡检任务的详情")@PathVariable Long taskId){
+    @ApiOperation(httpMethod = "POST", value = "根据巡检任务的ID查看巡检任务的详情")
+    public Wrapper<TaskDto> getTaskByTaskId(@ApiParam(name = "taskId",value = "根据巡检任务的ID获取巡检任务的详情")@RequestParam("taskId") Long taskId){
         TaskDto taskDto = new TaskDto();
         ImcInspectionTask imcInspectionTask = imcInspectionTaskService.getTaskByTaskId(taskId);
         BeanUtils.copyProperties(imcInspectionTask,taskDto);

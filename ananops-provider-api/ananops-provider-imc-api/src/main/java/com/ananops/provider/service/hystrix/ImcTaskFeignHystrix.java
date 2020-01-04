@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class ImcTaskFeignHystrix implements ImcTaskFeignApi {
     }
 
     @Override
-    public Wrapper<TaskDto> getTaskByTaskId(@ApiParam(name = "getTaskByTaskId",value = "根据巡检任务的ID获取巡检任务的详情")@PathVariable Long taskId){
+    public Wrapper<TaskDto> getTaskByTaskId(@ApiParam(name = "taskId",value = "根据巡检任务的ID获取巡检任务的详情")@RequestParam("taskId") Long taskId){
         return null;
     }
 
