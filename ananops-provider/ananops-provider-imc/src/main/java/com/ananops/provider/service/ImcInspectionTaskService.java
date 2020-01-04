@@ -22,6 +22,8 @@ public interface ImcInspectionTaskService extends IService<ImcInspectionTask> {
 
     ImcInspectionTask modifyTaskName(TaskNameChangeDto taskNameChangeDto, LoginAuthDto loginAuthDto);
 
+    TaskChangeFacilitatorDto modifyFacilitator(TaskChangeFacilitatorDto taskChangeFacilitatorDto);
+
     List<ImcInspectionTask> getTaskByProjectId(TaskQueryDto taskQueryDto);//根据项目Id获取所有对应的巡检任务
 
     List<ImcInspectionTask> getTaskByUserId(TaskQueryDto taskQueryDto);//根据用户（包括甲方和服务商）id查询对应的巡检任务

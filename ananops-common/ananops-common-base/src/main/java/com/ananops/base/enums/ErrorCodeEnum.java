@@ -9,6 +9,10 @@ package com.ananops.base.enums;
  */
 public enum ErrorCodeEnum {
 	/**
+	 * Gl 9999088 error code enum.
+	 */
+	GL9999088(9999088,"更新巡检任务子项失败"),
+	/**
 	 * Gl 9999089 error code enum.
 	 */
 	GL9999089(9999089,"没有此角色"),

@@ -5,6 +5,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.dto.ImcAddInspectionItemDto;
+import com.ananops.provider.model.dto.ItemChangeMaintainerDto;
 import com.ananops.provider.model.dto.ItemQueryDto;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
     List<ImcInspectionItem> getItemByMaintainerId(ItemQueryDto itemQueryDto);//根据工程师的Id查询对应的巡检任务
 
     List<ImcInspectionItem> getItemByMaintainerIdAndStatus(ItemQueryDto itemQueryDto);//根据工程师的Id查询指定状态的巡检任务
+
+    ItemChangeMaintainerDto modifyMaintainerIdByItemId(ItemChangeMaintainerDto itemChangeMaintainerDto);//修改巡检任务子项对应的维修工ID
 }

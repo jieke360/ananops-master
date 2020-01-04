@@ -1,6 +1,8 @@
 package com.ananops.provider.web.rpc;
 
 import com.ananops.base.dto.LoginAuthDto;
+import com.ananops.base.enums.ErrorCodeEnum;
+import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.mapper.ImcInspectionItemMapper;
@@ -191,6 +193,26 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
         List<ItemDto> itemDtoList = getItemList(taskId);
         taskDto.setItemDtoList(itemDtoList);
         return WrapMapper.ok(taskDto);
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "修改巡检任务对应的服务商")
+    public Wrapper<TaskChangeFacilitatorDto> modifyFacilitatorByTaskId(@ApiParam(name = "modifyFacilitatorByTaskId",value = "修改巡检任务对应的服务商")@RequestBody TaskChangeFacilitatorDto taskChangeFacilitatorDto){
+        Long taskId = taskChangeFacilitatorDto.getTaskId();
+        Long facilitatorId = taskChangeFacilitatorDto.getFacilitatorId();
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        if(imcInspectionTaskMapper.selectCountByExample(example)==0){
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        ImcInspectionTask imcInspectionTask = imcInspectionTaskService.getTaskByTaskId(taskId);
+        imcInspectionTask.setFacilitatorId(facilitatorId);
+        int result = imcInspectionTaskService.update(imcInspectionTask);
+        if(result == 1){
+            return WrapMapper.ok(taskChangeFacilitatorDto);
+        }
+        throw new BusinessException(ErrorCodeEnum.GL9999093);
     }
 
     public List<ItemDto> getItemList(Long taskId){

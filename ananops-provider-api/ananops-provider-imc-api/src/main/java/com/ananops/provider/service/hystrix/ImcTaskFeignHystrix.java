@@ -1,5 +1,6 @@
 package com.ananops.provider.service.hystrix;
 
+import com.ananops.provider.model.dto.TaskChangeFacilitatorDto;
 import com.ananops.provider.model.dto.TaskChangeStatusDto;
 import com.ananops.provider.model.dto.TaskDto;
 import com.ananops.provider.model.dto.TaskQueryDto;
@@ -57,6 +58,11 @@ public class ImcTaskFeignHystrix implements ImcTaskFeignApi {
 
     @Override
     public Wrapper<TaskDto> getTaskByTaskId(@ApiParam(name = "getTaskByTaskId",value = "根据巡检任务的ID获取巡检任务的详情")@PathVariable Long taskId){
+        return null;
+    }
+
+    @Override
+    public Wrapper<TaskChangeFacilitatorDto> modifyFacilitatorByTaskId(@ApiParam(name = "modifyFacilitatorByTaskId",value = "修改巡检任务对应的服务商")@RequestBody TaskChangeFacilitatorDto taskChangeFacilitatorDto){
         return null;
     }
 
