@@ -1,13 +1,15 @@
 package com.ananops.provider.web;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ananops.provider.model.dto.ApproAgreeDto;
-import com.ananops.provider.model.dto.ApproDisagreeDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.service.dto.ApproSubmitDto;
 import com.ananops.provider.service.impl.ActivitiServiceImpl;
 import com.ananops.provider.service.impl.ApproveServiceImpl;
 import com.ananops.provider.utils.WrapMapper;
 import com.ananops.provider.utils.Wrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -15,10 +17,10 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,8 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("api/v1/approve")
+@RequestMapping(value = "/approve",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value = "WEB - Approve",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @CrossOrigin
 public class  ApproveController {
     @Autowired
@@ -98,64 +101,69 @@ public class  ApproveController {
         return WrapMapper.ok("success");
     }
 
-    @GetMapping(value = "/untask/{userid}")
-    @ApiOperation(httpMethod = "GET",value = "获取未完成审批列表")
-    public Wrapper<String> getUndoTask(@ApiParam(name = "userid",value = "当前用户id") @RequestParam Long userid) {
-        JSONObject jsonObject = new JSONObject();
-        List<Task> list = activitiServiceImpl.searchByAssi(String.valueOf(userid));
+    @PostMapping(value = "/untask")
+    @ApiOperation(httpMethod = "POST",value = "获取未完成审批列表")
+    public Wrapper<PageInfo<UntaskDto>> getUndoTask(@ApiParam(name = "untask",value = "获取未完成审批列表") @RequestBody PageDto pageDto) {
+        List<Task> list = activitiServiceImpl.searchByAssi(String.valueOf(pageDto.getUserid()));
+        List<UntaskDto> res=new ArrayList<>();
+        PageHelper.startPage(pageDto.getPageNum(),pageDto.getPageSize());
         if (list != null && list.size() != 0) {
-            int count = 1;
             for (Task task : list) {
                 if (activitiServiceImpl.getVariable(task.getId(), variableName) != null) {
-                    Object orderid = activitiServiceImpl.getVariable(task.getId(), variableName);
                     Object startUid=activitiServiceImpl.getVariable(task.getId(),startUser);
-                    String head = String.valueOf(count++);
+                    Object orderid = activitiServiceImpl.getVariable(task.getId(), variableName);
                     ProcessInstance processInstance = activitiServiceImpl.getProIns(task.getProcessInstanceId());
-                    List<Object> details = new ArrayList<>();
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    details.add("taskId:"+task.getId());
-                    details.add("startUser:"+startUid);
-                    details.add("processName:"+processInstance.getProcessDefinitionKey());
-                    details.add("processsInstanceId:"+processInstance.getId());
-                    details.add("taskName:"+task.getName());
-                    details.add("createTime:"+formatter.format(task.getCreateTime()));
-                    details.add("orderId:"+orderid);
-                    jsonObject.put(head, details);
+                    UntaskDto untaskDto = new UntaskDto();
+                    untaskDto.setTaskId(task.getId());
+                    untaskDto.setStartUser(startUid.toString());
+                    untaskDto.setProcessName(processInstance.getProcessDefinitionKey());
+                    untaskDto.setProcesssInstanceId(processInstance.getId());
+                    untaskDto.setTaskName(task.getName());
+                    untaskDto.setCreateTime(task.getCreateTime());
+                    untaskDto.setOrderID(Long.valueOf(orderid.toString()));
+                    res.add(untaskDto);
                 }
             }
+            PageInfo<UntaskDto> pageInfo=new PageInfo<>(res);
+            return WrapMapper.ok(pageInfo);
         }
-        return WrapMapper.ok(jsonObject.toString());
+        return WrapMapper.error();
     }
 
-    @GetMapping(value = "/tasked/{userid}")
-    @ApiOperation(httpMethod = "GET",value = "获取已完成审批列表")
-    public Wrapper<String> getTasked(@ApiParam(name = "userid",value = "当前用户id") @RequestParam Long userid) {
-        JSONObject jsonObject = new JSONObject();
-        List<HistoricTaskInstance> list = activitiServiceImpl.getHistoryList(String.valueOf(userid));
+    @PostMapping(value = "/tasked")
+    @ApiOperation(httpMethod = "POST",value = "获取已完成审批列表")
+    public Wrapper<PageInfo<TaskedDto>> getTasked(@ApiParam(name = "tasked",value = "获取已完成审批列表") @RequestBody PageDto pageDto) {
+        List<HistoricTaskInstance> list = activitiServiceImpl.getHistoryList(String.valueOf(pageDto.getUserid()));
+        List<TaskedDto> res=new ArrayList<>();
+        PageHelper.startPage(pageDto.getPageNum(),pageDto.getPageSize());
         if (list != null && list.size() != 0) {
-            int count = 1;
             for (HistoricTaskInstance task : list) {
                 Object orderid=activitiServiceImpl.getHistoricVariable(task.getProcessInstanceId(),variableName);
-                if(orderid!=null) {
+                ProcessInstance processInstance=activitiServiceImpl.getProIns(task.getProcessInstanceId());
+                Object state=activitiServiceImpl.getHistoricVariable(task.getProcessInstanceId(),"state");
+                if(processInstance!=null){
+                    state="审核中";
+                }
+                if(orderid!=null&&!orderid.equals("")) {
                     Object startUid = activitiServiceImpl.getHistoricVariable(task.getProcessInstanceId(), startUser);
-                    if (orderid != null) {
-                        String head = String.valueOf(count++);
+                       TaskedDto taskedDto=new TaskedDto();
                         HistoricProcessInstance historicProcessInstance = activitiServiceImpl.getProHisIns(task.getProcessInstanceId());
-                        List<Object> details = new ArrayList<>();
-                        details.add("taskId:" + task.getId());
-                        details.add("startUser:" + startUid);
-                        details.add("processName:" + historicProcessInstance.getProcessDefinitionKey());
-                        details.add("processInstanceId:" + historicProcessInstance.getId());
-                        details.add("taskName:" + task.getName());
-                        details.add("taskCreateTime:" + task.getCreateTime());
-                        details.add("taskEndTime:" + task.getEndTime());
-                        details.add("orderid:" + orderid);
-                        jsonObject.put(head, details);
-                    }
+                       taskedDto.setTaskId(task.getId());
+                       taskedDto.setStartUser(startUid.toString());
+                       taskedDto.setProcessName(historicProcessInstance.getProcessDefinitionKey());
+                       taskedDto.setProcesssInstanceId(historicProcessInstance.getId());
+                       taskedDto.setTaskName(task.getName());
+                       taskedDto.setCreateTime(task.getCreateTime());
+                       taskedDto.setEndTime(task.getEndTime());
+                       taskedDto.setState(state.toString());
+                       taskedDto.setOrderID(Long.valueOf(orderid.toString()));
+                       res.add(taskedDto);
                 }
             }
+            PageInfo<TaskedDto> pageInfo=new PageInfo<>(res);
+            return WrapMapper.ok(pageInfo);
         }
-        return WrapMapper.ok(jsonObject.toString());
+        return WrapMapper.error();
     }
 
 }

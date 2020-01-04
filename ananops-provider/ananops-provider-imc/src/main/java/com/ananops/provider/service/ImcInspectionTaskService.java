@@ -4,10 +4,7 @@ package com.ananops.provider.service;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.ImcInspectionTask;
-import com.ananops.provider.model.dto.ImcAddInspectionTaskDto;
-import com.ananops.provider.model.dto.ImcTaskChangeStatusDto;
-import com.ananops.provider.model.dto.TaskNameChangeDto;
-import com.ananops.provider.model.dto.TaskQueryDto;
+import com.ananops.provider.model.dto.*;
 
 import java.util.List;
 
@@ -24,6 +21,8 @@ public interface ImcInspectionTaskService extends IService<ImcInspectionTask> {
     List<ImcInspectionTask> getTaskByStatus(TaskQueryDto taskQueryDto);//根据巡检任务的状态查询对应的任务
 
     ImcInspectionTask modifyTaskName(TaskNameChangeDto taskNameChangeDto, LoginAuthDto loginAuthDto);
+
+    TaskChangeFacilitatorDto modifyFacilitator(TaskChangeFacilitatorDto taskChangeFacilitatorDto);
 
     List<ImcInspectionTask> getTaskByProjectId(TaskQueryDto taskQueryDto);//根据项目Id获取所有对应的巡检任务
 

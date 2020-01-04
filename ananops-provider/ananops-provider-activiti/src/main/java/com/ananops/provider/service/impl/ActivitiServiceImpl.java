@@ -25,7 +25,7 @@ import java.util.*;
 
 @Service
 public class ActivitiServiceImpl implements ActivitiService {
-    String pngFilePath = "D:\\Image" + "\\";
+    String pngFilePath = "/home/bpmn/pngfile";
 
     @Override
     public String deploy(String name, String bpmnpath, String pngpath) throws FileNotFoundException {

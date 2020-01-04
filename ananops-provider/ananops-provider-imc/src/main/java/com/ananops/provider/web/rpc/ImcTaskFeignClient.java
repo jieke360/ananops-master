@@ -1,14 +1,15 @@
 package com.ananops.provider.web.rpc;
 
+import com.ananops.base.dto.LoginAuthDto;
+import com.ananops.base.enums.ErrorCodeEnum;
+import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseController;
+import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.mapper.ImcInspectionItemMapper;
 import com.ananops.provider.mapper.ImcInspectionTaskMapper;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.domain.ImcInspectionTask;
-import com.ananops.provider.model.dto.ItemDto;
-import com.ananops.provider.model.dto.TaskDto;
-import com.ananops.provider.model.dto.TaskQueryDto;
-import com.ananops.provider.service.ImcInspectionItemService;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.service.ImcInspectionTaskLogService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.provider.service.ImcTaskFeignApi;
@@ -22,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
@@ -169,6 +171,48 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
             taskDtoList.add(taskDto);
         });
         return WrapMapper.ok(taskDtoList);
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "根据巡检任务的ID修改任务的状态")
+    @AnanLogAnnotation
+    public Wrapper<TaskChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatusByTaskId",value = "根据巡检任务的ID修改该任务的状态")@RequestBody TaskChangeStatusDto taskChangeStatusDto){
+        LoginAuthDto loginAuthDto = taskChangeStatusDto.getLoginAuthDto();
+        ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
+        BeanUtils.copyProperties(taskChangeStatusDto,imcTaskChangeStatusDto);
+        imcInspectionTaskService.modifyTaskStatus(imcTaskChangeStatusDto,loginAuthDto);
+        return WrapMapper.ok(taskChangeStatusDto);
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "GET", value = "根据巡检任务的ID查看巡检任务的详情")
+    public Wrapper<TaskDto> getTaskByTaskId(@ApiParam(name = "getTaskByTaskId",value = "根据巡检任务的ID获取巡检任务的详情")@PathVariable Long taskId){
+        TaskDto taskDto = new TaskDto();
+        ImcInspectionTask imcInspectionTask = imcInspectionTaskService.getTaskByTaskId(taskId);
+        BeanUtils.copyProperties(imcInspectionTask,taskDto);
+        List<ItemDto> itemDtoList = getItemList(taskId);
+        taskDto.setItemDtoList(itemDtoList);
+        return WrapMapper.ok(taskDto);
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "修改巡检任务对应的服务商")
+    public Wrapper<TaskChangeFacilitatorDto> modifyFacilitatorByTaskId(@ApiParam(name = "modifyFacilitatorByTaskId",value = "修改巡检任务对应的服务商")@RequestBody TaskChangeFacilitatorDto taskChangeFacilitatorDto){
+        Long taskId = taskChangeFacilitatorDto.getTaskId();
+        Long facilitatorId = taskChangeFacilitatorDto.getFacilitatorId();
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        if(imcInspectionTaskMapper.selectCountByExample(example)==0){
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        ImcInspectionTask imcInspectionTask = imcInspectionTaskService.getTaskByTaskId(taskId);
+        imcInspectionTask.setFacilitatorId(facilitatorId);
+        int result = imcInspectionTaskService.update(imcInspectionTask);
+        if(result == 1){
+            return WrapMapper.ok(taskChangeFacilitatorDto);
+        }
+        throw new BusinessException(ErrorCodeEnum.GL9999093);
     }
 
     public List<ItemDto> getItemList(Long taskId){

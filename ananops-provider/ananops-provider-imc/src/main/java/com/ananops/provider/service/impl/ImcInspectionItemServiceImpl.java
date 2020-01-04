@@ -12,10 +12,12 @@ import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.domain.ImcUserItem;
 import com.ananops.provider.model.dto.ImcAddInspectionItemDto;
+import com.ananops.provider.model.dto.ItemChangeMaintainerDto;
 import com.ananops.provider.model.dto.ItemQueryDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 
 import com.ananops.provider.service.ImcInspectionItemService;
+import com.ananops.wrapper.WrapMapper;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -167,6 +169,28 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         return imcInspectionItemMapper.selectByExample(example);
     }
 
+    /**
+     * 修改巡检任务子项对应的维修工ID
+     * @param itemChangeMaintainerDto
+     * @return
+     */
+    public ItemChangeMaintainerDto modifyMaintainerIdByItemId(ItemChangeMaintainerDto itemChangeMaintainerDto){
+        Long itemId = itemChangeMaintainerDto.getItemId();
+        Long maintainerId = itemChangeMaintainerDto.getMaintainerId();
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",itemId);
+        if(imcInspectionItemMapper.selectCountByExample(example)==0){
+            throw new BusinessException(ErrorCodeEnum.GL9999097);
+        }
+        ImcInspectionItem imcInspectionItem = this.getItemByItemId(itemId);
+        imcInspectionItem.setMaintainerId(maintainerId);
+        int result = this.update(imcInspectionItem);
+        if(result == 1){
+            return itemChangeMaintainerDto;
+        }
+        throw new BusinessException(ErrorCodeEnum.GL9999093);
+    }
     public Integer setBasicInfoFromContract(){//将从合同中获取到的基本信息填写到巡检任务中
         return 1;
     }

@@ -96,6 +96,11 @@ public class ImcInspectionTaskController extends BaseController {
         return WrapMapper.ok(imcInspectionTaskService.getTaskByUserIdAndStatus(taskQueryDto));
     }
 
+    @PostMapping(value = "/modifyFacilitatorIdByTaskId")
+    @ApiOperation(httpMethod = "POST",value = "根据巡检任务的ID修改对应任务的服务商ID")
+    public Wrapper<TaskChangeFacilitatorDto> modifyFacilitatorIdByTaskId(@ApiParam(name = "modifyFacilitatorByTaskId",value = "根据巡检任务的ID修改对应任务的服务商ID")@RequestBody TaskChangeFacilitatorDto taskChangeFacilitatorDto){
+        return WrapMapper.ok(imcInspectionTaskService.modifyFacilitator(taskChangeFacilitatorDto));
+    }
 //    @PostMapping(value = "/getTaskByFacilitatorId")
 //    @ApiOperation(httpMethod = "POST",value = "根据服务商id查询巡检任务")
 //    public Wrapper<List<ImcInspectionTask>> getTaskByFacilitatorId(@ApiParam(name = "getTaskByFacilitatorId",value = "根据服务商id查询巡检任务")@RequestBody TaskQueryDto taskQueryDto){

@@ -1,13 +1,16 @@
 package com.ananops.provider.service;
 
+import com.ananops.provider.model.dto.TaskChangeFacilitatorDto;
+import com.ananops.provider.model.dto.TaskChangeStatusDto;
 import com.ananops.provider.model.dto.TaskDto;
 import com.ananops.provider.model.dto.TaskQueryDto;
 import com.ananops.provider.service.hystrix.ImcTaskFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
-import feign.Param;
 import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -35,4 +38,13 @@ public interface ImcTaskFeignApi {
 
     @PostMapping(value = "/api/task/getByFacilitatorGroupIdAndStatus")
     Wrapper<List<TaskDto>> getByFacilitatorGroupIdAndStatus(@ApiParam(name = "getByFacilitatorGroupIdAndStatus",value = "根据服务商组织ID查询指定状态的巡检任务")@RequestBody TaskQueryDto taskQueryDto);
+
+    @PostMapping(value = "/api/task/modifyTaskStatusByTaskId")
+    Wrapper<TaskChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatusByTaskId",value = "根据巡检任务的ID修改该任务的状态")@RequestBody TaskChangeStatusDto taskChangeStatusDto);
+
+    @GetMapping(value = "/api/task/getTaskByTaskId")
+    Wrapper<TaskDto> getTaskByTaskId(@ApiParam(name = "getTaskByTaskId",value = "根据巡检任务的ID获取巡检任务的详情")@PathVariable Long taskId);
+
+    @PostMapping(value = "/api/task/modifyFacilitatorByTaskId")
+    Wrapper<TaskChangeFacilitatorDto> modifyFacilitatorByTaskId(@ApiParam(name = "modifyFacilitatorByTaskId",value = "修改巡检任务对应的服务商")@RequestBody TaskChangeFacilitatorDto taskChangeFacilitatorDto);
 }

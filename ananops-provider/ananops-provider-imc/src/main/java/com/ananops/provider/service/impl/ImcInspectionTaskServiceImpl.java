@@ -16,6 +16,7 @@ import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
+import com.ananops.wrapper.WrapMapper;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -350,6 +351,28 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return imcInspectionTaskMapper.selectByExample(example);
     }
 
+    /**
+     * 修改巡检任务对应的服务商ID
+     * @param taskChangeFacilitatorDto
+     * @return
+     */
+    public TaskChangeFacilitatorDto modifyFacilitator(TaskChangeFacilitatorDto taskChangeFacilitatorDto){
+        Long taskId = taskChangeFacilitatorDto.getTaskId();
+        Long facilitatorId = taskChangeFacilitatorDto.getFacilitatorId();
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        if(imcInspectionTaskMapper.selectCountByExample(example)==0){
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        ImcInspectionTask imcInspectionTask = this.getTaskByTaskId(taskId);
+        imcInspectionTask.setFacilitatorId(facilitatorId);
+        int result = this.update(imcInspectionTask);
+        if(result == 1){
+            return taskChangeFacilitatorDto;
+        }
+        throw new BusinessException(ErrorCodeEnum.GL9999093);
+    }
 
     /**
      * 判断巡检任务是否完成
