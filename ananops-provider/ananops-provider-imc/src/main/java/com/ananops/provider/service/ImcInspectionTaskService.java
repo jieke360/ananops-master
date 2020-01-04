@@ -4,10 +4,7 @@ package com.ananops.provider.service;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.ImcInspectionTask;
-import com.ananops.provider.model.dto.ImcAddInspectionTaskDto;
-import com.ananops.provider.model.dto.ImcTaskChangeStatusDto;
-import com.ananops.provider.model.dto.TaskNameChangeDto;
-import com.ananops.provider.model.dto.TaskQueryDto;
+import com.ananops.provider.model.dto.*;
 
 import java.util.List;
 
