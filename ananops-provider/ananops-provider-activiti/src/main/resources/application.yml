@@ -7,5 +7,5 @@ spring:
     name: ananops-provider-activiti
   datasource:
     username: root
-    password: root
+    password: 123456
 

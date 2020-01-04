@@ -6,6 +6,7 @@ import com.ananops.provider.model.domain.PmcProject;
 import com.ananops.provider.model.dto.PmcProjectDto;
 import com.ananops.provider.service.PmcProjectFeignApi;
 import com.ananops.provider.service.PmcProjectService;
+import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +26,14 @@ import javax.annotation.Resource;
 public class PmcProjectFeignClient extends BaseController implements PmcProjectFeignApi {
     @Resource
     private PmcProjectService pmcProjectService;
+
+    @Override
+    public Wrapper<PmcProjectDto> getProjectByProjectId(Long projectId) {
+        PmcProject pmcProject = pmcProjectService.getProjectById(projectId);
+        PmcProjectDto pmcProjectDto = new PmcProjectDto();
+        BeanUtils.copyProperties(pmcProject, pmcProjectDto);
+        return WrapMapper.ok(pmcProjectDto);
+    }
 
     @Override
     public Wrapper saveProject(@RequestBody PmcProjectDto pmcProjectDto) {

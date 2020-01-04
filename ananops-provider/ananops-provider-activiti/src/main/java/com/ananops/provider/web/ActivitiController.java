@@ -8,14 +8,20 @@ package com.ananops.provider.web;
 import com.alibaba.fastjson.JSONObject;
 import com.ananops.provider.model.dto.ActiDeployDto;
 import com.ananops.provider.model.dto.ActiStartDto;
+import com.ananops.provider.model.dto.CommentDto;
+import com.ananops.provider.model.dto.DeployListDto;
 import com.ananops.provider.service.impl.ActivitiServiceImpl;
 import com.ananops.provider.utils.WrapMapper;
 import com.ananops.provider.utils.Wrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
@@ -23,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/activiti")
-@CrossOrigin
+@RequestMapping(value = "/base",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value = "WEB - Base",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ActivitiController {
     @Autowired
     ActivitiServiceImpl activitiServiceImpl;
@@ -110,37 +116,38 @@ public class ActivitiController {
     //获取批注
     @GetMapping(value = "/getComment/{processInstanceId}")
     @ApiOperation(httpMethod = "GET",value = "获取批注")
-    public Wrapper<String> comment(@ApiParam(name = "processInstanceId",value = "流程实例id") @RequestParam String processInstanceId) {
-        JSONObject jsonObject = new JSONObject();
+    public Wrapper<List<CommentDto>> comment(@ApiParam(name = "processInstanceId",value = "流程实例id") @RequestParam String processInstanceId) {
+        List<CommentDto> res=new ArrayList<>();
         List<Comment> list = activitiServiceImpl.getComment(processInstanceId);
         if (list != null && list.size() > 0) {
             for (Comment comment : list) {
+                CommentDto commentDto=new CommentDto();
                 String assignee = activitiServiceImpl.getAssignee(comment.getTaskId());
-                jsonObject.put("批注人" + assignee, comment.getFullMessage());
+                commentDto.setAssignee(assignee);
+                commentDto.setComment(comment.getFullMessage());
+                res.add(commentDto);
             }
         }
-        return WrapMapper.ok(jsonObject.toString());
+        return WrapMapper.ok(res);
     }
 
     //获取部署流程列表
-    @GetMapping(value = "/deploylist")
-    @ApiOperation(httpMethod = "GET",value = "获取部署流程列表")
-    public Wrapper<String> personalTask() {
+    @PostMapping(value = "/deploylist")
+    @ApiOperation(httpMethod = "POST",value = "获取部署流程列表")
+    public Wrapper<List<DeployListDto>> personalTask() {
         try {
+            List<DeployListDto> res=new ArrayList<>();
             List<ProcessDefinition> list = activitiServiceImpl.getDefinitionList();
-            JSONObject jsonObject = new JSONObject();
             if (list != null && list.size() > 0) {
-                int count = 1;
                 for (ProcessDefinition processDefinition : list) {
-                    String head = String.valueOf(count++);
-                    List<String> content = new ArrayList<>();
-                    content.add(processDefinition.getId());
-                    content.add(processDefinition.getKey());
-                    content.add(String.valueOf(processDefinition.getVersion()));
-                    jsonObject.put(head, content);
+                    DeployListDto deployListDto=new DeployListDto();
+                    deployListDto.setProcessDefinitionId(processDefinition.getId());
+                    deployListDto.setProcessDefinitionKey(processDefinition.getKey());
+                    deployListDto.setVersion(processDefinition.getVersion());
+                    res.add(deployListDto);
                 }
             }
-            return WrapMapper.ok(jsonObject.toString());
+            return WrapMapper.ok(res);
         } catch (Exception e) {
             return WrapMapper.error(e.getMessage());
         }
