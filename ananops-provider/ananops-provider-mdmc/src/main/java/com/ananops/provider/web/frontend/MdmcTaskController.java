@@ -45,7 +45,7 @@ public class MdmcTaskController extends BaseController {
 
     @GetMapping(value = "/getTaskLogs/{taskId}")
     @ApiOperation(httpMethod = "GET",value = "根据任务ID查询任务的日志")
-    public Wrapper<List<MdmcTaskLog>> getTaskLogs(@PathVariable Long taskId){
+    public Wrapper<List<MdmcTaskLog>> getTaskLogs(@PathVariable("taskId") Long taskId){
         List<MdmcTaskLog> taskLogList=taskLogService.getTaskLogsByTaskId(taskId);
         return WrapMapper.ok(taskLogList);
     }
@@ -67,7 +67,7 @@ public class MdmcTaskController extends BaseController {
 
     @GetMapping(value = "/getTaskByTaskId/{taskId}")
     @ApiOperation(httpMethod = "GET",value = "根据任务的ID，获取当前的任务详情")
-    public Wrapper<MdmcTask> getTaskByTaskId(@PathVariable Long taskId){
+    public Wrapper<MdmcTask> getTaskByTaskId(@PathVariable("taskId") Long taskId){
         MdmcTask task = taskService.getTaskByTaskId(taskId);
         return WrapMapper.ok(task);
     }

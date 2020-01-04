@@ -22,8 +22,8 @@ public interface MdmcTaskFeignApi {
     @PostMapping(value = "api/mdmcTask/getTaskByTaskId")
     Wrapper<List<MdmcTask>> getTaskByStatus(@RequestBody MdmcStatusDto statusDto);
     
-    @GetMapping(value = "api/mdmcTask/getTaskByTaskId/{taskId}")
-    Wrapper<MdmcTask> getTaskByTaskId(@PathVariable Long taskId);
+    @PostMapping(value = "api/mdmcTask/getTaskByTaskId/{taskId}")
+    Wrapper<MdmcTask> getTaskByTaskId(@PathVariable("taskId") Long taskId);
     
     @PostMapping(value = "api/mdmcTask/getAllTaskList")
     Wrapper<List<MdmcTask>> getTaskList(@RequestBody MdmcStatusDto statusDto);

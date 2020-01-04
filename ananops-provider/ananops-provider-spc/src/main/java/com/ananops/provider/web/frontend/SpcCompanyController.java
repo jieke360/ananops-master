@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 服务商模块对外提供操作Company的Restful接口
+ * 服务商模块对外提供操作Company(公司)的Restful接口
  *
  * Created by bingyueduan on 2019/12/28.
  */
@@ -35,6 +35,7 @@ public class SpcCompanyController extends BaseController {
     private SpcCompanyService spcCompanyService;
 
     @PostMapping(value = "/queryAllCompanys")
+    @LogAnnotation
     @ApiOperation(httpMethod = "POST", value = "获取加盟服务商列表")
     public Wrapper<PageInfo<SpcCompany>> queryAllCompanys(@ApiParam(name = "spcCompany", value = "公司信息") @RequestBody SpcCompany spcCompany) {
         logger.info("分页查询服务商列表, spcCompany={}", spcCompany);

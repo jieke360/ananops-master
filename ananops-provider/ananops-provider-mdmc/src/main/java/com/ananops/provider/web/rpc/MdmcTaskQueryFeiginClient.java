@@ -33,8 +33,8 @@ public class MdmcTaskQueryFeiginClient extends BaseController implements MdmcTas
         return WrapMapper.ok(taskList);
     }
     
-    @ApiOperation(httpMethod = "GET",value = "根据任务的ID，获取当前的任务详情")
-    public Wrapper<MdmcTask> getTaskByTaskId(@PathVariable Long taskId){
+    @ApiOperation(httpMethod = "POST",value = "根据任务的ID，获取当前的任务详情")
+    public Wrapper<MdmcTask> getTaskByTaskId(@PathVariable("taskId") Long taskId){
         MdmcTask task = taskService.getTaskByTaskId(taskId);
         return WrapMapper.ok(task);
     }
