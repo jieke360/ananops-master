@@ -9,10 +9,7 @@ import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,8 +39,8 @@ public interface ImcTaskFeignApi {
     @PostMapping(value = "/api/task/modifyTaskStatusByTaskId")
     Wrapper<TaskChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatusByTaskId",value = "根据巡检任务的ID修改该任务的状态")@RequestBody TaskChangeStatusDto taskChangeStatusDto);
 
-    @GetMapping(value = "/api/task/getTaskByTaskId")
-    Wrapper<TaskDto> getTaskByTaskId(@ApiParam(name = "getTaskByTaskId",value = "根据巡检任务的ID获取巡检任务的详情")@PathVariable Long taskId);
+    @PostMapping(value = "/api/task/getTaskByTaskId")
+    Wrapper<TaskDto> getTaskByTaskId(@ApiParam(name = "taskId",value = "根据巡检任务的ID获取巡检任务的详情")@RequestParam("taskId") Long taskId);
 
     @PostMapping(value = "/api/task/modifyFacilitatorByTaskId")
     Wrapper<TaskChangeFacilitatorDto> modifyFacilitatorByTaskId(@ApiParam(name = "modifyFacilitatorByTaskId",value = "修改巡检任务对应的服务商")@RequestBody TaskChangeFacilitatorDto taskChangeFacilitatorDto);
