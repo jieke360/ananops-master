@@ -7,6 +7,7 @@ import com.ananops.provider.model.dto.PmcProjectUserDto;
 import com.ananops.provider.service.PmcProjectFeignApi;
 import com.ananops.wrapper.Wrapper;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 public class PmcProjectFeignHystrix implements PmcProjectFeignApi {
 
     @Override
-    public Wrapper<PmcProjectDto> getProjectByProjectId(Long projectId) {
+    public Wrapper<PmcProjectDto> getProjectByProjectId(@PathVariable(value = "projectId") Long projectId) {
         return null;
     }
 

@@ -12,6 +12,8 @@ import java.io.Serializable;
 @ApiModel(value = "工单详情查询Dto")
 public class WorkOrderQueryDto implements Serializable {
 
+    private static final long serialVersionUID = -7789854474719943806L;
+
     /**
      * 工单Id
      */
