@@ -324,9 +324,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         }
         switch (roleCode){
             case "user_watcher":criteria.andEqualTo("userId",id);break;
-            case "user_leader":criteria.andEqualTo("principalId",id);break;
+            case "user_manager":criteria.andEqualTo("principalId",id);break;
             case "engineer":criteria.andEqualTo("maintainerId",id);break;
-            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+            case "fac_manager":criteria.andEqualTo("facilitatorId",id);break;
             default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
         }
         if(taskMapper.selectCountByExample(example)==0){
