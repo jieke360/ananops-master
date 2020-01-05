@@ -347,9 +347,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         List<MdmcListDto> listDtoList=new ArrayList<>();
         switch (roleCode){
             case "user_watcher":criteria.andEqualTo("userId",id);break;
-            case "user_leader":criteria.andEqualTo("principalId",id);break;
+            case "user_manager":criteria.andEqualTo("principalId",id);break;
             case "engineer":criteria.andEqualTo("maintainerId",id);break;
-            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+            case "fac_manager":criteria.andEqualTo("facilitatorId",id);break;
             default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
         }
         if (status!=null){
@@ -359,9 +359,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
                 criteria1.andEqualTo("status",i);
                 switch (roleCode){
                     case "user_watcher":criteria1.andEqualTo("userId",id);break;
-                    case "user_leader":criteria1.andEqualTo("principalId",id);break;
+                    case "user_manager":criteria1.andEqualTo("principalId",id);break;
                     case "engineer":criteria1.andEqualTo("maintainerId",id);break;
-                    case "fac_service":criteria1.andEqualTo("facilitatorId",id);break;
+                    case "fac_manager":criteria1.andEqualTo("facilitatorId",id);break;
                     default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
                 }
                 MdmcListDto listDto=new MdmcListDto();
@@ -391,9 +391,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         }
         switch (roleCode){
             case "user_watcher":criteria.andEqualTo("userId",id);break;
-            case "user_leader":criteria.andEqualTo("principalId",id);break;
+            case "user_manager":criteria.andEqualTo("principalId",id);break;
             case "engineer":criteria.andEqualTo("maintainerId",id);break;
-            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+            case "fac_manager":criteria.andEqualTo("facilitatorId",id);break;
             default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
         }
         if(taskMapper.selectCountByExample(example)==0){
