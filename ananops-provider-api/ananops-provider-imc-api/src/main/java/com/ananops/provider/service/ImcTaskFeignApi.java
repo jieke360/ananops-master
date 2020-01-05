@@ -18,6 +18,7 @@ import java.util.List;
  */
 @FeignClient(value = "ananops-provider-imc", configuration = OAuth2FeignAutoConfiguration.class, fallback = ImcTaskFeignHystrix.class)
 public interface ImcTaskFeignApi {
+
     @PostMapping(value = "/api/task/getByFacilitatorId")
     Wrapper<List<TaskDto>> getByFacilitatorId(@ApiParam(name = "getTaskByFacilitatorId",value = "根据服务商ID查询巡检任务")@RequestBody TaskQueryDto taskQueryDto);
 

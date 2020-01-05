@@ -1,6 +1,5 @@
 package com.ananops.provider.web.frontend;
 
-import com.ananops.base.constant.GlobalConstant;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.annotation.LogAnnotation;
 import com.ananops.core.support.BaseController;
@@ -9,19 +8,15 @@ import com.ananops.provider.model.dto.EngineerDto;
 import com.ananops.provider.model.dto.EngineerRegisterDto;
 import com.ananops.provider.model.dto.EngineerStatusDto;
 import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
-import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
-import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.EngineerVo;
 import com.ananops.provider.service.SpcEngineerService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -31,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * 服务商模块对外提供操作Engineer的Restful接口
+ * 服务商模块对外提供操作Engineer(工程师)的Restful接口
  *
  * Created by bingyueduan on 2020/1/2.
  */
@@ -106,6 +101,7 @@ public class SpcEngineerController extends BaseController {
      * @return the wrapper
      */
     @PostMapping(consumes = "multipart/form-data", value = "/uploadEngineerExcelFile")
+    @LogAnnotation
     @ApiOperation(httpMethod = "POST", value = "上传文件")
     public Wrapper<String> uploadEngineerExcelFile(HttpServletRequest request) {
         StringBuilder temp = new StringBuilder();
@@ -124,6 +120,7 @@ public class SpcEngineerController extends BaseController {
      * @return 返回工程师信息
      */
     @PostMapping(value = "/getSpcEngineerById/{engineerId}")
+    @LogAnnotation
     @ApiOperation(httpMethod = "POST", value = "工程师Id查询工程师信息")
     public Wrapper<EngineerVo> getSpcEngineerById(@ApiParam(name = "engineerId", value = "工程师ID") @PathVariable Long engineerId) {
         logger.info("getSpcEngineerById - 根据工程师Id查询工程师信息. engineerId={}", engineerId);

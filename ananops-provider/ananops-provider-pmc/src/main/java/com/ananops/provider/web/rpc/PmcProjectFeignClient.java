@@ -9,9 +9,11 @@ import com.ananops.provider.service.PmcProjectService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,14 +30,18 @@ public class PmcProjectFeignClient extends BaseController implements PmcProjectF
     private PmcProjectService pmcProjectService;
 
     @Override
-    public Wrapper<PmcProjectDto> getProjectByProjectId(Long projectId) {
+    @ApiOperation(httpMethod = "POST", value = "根据项目Id查询项目信息")
+    public Wrapper<PmcProjectDto> getProjectByProjectId(@PathVariable(value = "projectId") Long projectId) {
+        logger.info("getProjectByProjectId - 根据项目Id查询项目信息. projectId={}", projectId);
         PmcProject pmcProject = pmcProjectService.getProjectById(projectId);
         PmcProjectDto pmcProjectDto = new PmcProjectDto();
         BeanUtils.copyProperties(pmcProject, pmcProjectDto);
+        logger.info("getProjectByProjectId - 根据项目Id查询项目信息. [OK] pmcProjectDto={}", pmcProjectDto);
         return WrapMapper.ok(pmcProjectDto);
     }
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "保存项目")
     public Wrapper saveProject(@RequestBody PmcProjectDto pmcProjectDto) {
 //        LoginAuthDto loginAuthDto = getLoginAuthDto();
         LoginAuthDto loginAuthDto = new LoginAuthDto();

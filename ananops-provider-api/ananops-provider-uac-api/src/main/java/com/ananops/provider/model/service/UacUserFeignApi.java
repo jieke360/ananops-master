@@ -51,7 +51,7 @@ public interface UacUserFeignApi {
      * @return the wrapper
      */
     @PostMapping(value = "/api/uac/user/modifyUserStatusById")
-    Wrapper<Integer> modifyUserStatus(IdStatusDto modifyUserStatusDto);
+    Wrapper<Integer> modifyUserStatus(@RequestBody IdStatusDto modifyUserStatusDto);
 
     /**
      * 在UAC中更新用户.

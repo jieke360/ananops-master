@@ -37,7 +37,7 @@ public class MdmcDeviceController extends BaseController {
     }
     @GetMapping(value = "/getDeviceByItemId/{itemId}")
     @ApiOperation(httpMethod = "GET",value = "获取任务子项对应的备品备件")
-    public Wrapper<List<MdmcDevice>> getDeviceByItemId(@PathVariable Long itemId){
+    public Wrapper<List<MdmcDevice>> getDeviceByItemId(@PathVariable("itemId") Long itemId){
         Example example = new Example(MdmcDevice.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskItemId",itemId);
