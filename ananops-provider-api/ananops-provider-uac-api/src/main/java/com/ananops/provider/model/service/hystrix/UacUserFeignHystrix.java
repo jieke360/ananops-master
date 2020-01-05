@@ -33,7 +33,7 @@ public class UacUserFeignHystrix implements UacUserFeignApi {
     }
 
     @Override
-    public Wrapper<Integer> modifyUserStatus(IdStatusDto modifyUserStatusDto) {
+    public Wrapper<Integer> modifyUserStatus(@RequestBody IdStatusDto modifyUserStatusDto) {
         return null;
     }
 
