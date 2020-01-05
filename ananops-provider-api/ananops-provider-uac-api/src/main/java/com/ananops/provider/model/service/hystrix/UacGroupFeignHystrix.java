@@ -7,6 +7,7 @@ import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.wrapper.Wrapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class UacGroupFeignHystrix implements UacGroupFeignApi {
     }
 
     @Override
-    public Wrapper<GroupSaveDto> getUacGroupById(Long groupId) {
+    public Wrapper<GroupSaveDto> getUacGroupById(@RequestParam("groupId") Long groupId) {
         return null;
     }
 }

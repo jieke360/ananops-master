@@ -9,6 +9,7 @@ import com.ananops.wrapper.Wrapper;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -50,5 +51,5 @@ public interface UacGroupFeignApi {
      * @return the wrapper
      */
     @PostMapping(value = "/api/uac/group/getUacGroupById")
-    Wrapper<GroupSaveDto> getUacGroupById(Long groupId);
+    Wrapper<GroupSaveDto> getUacGroupById(@RequestParam("groupId") Long groupId);
 }
