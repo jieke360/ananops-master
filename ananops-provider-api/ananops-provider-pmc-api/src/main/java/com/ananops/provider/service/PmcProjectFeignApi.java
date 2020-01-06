@@ -1,8 +1,6 @@
 package com.ananops.provider.service;
 
-import com.ananops.provider.model.dto.PmcBatchProUser;
 import com.ananops.provider.model.dto.PmcProjectDto;
-import com.ananops.provider.model.dto.PmcProjectUserDto;
 import com.ananops.provider.service.hystrix.PmcProjectFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
