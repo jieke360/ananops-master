@@ -6,7 +6,9 @@ import com.ananops.provider.model.dto.user.UserRegisterDto;
 import com.ananops.provider.model.service.hystrix.UacUserFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,7 +53,7 @@ public interface UacUserFeignApi {
      * @return the wrapper
      */
     @PostMapping(value = "/api/uac/user/modifyUserStatusById")
-    Wrapper<Integer> modifyUserStatus(IdStatusDto modifyUserStatusDto);
+    Wrapper<Integer> modifyUserStatus(@RequestBody IdStatusDto modifyUserStatusDto);
 
     /**
      * 在UAC中更新用户.
@@ -60,4 +62,12 @@ public interface UacUserFeignApi {
      */
     @PostMapping(value = "/api/uac/user/save")
     Wrapper<Long> userSave(@RequestBody UserInfoDto userInfoDto);
+
+    /**
+     * 验证用户是否存在以及身份是否属实
+     *
+     * @return the wrapper
+     */
+    @PostMapping(value = "/api/uac/user/validateUser")
+    Wrapper<Boolean> validateUser(@PathVariable Long userId, @PathVariable String roleCode);
 }

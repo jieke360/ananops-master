@@ -1,19 +1,22 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.base.dto.LoginAuthDto;
-import com.ananops.core.support.BaseService;
 import com.ananops.provider.mapper.SpcCompanyEngineerMapper;
+import com.ananops.provider.mapper.SpcCompanyMapper;
 import com.ananops.provider.mapper.SpcEngineerMapper;
 import com.ananops.provider.model.domain.MdmcTask;
-import com.ananops.provider.model.domain.SpcCompanyEngineer;
-import com.ananops.provider.model.domain.SpcEngineer;
+import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.group.GroupSaveDto;
+import com.ananops.provider.model.service.UacGroupFeignApi;
+import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.model.vo.WorkOrderDetailVo;
 import com.ananops.provider.model.vo.WorkOrderVo;
 import com.ananops.provider.service.ImcTaskFeignApi;
 import com.ananops.provider.service.MdmcTaskFeignApi;
 import com.ananops.provider.service.PmcProjectFeignApi;
 import com.ananops.provider.service.SpcWorkOrderService;
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,9 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
     private SpcEngineerMapper spcEngineerMapper;
 
     @Resource
+    private SpcCompanyMapper spcCompanyMapper;
+
+    @Resource
     private SpcCompanyEngineerMapper spcCompanyEngineerMapper;
 
     @Resource
@@ -49,27 +55,30 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
     @Resource
     private PmcProjectFeignApi pmcProjectFeignApi;
 
+    @Resource
+    private UacGroupFeignApi uacGroupFeignApi;
+
     @Override
     public List<WorkOrderVo> queryAllWorkOrders(WorkOrderDto workOrderDto, LoginAuthDto loginAuthDto) {
         List<WorkOrderVo> workOrderVos = new ArrayList<>();
-        Long userId = loginAuthDto.getUserId();
+        Long groupId = loginAuthDto.getGroupId();
         String workOrderType = workOrderDto.getType();
         Integer workOrderStatus = workOrderDto.getStatus();
-        // 根据登录用户的UserId查询工程师信息
-        SpcEngineer query = new SpcEngineer();
-        query.setUserId(userId);
-        SpcEngineer result = spcEngineerMapper.selectOne(query);
-        // 查询该业务操作员属于哪个服务商
-        Long engineerId = result.getId();
-        SpcCompanyEngineer queryEn = new SpcCompanyEngineer();
-        queryEn.setEngineerId(engineerId);
-        Long companyId = spcCompanyEngineerMapper.selectOne(queryEn).getCompanyId();
+//        // 根据登录用户的UserId查询工程师信息
+//        SpcEngineer query = new SpcEngineer();
+//        query.setUserId(userId);
+//        SpcEngineer result = spcEngineerMapper.selectOne(query);
+//        // 查询该业务操作员属于哪个服务商
+//        Long engineerId = result.getId();
+//        SpcCompanyEngineer queryEn = new SpcCompanyEngineer();
+//        queryEn.setEngineerId(engineerId);
+//        Long companyId = spcCompanyEngineerMapper.selectOne(queryEn).getCompanyId();
 
         TaskQueryDto taskQueryDto = new TaskQueryDto();
-        taskQueryDto.setUserId(companyId);
+        taskQueryDto.setUserId(groupId);
         List<TaskDto> imcTaskDtos = imcTaskFeignApi.getByFacilitatorId(taskQueryDto).getResult();
         MdmcQueryDto mdmcQueryDto = new MdmcQueryDto();
-        mdmcQueryDto.setId(companyId);
+        mdmcQueryDto.setId(groupId);
         mdmcQueryDto.setRoleCode("fac_service");
         List<MdmcTask> mdmcTaskDtos = mdmcTaskFeignApi.getTaskListByIdAndStatus(mdmcQueryDto).getResult();
 
@@ -149,22 +158,44 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
         Long taskId = workOrderQueryDto.getId();
         Long projectId = null;
-        String workOrderType = workOrderDetailVo.getType();
+        Long groupId = null;
+        String workOrderType = workOrderQueryDto.getType();
         // 填充工单信息
-        if (!StringUtils.isEmpty(workOrderType) && "inspection".equals(workOrderType)) {
+        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
+            log.info("查询巡检工单：taskId=" + taskId);
             TaskDto taskDto = imcTaskFeignApi.getTaskByTaskId(taskId).getResult();
             workOrderDetailVo.setType("inspection");
             workOrderDetailVo.setInspectionTask(taskDto);
             projectId = taskDto.getProjectId();
-        } else if (!StringUtils.isEmpty(workOrderType) && "maintain".equals(workOrderType)) {
+            groupId = taskDto.getFacilitatorId();
+        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
+            log.info("查询维修维护工单：taskId=" + taskId);
             MdmcTask mdmcTaskDto = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult();
             workOrderDetailVo.setType("maintain");
             workOrderDetailVo.setMaintainTask(mdmcTaskDto);
             projectId = mdmcTaskDto.getProjectId();
+            groupId = mdmcTaskDto.getFacilitatorId();
         }
         // 填充项目信息
+        log.info("工单项目ID：projectId=" + projectId);
         PmcProjectDto pmcProjectDto = pmcProjectFeignApi.getProjectByProjectId(projectId).getResult();
         workOrderDetailVo.setPmcProjectDto(pmcProjectDto);
+        // 填充服务商信息
+        CompanyVo companyVo = new CompanyVo();
+        SpcCompany queryC = new SpcCompany();
+        queryC.setGroupId(groupId);
+        SpcCompany spcCompany = spcCompanyMapper.selectOne(queryC);
+        if (!StringUtils.isEmpty(groupId)) {
+            GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(groupId).getResult();
+            try {
+                BeanUtils.copyProperties(companyVo, spcCompany);
+                BeanUtils.copyProperties(companyVo, groupSaveDto);
+            } catch (Exception e) {
+                log.error("queryByCompanyId 服务商Dto与用户组Dto属性拷贝异常");
+                e.printStackTrace();
+            }
+        }
+        workOrderDetailVo.setCompanyVo(companyVo);
         return workOrderDetailVo;
     }
 }

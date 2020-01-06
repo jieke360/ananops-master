@@ -131,7 +131,7 @@ public class ImcInspectionItemController extends BaseController {
     @PostMapping(value = "/getItemByMaintainerIdAndStatus")
     @ApiOperation(httpMethod = "POST",value = "查询工程师下指定状态的全部巡检任务子项")
     public Wrapper<List<ImcInspectionItem>> getItemBymaintainerIdAndStatus(@ApiParam(name = "getItemByMaintainerIdAndStatus",value = "查询工程师下指定状态的全部巡检任务子项")@RequestBody ItemQueryDto itemQueryDto){
-        return WrapMapper.ok(imcInspectionItemService.getItemByItemStatusAndTaskId(itemQueryDto));
+        return WrapMapper.ok(imcInspectionItemService.getItemByMaintainerIdAndStatus(itemQueryDto));
     }
 
     @PostMapping(value = "/modifyMaintainerIdByItemId")
