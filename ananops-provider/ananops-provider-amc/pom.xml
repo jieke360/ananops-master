@@ -17,6 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.rocketmq</groupId>
@@ -26,6 +27,14 @@
         <dependency>
             <groupId>com.ananops.provider.api</groupId>
             <artifactId>ananops-provider-pmc-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-sdk-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-tpc-api</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.netzwerg</groupId>
@@ -104,5 +113,6 @@
             <artifactId>UserAgentUtils</artifactId>
         </dependency>
     </dependencies>
+
 
 </project>

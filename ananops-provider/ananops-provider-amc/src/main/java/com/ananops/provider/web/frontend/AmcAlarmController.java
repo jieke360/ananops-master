@@ -84,7 +84,7 @@ public class AmcAlarmController extends BaseController {
         return WrapMapper.ok(count);
     }
 
-    @PostMapping("/getCount")
+    @PostMapping("getUrgencyCount")
     @ApiOperation(httpMethod = "POST", value = "获取急需处理告警数")
     public Wrapper getUrgencyCount() {
         int count = 0;
@@ -92,7 +92,7 @@ public class AmcAlarmController extends BaseController {
         return WrapMapper.ok(count);
     }
 
-    @PostMapping("/getCount")
+    @PostMapping("/getDealedCount")
     @ApiOperation(httpMethod = "POST", value = "获取已处理告警数")
     public Wrapper getDealedCount() {
         int count = 0;
