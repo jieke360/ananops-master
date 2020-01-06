@@ -30,9 +30,9 @@
 
         <!-- 设置要生成代码的表 -->
 <!--        项目表-->
-        <table tableName="an_pmc_project" domainObjectName="PmcProject">
-            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
-        </table>
+<!--        <table tableName="an_pmc_project" domainObjectName="PmcProject">-->
+<!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+<!--        </table>-->
 
         <!-- 合同表 -->
 <!--        <table tableName="an_pmc_contract" domainObjectName="PmcContract">-->
@@ -51,6 +51,10 @@
 <!--        <table tableName="an_pmc_inspect_detail" domainObjectName="PmcInspectDetail">-->
 <!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
 <!--        </table>-->
+
+        <table tableName="an_amc_alarm" domainObjectName="AmcAlarm">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
 
 
 
