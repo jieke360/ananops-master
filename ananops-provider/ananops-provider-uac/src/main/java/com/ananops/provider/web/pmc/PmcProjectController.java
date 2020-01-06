@@ -22,9 +22,11 @@ public class PmcProjectController extends BaseController {
     private PmcProjectFeignApi pmcProjectFeignApi;
 
     @PostMapping("/save")
-    @ApiOperation(httpMethod = "POST", value = "编辑合同,当id为空时新增项目,不为空时为更新项目信息")
+    @ApiOperation(httpMethod = "POST", value = "编辑项目,当id为空时新增项目,不为空时为更新项目信息")
     public Wrapper saveProject(@RequestBody PmcProjectDto pmcProjectDto){
         return pmcProjectFeignApi.saveProject(pmcProjectDto);
     }
 
+
 }
+

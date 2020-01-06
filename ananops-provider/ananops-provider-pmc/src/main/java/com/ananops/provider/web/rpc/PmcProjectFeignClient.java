@@ -9,6 +9,7 @@ import com.ananops.provider.service.PmcProjectService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
@@ -28,6 +29,7 @@ public class PmcProjectFeignClient extends BaseController implements PmcProjectF
     private PmcProjectService pmcProjectService;
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "获取项目详细信息")
     public Wrapper<PmcProjectDto> getProjectByProjectId(Long projectId) {
         PmcProject pmcProject = pmcProjectService.getProjectById(projectId);
         PmcProjectDto pmcProjectDto = new PmcProjectDto();
