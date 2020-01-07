@@ -9,6 +9,7 @@ import com.ananops.provider.model.dto.EngineerRegisterDto;
 import com.ananops.provider.model.dto.EngineerStatusDto;
 import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
 import com.ananops.provider.model.vo.EngineerVo;
+import com.ananops.provider.service.PmcProjectEngineerFeignApi;
 import com.ananops.provider.service.SpcEngineerService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
@@ -37,6 +38,9 @@ public class SpcEngineerController extends BaseController {
 
     @Resource
     private SpcEngineerService spcEngineerService;
+
+    @Resource
+    private PmcProjectEngineerFeignApi pmcProjectEngineerFeignApi;
 
     /**
      * 分页查询服务商下工程师.
@@ -161,4 +165,14 @@ public class SpcEngineerController extends BaseController {
         spcEngineerService.saveSpcEngineer(engineerVo, loginAuthDto);
         return WrapMapper.ok();
     }
+
+    @PostMapping(value = "/getEngineerIdListByProjectId/{projectId}")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据项目Id获取项目下的全部工程师Id列表")
+    public Wrapper<List<Long>> getEngineerIdListByProjectId(@ApiParam(name = "List<Long>",value = "工程师Id的列表")@PathVariable Long projectId){
+        logger.info(" 根据项目ID查询项目对应的工程师ID的列表 projectId={}", projectId);
+        List<Long> engineerIdList = pmcProjectEngineerFeignApi.getEngineersIdByProjectId(projectId).getResult();
+        return WrapMapper.ok(engineerIdList);
+    }
+
 }

@@ -153,13 +153,18 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         return workOrderVos;
     }
 
+    /**
+     * 根据工单Id查询工单信息
+     * @param workOrderQueryDto
+     * @return
+     */
     @Override
     public WorkOrderDetailVo queryByWorkOrderId(WorkOrderQueryDto workOrderQueryDto) {
         WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
-        Long taskId = workOrderQueryDto.getId();
+        Long taskId = workOrderQueryDto.getId();//获取工单Id
         Long projectId = null;
         Long groupId = null;
-        String workOrderType = workOrderQueryDto.getType();
+        String workOrderType = workOrderQueryDto.getType();//获取工单类型
         // 填充工单信息
         if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
             log.info("查询巡检工单：taskId=" + taskId);
@@ -185,7 +190,7 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         SpcCompany queryC = new SpcCompany();
         queryC.setGroupId(groupId);
         SpcCompany spcCompany = spcCompanyMapper.selectOne(queryC);
-        if (!StringUtils.isEmpty(groupId)) {
+        if (!StringUtils.isEmpty(groupId)) {//如果组织Id非空
             GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(groupId).getResult();
             try {
                 BeanUtils.copyProperties(companyVo, spcCompany);
