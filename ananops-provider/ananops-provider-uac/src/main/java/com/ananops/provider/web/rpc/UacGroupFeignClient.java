@@ -3,11 +3,14 @@ package com.ananops.provider.web.rpc;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.UacGroup;
+import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
+import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.service.UacGroupService;
+import com.ananops.provider.service.UacUserService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
@@ -15,7 +18,9 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -32,6 +37,9 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
 
     @Resource
     private UacGroupService uacGroupService;
+
+    @Resource
+    private UacUserService uacUserService;
 
     @Override
     @ApiOperation(httpMethod = "POST", value = "编辑用户组")
@@ -95,5 +103,21 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
             e.printStackTrace();
         }
         return WrapMapper.ok(groupSaveDto);
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "根据Group的Id查询对应的全部User的Id")
+    public Wrapper<List<Long>> getUacUserIdListByGroupId(@RequestParam("groupId")Long groupId){
+        logger.info("根据组织Id查询组织对应的全部用户的Id");
+        Example example = new Example(UacUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("groupId",groupId);
+        List<Long> userIdList = new ArrayList<>();
+        List<UacUser> uacUserList = uacUserService.selectByExample(example);
+        uacUserList.forEach(uacUser -> {
+            Long userId = uacUser.getId();
+            userIdList.add(userId);
+        });
+        return WrapMapper.ok(userIdList);
     }
 }

@@ -157,6 +157,16 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
         }
         //如果当前任务存在
+        if(status == 4){
+            Example example2 = new Example(ImcInspectionItem.class);
+            Example.Criteria criteria2 = example2.createCriteria();
+            criteria2.andEqualTo("inspectionTaskId",taskId);
+            List<ImcInspectionItem> imcInspectionItemList = imcInspectionItemMapper.selectByExample(example2);
+            imcInspectionItemList.forEach(imcInspectionItem -> {//任务已经巡检完毕，将全部任务子项的状态修改为已完成
+                imcInspectionItem.setStatus(4);
+                imcInspectionItemService.update(imcInspectionItem);
+            });
+        }
         imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(status));
         imcInspectionTask.setId(taskId);
         imcInspectionTask.setStatus(status);

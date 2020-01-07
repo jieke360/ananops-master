@@ -85,7 +85,7 @@ public class SpcEngineerController extends BaseController {
      */
     @PostMapping(value = "/add")
     @LogAnnotation
-    @ApiOperation(httpMethod = "POST", value = "分页查询服务商下工程师")
+    @ApiOperation(httpMethod = "POST", value = "添加工程师")
     public Wrapper<Integer> addEngineer(@ApiParam(name = "engineerRegisterDto", value = "按工程师状态查询参数") @RequestBody EngineerRegisterDto engineerRegisterDto) {
         logger.info(" 添加工程师 engineerRegisterDto={}", engineerRegisterDto);
         LoginAuthDto loginAuthDto = getLoginAuthDto();
