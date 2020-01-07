@@ -1,8 +1,10 @@
 package com.ananops.provider.service;
 
 import com.ananops.base.dto.LoginAuthDto;
+import com.ananops.provider.model.dto.EngineerDto;
 import com.ananops.provider.model.dto.WorkOrderDto;
 import com.ananops.provider.model.dto.WorkOrderQueryDto;
+import com.ananops.provider.model.vo.EngineerVo;
 import com.ananops.provider.model.vo.WorkOrderDetailVo;
 import com.ananops.provider.model.vo.WorkOrderVo;
 
@@ -29,9 +31,15 @@ public interface SpcWorkOrderService {
     /**
      * 根据工单Id查询工单详情
      *
-     * @param workorderId
+     * @param workOrderQueryDto
      *
      * @return
      */
     WorkOrderDetailVo queryByWorkOrderId(WorkOrderQueryDto workOrderQueryDto);
+
+    List<EngineerDto> engineersDtoList(WorkOrderDto workOrderDto);
+
+    void distributeEngineer(WorkOrderDto workOrderDto, LoginAuthDto loginAuthDto, Long engineerId);
+
+    void transferWorkOrder(WorkOrderDto workOrderDto);
 }
