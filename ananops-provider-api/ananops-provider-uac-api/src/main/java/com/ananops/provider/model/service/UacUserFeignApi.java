@@ -68,6 +68,6 @@ public interface UacUserFeignApi {
      *
      * @return the wrapper
      */
-    @PostMapping(value = "/api/uac/user/validateUser")
-    Wrapper<Boolean> validateUser(@PathVariable Long userId, @PathVariable String roleCode);
+    @PostMapping(value = "/api/uac/user/validateUser/{userId}/{roleCode}")
+    Wrapper<Boolean> validateUser(@RequestParam("userId") Long userId, @RequestParam("roleCode") String roleCode);
 }
