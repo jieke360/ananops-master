@@ -6,6 +6,7 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.dto.EngineerDto;
 import com.ananops.provider.model.dto.WorkOrderDto;
 import com.ananops.provider.model.dto.WorkOrderQueryDto;
+import com.ananops.provider.model.dto.WorkOrderStatusQueryDto;
 import com.ananops.provider.model.vo.WorkOrderDetailVo;
 import com.ananops.provider.model.vo.WorkOrderVo;
 import com.ananops.provider.service.ImcTaskFeignApi;
@@ -15,7 +16,6 @@ import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.sun.codemodel.internal.fmt.JStaticFile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -46,19 +46,19 @@ public class SpcWorkOrderController extends BaseController {
     /**
      * 分页查询服务商下待处理工单.
      *
-     * @param workOrderDto 传入的查询参数
+     * @param workOrderStatusQueryDto 传入的查询参数
      *
      * @return the wrapper
      */
     @PostMapping(value = "/queryAllWorkOrders")
     @LogAnnotation
     @ApiOperation(httpMethod = "POST", value = "分页查询服务商下工程师")
-    public Wrapper<PageInfo<WorkOrderVo>> queryAllWorkOrders(@ApiParam(name = "workOrderDto", value = "工单查询参数") @RequestBody WorkOrderDto workOrderDto) {
-        logger.info(" 分页查询参数 workOrderDto={}", workOrderDto);
+    public Wrapper<PageInfo<WorkOrderVo>> queryAllWorkOrders(@ApiParam(name = "workOrderDto", value = "工单查询参数") @RequestBody WorkOrderStatusQueryDto workOrderStatusQueryDto) {
+        logger.info(" 分页查询参数 workOrderStatusQueryDto={}", workOrderStatusQueryDto);
         LoginAuthDto loginAuthDto = getLoginAuthDto();
-        PageHelper.startPage(workOrderDto.getPageNum(), workOrderDto.getPageSize());
-        workOrderDto.setOrderBy("update_time desc");
-        List<WorkOrderVo> workOrderVoVoList = spcWorkOrderService.queryAllWorkOrders(workOrderDto, loginAuthDto);
+        PageHelper.startPage(workOrderStatusQueryDto.getPageNum(), workOrderStatusQueryDto.getPageSize());
+        workOrderStatusQueryDto.setOrderBy("update_time desc");
+        List<WorkOrderVo> workOrderVoVoList = spcWorkOrderService.queryAllWorkOrders(workOrderStatusQueryDto, loginAuthDto);
         return WrapMapper.ok(new PageInfo<>(workOrderVoVoList));
     }
 
@@ -141,12 +141,12 @@ public class SpcWorkOrderController extends BaseController {
      */
     @PostMapping(value = "/getAllUnConfirmedWorkOrders")
     @ApiOperation(httpMethod = "POST",value = "获取全部等待被审批的工单")
-    public Wrapper<PageInfo<WorkOrderVo>> getAllUnConfirmedWorkOrders(@ApiParam(name = "WorkOrderDto",value = "工单查询参数")@RequestBody WorkOrderDto workOrderDto){
-        logger.info("getAllUnConfirmedWorkOrders - 获取全部等待被审批的工单. workOrderDto={}", workOrderDto);
+    public Wrapper<PageInfo<WorkOrderVo>> getAllUnConfirmedWorkOrders(@ApiParam(name = "WorkOrderDto",value = "工单查询参数")@RequestBody WorkOrderStatusQueryDto workOrderStatusQueryDto){
+        logger.info("getAllUnConfirmedWorkOrders - 获取全部等待被审批的工单. workOrderStatusQueryDto={}", workOrderStatusQueryDto);
         LoginAuthDto loginAuthDto = getLoginAuthDto();
-        PageHelper.startPage(workOrderDto.getPageNum(), workOrderDto.getPageSize());
-        workOrderDto.setOrderBy("update_time desc");
-        List<WorkOrderVo> workOrderVoVoList = spcWorkOrderService.queryAllWorkOrders(workOrderDto, loginAuthDto);
+        PageHelper.startPage(workOrderStatusQueryDto.getPageNum(), workOrderStatusQueryDto.getPageSize());
+        workOrderStatusQueryDto.setOrderBy("update_time desc");
+        List<WorkOrderVo> workOrderVoVoList = spcWorkOrderService.queryAllWorkOrders(workOrderStatusQueryDto, loginAuthDto);
         workOrderVoVoList.forEach(workOrderVo -> {
             Long taskId = workOrderVo.getId();//工单Id（维修维护or巡检的）
             String type = workOrderVo.getType();//工单类型，巡检(inspection)和维修维护(maintain)

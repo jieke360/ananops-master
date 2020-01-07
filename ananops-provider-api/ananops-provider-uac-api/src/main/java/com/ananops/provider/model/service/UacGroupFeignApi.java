@@ -53,6 +53,13 @@ public interface UacGroupFeignApi {
     @PostMapping(value = "/api/uac/group/getUacGroupById")
     Wrapper<GroupSaveDto> getUacGroupById(@RequestParam("groupId") Long groupId);
 
+    /**
+     * 根据Group Id查询UacUserIdList
+     *
+     * @param groupId 参数
+     *
+     * @return
+     */
     @PostMapping(value = "/api/uac/group/getUacUsersByGroupId")
     Wrapper<List<Long>> getUacUserIdListByGroupId(@RequestParam("groupId")Long groupId);
 }

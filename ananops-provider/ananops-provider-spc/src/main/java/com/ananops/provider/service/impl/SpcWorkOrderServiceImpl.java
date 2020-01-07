@@ -8,7 +8,9 @@ import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
+import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
+import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.model.vo.EngineerVo;
 import com.ananops.provider.model.vo.WorkOrderDetailVo;
@@ -62,104 +64,160 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
     @Resource
     private SpcEngineerService spcEngineerService;
 
+    private UacUserFeignApi uacUserFeignApi;
+
     @Override
-    public List<WorkOrderVo> queryAllWorkOrders(WorkOrderDto workOrderDto, LoginAuthDto loginAuthDto) {
+    public List<WorkOrderVo> queryAllWorkOrders(WorkOrderStatusQueryDto workOrderStatusQueryDto, LoginAuthDto loginAuthDto) {
         List<WorkOrderVo> workOrderVos = new ArrayList<>();
         Long groupId = loginAuthDto.getGroupId();
-        String workOrderType = workOrderDto.getType();
-        Integer workOrderStatus = workOrderDto.getStatus();
-//        // 根据登录用户的UserId查询工程师信息
-//        SpcEngineer query = new SpcEngineer();
-//        query.setUserId(userId);
-//        SpcEngineer result = spcEngineerMapper.selectOne(query);
-//        // 查询该业务操作员属于哪个服务商
-//        Long engineerId = result.getId();
-//        SpcCompanyEngineer queryEn = new SpcCompanyEngineer();
-//        queryEn.setEngineerId(engineerId);
-//        Long companyId = spcCompanyEngineerMapper.selectOne(queryEn).getCompanyId();
+        String workOrderType = workOrderStatusQueryDto.getType();
+        Integer workOrderStatus = workOrderStatusQueryDto.getStatus();
 
         TaskQueryDto taskQueryDto = new TaskQueryDto();
         taskQueryDto.setUserId(groupId);
+        log.info("登录用户的GroupId=" + groupId);
         List<TaskDto> imcTaskDtos = imcTaskFeignApi.getByFacilitatorId(taskQueryDto).getResult();
+        log.info("巡检任务查询结果：imcTaskDtos=" + imcTaskDtos);
         MdmcQueryDto mdmcQueryDto = new MdmcQueryDto();
         mdmcQueryDto.setId(groupId);
         mdmcQueryDto.setRoleCode("fac_service");
         List<MdmcTask> mdmcTaskDtos = mdmcTaskFeignApi.getTaskListByIdAndStatus(mdmcQueryDto).getResult();
+        log.info("巡检任务查询结果：mdmcTaskDtos=" + mdmcTaskDtos);
 
         // 按工单状态筛选
         if (!StringUtils.isEmpty(workOrderStatus)) {
-            List<MdmcTask> newMdmcTaskDtos = new ArrayList<>();
-            for (MdmcTask mdmcTaskDto : mdmcTaskDtos) {
-                if (workOrderStatus.equals(mdmcTaskDto.getStatus())) {
-                    newMdmcTaskDtos.add(mdmcTaskDto);
+            if (mdmcTaskDtos != null) {
+                List<MdmcTask> newMdmcTaskDtos = new ArrayList<>();
+                for (MdmcTask mdmcTaskDto : mdmcTaskDtos) {
+                    if (workOrderStatus.equals(mdmcTaskDto.getStatus())) {
+                        newMdmcTaskDtos.add(mdmcTaskDto);
+                    }
                 }
+                mdmcTaskDtos = newMdmcTaskDtos;
             }
-            mdmcTaskDtos = newMdmcTaskDtos;
-            List<TaskDto> newImcTaskDtos = new ArrayList<>();
-            for (TaskDto imcTaskDto : imcTaskDtos) {
-                if (workOrderStatus.equals(imcTaskDto.getStatus())) {
-                    newImcTaskDtos.add(imcTaskDto);
+            if (imcTaskDtos != null) {
+                List<TaskDto> newImcTaskDtos = new ArrayList<>();
+                for (TaskDto imcTaskDto : imcTaskDtos) {
+                    if (workOrderStatus.equals(imcTaskDto.getStatus())) {
+                        newImcTaskDtos.add(imcTaskDto);
+                    }
                 }
+                imcTaskDtos = newImcTaskDtos;
             }
-            imcTaskDtos = newImcTaskDtos;
+
         }
 
         // 按工单类型筛选
         if (!StringUtils.isEmpty(workOrderType) && "maintain".equals(workOrderType)) {
-            for (MdmcTask mdmcTaskDto : mdmcTaskDtos) {
-                WorkOrderVo workOrderVo = new WorkOrderVo();
-                workOrderDto.setType("maintain");
-                try {
-                    BeanUtils.copyProperties(workOrderVo, mdmcTaskDto);
-                } catch (Exception e) {
-                    log.error("维修维护工单Dto与工单Dto属性拷贝异常");
-                    e.printStackTrace();
+            if (mdmcTaskDtos != null) {
+                for (MdmcTask mdmcTaskDto : mdmcTaskDtos) {
+                    WorkOrderVo workOrderVo = new WorkOrderVo();
+                    workOrderVo.setType("maintain");
+                    try {
+                        BeanUtils.copyProperties(workOrderVo, mdmcTaskDto);
+                    } catch (Exception e) {
+                        log.error("维修维护工单Dto与工单Dto属性拷贝异常");
+                        e.printStackTrace();
+                    }
+                    workOrderVos.add(workOrderVo);
                 }
-                workOrderVos.add(workOrderVo);
             }
         } else if (!StringUtils.isEmpty(workOrderType) && "inspection".equals(workOrderType)) {
-            for (TaskDto imcTaskDto : imcTaskDtos) {
-                WorkOrderVo workOrderVo = new WorkOrderVo();
-                workOrderDto.setType("inspection");
-                try {
-                    BeanUtils.copyProperties(workOrderVo, imcTaskDto);
-                } catch (Exception e) {
-                    log.error("巡检工单Dto与工单Dto属性拷贝异常");
-                    e.printStackTrace();
+            if (imcTaskDtos != null) {
+                for (TaskDto imcTaskDto : imcTaskDtos) {
+                    WorkOrderVo workOrderVo = new WorkOrderVo();
+                    workOrderVo.setType("inspection");
+                    try {
+                        BeanUtils.copyProperties(workOrderVo, imcTaskDto);
+                    } catch (Exception e) {
+                        log.error("巡检工单Dto与工单Dto属性拷贝异常");
+                        e.printStackTrace();
+                    }
+                    workOrderVos.add(workOrderVo);
                 }
-                workOrderVos.add(workOrderVo);
             }
         } else {
-            for (MdmcTask mdmcTaskDto : mdmcTaskDtos) {
-                WorkOrderVo workOrderVo = new WorkOrderVo();
-                workOrderDto.setType("maintain");
-                try {
-                    BeanUtils.copyProperties(workOrderVo, mdmcTaskDto);
-                } catch (Exception e) {
-                    log.error("维修维护工单Dto与工单Dto属性拷贝异常");
-                    e.printStackTrace();
+            if (mdmcTaskDtos != null) {
+                for (MdmcTask mdmcTaskDto : mdmcTaskDtos) {
+                    WorkOrderVo workOrderVo = new WorkOrderVo();
+                    workOrderVo.setType("maintain");
+                    try {
+                        BeanUtils.copyProperties(workOrderVo, mdmcTaskDto);
+                    } catch (Exception e) {
+                        log.error("维修维护工单Dto与工单Dto属性拷贝异常");
+                        e.printStackTrace();
+                    }
+                    workOrderVos.add(workOrderVo);
                 }
-                workOrderVos.add(workOrderVo);
             }
-            for (TaskDto imcTaskDto : imcTaskDtos) {
-                WorkOrderVo workOrderVo = new WorkOrderVo();
-                workOrderDto.setType("inspection");
-                try {
-                    BeanUtils.copyProperties(workOrderVo, imcTaskDto);
-                } catch (Exception e) {
-                    log.error("巡检工单Dto与工单Dto属性拷贝异常");
-                    e.printStackTrace();
+            if (imcTaskDtos != null) {
+                for (TaskDto imcTaskDto : imcTaskDtos) {
+                    WorkOrderVo workOrderVo = new WorkOrderVo();
+                    workOrderVo.setType("inspection");
+                    try {
+                        BeanUtils.copyProperties(workOrderVo, imcTaskDto);
+                    } catch (Exception e) {
+                        log.error("巡检工单Dto与工单Dto属性拷贝异常");
+                        e.printStackTrace();
+                    }
+                    workOrderVos.add(workOrderVo);
                 }
-                workOrderVos.add(workOrderVo);
             }
         }
+
+        // 填充名字信息
+        decorateWorkOrder(workOrderVos);
 
         return workOrderVos;
     }
 
     /**
+     * 填充名字信息
+     *
+     * @param workOrderVos
+     */
+    private void decorateWorkOrder(List<WorkOrderVo> workOrderVos) {
+
+        if (workOrderVos != null) {
+            for (WorkOrderVo workOrderVo : workOrderVos) {
+                // 填充项目名称,客户负责人名称名称
+                Long projectId = workOrderVo.getProjectId();
+                if (projectId != null) {
+                    PmcProjectDto pmcProjectDto = pmcProjectFeignApi.getProjectByProjectId(projectId).getResult();
+                    String projectName = pmcProjectDto.getProjectName();
+                    String aOneName = pmcProjectDto.getAOneName();
+                    String aTwoName = pmcProjectDto.getATwoName();
+                    String aThreeName = pmcProjectDto.getAThreeName();
+                    workOrderVo.setProjectName(projectName);
+                    if (!StringUtils.isEmpty(aOneName)) {
+                        workOrderVo.setFacilitatorName(aOneName);
+                    } else if (!StringUtils.isEmpty(aTwoName)) {
+                        workOrderVo.setFacilitatorName(aTwoName);
+                    } else if (!StringUtils.isEmpty(aThreeName)) {
+                        workOrderVo.setFacilitatorName(aThreeName);
+                    }
+                }
+                // 填充服务商名称
+                Long groupId = workOrderVo.getFacilitatorId();
+                if (groupId != null) {
+                    GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(groupId).getResult();
+                    workOrderVo.setFacilitatorName(groupSaveDto.getGroupName());
+                }
+                // 填充工程师名称
+                Long userId = workOrderVo.getMaintainerId();
+                if (userId != null) {
+                    UserInfoDto userInfoDto = uacUserFeignApi.getUacUserById(userId).getResult();
+                    workOrderVo.setMaintainerName(userInfoDto.getUserName());
+                }
+            }
+        }
+    }
+
+    /**
      * 根据工单Id查询工单信息
+     *
      * @param workOrderQueryDto
+     *
      * @return
      */
     @Override
