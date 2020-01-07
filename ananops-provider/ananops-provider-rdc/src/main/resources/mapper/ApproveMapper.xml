@@ -21,12 +21,21 @@
     <result column="suggestion" property="suggestion" jdbcType="VARCHAR" />
   </resultMap>
 
-  <select id="selectOnProcessingApprove" resultMap="BaseResultMap">
+  <select id="selectTodoApproveByApproverIdAndObject" resultMap="BaseResultMap">
     SELECT *
     FROM an_rdc_approve
     WHERE `version` = 1
     AND  `current_approver_id` = #{approverId, jdbcType=BIGINT}
     AND `object_type` = #{objectType, jdbcType=INTEGER}
     AND `object_id` = #{objectId, jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByApproverId" resultMap="BaseResultMap">
+    SELECT *
+    FROM an_rdc_approve
+    WHERE `current_approver_id` = #{approverId, jdbcType=BIGINT}
+    <if test="version != null">
+      AND `version` = #{version, jdbcType=version}
+    </if>
   </select>
 </mapper>

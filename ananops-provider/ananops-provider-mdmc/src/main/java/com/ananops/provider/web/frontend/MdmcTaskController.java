@@ -71,6 +71,13 @@ public class MdmcTaskController extends BaseController {
         MdmcTask task = taskService.getTaskByTaskId(taskId);
         return WrapMapper.ok(task);
     }
+    
+    @GetMapping(value = "/getTaskByTaskId")
+    @ApiOperation(httpMethod = "GET",value = "根据任务的ID，获取当前的任务详情(param)")
+    public Wrapper<MdmcTask> getTaskByTaskId2(@RequestParam("taskId") Long taskId){
+        MdmcTask task = taskService.getTaskByTaskId(taskId);
+        return WrapMapper.ok(task);
+    }
 
 //    @PostMapping(value = "/getTaskListByUserId")
 //    @ApiOperation(httpMethod = "POST",value = "根据用户ID查询工单列表")

@@ -13,6 +13,7 @@
     <result column="last_operator" property="lastOperator" jdbcType="VARCHAR" />
     <result column="last_operator_id" property="lastOperatorId" jdbcType="BIGINT" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="price" property="price" jdbcType="DECIMAL" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="manufacture" property="manufacture" jdbcType="VARCHAR" />

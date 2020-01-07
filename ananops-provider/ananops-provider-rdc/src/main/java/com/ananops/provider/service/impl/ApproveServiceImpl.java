@@ -14,27 +14,15 @@ public class ApproveServiceImpl extends BaseService<Approve> implements ApproveS
     @Autowired
     ApproveMapper approveMapper;
     
-    @Override
-    public Boolean createNewApprove(Approve approve) {
-        return null;
+    public Approve getApproveByApproverIdAndObject(Long approveId, Integer objectType, Long objectId) {
+        return approveMapper.selectTodoApproveByApproverIdAndObject(approveId, objectType, objectId);
     }
     
-    @Override
-    public Boolean approve(Approve approve) {
-        return null;
+    public List<Approve> selectByApproverId(Long approverId, Integer version){
+        return approveMapper.selectByApproverId(approverId, version);
     }
     
-    @Override
-    public List<Approve> getAllApproveByApproverId(Long approverId) {
-        return null;
-    }
-    
-    @Override
-    public Approve getApproveById(Long id) {
-        return null;
-    }
-    
-    public  Approve getOnProcessingApprove(Long approveId, Integer objectType, Long objectId) {
-        return approveMapper.selectOnProcessingApprove(approveId, objectType, objectId);
+    public boolean isExist(Approve approve) {
+        return selectOne(approve) != null;
     }
 }

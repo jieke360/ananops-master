@@ -15,7 +15,7 @@ public interface DeviceOrderMapper extends MyMapper<DeviceOrder> {
      * @param version 审核状态（0审核结束 1审核中 null所有）
      * @return
      */
-    List<DeviceOrder> selectByApproverIdAndVersion(@Param("approverId")Long approverId, @Param("version")Integer version);
+    List<DeviceOrder> selectByApproverIdAndVersion(@Param("approverId") Long approverId, @Param("version") Integer version);
     
     /**
      * 根据审核人编号和审核状态获取备品备件订单的数量
@@ -23,6 +23,8 @@ public interface DeviceOrderMapper extends MyMapper<DeviceOrder> {
      * @param version 审核状态（0审核结束 1审核中 null所有
      * @return
      */
-    int selectCountByApproverIdAndVersion(@Param("approverId")Long approverId, @Param("version")Integer version);
+    int selectCountByApproverIdAndVersion(@Param("approverId") Long approverId, @Param("version") Integer version);
     
+    
+    List<DeviceOrder> selectByObject(@Param("objectType")Integer objectType, @Param("objectId")Long objectId);
 }

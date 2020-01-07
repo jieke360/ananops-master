@@ -35,7 +35,7 @@
       FROM an_rdc_approve
       WHERE current_approver_id = #{approverId, jdbcType=BIGINT}
     <if test="version != null">
-      AND version = 0
+      AND version = #{version, jdbcType=INTEGER}
     </if>
     )
   </select>
@@ -47,10 +47,17 @@
       SELECT object_id
       FROM an_rdc_approve
       WHERE current_approver_id = #{approverId, jdbcType=BIGINT}
-      <if test="version != null">
-        AND version = 0
-      </if>
+    <if test="version != null">
+      AND version = #{version, jdbcType=INTEGER}
+    </if>
     )
+  </select>
+
+  <select id="selectByObject">
+    SELECT *
+    FROM an_rdc_order
+    WHERE object_type = #{objectType, jdbcType=INTEGER}
+    AND object_id = #{objectId, jdbcType=BIGINT}
   </select>
 
 
