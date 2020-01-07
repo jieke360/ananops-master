@@ -37,9 +37,4 @@ public interface SpcWorkOrderService {
      */
     WorkOrderDetailVo queryByWorkOrderId(WorkOrderQueryDto workOrderQueryDto);
 
-    List<EngineerDto> engineersDtoList(WorkOrderDto workOrderDto);
-
-    void distributeEngineer(WorkOrderDto workOrderDto, LoginAuthDto loginAuthDto, Long engineerId);
-
-    void transferWorkOrder(WorkOrderDto workOrderDto);
 }

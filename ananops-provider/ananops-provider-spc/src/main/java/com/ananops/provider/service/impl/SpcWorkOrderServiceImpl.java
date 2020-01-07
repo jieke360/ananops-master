@@ -10,12 +10,10 @@ import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
+import com.ananops.provider.model.vo.EngineerVo;
 import com.ananops.provider.model.vo.WorkOrderDetailVo;
 import com.ananops.provider.model.vo.WorkOrderVo;
-import com.ananops.provider.service.ImcTaskFeignApi;
-import com.ananops.provider.service.MdmcTaskFeignApi;
-import com.ananops.provider.service.PmcProjectFeignApi;
-import com.ananops.provider.service.SpcWorkOrderService;
+import com.ananops.provider.service.*;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -50,6 +48,9 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
     private ImcTaskFeignApi imcTaskFeignApi;
 
     @Resource
+    private ImcItemFeignApi imcItemFeignApi;
+
+    @Resource
     private MdmcTaskFeignApi mdmcTaskFeignApi;
 
     @Resource
@@ -57,6 +58,9 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
 
     @Resource
     private UacGroupFeignApi uacGroupFeignApi;
+
+    @Resource
+    private SpcEngineerService spcEngineerService;
 
     @Override
     public List<WorkOrderVo> queryAllWorkOrders(WorkOrderDto workOrderDto, LoginAuthDto loginAuthDto) {
@@ -200,6 +204,25 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
                 e.printStackTrace();
             }
         }
+        //填充相关工程师信息
+        log.info("工单项目ID：projectId=" + projectId);
+        List<Long> engineerIdList = new ArrayList<>();
+        List<EngineerVo> engineerVos = new ArrayList<>();
+        if(!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)){
+            //如果当前是巡检任务
+            engineerIdList.add(mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult().getMaintainerId());
+        }else if(!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)){
+            //如果当前是维修维护任务
+            List<ItemDto> itemDtoList = imcTaskFeignApi.getTaskByTaskId(taskId).getResult().getItemDtoList();
+            itemDtoList.forEach(itemDto -> {
+                engineerIdList.add(itemDto.getMaintainerId());
+            });
+        }
+        engineerIdList.forEach(engineerId->{//根据工单对应的全部工程师Id获取全部的工程师
+            EngineerVo engineerVo = spcEngineerService.queryByEngineerId(engineerId);
+            engineerVos.add(engineerVo);
+        });
+        workOrderDetailVo.setEngineerVos(engineerVos);
         workOrderDetailVo.setCompanyVo(companyVo);
         return workOrderDetailVo;
     }
