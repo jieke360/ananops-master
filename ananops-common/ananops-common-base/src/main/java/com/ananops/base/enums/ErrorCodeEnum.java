@@ -636,50 +636,61 @@ public enum ErrorCodeEnum {
 	PMC10081000(10081000, "删除失败, Id=%s"),
 
 	/**
-	 * Pdc 10081001 error code enum.
+	 * Pmc 10081001 error code enum.
 	 */
 	PMC10081001(10081001, "更新项目信息失败, projectId=%s"),
 	/**
-	 * Pdc 10021002 error code enum.
+	 * Pmc 10021002 error code enum.
 	 */
 	PMC10081002(10081002, "删除项目失败, projectId=%s"),
 
 	/**
-	 * Pdc 10021003 error code enum.
+	 * Pmc 10021003 error code enum.
 	 */
 	PMC10081003(10081003, "该项目无合同信息, contactId=%s"),
 
 	/**
-	 * Pdc 10021011 error code enum.
+	 * Pmc 10021011 error code enum.
 	 */
 	PMC10081011(10081011, "更新合同信息失败, contactId=%s"),
 
 	/**
-	 * Pdc 10021012 error code enum.
+	 * Pmc 10021012 error code enum.
 	 */
 	PMC10081012(10081012, "删除合同失败, contactId=%s"),
 
 	/**
-	 * Pdc 10021021 error code enum.
+	 * Pmc 10021021 error code enum.
 	 */
 	PMC10081021(10081021, "更新巡检任务失败失败, taskId=%s"),
 
 	/**
-	 * Pdc 10021022 error code enum.
+	 * Pmc 10021022 error code enum.
 	 */
 	PMC10081022(10081022, "删除巡检任务失败失败, taskId=%s"),
 
 	/**
-	 * Pdc 10021023 error code enum.
+	 * Pmc 10021023 error code enum.
 	 */
 	PMC10081023(10081023, "该巡检任务无项目信息, projectId=%s"),
 
 	/**
-	 * Pdc 10021024 error code enum.
+	 * Pmc 10021024 error code enum.
 	 */
 	PMC10081024(10081024, "该巡检巡检详情无巡检任务信息, InspectTaskId=%s"),
 
+	/**
+	 * Pmc 10021025 error code enum.
+	 */
 	PMC10081025(10081025, "更新失败, InspectDetailId=%s"),
+
+	//报警管理 1009
+	/**
+	 * Amc 10091011 error code enum.
+	 */
+	AMC10091011(10091011, "更新报警信息失败, alarmId=%s"),
+
+
 
 	/**
 	 * 服务商管理
