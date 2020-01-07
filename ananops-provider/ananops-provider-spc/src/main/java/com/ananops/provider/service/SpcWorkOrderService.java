@@ -1,10 +1,8 @@
 package com.ananops.provider.service;
 
 import com.ananops.base.dto.LoginAuthDto;
-import com.ananops.provider.model.dto.EngineerDto;
-import com.ananops.provider.model.dto.WorkOrderDto;
 import com.ananops.provider.model.dto.WorkOrderQueryDto;
-import com.ananops.provider.model.vo.EngineerVo;
+import com.ananops.provider.model.dto.WorkOrderStatusQueryDto;
 import com.ananops.provider.model.vo.WorkOrderDetailVo;
 import com.ananops.provider.model.vo.WorkOrderVo;
 
@@ -20,21 +18,20 @@ public interface SpcWorkOrderService {
     /**
      * 查询服务商下工单列表信息
      *
-     * @param workOrderDto 查询参数
+     * @param workOrderStatusQueryDto 查询参数
      *
      * @param loginAuthDto 登录者信息
      *
      * @return 返回工单信息列表
      */
-    List<WorkOrderVo> queryAllWorkOrders(WorkOrderDto workOrderDto, LoginAuthDto loginAuthDto);
+    List<WorkOrderVo> queryAllWorkOrders(WorkOrderStatusQueryDto workOrderStatusQueryDto, LoginAuthDto loginAuthDto);
 
     /**
      * 根据工单Id查询工单详情
      *
-     * @param workOrderQueryDto
+     * @param workorderId
      *
      * @return
      */
     WorkOrderDetailVo queryByWorkOrderId(WorkOrderQueryDto workOrderQueryDto);
-
 }
