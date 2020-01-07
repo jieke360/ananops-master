@@ -18,7 +18,7 @@ public interface DeviceOrderService extends IService<DeviceOrder> {
      * @param createNewOrderDto
      * @return
      */
-    DeviceOrder createNewOrder(LoginAuthDto loginAuthDto, CreateNewOrderDto createNewOrderDto);
+    ProcessOrderResultVo createNewOrder(LoginAuthDto loginAuthDto, CreateNewOrderDto createNewOrderDto);
     
     /**
      * 处理订单，包括处理意见， 报价
@@ -37,7 +37,7 @@ public interface DeviceOrderService extends IService<DeviceOrder> {
     
     int getOrderCountByApproverIdAndVersion(Long approverId, Integer version);
     
-    List<DeviceOrder> getOrderByObjectIdAndObjectType(Long objectId,Integer objectType);
+    List<DeviceOrder> getOrderByObjectIdAndObjectType(Long objectId, Integer objectType);
     
     
     

@@ -14,7 +14,12 @@ import java.util.Date;
 public class Device extends BaseEntity {
     
     private static final long serialVersionUID = -5711468008814085690L;
-
+    
+    /**
+     * 设备名称
+     */
+    private String name;
+    
     /**
      * 设备单价
      */
@@ -26,7 +31,7 @@ public class Device extends BaseEntity {
     private String type;
 
     /**
-     * 设别生产商
+     * 设备生产商
      */
     private String manufacture;
 

@@ -1,11 +1,13 @@
 package com.ananops.provider.model.dto;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ananops.provider.model.domain.Device;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @ApiModel
@@ -31,5 +33,5 @@ public class CreateNewOrderDto implements Serializable {
     private String currentApprover;
     
     @ApiModelProperty("备品备件订单设备详情")
-    private String items;
+    private List<DeviceOrderItemInfoDto> items;
 }
