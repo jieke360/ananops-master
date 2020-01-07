@@ -7,12 +7,10 @@ import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.domain.SpcCompanyEngineer;
 import com.ananops.provider.model.domain.SpcEngineer;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.vo.EngineerVo;
 import com.ananops.provider.model.vo.WorkOrderDetailVo;
 import com.ananops.provider.model.vo.WorkOrderVo;
-import com.ananops.provider.service.ImcTaskFeignApi;
-import com.ananops.provider.service.MdmcTaskFeignApi;
-import com.ananops.provider.service.PmcProjectFeignApi;
-import com.ananops.provider.service.SpcWorkOrderService;
+import com.ananops.provider.service.*;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -44,10 +42,16 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
     private ImcTaskFeignApi imcTaskFeignApi;
 
     @Resource
+    private ImcItemFeignApi imcItemFeignApi;
+
+    @Resource
     private MdmcTaskFeignApi mdmcTaskFeignApi;
 
     @Resource
     private PmcProjectFeignApi pmcProjectFeignApi;
+
+    @Resource
+    private SpcEngineerService spcEngineerService;
 
     @Override
     public List<WorkOrderVo> queryAllWorkOrders(WorkOrderDto workOrderDto, LoginAuthDto loginAuthDto) {
@@ -169,5 +173,102 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         PmcProjectDto pmcProjectDto = pmcProjectFeignApi.getProjectByProjectId(projectId).getResult();
         workOrderDetailVo.setPmcProjectDto(pmcProjectDto);
         return workOrderDetailVo;
+    }
+
+    @Override
+    public List<EngineerDto> engineersDtoList(WorkOrderDto workOrderDto) {
+        WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
+        Long taskId = workOrderDto.getId();
+        Long projectId = null;
+        String workOrderType = workOrderDto.getType();
+        //  通过工单ID查询对应项目ID
+        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
+            log.info("查询巡检工单：taskId=" + taskId);
+            TaskDto taskDto = imcTaskFeignApi.getTaskByTaskId(taskId).getResult();
+            workOrderDetailVo.setType("inspection");
+            workOrderDetailVo.setInspectionTask(taskDto);
+            projectId = taskDto.getProjectId();
+        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
+            log.info("查询维修维护工单：taskId=" + taskId);
+            MdmcTask mdmcTaskDto = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult();
+            workOrderDetailVo.setType("maintain");
+            workOrderDetailVo.setMaintainTask(mdmcTaskDto);
+            projectId = mdmcTaskDto.getProjectId();
+        }
+        // 通过项目ID查询对应项目下的工程师信息
+        log.info("工单项目ID：projectId=" + projectId);
+        List<EngineerDto> result = new ArrayList<>();
+        result = spcEngineerService.getEngineersByProjectId(projectId);
+        return result;
+    }
+
+    @Transactional
+    @Override
+    public void distributeEngineer(WorkOrderDto workOrderDto,LoginAuthDto loginAuthDto, Long engineerId){
+        WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
+        Long taskId = workOrderDto.getId();
+
+        String workOrderType = workOrderDto.getType();
+        // 修改工单信息
+        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
+            log.info("查询巡检工单：taskId=" + taskId);
+
+            // 分配工单信息中的工程师信息
+            ItemChangeMaintainerDto itemChangeMaintainerDto= new ItemChangeMaintainerDto();
+            itemChangeMaintainerDto.setItemId(taskId);
+            itemChangeMaintainerDto.setMaintainerId(engineerId);
+            imcItemFeignApi.modifyMaintainerByItemId(itemChangeMaintainerDto);
+
+            //修改工单信息中的状态
+            TaskChangeStatusDto taskChangeStatusDto= new TaskChangeStatusDto();
+            taskChangeStatusDto.setTaskId(taskId);
+            taskChangeStatusDto.setStatus(2);//
+            taskChangeStatusDto.setStatusMsg("巡检任务执行中");
+            taskChangeStatusDto.setLoginAuthDto(loginAuthDto);
+            imcTaskFeignApi.modifyTaskStatusByTaskId(taskChangeStatusDto);
+
+        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
+            log.info("查询维修维护工单：taskId=" + taskId);
+
+            //等待汉森学长，mdmc的更新工单状态和工程师的接口
+            MdmcTask mdmcTaskDto = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult();
+            workOrderDetailVo.setType("maintain");
+            workOrderDetailVo.setMaintainTask(mdmcTaskDto);
+
+        }
+    }
+
+    @Override
+    public void transferWorkOrder(WorkOrderDto workOrderDto) {
+        WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
+        Long taskId = workOrderDto.getId();
+        String workOrderType = workOrderDto.getType();
+
+        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
+            log.info("查询巡检工单：taskId=" + taskId);
+
+            //工程师拒绝接单，将工单信息中工程师置空
+            ItemChangeMaintainerDto itemChangeMaintainerDto= new ItemChangeMaintainerDto();
+            itemChangeMaintainerDto.setItemId(taskId);
+            itemChangeMaintainerDto.setMaintainerId(null);
+            imcItemFeignApi.modifyMaintainerByItemId(itemChangeMaintainerDto);
+
+            //修改工单信息中的状态
+            TaskChangeStatusDto taskChangeStatusDto= new TaskChangeStatusDto();
+            taskChangeStatusDto.setTaskId(taskId);
+            taskChangeStatusDto.setStatus(1);//
+            taskChangeStatusDto.setStatusMsg("巡检任务执行中");
+            //taskChangeStatusDto.setLoginAuthDto(loginAuthDto);
+            imcTaskFeignApi.modifyTaskStatusByTaskId(taskChangeStatusDto);
+
+        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
+            log.info("查询维修维护工单：taskId=" + taskId);
+
+            //等待汉森学长，mdmc的更新工单状态和工程师的接口
+            MdmcTask mdmcTaskDto = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult();
+            workOrderDetailVo.setType("maintain");
+            workOrderDetailVo.setMaintainTask(mdmcTaskDto);
+
+        }
     }
 }
