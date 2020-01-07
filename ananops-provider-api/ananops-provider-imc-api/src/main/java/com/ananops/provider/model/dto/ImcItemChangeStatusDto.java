@@ -1,5 +1,6 @@
 package com.ananops.provider.model.dto;
 
+import com.ananops.base.dto.LoginAuthDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,4 +32,10 @@ public class ImcItemChangeStatusDto implements Serializable {
      */
     @ApiModelProperty(value = "巡检任务子项修改后的状态描述")
     private String statusMsg;
+
+    /**
+     * 当前操作用户的身份信息
+     */
+    @ApiModelProperty(value = "当前操作用户的LoginAuthDto")
+    private LoginAuthDto loginAuthDto;
 }

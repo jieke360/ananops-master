@@ -2,15 +2,20 @@ package com.ananops.provider.service.impl;
 
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.provider.mapper.SpcCompanyEngineerMapper;
+import com.ananops.provider.mapper.SpcCompanyMapper;
 import com.ananops.provider.mapper.SpcEngineerMapper;
 import com.ananops.provider.model.domain.MdmcTask;
-import com.ananops.provider.model.domain.SpcCompanyEngineer;
-import com.ananops.provider.model.domain.SpcEngineer;
+import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.*;
-import com.ananops.provider.model.vo.EngineerVo;
+import com.ananops.provider.model.dto.group.GroupSaveDto;
+import com.ananops.provider.model.service.UacGroupFeignApi;
+import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.model.vo.WorkOrderDetailVo;
 import com.ananops.provider.model.vo.WorkOrderVo;
-import com.ananops.provider.service.*;
+import com.ananops.provider.service.ImcTaskFeignApi;
+import com.ananops.provider.service.MdmcTaskFeignApi;
+import com.ananops.provider.service.PmcProjectFeignApi;
+import com.ananops.provider.service.SpcWorkOrderService;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -36,13 +41,13 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
     private SpcEngineerMapper spcEngineerMapper;
 
     @Resource
+    private SpcCompanyMapper spcCompanyMapper;
+
+    @Resource
     private SpcCompanyEngineerMapper spcCompanyEngineerMapper;
 
     @Resource
     private ImcTaskFeignApi imcTaskFeignApi;
-
-    @Resource
-    private ImcItemFeignApi imcItemFeignApi;
 
     @Resource
     private MdmcTaskFeignApi mdmcTaskFeignApi;
@@ -51,7 +56,7 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
     private PmcProjectFeignApi pmcProjectFeignApi;
 
     @Resource
-    private SpcEngineerService spcEngineerService;
+    private UacGroupFeignApi uacGroupFeignApi;
 
     @Override
     public List<WorkOrderVo> queryAllWorkOrders(WorkOrderDto workOrderDto, LoginAuthDto loginAuthDto) {
@@ -153,6 +158,7 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
         Long taskId = workOrderQueryDto.getId();
         Long projectId = null;
+        Long groupId = null;
         String workOrderType = workOrderQueryDto.getType();
         // 填充工单信息
         if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
@@ -161,114 +167,35 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
             workOrderDetailVo.setType("inspection");
             workOrderDetailVo.setInspectionTask(taskDto);
             projectId = taskDto.getProjectId();
+            groupId = taskDto.getFacilitatorId();
         } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
             log.info("查询维修维护工单：taskId=" + taskId);
             MdmcTask mdmcTaskDto = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult();
             workOrderDetailVo.setType("maintain");
             workOrderDetailVo.setMaintainTask(mdmcTaskDto);
             projectId = mdmcTaskDto.getProjectId();
+            groupId = mdmcTaskDto.getFacilitatorId();
         }
         // 填充项目信息
         log.info("工单项目ID：projectId=" + projectId);
         PmcProjectDto pmcProjectDto = pmcProjectFeignApi.getProjectByProjectId(projectId).getResult();
         workOrderDetailVo.setPmcProjectDto(pmcProjectDto);
+        // 填充服务商信息
+        CompanyVo companyVo = new CompanyVo();
+        SpcCompany queryC = new SpcCompany();
+        queryC.setGroupId(groupId);
+        SpcCompany spcCompany = spcCompanyMapper.selectOne(queryC);
+        if (!StringUtils.isEmpty(groupId)) {
+            GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(groupId).getResult();
+            try {
+                BeanUtils.copyProperties(companyVo, spcCompany);
+                BeanUtils.copyProperties(companyVo, groupSaveDto);
+            } catch (Exception e) {
+                log.error("queryByCompanyId 服务商Dto与用户组Dto属性拷贝异常");
+                e.printStackTrace();
+            }
+        }
+        workOrderDetailVo.setCompanyVo(companyVo);
         return workOrderDetailVo;
-    }
-
-    @Override
-    public List<EngineerDto> engineersDtoList(WorkOrderDto workOrderDto) {
-        WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
-        Long taskId = workOrderDto.getId();
-        Long projectId = null;
-        String workOrderType = workOrderDto.getType();
-        //  通过工单ID查询对应项目ID
-        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
-            log.info("查询巡检工单：taskId=" + taskId);
-            TaskDto taskDto = imcTaskFeignApi.getTaskByTaskId(taskId).getResult();
-            workOrderDetailVo.setType("inspection");
-            workOrderDetailVo.setInspectionTask(taskDto);
-            projectId = taskDto.getProjectId();
-        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
-            log.info("查询维修维护工单：taskId=" + taskId);
-            MdmcTask mdmcTaskDto = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult();
-            workOrderDetailVo.setType("maintain");
-            workOrderDetailVo.setMaintainTask(mdmcTaskDto);
-            projectId = mdmcTaskDto.getProjectId();
-        }
-        // 通过项目ID查询对应项目下的工程师信息
-        log.info("工单项目ID：projectId=" + projectId);
-        List<EngineerDto> result = new ArrayList<>();
-        result = spcEngineerService.getEngineersByProjectId(projectId);
-        return result;
-    }
-
-    @Transactional
-    @Override
-    public void distributeEngineer(WorkOrderDto workOrderDto,LoginAuthDto loginAuthDto, Long engineerId){
-        WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
-        Long taskId = workOrderDto.getId();
-
-        String workOrderType = workOrderDto.getType();
-        // 修改工单信息
-        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
-            log.info("查询巡检工单：taskId=" + taskId);
-
-            // 分配工单信息中的工程师信息
-            ItemChangeMaintainerDto itemChangeMaintainerDto= new ItemChangeMaintainerDto();
-            itemChangeMaintainerDto.setItemId(taskId);
-            itemChangeMaintainerDto.setMaintainerId(engineerId);
-            imcItemFeignApi.modifyMaintainerByItemId(itemChangeMaintainerDto);
-
-            //修改工单信息中的状态
-            TaskChangeStatusDto taskChangeStatusDto= new TaskChangeStatusDto();
-            taskChangeStatusDto.setTaskId(taskId);
-            taskChangeStatusDto.setStatus(2);//
-            taskChangeStatusDto.setStatusMsg("巡检任务执行中");
-            taskChangeStatusDto.setLoginAuthDto(loginAuthDto);
-            imcTaskFeignApi.modifyTaskStatusByTaskId(taskChangeStatusDto);
-
-        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
-            log.info("查询维修维护工单：taskId=" + taskId);
-
-            //等待汉森学长，mdmc的更新工单状态和工程师的接口
-            MdmcTask mdmcTaskDto = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult();
-            workOrderDetailVo.setType("maintain");
-            workOrderDetailVo.setMaintainTask(mdmcTaskDto);
-
-        }
-    }
-
-    @Override
-    public void transferWorkOrder(WorkOrderDto workOrderDto) {
-        WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
-        Long taskId = workOrderDto.getId();
-        String workOrderType = workOrderDto.getType();
-
-        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
-            log.info("查询巡检工单：taskId=" + taskId);
-
-            //工程师拒绝接单，将工单信息中工程师置空
-            ItemChangeMaintainerDto itemChangeMaintainerDto= new ItemChangeMaintainerDto();
-            itemChangeMaintainerDto.setItemId(taskId);
-            itemChangeMaintainerDto.setMaintainerId(null);
-            imcItemFeignApi.modifyMaintainerByItemId(itemChangeMaintainerDto);
-
-            //修改工单信息中的状态
-            TaskChangeStatusDto taskChangeStatusDto= new TaskChangeStatusDto();
-            taskChangeStatusDto.setTaskId(taskId);
-            taskChangeStatusDto.setStatus(1);//
-            taskChangeStatusDto.setStatusMsg("巡检任务执行中");
-            //taskChangeStatusDto.setLoginAuthDto(loginAuthDto);
-            imcTaskFeignApi.modifyTaskStatusByTaskId(taskChangeStatusDto);
-
-        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
-            log.info("查询维修维护工单：taskId=" + taskId);
-
-            //等待汉森学长，mdmc的更新工单状态和工程师的接口
-            MdmcTask mdmcTaskDto = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult();
-            workOrderDetailVo.setType("maintain");
-            workOrderDetailVo.setMaintainTask(mdmcTaskDto);
-
-        }
     }
 }

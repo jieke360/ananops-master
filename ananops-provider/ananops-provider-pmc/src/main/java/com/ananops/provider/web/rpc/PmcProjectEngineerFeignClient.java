@@ -9,6 +9,7 @@ import com.ananops.provider.service.PmcProjectService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
@@ -29,6 +30,7 @@ public class PmcProjectEngineerFeignClient extends BaseController implements Pmc
     private PmcProjectService pmcProjectService;
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "批量插入项目工程师关系")
     public Wrapper saveProUserList(PmcBatchProUser pmcBatchProUser) {
         int result = 0;
         List<PmcProjectUserDto> pmcProjectUserDtoList = pmcBatchProUser.getPmcProjectUserDtoList();
@@ -42,6 +44,7 @@ public class PmcProjectEngineerFeignClient extends BaseController implements Pmc
     }
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "根据项目id获取工程师id列表")
     public Wrapper<List<Long>> getEngineersIdByProjectId(Long projectId) {
         List<Long> engineersId = pmcProjectService.getEngineersIdByProjectId(projectId);
         return WrapMapper.ok(engineersId);

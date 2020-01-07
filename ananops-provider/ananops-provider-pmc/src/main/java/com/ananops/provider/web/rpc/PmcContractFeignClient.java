@@ -5,17 +5,16 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.PmcContract;
 import com.ananops.provider.model.dto.PmcContractDto;
 import com.ananops.provider.model.dto.PmcPayDto;
-import com.ananops.provider.model.dto.PmcProjectDto;
 import com.ananops.provider.service.PmcContractFeignApi;
 import com.ananops.provider.service.PmcContractService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ public class PmcContractFeignClient extends BaseController implements PmcContrac
     PmcContractService pmcContractService;
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "获取甲乙双方合同的支付方式和支付金额")
     public Wrapper<List<PmcPayDto>> getContactByAB(Long partyAId, Long partyBId) {
         List<PmcContract> pmcContractList = pmcContractService.getContactByAB(partyAId,partyBId);
         List<PmcPayDto> pmcPayDtoList = new ArrayList<>();
@@ -48,6 +48,7 @@ public class PmcContractFeignClient extends BaseController implements PmcContrac
     }
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = " 根据合同id查询合同")
     public Wrapper<PmcContractDto> getContractById(Long contractId) {
         PmcContract pmcContract = pmcContractService.getContractById(contractId);
         PmcContractDto pmcContractDto = new PmcContractDto();

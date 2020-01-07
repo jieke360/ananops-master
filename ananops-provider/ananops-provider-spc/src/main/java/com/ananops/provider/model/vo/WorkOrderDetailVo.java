@@ -35,4 +35,9 @@ public class WorkOrderDetailVo extends BaseVo {
      * 工单关联的项目详情
      */
     private PmcProjectDto pmcProjectDto;
+
+    /**
+     * 工单相关服务商信息
+     */
+    private CompanyVo companyVo;
 }

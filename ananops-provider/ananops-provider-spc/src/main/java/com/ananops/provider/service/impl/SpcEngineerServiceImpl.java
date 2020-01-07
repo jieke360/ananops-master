@@ -18,6 +18,7 @@ import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
+import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.EngineerVo;
 import com.ananops.provider.service.PmcProjectEngineerFeignApi;
@@ -63,6 +64,10 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
 
     @Resource
     private UacUserFeignApi uacUserFeignApi;
+
+    @Resource
+    private UacGroupFeignApi uacGroupFeignApi;
+
 
     @Override
     public List<EngineerDto> getEngineersByProjectId(Long projectId) {
@@ -127,11 +132,19 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         if (PublicUtil.isEmpty(spcCompany)) {
             return result;
         }
-        SpcCompanyEngineer spcCompanyEngineer = new SpcCompanyEngineer();
-        spcCompanyEngineer.setCompanyId(spcCompany.getId());
-        List<SpcCompanyEngineer> spcCompanyEngineers = spcCompanyEngineerMapper.select(spcCompanyEngineer);
-        for (SpcCompanyEngineer spcCE : spcCompanyEngineers) {
-            Long engineerId = spcCE.getEngineerId();
+        List<Long> engineerIdList = uacGroupFeignApi.getUacUserIdListByGroupId(spcCompany.getGroupId()).getResult();
+//        SpcCompanyEngineer spcCompanyEngineer = new SpcCompanyEngineer();
+//        spcCompanyEngineer.setCompanyId(spcCompany.getId());
+//        List<SpcCompanyEngineer> spcCompanyEngineers = spcCompanyEngineerMapper.select(spcCompanyEngineer);
+//        for (SpcCompanyEngineer spcCE : spcCompanyEngineers) {
+//            Long engineerId = spcCE.getEngineerId();
+//            SpcEngineer queryResult = spcEngineerMapper.selectByPrimaryKey(engineerId);
+//            String position = spcEngineer.getPosition();
+//            if (!StringUtils.isEmpty(position) && !position.equals(queryResult.getPosition()))
+//                continue;
+//            result.add(getEngineerDto(engineerId));
+//        }
+        for(Long engineerId : engineerIdList) {
             SpcEngineer queryResult = spcEngineerMapper.selectByPrimaryKey(engineerId);
             String position = spcEngineer.getPosition();
             if (!StringUtils.isEmpty(position) && !position.equals(queryResult.getPosition()))
@@ -151,12 +164,19 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         if (PublicUtil.isEmpty(spcCompany)) {
             return result;
         }
-        SpcCompanyEngineer spcCompanyEngineer = new SpcCompanyEngineer();
-        spcCompanyEngineer.setCompanyId(spcCompany.getId());
-        List<SpcCompanyEngineer> spcCompanyEngineers = spcCompanyEngineerMapper.select(spcCompanyEngineer);
-        for (SpcCompanyEngineer spcCE : spcCompanyEngineers) {
-            EngineerDto engineerDto = getEngineerDto(spcCE.getEngineerId());
-            if (!Integer.valueOf(engineerDto.getStatus()).equals(engineerStatus))
+        List<Long> engineerIdList = uacGroupFeignApi.getUacUserIdListByGroupId(spcCompany.getGroupId()).getResult();
+//        SpcCompanyEngineer spcCompanyEngineer = new SpcCompanyEngineer();
+//        spcCompanyEngineer.setCompanyId(spcCompany.getId());
+//        List<SpcCompanyEngineer> spcCompanyEngineers = spcCompanyEngineerMapper.select(spcCompanyEngineer);
+//        for (SpcCompanyEngineer spcCE : spcCompanyEngineers) {
+//            EngineerDto engineerDto = getEngineerDto(spcCE.getEngineerId());
+//            if (!Integer.valueOf(engineerDto.getStatus()).equals(engineerStatus))
+//                continue;
+//            result.add(engineerDto);
+//        }
+        for(Long engineerId : engineerIdList){
+            EngineerDto engineerDto = getEngineerDto(engineerId);
+            if(!Integer.valueOf(engineerDto.getStatus()).equals(engineerStatus))
                 continue;
             result.add(engineerDto);
         }
@@ -186,10 +206,10 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         spcEngineer.setId(engineerId);
         spcEngineer.setUserId(newUserId);
         spcEngineerMapper.insertSelective(spcEngineer);
-        SpcCompanyEngineer spcCompanyEngineer = new SpcCompanyEngineer();
-        spcCompanyEngineer.setCompanyId(companyId);
-        spcCompanyEngineer.setEngineerId(engineerId);
-        spcCompanyEngineerMapper.insert(spcCompanyEngineer);
+//        SpcCompanyEngineer spcCompanyEngineer = new SpcCompanyEngineer();
+//        spcCompanyEngineer.setCompanyId(companyId);
+//        spcCompanyEngineer.setEngineerId(engineerId);
+//        spcCompanyEngineerMapper.insert(spcCompanyEngineer);
     }
 
     private void validateRegisterInfo(EngineerRegisterDto engineerRegisterDto) {

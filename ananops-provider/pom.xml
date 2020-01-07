@@ -26,6 +26,7 @@
         <module>ananops-provider-activiti</module>
         <module>ananops-provider-bill</module>
         <module>ananops-provider-payment</module>
+        <module>ananops-provider-amc</module>
     </modules>
 
     <properties>
