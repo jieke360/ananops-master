@@ -44,4 +44,11 @@ public class MdmcTaskFeignHystrix implements MdmcTaskFeignApi {
     public Wrapper<MdmcPageDto> getTaskList(MdmcQueryDto queryDto) {
         return null;
     }
+
+    @Override
+    public Wrapper saveTask(MdmcFeignTaskDto mdmcFeignTaskDto) {
+        return null;
+    }
+
+
 }

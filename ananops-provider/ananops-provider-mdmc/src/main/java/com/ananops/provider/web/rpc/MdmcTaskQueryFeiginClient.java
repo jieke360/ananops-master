@@ -1,5 +1,6 @@
 package com.ananops.provider.web.rpc;
 
+import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.dto.*;
@@ -62,4 +63,16 @@ public class MdmcTaskQueryFeiginClient extends BaseController implements MdmcTas
         MdmcPageDto pageDto=taskService.getTaskListByPage(queryDto);
         return WrapMapper.ok(pageDto);
     }
+
+    @Override
+    public Wrapper saveTask(@RequestBody MdmcFeignTaskDto mdmcFeignTaskDto) {
+        LoginAuthDto loginAuthDto = mdmcFeignTaskDto.getLoginAuthDto();
+        MdmcAddTaskDto mdmcAddTaskDto = mdmcFeignTaskDto.getMdmcAddTaskDto();
+        taskService.saveTask(mdmcAddTaskDto,loginAuthDto);
+        return WrapMapper.ok();
+    }
+
+
+
+
 }

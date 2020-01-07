@@ -63,18 +63,6 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
     }
 
     @Override
-    public PageInfo getAlarmListByProjectId(AlarmQuery alarmQuery) {
-        PageHelper.startPage(alarmQuery.getPageNum(), alarmQuery.getPageSize());
-        Example example = new Example(AmcAlarm.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("projectId", alarmQuery.getId());
-        List<AmcAlarm> amcAlarmList = amcAlarmMapper.selectByExample(example);
-        return new PageInfo<>(amcAlarmList);
-    }
-
-
-
-    @Override
     public PageInfo getAlarmListByAlarmLevel(AlarmQuery alarmQuery) {
         PageHelper.startPage(alarmQuery.getPageNum(), alarmQuery.getPageSize());
         Example example = new Example(AmcAlarm.class);
@@ -128,6 +116,19 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
         return amcAlarmMapper.selectCountByExample(example);
     }
 
+    @Override
+    public int deleteAlarmByAlarmId(Long alarmId) {
+        return amcAlarmMapper.deleteByPrimaryKey(alarmId);
+    }
 
+    @Override
+    public int deleteAlarmsByAlarmStatus(int alarmStatus) {
+        Example example = new Example(AmcAlarm.class);
+        Example.Criteria criteria = example.createCriteria();
+        LoginAuthDto loginAuthDto = RequestUtil.getLoginUser();
+        criteria.andEqualTo("groupId", loginAuthDto.getGroupId());
+        criteria.andEqualTo("alarmStatus", alarmStatus);
+        return amcAlarmMapper.deleteByExample(example);
+    }
 
 }

@@ -36,4 +36,7 @@ public interface MdmcTaskFeignApi {
     
     @PostMapping(value = "api/mdmcTask/getTaskList")
     Wrapper<MdmcPageDto> getTaskList(@RequestBody MdmcQueryDto queryDto);
+
+    @PostMapping(value = "api/mdmcTask/saveTask")
+    Wrapper saveTask(@RequestBody MdmcFeignTaskDto mdmcFeignTaskDto);
 }
