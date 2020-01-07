@@ -233,4 +233,13 @@ public class UacUserCommonController extends BaseController {
 		List<MenuVo> tree = uacRoleService.getOwnAuthTree(getLoginAuthDto().getUserId());
 		return WrapMapper.ok(tree);
 	}
+
+	@GetMapping(value = "/getApprovalUserList")
+	@ApiOperation(httpMethod = "GET", value = "获取用户负责人列表")
+	public Wrapper<List<UserVo>> getApprovalUserList(@RequestParam("groupId") Long groupId, @RequestParam("userId") Long userId) {
+		logger.info("根据groupId和userId获取用户负责人列表");
+//		LoginAuthDto loginAuthDto = getLoginAuthDto();
+		List<UserVo> userVoList = uacUserService.getApprovalUserListById(groupId, userId);
+		return WrapMapper.ok(userVoList);
+	}
 }

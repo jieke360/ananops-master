@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 public class PageDto implements Serializable {
     @ApiModelProperty(value = "当前用户id")
-    private String userid;
+    private Long userid;
 
     @ApiModelProperty(value = "起始页面")
     private int pageNum;

@@ -8,6 +8,7 @@
 
 package com.ananops.provider.service;
 
+import com.ananops.provider.model.vo.UserVo;
 import com.github.pagehelper.PageInfo;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
@@ -317,4 +318,12 @@ public interface UacUserService extends IService<UacUser> {
 	 * @param userInfoDto 注册的用户信息
      */
 	void addUser(UserInfoDto userInfoDto);
+
+	/**
+	 * 根据用户值机员id获取用户负责人列表
+	 *
+	 * @param groupId,userId
+	 * @return userVo
+	 */
+	List<UserVo> getApprovalUserListById(Long groupId, Long userId);
 }

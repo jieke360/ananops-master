@@ -15,13 +15,16 @@ public class TaskedDto implements Serializable {
     private String taskId;
 
     @ApiModelProperty(value = "发起用户")
-    private String startUser;
+    private Long startUser;
 
     @ApiModelProperty(value = "流程名称")
     private String processName;
 
     @ApiModelProperty(value = "流程实例id")
-    private String processsInstanceId;
+    private String processInstanceId;
+
+    @ApiModelProperty(value = "流程定义id")
+    private String processDefinitionId;
 
     @ApiModelProperty(value = "任务名称")
     private String taskName;
@@ -36,5 +39,5 @@ public class TaskedDto implements Serializable {
     private String state;
 
     @ApiModelProperty(value = "工单id")
-    private Long orderID;
+    private Long orderId;
 }
