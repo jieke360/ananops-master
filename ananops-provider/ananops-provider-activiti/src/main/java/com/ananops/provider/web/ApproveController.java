@@ -48,14 +48,15 @@ public class  ApproveController {
     public Wrapper<String> submit(@ApiParam(name = "submit",value="提交审批") @RequestBody ApproSubmitDto approSubmitDto) {
         String Uid=String.valueOf(approSubmitDto.getUserid());
         String processDefinitionId=approSubmitDto.getProcessDefinitionId();
-        String orderid=approSubmitDto.getOrderId();
+        Long orderid=approSubmitDto.getOrderId();
         String body=approSubmitDto.getComment();
         String nextUid=String.valueOf(approSubmitDto.getNUserid());
         String taskId=activitiServiceImpl.start(Uid,processDefinitionId);
+        String processInstanceId=activitiServiceImpl.getTask(taskId).getProcessInstanceId();
         activitiServiceImpl.setVariable(taskId, variableName, orderid);
         activitiServiceImpl.comment(taskId, body);
         approveServiceImpl.complete(taskId, nextUid);
-        return WrapMapper.ok("success");
+        return WrapMapper.ok(processInstanceId);
     }
 
     @PostMapping(value = "/agree")
@@ -104,66 +105,73 @@ public class  ApproveController {
     @PostMapping(value = "/untask")
     @ApiOperation(httpMethod = "POST",value = "获取未完成审批列表")
     public Wrapper<PageInfo<UntaskDto>> getUndoTask(@ApiParam(name = "untask",value = "获取未完成审批列表") @RequestBody PageDto pageDto) {
-        List<Task> list = activitiServiceImpl.searchByAssi(String.valueOf(pageDto.getUserid()));
-        List<UntaskDto> res=new ArrayList<>();
-        PageHelper.startPage(pageDto.getPageNum(),pageDto.getPageSize());
-        if (list != null && list.size() != 0) {
-            for (Task task : list) {
-                if (activitiServiceImpl.getVariable(task.getId(), variableName) != null) {
-                    Object startUid=activitiServiceImpl.getVariable(task.getId(),startUser);
-                    Object orderid = activitiServiceImpl.getVariable(task.getId(), variableName);
-                    ProcessInstance processInstance = activitiServiceImpl.getProIns(task.getProcessInstanceId());
-                    UntaskDto untaskDto = new UntaskDto();
-                    untaskDto.setTaskId(task.getId());
-                    untaskDto.setStartUser(startUid.toString());
-                    untaskDto.setProcessName(processInstance.getProcessDefinitionKey());
-                    untaskDto.setProcesssInstanceId(processInstance.getId());
-                    untaskDto.setTaskName(task.getName());
-                    untaskDto.setCreateTime(task.getCreateTime());
-                    untaskDto.setOrderID(Long.valueOf(orderid.toString()));
-                    res.add(untaskDto);
+        try {
+            List<Task> list = activitiServiceImpl.searchByAssi(String.valueOf(pageDto.getUserid()));
+            List<UntaskDto> res = new ArrayList<>();
+            PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
+            if (list != null && list.size() != 0) {
+                for (Task task : list) {
+                    if (!activitiServiceImpl.getVariable(task.getId(), variableName).equals(null)) {
+                        Object startUid = activitiServiceImpl.getVariable(task.getId(), startUser);
+                        Object orderid = activitiServiceImpl.getVariable(task.getId(), variableName);
+                        ProcessInstance processInstance = activitiServiceImpl.getProIns(task.getProcessInstanceId());
+                        UntaskDto untaskDto = new UntaskDto();
+                        untaskDto.setTaskId(task.getId());
+                        untaskDto.setStartUser(Long.valueOf(startUid.toString()));
+                        untaskDto.setProcessName(processInstance.getProcessDefinitionKey());
+                        untaskDto.setProcessDefinitionId(processInstance.getProcessDefinitionId());
+                        untaskDto.setProcessInstanceId(processInstance.getId());
+                        untaskDto.setTaskName(task.getName());
+                        untaskDto.setCreateTime(task.getCreateTime());
+                        untaskDto.setOrderId(Long.valueOf(orderid.toString()));
+                        res.add(untaskDto);
+                    }
                 }
             }
-            PageInfo<UntaskDto> pageInfo=new PageInfo<>(res);
+            PageInfo<UntaskDto> pageInfo = new PageInfo<>(res);
             return WrapMapper.ok(pageInfo);
+        }catch (Exception e) {
+            return WrapMapper.error(e.getMessage());
         }
-        return WrapMapper.error();
     }
 
     @PostMapping(value = "/tasked")
     @ApiOperation(httpMethod = "POST",value = "获取已完成审批列表")
     public Wrapper<PageInfo<TaskedDto>> getTasked(@ApiParam(name = "tasked",value = "获取已完成审批列表") @RequestBody PageDto pageDto) {
-        List<HistoricTaskInstance> list = activitiServiceImpl.getHistoryList(String.valueOf(pageDto.getUserid()));
-        List<TaskedDto> res=new ArrayList<>();
-        PageHelper.startPage(pageDto.getPageNum(),pageDto.getPageSize());
-        if (list != null && list.size() != 0) {
-            for (HistoricTaskInstance task : list) {
-                Object orderid=activitiServiceImpl.getHistoricVariable(task.getProcessInstanceId(),variableName);
-                ProcessInstance processInstance=activitiServiceImpl.getProIns(task.getProcessInstanceId());
-                Object state=activitiServiceImpl.getHistoricVariable(task.getProcessInstanceId(),"state");
-                if(processInstance!=null){
-                    state="审核中";
-                }
-                if(orderid!=null&&!orderid.equals("")) {
-                    Object startUid = activitiServiceImpl.getHistoricVariable(task.getProcessInstanceId(), startUser);
-                       TaskedDto taskedDto=new TaskedDto();
+        try {
+            List<HistoricTaskInstance> list = activitiServiceImpl.getHistoryList(String.valueOf(pageDto.getUserid()));
+            List<TaskedDto> res = new ArrayList<>();
+            PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
+            if (list != null && list.size() != 0) {
+                for (HistoricTaskInstance task : list) {
+                    Object orderid = activitiServiceImpl.getHistoricVariable(task.getProcessInstanceId(), variableName);
+                    Object state = activitiServiceImpl.getHistoricVariable(task.getProcessInstanceId(), "state");
+                    if (activitiServiceImpl.getProIns(task.getProcessInstanceId()) != null) {
+                        state = "审核中";
+                    }
+                    if (orderid != null && !orderid.equals("") && task.getEndTime() != null) {
+                        Object startUid = activitiServiceImpl.getHistoricVariable(task.getProcessInstanceId(), startUser);
+                        TaskedDto taskedDto = new TaskedDto();
                         HistoricProcessInstance historicProcessInstance = activitiServiceImpl.getProHisIns(task.getProcessInstanceId());
-                       taskedDto.setTaskId(task.getId());
-                       taskedDto.setStartUser(startUid.toString());
-                       taskedDto.setProcessName(historicProcessInstance.getProcessDefinitionKey());
-                       taskedDto.setProcesssInstanceId(historicProcessInstance.getId());
-                       taskedDto.setTaskName(task.getName());
-                       taskedDto.setCreateTime(task.getCreateTime());
-                       taskedDto.setEndTime(task.getEndTime());
-                       taskedDto.setState(state.toString());
-                       taskedDto.setOrderID(Long.valueOf(orderid.toString()));
-                       res.add(taskedDto);
+                        taskedDto.setTaskId(task.getId());
+                        taskedDto.setStartUser(Long.valueOf(startUid.toString()));
+                        taskedDto.setProcessName(historicProcessInstance.getProcessDefinitionKey());
+                        taskedDto.setProcessInstanceId(historicProcessInstance.getId());
+                        taskedDto.setProcessDefinitionId(historicProcessInstance.getProcessDefinitionId());
+                        taskedDto.setTaskName(task.getName());
+                        taskedDto.setCreateTime(task.getCreateTime());
+                        taskedDto.setEndTime(task.getEndTime());
+                        taskedDto.setState(state.toString());
+                        taskedDto.setOrderId(Long.valueOf(orderid.toString()));
+                        res.add(taskedDto);
+                    }
                 }
             }
-            PageInfo<TaskedDto> pageInfo=new PageInfo<>(res);
+            PageInfo<TaskedDto> pageInfo = new PageInfo<>(res);
             return WrapMapper.ok(pageInfo);
+        }catch (Exception e){
+            return WrapMapper.error(e.getMessage());
         }
-        return WrapMapper.error();
     }
 
 }

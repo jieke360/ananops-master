@@ -1,6 +1,8 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.provider.mapper.*;
+import com.ananops.provider.model.dto.group.GroupBindUserDto;
+import com.ananops.provider.model.vo.UserVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Preconditions;
@@ -68,6 +70,8 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	private UacMenuMapper uacMenuMapper;
 	@Resource
 	private UacGroupUserService uacGroupUserService;
+	@Resource
+	private UacGroupUserMapper uacGroupUserMapper;
 	@Resource
 	private UacLogService uacLogService;
 	@Resource
@@ -998,5 +1002,38 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		uacUser.setLoginPwd(Md5Util.encrypt("123456"));
 		uacUser.setStatus("0");
 		uacUserMapper.insertSelective(uacUser);
+	}
+
+	@Override
+	public List<UserVo> getApprovalUserListById(Long groupId, Long userId) {
+		List<UserVo> userVoList = new ArrayList<>();
+		// 该组织已经绑定的用户
+		List<UacGroupUser> alreadyBindUserSet = uacGroupUserMapper.listByGroupId(groupId);
+		for (UacGroupUser uacGroupUser : alreadyBindUserSet) {
+			//每个用户的信息
+			UserVo userVo = new UserVo();
+			//用户id
+			Long userApprovalId = uacGroupUser.getUserId();
+			UacUser uacUser = uacUserMapper.selectByPrimaryKey(userApprovalId);
+			//根据用户id获取用户角色列表
+			List<UacRoleUser> roleUserList = uacRoleUserService.queryByUserId(userApprovalId);
+			//根据用户的id获取该用户roleCodeList
+			List<String> roleCodeList = new ArrayList<>();
+			for (UacRoleUser uacRoleUser : roleUserList) {
+				Long roleId = uacRoleUser.getRoleId();
+				UacRole uacRole = uacRoleService.getRoleById(roleId);
+				roleCodeList.add(uacRole.getRoleCode());
+			}
+			//如果该用户是用户负责人的角色就添加到用户负责人列表
+			if (roleCodeList.contains("user_leader")) {
+				try {
+					BeanUtils.copyProperties(userVo, uacUser);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				userVoList.add(userVo);
+			}
+		}
+		return userVoList;
 	}
 }
