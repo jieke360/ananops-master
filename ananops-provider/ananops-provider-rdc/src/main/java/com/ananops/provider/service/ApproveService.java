@@ -7,13 +7,23 @@ import java.util.List;
 
 public interface ApproveService extends IService<Approve> {
     
-    Boolean createNewApprove(Approve approve);
+    /**
+     * 获取用户关于特定类型的审批记录
+     * @param approveId
+     * @param objectType
+     * @param objectId
+     * @return
+     */
+    Approve getApproveByApproverIdAndObject(Long approveId, Integer objectType, Long objectId);
     
-    Boolean approve(Approve approve);
+    /**
+     * 获取用户的所有（1.待处理 0.已处理）审批记录
+     * @param approverId
+     * @param version
+     * @return
+     */
+    List<Approve> selectByApproverId(Long approverId, Integer version);
     
-    List<Approve> getAllApproveByApproverId(Long approverId);
     
-    Approve getApproveById(Long id);
-    
-    Approve getOnProcessingApprove(Long approveId, Integer objectType, Long objectId);
+    boolean isExist(Approve approve);
 }
