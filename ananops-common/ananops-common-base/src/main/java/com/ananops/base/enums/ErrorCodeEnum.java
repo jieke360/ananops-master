@@ -9,6 +9,14 @@ package com.ananops.base.enums;
  */
 public enum ErrorCodeEnum {
 	/**
+	 * Gl 9999086 error code enum.
+	 */
+	GL9999086(9999086,"当前状态不允许服务商拒单"),
+	/**
+	 * Gl 9999087 error code enum.
+	 */
+	GL9999087(9999087,"当前状态不允许工程师拒单"),
+	/**
 	 * Gl 9999088 error code enum.
 	 */
 	GL9999088(9999088,"更新巡检任务子项失败"),

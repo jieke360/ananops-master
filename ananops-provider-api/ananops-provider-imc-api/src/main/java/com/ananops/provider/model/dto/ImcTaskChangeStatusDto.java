@@ -4,18 +4,17 @@ import com.ananops.base.dto.LoginAuthDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 
 /**
- * Created by rongshuai on 2020/1/4 11:00
+ * Created by rongshuai on 2019/12/5 10:27
  */
 @Data
 @ApiModel
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class TaskChangeStatusDto implements Serializable {
+public class ImcTaskChangeStatusDto implements Serializable {
     private static final long serialVersionUID = 7518743322967534899L;
+
     /**
      * 巡检任务ID
      */
