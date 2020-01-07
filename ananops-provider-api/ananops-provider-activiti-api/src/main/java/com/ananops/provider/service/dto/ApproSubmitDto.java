@@ -20,7 +20,7 @@ public class ApproSubmitDto implements Serializable {
     private String processDefinitionId;
 
     @ApiModelProperty(value = "工单id")
-    private String orderId;
+    private Long orderId;
 
     @ApiModelProperty(value = "批注")
     private String comment;

@@ -25,7 +25,7 @@ public class ActivitiFeignClient extends BaseController implements ActivitiFeign
         try {
             String Uid = String.valueOf(approSubmitDto.getUserid());
             String processDefinitionId = approSubmitDto.getProcessDefinitionId();
-            String orderid = approSubmitDto.getOrderId();
+            Long orderid = approSubmitDto.getOrderId();
             String body = approSubmitDto.getComment();
             String nextUid = String.valueOf(approSubmitDto.getNUserid());
             String taskId = activitiServiceImpl.start(Uid, processDefinitionId);

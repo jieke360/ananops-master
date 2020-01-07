@@ -114,7 +114,7 @@ public class ActivitiController {
 
 
     //获取批注
-    @GetMapping(value = "/getComment/{processInstanceId}")
+    @GetMapping(value = "/getComment")
     @ApiOperation(httpMethod = "GET",value = "获取批注")
     public Wrapper<List<CommentDto>> comment(@ApiParam(name = "processInstanceId",value = "流程实例id") @RequestParam String processInstanceId) {
         List<CommentDto> res=new ArrayList<>();
@@ -132,8 +132,8 @@ public class ActivitiController {
     }
 
     //获取部署流程列表
-    @PostMapping(value = "/deploylist")
-    @ApiOperation(httpMethod = "POST",value = "获取部署流程列表")
+    @GetMapping(value = "/deploylist")
+    @ApiOperation(httpMethod = "GET",value = "获取部署流程列表")
     public Wrapper<List<DeployListDto>> personalTask() {
         try {
             List<DeployListDto> res=new ArrayList<>();
@@ -154,7 +154,7 @@ public class ActivitiController {
     }
 
     //获取流程图
-    @GetMapping(value = "/image/{processDefinitionId}")
+    @GetMapping(value = "/image")
     @ApiOperation(httpMethod = "GET",value = "获取流程图")
     public Wrapper<String> getImage(@ApiParam(name = "processDefinitionId",value="流程定义id") @RequestParam String processDefinitionId) throws Exception {
         String path = null;
@@ -170,7 +170,7 @@ public class ActivitiController {
     }
 
     //普通删除流程定义表（根据部署ID）
-    @DeleteMapping(value = "/delete/{processDefinitionId}")
+    @DeleteMapping(value = "/delete")
     @ApiOperation(httpMethod = "DELETE",value = "一般删除流程定义表（根据部署ID）")
     public Wrapper<String> deleteDefinitionList(@ApiParam(name = "processDefinitionId",value="流程定义id") @RequestParam String processDefinitionId) {
         try {
@@ -183,7 +183,7 @@ public class ActivitiController {
     }
 
     //级联删除（强行删除）流程定义表
-    @DeleteMapping(value = "/fdelete/{processDefinitionId}")
+    @DeleteMapping(value = "/fdelete")
     @ApiOperation(httpMethod = "DELETE",value = "级联删除（强行删除）流程定义表")
     public Wrapper<String> deleteAnyWay(@ApiParam(name = "processDefinitionId",value="流程定义id") @RequestParam String processDefinitionId) {
         try {
