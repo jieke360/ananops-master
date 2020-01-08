@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -218,30 +217,8 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
 
     @Override
     @ApiOperation(httpMethod = "POST", value = "服务商拒单（巡检任务）")
-    public Wrapper<ImcTaskChangeStatusDto> refuseImcTaskByTaskId(@ApiParam(name = "refuseImcTaskByTaskId",value = "服务商拒单（巡检任务）")@RequestBody RefuseTaskDto refuseTaskDto){
-        LoginAuthDto loginAuthDto = refuseTaskDto.getLoginAuthDto();
-        Long taskId = refuseTaskDto.getTaskId();
-        ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
-        imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum()));
-        imcTaskChangeStatusDto.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
-        imcTaskChangeStatusDto.setTaskId(taskId);
-        Example example = new Example(ImcInspectionTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("id",taskId);
-        if(imcInspectionTaskMapper.selectCountByExample(example)==0){
-            //如果当前任务不存在
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        ImcInspectionTask imcInspectionTask = imcInspectionTaskMapper.selectByExample(example).get(0);
-        if(imcInspectionTask.getStatus().equals(TaskStatusEnum.WAITING_FOR_ACCEPT.getStatusNum())){
-            //如果当前任务的状态是等待服务商接单，才允许服务商拒单
-            imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
-            imcInspectionTask.setUpdateInfo(loginAuthDto);
-            imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
-        }else{
-            throw new BusinessException(ErrorCodeEnum.GL9999086);
-        }
-        return WrapMapper.ok(imcTaskChangeStatusDto);
+    public Wrapper<ImcTaskChangeStatusDto> refuseImcTaskByTaskId(@ApiParam(name = "refuseImcTaskByTaskId",value = "服务商拒单（巡检任务）")@RequestBody RefuseImcTaskDto refuseImcTaskDto){
+        return WrapMapper.ok(imcInspectionTaskService.refuseImcTaskByTaskId(refuseImcTaskDto));
     }
 
     public List<ItemDto> getItemList(Long taskId){

@@ -17,11 +17,9 @@ import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
 
@@ -64,14 +62,14 @@ public class ImcItemFeiginClient extends BaseController implements ImcItemFeignA
 
     /**
      * 工程师拒单
-     * @param refuseItemDto
+     * @param refuseImcItemDto
      * @return
      */
     @Override
     @ApiOperation(httpMethod = "POST", value = "工程师拒单（任务子项）")
-    public Wrapper<ImcItemChangeStatusDto> refuseImcItemByItemId(@ApiParam(name = "refuseImcItemByItemId",value = "维修工拒单（巡检任务子项）")@RequestBody RefuseItemDto refuseItemDto){
-        LoginAuthDto loginAuthDto = refuseItemDto.getLoginAuthDto();
-        Long itemId = refuseItemDto.getItemId();
+    public Wrapper<ImcItemChangeStatusDto> refuseImcItemByItemId(@ApiParam(name = "refuseImcItemByItemId",value = "维修工拒单（巡检任务子项）")@RequestBody RefuseImcItemDto refuseImcItemDto){
+        LoginAuthDto loginAuthDto = refuseImcItemDto.getLoginAuthDto();
+        Long itemId = refuseImcItemDto.getItemId();
         ImcItemChangeStatusDto imcItemChangeStatusDto = new ImcItemChangeStatusDto();
         //将任务子项状态重新修改为等待分配维修工
         imcItemChangeStatusDto.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());

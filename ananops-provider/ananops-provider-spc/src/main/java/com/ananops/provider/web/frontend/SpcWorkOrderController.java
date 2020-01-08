@@ -3,10 +3,7 @@ package com.ananops.provider.web.frontend;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.annotation.LogAnnotation;
 import com.ananops.core.support.BaseController;
-import com.ananops.provider.model.dto.EngineerDto;
-import com.ananops.provider.model.dto.WorkOrderDto;
-import com.ananops.provider.model.dto.WorkOrderQueryDto;
-import com.ananops.provider.model.dto.WorkOrderStatusQueryDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.vo.WorkOrderDetailVo;
 import com.ananops.provider.model.vo.WorkOrderVo;
 import com.ananops.provider.service.ImcTaskFeignApi;
@@ -87,33 +84,42 @@ public class SpcWorkOrderController extends BaseController {
      *
      * @return 返回工程师信息
      */
-//    @PostMapping(value = "/getEngineerListByWorkOrderId")
-////    @LogAnnotation
-////    @ApiOperation(httpMethod = "GET", value = "通过工单ID查询工程师信息列表")
-////    public Wrapper<List<EngineerDto>> getEngineerListByWorkOrderId(@ApiParam(name = "workOrderDto", value = "工单ID,") @RequestBody WorkOrderDto workOrderDto) {
-////        logger.info("getSpcWorkOrderById - 根据工单Id查询工单信息. workOrderDto={}", workOrderDto);
-////        List<EngineerDto> engineerDtoList = spcWorkOrderService.engineersDtoList(workOrderDto);
-////        logger.info("getEngineerListByWorkOrderId - 通过工单ID查询工程师信息列表. [OK] workOrderDetailVo={}", engineerDtoList);
-////        return WrapMapper.ok(engineerDtoList);
-////    }
+    @PostMapping(value = "/getEngineerListByWorkOrderId")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "GET", value = "通过工单ID查询工程师信息列表")
+    public Wrapper<List<EngineerDto>> getEngineerListByWorkOrderId(@ApiParam(name = "workOrderDto", value = "工单ID,") @RequestBody WorkOrderDto workOrderDto) {
+        logger.info("getSpcWorkOrderById - 根据工单Id查询工单信息. workOrderDto={}", workOrderDto);
+        List<EngineerDto> engineerDtoList = spcWorkOrderService.engineersDtoList(workOrderDto);
+        logger.info("getEngineerListByWorkOrderId - 通过工单ID查询工程师信息列表. [OK] workOrderDetailVo={}", engineerDtoList);
+        return WrapMapper.ok(engineerDtoList);
+    }
 
     /**
-     * 分配工单信息中的工程师信息
-     * 修改工单信息中的状态
+     *为维修维护工单分配工程师
      *
-     * @param workOrderDto engineerDto 工单查询参数
+     * @param engineerDistributeDto
      *
      * @return  是否成功
      */
-//    @PostMapping(value = "/distributeEngineerWithWorkOrder")
-//    @LogAnnotation
-//    @ApiOperation(httpMethod = "POST", value = "分配工单信息中的工程师信息,状态")
-//    public Wrapper<Integer> distributeEngineerWithWorkOrder(@ApiParam(name = "workOrderDto ,engineerDto", value = "工单ID,工程师ID") @RequestBody WorkOrderDto workOrderDto, EngineerDto engineerDto) {
-//        logger.info("getSpcWorkOrderById - 根据工单Id查询工单信息. workOrderDto={}", workOrderDto);
-//        LoginAuthDto loginAuthDto = getLoginAuthDto();
-//        spcWorkOrderService.distributeEngineer(workOrderDto,loginAuthDto,engineerDto.getId());
-//        return WrapMapper.ok();
-//    }
+    @PostMapping(value = "/distributeEngineerWithMdmcOrder")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "分配维修维护类型工单信息中的工程师信息,状态")
+    public Wrapper<Integer> distributeEngineerWithMdmcOrder(@ApiParam(name = "engineerDistributeDto", value = "工程师分配Dto") @RequestBody EngineerDistributeDto engineerDistributeDto) {
+        logger.info("distributeEngineerWithMdmcOrder - 分配维修维护工单信息中的工程师信息,状态. engineerDistributeDto={}", engineerDistributeDto);
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        spcWorkOrderService.distributeEngineerForMdmc(engineerDistributeDto,loginAuthDto);
+        return WrapMapper.ok();
+    }
+
+    @PostMapping(value = "/distributeEngineerWithImcOrder")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "分配巡检类型工单信息中的工程师信息,状态")
+    public Wrapper<Integer> distributeEngineerWithImcOrder(@ApiParam(name = "engineerDistributeDto", value = "工程师分配Dto") @RequestBody EngineerDistributeDto engineerDistributeDto) {
+        logger.info("distributeEngineerWithImcOrder - 分配巡检工单信息中的工程师信息,状态. engineerDistributeDto={}", engineerDistributeDto);
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        spcWorkOrderService.distributeEngineerForImc(engineerDistributeDto,loginAuthDto);
+        return WrapMapper.ok();
+    }
 
     /**
      *转单
@@ -122,51 +128,50 @@ public class SpcWorkOrderController extends BaseController {
      *
      * @return  是否成功
      */
-//    @PostMapping(value = "/transferWorkOrder")
-////    @LogAnnotation
-////    @ApiOperation(httpMethod = "POST", value = "转单,将工单信息中工程师置空")
-////    public Wrapper<Integer> transferWorkOrder(@ApiParam(name = "workOrderDto", value = "工单ID") @RequestBody WorkOrderDto workOrderDto) {
-////        logger.info("getSpcWorkOrderById - 根据工单Id查询工单信息. workOrderQueryDto={}", workOrderDto);
-////        ///LoginAuthDto loginAuthDto = getLoginAuthDto();
-////        spcWorkOrderService.transferWorkOrder(workOrderDto);
-////        return WrapMapper.ok();
-////    }
+    @PostMapping(value = "/transferWorkOrder")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "转单,将工单信息中工程师置空")
+    public Wrapper<Integer> transferWorkOrder(@ApiParam(name = "workOrderDto", value = "工单ID") @RequestBody WorkOrderDto workOrderDto) {
+        logger.info("getSpcWorkOrderById - 根据工单Id查询工单信息. workOrderQueryDto={}", workOrderDto);
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        spcWorkOrderService.transferWorkOrder(workOrderDto,loginAuthDto);
+        return WrapMapper.ok();
+    }
+
+    /**
+     * 获取全部未分配工程师的工单
+     * @param workOrderStatusQueryDto
+     * @return
+     */
+    @PostMapping(value = "/getAllUnDistributedWorkOrders")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "获取全部未分配工程师的工单")
+    public Wrapper<PageInfo<WorkOrderVo>> getAllUnDistributedWorkOrders(@ApiParam(name = "WorkOrderStatusQueryDto",value = "工单查询参数")@RequestBody WorkOrderStatusQueryDto workOrderStatusQueryDto){
+        logger.info("getAllUnDistributedWorkOrders - 获取全部未分配工程师的工单. workOrderStatusQueryDto={}", workOrderStatusQueryDto);
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        PageHelper.startPage(workOrderStatusQueryDto.getPageNum(), workOrderStatusQueryDto.getPageSize());
+        workOrderStatusQueryDto.setOrderBy("update_time desc");
+        List<WorkOrderVo> workOrderVoVoList = spcWorkOrderService.queryAllUnDistributedWorkOrders(workOrderStatusQueryDto, loginAuthDto);
+        return WrapMapper.ok(new PageInfo<>(workOrderVoVoList));
+    }
 
 
     //---------------------------审批--------------------------------------------------
+
     /**
      * 分页查询待审批的全部工单
-     * @param workOrderDto
+     * @param workOrderStatusQueryDto
      * @return
      */
     @PostMapping(value = "/getAllUnConfirmedWorkOrders")
     @ApiOperation(httpMethod = "POST",value = "获取全部等待被审批的工单")
-    public Wrapper<PageInfo<WorkOrderVo>> getAllUnConfirmedWorkOrders(@ApiParam(name = "WorkOrderDto",value = "工单查询参数")@RequestBody WorkOrderStatusQueryDto workOrderStatusQueryDto){
+    public Wrapper<PageInfo<WorkOrderVo>> getAllUnConfirmedWorkOrders(@ApiParam(name = "WorkOrderStatusQueryDto",value = "工单查询参数")@RequestBody WorkOrderStatusQueryDto workOrderStatusQueryDto){
         logger.info("getAllUnConfirmedWorkOrders - 获取全部等待被审批的工单. workOrderStatusQueryDto={}", workOrderStatusQueryDto);
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         PageHelper.startPage(workOrderStatusQueryDto.getPageNum(), workOrderStatusQueryDto.getPageSize());
         workOrderStatusQueryDto.setOrderBy("update_time desc");
-        List<WorkOrderVo> workOrderVoVoList = spcWorkOrderService.queryAllWorkOrders(workOrderStatusQueryDto, loginAuthDto);
-        workOrderVoVoList.forEach(workOrderVo -> {
-            Long taskId = workOrderVo.getId();//工单Id（维修维护or巡检的）
-            String type = workOrderVo.getType();//工单类型，巡检(inspection)和维修维护(maintain)
-            if("inspection".equals(type)){//如果当前工单类型是巡检工单
-                int status = imcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
-                if(status != 4){
-                    //如果巡检任务不是处于“巡检结果待确认”的阶段
-                    workOrderVoVoList.remove(workOrderVo);//将次任务从列表中移除掉
-                }
-            }else if("maintain".equals(type)){//如果当前工单类型是维修维护工单
-                int status = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
-                if(status != 8){
-                    //如果维修维护任务不是处于“维修工提交维修结果，待服务商审核维修结果”这一状态
-                    workOrderVoVoList.remove(workOrderVo);//将此次任务从列表中移除
-                }
-            }
-        });
+        List<WorkOrderVo> workOrderVoVoList = spcWorkOrderService.queryAllUnConfirmedWorkOrders(workOrderStatusQueryDto, loginAuthDto);
         return WrapMapper.ok(new PageInfo<>(workOrderVoVoList));
     }
-    
-
 
 }

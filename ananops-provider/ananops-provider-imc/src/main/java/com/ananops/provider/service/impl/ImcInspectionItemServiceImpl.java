@@ -190,6 +190,38 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         }
         throw new BusinessException(ErrorCodeEnum.GL9999093);
     }
+
+    /**
+     * 工程师拒单（巡检任务子项）
+     * @param refuseImcItemDto
+     * @return
+     */
+    public ImcItemChangeStatusDto refuseImcItemByItemId(RefuseImcItemDto refuseImcItemDto){
+        LoginAuthDto loginAuthDto = refuseImcItemDto.getLoginAuthDto();
+        Long itemId = refuseImcItemDto.getItemId();
+        ImcItemChangeStatusDto imcItemChangeStatusDto = new ImcItemChangeStatusDto();
+        imcItemChangeStatusDto.setLoginAuthDto(loginAuthDto);
+        imcItemChangeStatusDto.setItemId(itemId);
+        imcItemChangeStatusDto.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
+        imcItemChangeStatusDto.setStatusMsg(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusMsg());
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",itemId);
+        if(imcInspectionItemMapper.selectCountByExample(example)==0){
+            //如果当前任务子项不存在
+            throw new BusinessException(ErrorCodeEnum.GL9999097);
+        }
+        ImcInspectionItem imcInspectionItem = imcInspectionItemMapper.selectByExample(example).get(0);
+        if(imcInspectionItem.getStatus().equals(ItemStatusEnum.WAITING_FOR_ACCEPT)){
+            //如果当前任务的状态是等待工程师接单，才允许工程师拒单
+            imcInspectionItem.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
+            imcInspectionItem.setUpdateInfo(loginAuthDto);
+            imcInspectionItemMapper.updateByPrimaryKeySelective(imcInspectionItem);
+        }else{
+            throw new BusinessException(ErrorCodeEnum.GL9999086);
+        }
+        return imcItemChangeStatusDto;
+    }
     public Integer setBasicInfoFromContract(){//将从合同中获取到的基本信息填写到巡检任务中
         return 1;
     }

@@ -9,18 +9,18 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.io.Serializable;
 
 /**
- * Created by rongshuai on 2020/1/7 16:27
+ * Created by rongshuai on 2020/1/8 19:19
  */
 @Data
 @ApiModel
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class RefuseItemDto implements Serializable {
-    private static final long serialVersionUID = 1967146037784502141L;
+public class RefuseMdmcTaskDto implements Serializable {
+    private static final long serialVersionUID = 8862554544597919769L;
     /**
-     * 巡检任务子项ID
+     * 维修维护任务ID
      */
-    @ApiModelProperty(value = "巡检任务子项ID")
-    private Long itemId;
+    @ApiModelProperty(value = "维修维护任务ID")
+    private Long taskId;
 
     /**
      * 当前操作用户的身份信息

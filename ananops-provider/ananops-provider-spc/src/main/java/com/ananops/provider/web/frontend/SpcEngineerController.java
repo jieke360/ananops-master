@@ -166,6 +166,11 @@ public class SpcEngineerController extends BaseController {
         return WrapMapper.ok();
     }
 
+    /**
+     * 根据项目Id查询项目下的全部工程师列表
+     * @param projectId
+     * @return
+     */
     @PostMapping(value = "/getEngineerIdListByProjectId/{projectId}")
     @LogAnnotation
     @ApiOperation(httpMethod = "POST", value = "根据项目Id获取项目下的全部工程师Id列表")

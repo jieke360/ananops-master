@@ -22,7 +22,7 @@ import java.util.List;
 @RefreshScope
 @RestController
 @Api(value = "API - MdmcQueryFeignClient", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class MdmcTaskQueryFeiginClient extends BaseController implements MdmcTaskFeignApi {
+public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeignApi {
     
     @Resource
     MdmcTaskService taskService;
@@ -72,7 +72,25 @@ public class MdmcTaskQueryFeiginClient extends BaseController implements MdmcTas
         return WrapMapper.ok();
     }
 
+    @Override
+    public Wrapper<MdmcTask> modifyTaskStatusByTaskId(MdmcChangeStatusDto mdmcChangeStatusDto){
+        LoginAuthDto loginAuthDto = mdmcChangeStatusDto.getLoginAuthDto();
+        return WrapMapper.ok(taskService.modifyTaskStatus(mdmcChangeStatusDto,loginAuthDto));
+    }
 
+    @Override
+    public Wrapper<MdmcTask> modifyMaintainerByTaskId(MdmcChangeMaintainerDto mdmcChangeMaintainerDto){
+        return WrapMapper.ok(taskService.modifyMaintainer(mdmcChangeMaintainerDto));
+    }
 
+    @Override
+    public Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByMaintainer(RefuseMdmcTaskDto refuseMdmcTaskDto){
+        return WrapMapper.ok(taskService.refuseTaskByMaintainer(refuseMdmcTaskDto));
+    }
+
+    @Override
+    public Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(RefuseMdmcTaskDto refuseMdmcTaskDto){
+        return WrapMapper.ok(taskService.refuseTaskByFacilitator(refuseMdmcTaskDto));
+    }
 
 }

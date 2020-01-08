@@ -284,4 +284,172 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         workOrderDetailVo.setCompanyVo(companyVo);
         return workOrderDetailVo;
     }
+
+    /**
+     * 获取工单对应的全部工程师列表
+     * @param workOrderDto
+     * @return
+     */
+    @Override
+    public List<EngineerDto> engineersDtoList(WorkOrderDto workOrderDto) {
+        WorkOrderDetailVo workOrderDetailVo = new WorkOrderDetailVo();
+        Long taskId = workOrderDto.getId();
+        Long projectId = null;
+        String workOrderType = workOrderDto.getType();
+        //  通过工单ID查询对应项目ID
+        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
+            log.info("查询巡检工单：taskId=" + taskId);
+            TaskDto taskDto = imcTaskFeignApi.getTaskByTaskId(taskId).getResult();
+            workOrderDetailVo.setType("inspection");
+            workOrderDetailVo.setInspectionTask(taskDto);
+            projectId = taskDto.getProjectId();
+        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
+            log.info("查询维修维护工单：taskId=" + taskId);
+            MdmcTask mdmcTaskDto = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult();
+            workOrderDetailVo.setType("maintain");
+            workOrderDetailVo.setMaintainTask(mdmcTaskDto);
+            projectId = mdmcTaskDto.getProjectId();
+        }
+        // 通过项目ID查询对应项目下的工程师信息
+        log.info("工单项目ID：projectId=" + projectId);
+        List<EngineerDto> result = new ArrayList<>();
+        result = spcEngineerService.getEngineersByProjectId(projectId);
+        return result;
+    }
+
+    /**
+     * 为维修维护类型的工单分配工程师
+     * @param engineerDistributeDto
+     */
+    @Transactional
+    @Override
+    public void distributeEngineerForMdmc(EngineerDistributeDto engineerDistributeDto,LoginAuthDto loginAuthDto){
+        Long taskId = engineerDistributeDto.getTaskId();
+        Long maintainerId =engineerDistributeDto.getEngineerId();
+        //为对应的维修维护任务添加工程师
+        MdmcChangeMaintainerDto mdmcChangeMaintainerDto = new MdmcChangeMaintainerDto();
+        mdmcChangeMaintainerDto.setLoginAuthDto(loginAuthDto);
+        mdmcChangeMaintainerDto.setMaintainerId(maintainerId);
+        mdmcChangeMaintainerDto.setTaskId(taskId);
+        mdmcTaskFeignApi.modifyMaintainerByTaskId(mdmcChangeMaintainerDto);
+        //为对应的维修维护任务修改状态
+        MdmcChangeStatusDto mdmcChangeStatusDto = new MdmcChangeStatusDto();
+        mdmcChangeStatusDto.setStatus(5);//将维修维护任务的状态修改为“已分配维修工，待维修工接单”
+        mdmcChangeStatusDto.setLoginAuthDto(loginAuthDto);
+        mdmcChangeStatusDto.setTaskId(taskId);
+        mdmcTaskFeignApi.modifyTaskStatusByTaskId(mdmcChangeStatusDto);
+
+    }
+
+    /**
+     * 为巡检类型的任务分配工程师
+     * @param engineerDistributeDto
+     */
+    @Transactional
+    @Override
+    public void distributeEngineerForImc(EngineerDistributeDto engineerDistributeDto,LoginAuthDto loginAuthDto){
+        Long itemId = engineerDistributeDto.getTaskId();//获取待分配巡检任务子项的Id
+        Long maintainerId = engineerDistributeDto.getEngineerId();//获取待分配的工程师Id
+        //为对应的巡检任务子项添加工程师
+        ItemChangeMaintainerDto itemChangeMaintainerDto = new ItemChangeMaintainerDto();
+        itemChangeMaintainerDto.setItemId(itemId);
+        itemChangeMaintainerDto.setMaintainerId(maintainerId);
+        imcItemFeignApi.modifyMaintainerByItemId(itemChangeMaintainerDto);
+        //为对应的巡检任务子项修改状态
+        ImcItemChangeStatusDto imcItemChangeStatusDto = new ImcItemChangeStatusDto();
+        imcItemChangeStatusDto.setItemId(itemId);
+        imcItemChangeStatusDto.setStatus(2);//将巡检任务子项的状态修改为“等待工程师接单”
+        imcItemChangeStatusDto.setLoginAuthDto(loginAuthDto);
+        imcItemFeignApi.modifyImcItemStatus(imcItemChangeStatusDto);
+    }
+
+    /**
+     * 服务商转单操作（拒单）
+     * @param workOrderDto
+     */
+    @Override
+    public void transferWorkOrder(WorkOrderDto workOrderDto,LoginAuthDto loginAuthDto) {
+        Long taskId = workOrderDto.getId();
+        String workOrderType = workOrderDto.getType();
+        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
+            log.info("查询巡检工单：taskId=" + taskId);
+            RefuseImcTaskDto refuseImcTaskDto = new RefuseImcTaskDto();
+            refuseImcTaskDto.setLoginAuthDto(loginAuthDto);
+            refuseImcTaskDto.setTaskId(taskId);
+            imcTaskFeignApi.refuseImcTaskByTaskId(refuseImcTaskDto);//服务商拒单
+
+        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
+            log.info("查询维修维护工单：taskId=" + taskId);
+            RefuseMdmcTaskDto refuseMdmcTaskDto = new RefuseMdmcTaskDto();
+            refuseMdmcTaskDto.setLoginAuthDto(loginAuthDto);
+            refuseMdmcTaskDto.setTaskId(taskId);
+            mdmcTaskFeignApi.refuseMdmcTaskByFacilitator(refuseMdmcTaskDto);
+        }
+    }
+
+    /**
+     * 查询所有待审批的工单
+     * @param workOrderStatusQueryDto
+     * @param loginAuthDto
+     * @return
+     */
+    @Override
+    public List<WorkOrderVo> queryAllUnConfirmedWorkOrders(WorkOrderStatusQueryDto workOrderStatusQueryDto, LoginAuthDto loginAuthDto){
+        List<WorkOrderVo> workOrderVoVoList = this.queryAllWorkOrders(workOrderStatusQueryDto, loginAuthDto);
+        workOrderVoVoList.forEach(workOrderVo -> {
+            Long taskId = workOrderVo.getId();//工单Id（维修维护or巡检的）
+            String type = workOrderVo.getType();//工单类型，巡检(inspection)和维修维护(maintain)
+            if("inspection".equals(type)){//如果当前工单类型是巡检工单
+                int status = imcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
+                if(status != 4){
+                    //如果巡检任务不是处于“巡检结果待确认”的阶段
+                    workOrderVoVoList.remove(workOrderVo);//将次任务从列表中移除掉
+                }
+            }else if("maintain".equals(type)){//如果当前工单类型是维修维护工单
+                int status = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
+                if(status != 8){
+                    //如果维修维护任务不是处于“维修工提交维修结果，待服务商审核维修结果”这一状态
+                    workOrderVoVoList.remove(workOrderVo);//将此次任务从列表中移除
+                }
+            }
+        });
+        return workOrderVoVoList;
+    }
+
+    /**
+     * 获取所有未分配工程师的工单
+     * @param workOrderStatusQueryDto
+     * @param loginAuthDto
+     * @return
+     */
+    @Override
+    public List<WorkOrderVo> queryAllUnDistributedWorkOrders(WorkOrderStatusQueryDto workOrderStatusQueryDto, LoginAuthDto loginAuthDto){
+        List<WorkOrderVo> workOrderVoVoList = this.queryAllWorkOrders(workOrderStatusQueryDto, loginAuthDto);
+        workOrderVoVoList.forEach(workOrderVo -> {
+            Long taskId = workOrderVo.getId();//工单Id（维修维护or巡检的）
+            String type = workOrderVo.getType();//工单类型，巡检(inspection)和维修维护(maintain)
+            if("inspection".equals(type)){//如果当前工单类型是巡检工单
+                List<ItemDto> itemDtoList = imcTaskFeignApi.getTaskByTaskId(taskId).getResult().getItemDtoList();
+                int mark=0;
+                for(ItemDto itemDto : itemDtoList){
+                    if(itemDto.getStatus()==1){
+                        mark=1;
+                        break;
+                    }
+                }
+                if(mark==0){
+                    //如果巡检任务的全部任务子项都已经被分配了工程师
+                    workOrderVoVoList.remove(workOrderVo);//将此任务从列表中移除掉
+                }
+            }else if("maintain".equals(type)){//如果当前工单类型是维修维护工单
+                int status = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
+                if(status != 4){
+                    //如果维修维护任务不是处于“服务商已接单，待分配维修工”这一状态
+                    workOrderVoVoList.remove(workOrderVo);//将此次任务从列表中移除
+                }
+            }
+        });
+        return workOrderVoVoList;
+    }
+
 }
