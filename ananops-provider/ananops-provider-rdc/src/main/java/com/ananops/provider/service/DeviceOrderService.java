@@ -37,7 +37,7 @@ public interface DeviceOrderService extends IService<DeviceOrder> {
     
     int getOrderCountByApproverIdAndVersion(Long approverId, Integer version);
     
-    List<DeviceOrder> getOrderByObjectIdAndObjectType(Long objectId, Integer objectType);
+    DeviceOrder getOrderByObjectIdAndObjectType(Long objectId, Integer objectType);
     
     
     

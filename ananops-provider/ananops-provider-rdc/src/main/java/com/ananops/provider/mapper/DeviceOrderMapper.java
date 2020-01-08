@@ -26,5 +26,5 @@ public interface DeviceOrderMapper extends MyMapper<DeviceOrder> {
     int selectCountByApproverIdAndVersion(@Param("approverId") Long approverId, @Param("version") Integer version);
     
     
-    List<DeviceOrder> selectByObject(@Param("objectType")Integer objectType, @Param("objectId")Long objectId);
+    DeviceOrder selectByObject(@Param("objectType")Integer objectType, @Param("objectId")Long objectId);
 }
