@@ -95,8 +95,11 @@ public class MdmcTaskItem extends BaseEntity {
      * 图片url
      */
     @Column(name = "photo_url")
-
     private String photo_url;
+
+    /**
+     * 故障类型
+     */
     @Column(name = "trouble_type")
     private Integer troubleType;
 
