@@ -8,7 +8,6 @@ import com.ananops.provider.service.hystrix.MdmcTaskFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +18,8 @@ import java.util.List;
 public interface MdmcTaskFeignApi {
     
     
-    @PostMapping(value = "api/mdmcTask/getTaskByTaskId")
-    Wrapper<List<MdmcTask>> getTaskByStatus(@RequestBody MdmcStatusDto statusDto);
+//    @PostMapping(value = "api/mdmcTask/getTaskByTaskId")
+//    Wrapper<List<MdmcTask>> getTaskByStatus(@RequestBody MdmcStatusDto statusDto);
     
     @PostMapping(value = "api/mdmcTask/getTaskByTaskId/{taskId}")
     Wrapper<MdmcTask> getTaskByTaskId(@PathVariable("taskId") Long taskId);
@@ -41,14 +40,14 @@ public interface MdmcTaskFeignApi {
     Wrapper saveTask(@RequestBody MdmcFeignTaskDto mdmcFeignTaskDto);
 
     @PostMapping(value = "/api/mdmcTask/modifyTaskStausByTaskId")
-    Wrapper<MdmcTask> modifyTaskStatusByTaskId(MdmcChangeStatusDto mdmcChangeStatusDto);
+    Wrapper<MdmcTask> modifyTaskStatusByTaskId(@RequestBody MdmcChangeStatusDto mdmcChangeStatusDto);
 
     @PostMapping(value = "/api/mdmcTask/modifyMaintainerByTaskId")
-    Wrapper<MdmcTask> modifyMaintainerByTaskId(MdmcChangeMaintainerDto mdmcChangeMaintainerDto);
+    Wrapper<MdmcTask> modifyMaintainerByTaskId(@RequestBody MdmcChangeMaintainerDto mdmcChangeMaintainerDto);
 
     @PostMapping(value = "/api/mdmcTask/refuseMdmcTaskByMaintainer")
-    Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByMaintainer(RefuseMdmcTaskDto refuseMdmcTaskDto);
+    Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByMaintainer(@RequestBody RefuseMdmcTaskDto refuseMdmcTaskDto);
 
     @PostMapping(value = "/api/mdmcTask/refuseMdmcTaskByFacilitator")
-    Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(RefuseMdmcTaskDto refuseMdmcTaskDto);
+    Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(@RequestBody RefuseMdmcTaskDto refuseMdmcTaskDto);
 }
