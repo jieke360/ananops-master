@@ -16,6 +16,13 @@ import java.util.Date;
 @Data
 @Table(name = "task")
 public class MdmcTask extends BaseEntity {
+
+    @Column(name = "object_type")
+    private Integer objectType;
+
+    @Column(name = "object_id")
+    private Long objectId;
+
     /**
      * 发起此次维修请求的用户ID
      */
