@@ -31,4 +31,6 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
     ItemChangeMaintainerDto modifyMaintainerIdByItemId(ItemChangeMaintainerDto itemChangeMaintainerDto);//修改巡检任务子项对应的维修工ID
 
     ImcItemChangeStatusDto refuseImcItemByItemId(RefuseImcItemDto refuseImcItemDto);//工程师拒单
+
+    ImcItemChangeStatusDto modifyImcItemStatusByItemId(ImcItemChangeStatusDto imcItemChangeStatusDto);//修改任务子项的状态
 }

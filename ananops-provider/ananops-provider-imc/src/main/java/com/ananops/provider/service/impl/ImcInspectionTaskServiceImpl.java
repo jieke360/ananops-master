@@ -404,6 +404,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum()));
         imcTaskChangeStatusDto.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
         imcTaskChangeStatusDto.setTaskId(taskId);
+        imcTaskChangeStatusDto.setLoginAuthDto(loginAuthDto);
         Example example = new Example(ImcInspectionTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);

@@ -56,7 +56,7 @@ public interface SpcCompanyService extends IService<SpcCompany> {
     /**
      * 根据公司状态分页查询公司信息
      *
-     * @param spcCompany 分页查询数据
+     * @param companyStatusDto 分页查询数据
      *
      * @return 返回公司列表
      */

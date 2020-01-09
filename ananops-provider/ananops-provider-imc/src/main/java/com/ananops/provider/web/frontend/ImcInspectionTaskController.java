@@ -108,12 +108,14 @@ public class ImcInspectionTaskController extends BaseController {
 
     @PostMapping(value = "/refuseTaskByFacilitator")
     @ApiOperation(httpMethod = "POST",value = "服务商拒单")
+    @AnanLogAnnotation
     public Wrapper<ImcTaskChangeStatusDto> refuseTaskByFacilitator(@RequestBody RefuseImcTaskDto refuseMdmcTaskDto){
         return WrapMapper.ok(imcInspectionTaskService.refuseImcTaskByTaskId(refuseMdmcTaskDto));
     }
 
     @PostMapping(value = "/refuseItemByMaintainer")
     @ApiOperation(httpMethod = "POST",value = "工程师拒单")
+    @AnanLogAnnotation
     public Wrapper<ImcItemChangeStatusDto> refuseTaskByMaintainer(@RequestBody RefuseImcItemDto refuseImcItemDto){
         return WrapMapper.ok(imcInspectionItemService.refuseImcItemByItemId(refuseImcItemDto));
     }

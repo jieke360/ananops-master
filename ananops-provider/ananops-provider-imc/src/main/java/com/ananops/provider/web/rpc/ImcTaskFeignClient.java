@@ -175,7 +175,7 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
     }
 
     @Override
-    @ApiOperation(httpMethod = "POST", value = "根据巡检任务的ID修改任务的状态")
+    @ApiOperation(httpMethod = "POST", value = "更改巡检任务的状态")
     @AnanLogAnnotation
     public Wrapper<ImcTaskChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatusByTaskId",value = "根据巡检任务的ID修改该任务的状态")@RequestBody ImcTaskChangeStatusDto imcTaskChangeStatusDto){
         LoginAuthDto loginAuthDto = imcTaskChangeStatusDto.getLoginAuthDto();
@@ -196,6 +196,7 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
 
     @Override
     @ApiOperation(httpMethod = "POST", value = "修改巡检任务对应的服务商")
+    @AnanLogAnnotation
     public Wrapper<TaskChangeFacilitatorDto> modifyFacilitatorByTaskId(@ApiParam(name = "modifyFacilitatorByTaskId",value = "修改巡检任务对应的服务商")@RequestBody TaskChangeFacilitatorDto taskChangeFacilitatorDto){
         Long taskId = taskChangeFacilitatorDto.getTaskId();
         Long facilitatorId = taskChangeFacilitatorDto.getFacilitatorId();
@@ -216,7 +217,8 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
 
 
     @Override
-    @ApiOperation(httpMethod = "POST", value = "服务商拒单（巡检任务）")
+    @ApiOperation(httpMethod = "POST", value = "服务商拒单")
+    @AnanLogAnnotation
     public Wrapper<ImcTaskChangeStatusDto> refuseImcTaskByTaskId(@ApiParam(name = "refuseImcTaskByTaskId",value = "服务商拒单（巡检任务）")@RequestBody RefuseImcTaskDto refuseImcTaskDto){
         return WrapMapper.ok(imcInspectionTaskService.refuseImcTaskByTaskId(refuseImcTaskDto));
     }
