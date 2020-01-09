@@ -255,8 +255,11 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         if (!StringUtils.isEmpty(groupId)) {//如果组织Id非空
             GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(groupId).getResult();
             try {
-                BeanUtils.copyProperties(companyVo, spcCompany);
-                BeanUtils.copyProperties(companyVo, groupSaveDto);
+                if (spcCompany != null)
+                    BeanUtils.copyProperties(companyVo, spcCompany);
+
+                if (groupSaveDto != null)
+                    BeanUtils.copyProperties(companyVo, groupSaveDto);
             } catch (Exception e) {
                 log.error("queryByCompanyId 服务商Dto与用户组Dto属性拷贝异常");
                 e.printStackTrace();
@@ -266,10 +269,10 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         log.info("工单项目ID：projectId=" + projectId);
         List<Long> engineerIdList = new ArrayList<>();
         List<EngineerVo> engineerVos = new ArrayList<>();
-        if(!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)){
+        if(!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)){
             //如果当前是巡检任务
             engineerIdList.add(mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult().getMaintainerId());
-        }else if(!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)){
+        }else if(!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)){
             //如果当前是维修维护任务
             List<ItemDto> itemDtoList = imcTaskFeignApi.getTaskByTaskId(taskId).getResult().getItemDtoList();
             itemDtoList.forEach(itemDto -> {
