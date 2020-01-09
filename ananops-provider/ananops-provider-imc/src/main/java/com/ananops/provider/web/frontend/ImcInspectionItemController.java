@@ -11,10 +11,7 @@ import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.model.vo.ItemLogVo;
-import com.ananops.provider.service.ImcInspectionItemLogService;
-import com.ananops.provider.service.ImcInspectionItemService;
-import com.ananops.provider.service.ImcInspectionTaskService;
-import com.ananops.provider.service.ImcItemFeignApi;
+import com.ananops.provider.service.*;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
@@ -45,6 +42,9 @@ public class ImcInspectionItemController extends BaseController {
 
     @Resource
     ImcItemFeignApi imcItemQueryFeignApi;
+
+    @Resource
+    MdmcTaskFeignApi mdmcTaskFeignApi;
 
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "编辑巡检任务子项记录")
@@ -122,5 +122,13 @@ public class ImcInspectionItemController extends BaseController {
     @ApiOperation(httpMethod = "POST",value = "向mdmc发出维修维护申请")
     public Wrapper<Integer> sendMdmcRequest(@ApiParam(name = "sendMdmcRequest",value = "向mdmc发出维修维护申请")@RequestBody Integer integer){
         return null;
+    }
+
+    @PostMapping(value = "/createMdmcTask")
+    @ApiOperation(httpMethod = "POST",value = "创建一条维修维护任务申请")
+    public Wrapper createMdmcTask(@RequestBody MdmcFeignTaskDto mdmcFeignTaskDto){
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        mdmcFeignTaskDto.setLoginAuthDto(loginAuthDto);
+        return WrapMapper.ok(mdmcTaskFeignApi.saveTask(mdmcFeignTaskDto));
     }
 }

@@ -10,6 +10,7 @@ import com.ananops.provider.model.vo.TaskLogVo;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskLogService;
 import com.ananops.provider.service.ImcInspectionTaskService;
+import com.ananops.provider.service.MdmcTaskFeignApi;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
@@ -36,6 +37,7 @@ public class ImcInspectionTaskController extends BaseController {
 
     @Resource
     ImcInspectionItemService imcInspectionItemService;
+
 
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "编辑巡检任务记录")
@@ -149,4 +151,5 @@ public class ImcInspectionTaskController extends BaseController {
         imcTaskChangeStatusDto.setLoginAuthDto(loginAuthDto);
         return WrapMapper.ok(imcInspectionTaskService.denyImcTaskByTaskId(imcTaskChangeStatusDto));
     }
+
 }
