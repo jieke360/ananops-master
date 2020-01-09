@@ -94,4 +94,18 @@ public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeig
         return WrapMapper.ok(taskService.refuseTaskByFacilitator(refuseMdmcTaskDto));
     }
 
+    @Override
+    public Wrapper<Object> updateStatusAfterDeviceOrderDone(LoginAuthDto loginAuthDto) {
+        MdmcChangeStatusDto changeStatusDto = new MdmcChangeStatusDto();
+        changeStatusDto.setStatus(8);
+        return WrapMapper.ok(taskService.modifyTaskStatus(changeStatusDto, loginAuthDto));
+    }
+
+    @Override
+    public Wrapper<Object> updateStatusAfterDeviceOrderCreated(LoginAuthDto loginAuthDto) {
+        MdmcChangeStatusDto changeStatusDto = new MdmcChangeStatusDto();
+        changeStatusDto.setStatus(7);
+        return WrapMapper.ok(taskService.modifyTaskStatus(changeStatusDto, loginAuthDto));
+    }
+
 }
