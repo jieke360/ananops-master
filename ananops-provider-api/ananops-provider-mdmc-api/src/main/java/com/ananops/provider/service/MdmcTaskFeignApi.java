@@ -1,5 +1,6 @@
 package com.ananops.provider.service;
 
+import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.MdmcListDto;
@@ -50,4 +51,10 @@ public interface MdmcTaskFeignApi {
 
     @PostMapping(value = "/api/mdmcTask/refuseMdmcTaskByFacilitator")
     Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(@RequestBody RefuseMdmcTaskDto refuseMdmcTaskDto);
+
+    @PostMapping(value = "/api/mamcTask/deviceOrder/done")
+    Wrapper<Object> updateStatusAfterDeviceOrderDone(@RequestBody LoginAuthDto loginAuthDto);
+
+    @PostMapping(value = "/api/mamcTask/deviceOrder/created")
+    Wrapper<Object> updateStatusAfterDeviceOrderCreated(@RequestBody LoginAuthDto loginAuthDto);
 }

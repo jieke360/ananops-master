@@ -1,5 +1,6 @@
 package com.ananops.provider.service.hystrix;
 
+import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.service.MdmcTaskFeignApi;
@@ -67,6 +68,16 @@ public class MdmcTaskFeignHystrix implements MdmcTaskFeignApi {
 
     @Override
     public Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(RefuseMdmcTaskDto refuseMdmcTaskDto){
+        return null;
+    }
+
+    @Override
+    public Wrapper<Object> updateStatusAfterDeviceOrderDone(LoginAuthDto loginAuthDto) {
+        return null;
+    }
+
+    @Override
+    public Wrapper<Object> updateStatusAfterDeviceOrderCreated(LoginAuthDto loginAuthDto) {
         return null;
     }
 }
