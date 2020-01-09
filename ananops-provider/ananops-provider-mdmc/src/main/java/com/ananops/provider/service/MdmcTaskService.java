@@ -42,5 +42,5 @@ public interface MdmcTaskService extends IService<MdmcTask> {
 
     String[] getNullPropertyNames (Object source);
 
-    void copyProperties(Object source, Object target);
+    void copyPropertiesWithIgnoreNullProperties(Object source, Object target);
 }
