@@ -1,11 +1,10 @@
 package com.ananops.provider.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -37,6 +36,9 @@ public class MdmcAddTaskDto implements Serializable {
     @ApiModelProperty("报修人ID")
     private Long userId;
 
+    @ApiModelProperty("工程师ID")
+    private Long maintainerId;
+
     @ApiModelProperty("当前花费")
     private BigDecimal totalCost;
 
@@ -54,6 +56,9 @@ public class MdmcAddTaskDto implements Serializable {
 
     @ApiModelProperty("报修人电话")
     private String call;
+
+    @ApiModelProperty("备注")
+    private String note;
 
     @ApiModelProperty("任务子项")
     private List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList;
