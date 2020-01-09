@@ -250,7 +250,9 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
     public EngineerVo queryByEngineerId(Long engineerId) {
         logger.info("queryByEngineerId - 根据工程师Id查询工程师信息接口. engineerId={}", engineerId);
         EngineerVo engineerVo = new EngineerVo();
-        SpcEngineer spcEngineer = spcEngineerMapper.selectByPrimaryKey(engineerId);
+        SpcEngineer queryE = new SpcEngineer();
+        queryE.setUserId(engineerId);
+        SpcEngineer spcEngineer = spcEngineerMapper.selectOne(queryE);
         Long userId = spcEngineer.getUserId();
         if (!StringUtils.isEmpty(userId)) {
             UserInfoDto userInfoDto = uacUserFeignApi.getUacUserById(userId).getResult();
