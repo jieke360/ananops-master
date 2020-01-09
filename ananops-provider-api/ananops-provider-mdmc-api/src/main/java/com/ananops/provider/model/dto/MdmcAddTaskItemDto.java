@@ -39,7 +39,6 @@ public class MdmcAddTaskItemDto implements Serializable {
     @ApiModelProperty("设备地址-纬度")
     private BigDecimal deviceLongitude;
 
-
     @ApiModelProperty("故障类型")
     private Integer troubleType;
 }

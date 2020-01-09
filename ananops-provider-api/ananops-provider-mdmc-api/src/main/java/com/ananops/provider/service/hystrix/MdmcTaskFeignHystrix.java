@@ -15,10 +15,10 @@ import java.util.List;
 public class MdmcTaskFeignHystrix implements MdmcTaskFeignApi {
     
     
-    @Override
-    public Wrapper<List<MdmcTask>> getTaskByStatus(MdmcStatusDto statusDto) {
-        return null;
-    }
+//    @Override
+//    public Wrapper<List<MdmcTask>> getTaskByStatus(MdmcStatusDto statusDto) {
+//        return null;
+//    }
     
     @Override
     public Wrapper<MdmcTask> getTaskByTaskId(Long taskId) {

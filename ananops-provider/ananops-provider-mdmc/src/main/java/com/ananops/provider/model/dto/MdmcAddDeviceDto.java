@@ -17,7 +17,6 @@ public class MdmcAddDeviceDto implements Serializable {
     @ApiModelProperty("从属的任务id")
     private Long taskId;
 
-
     @ApiModelProperty("维修工id")
     private Long maintainerId;
 
