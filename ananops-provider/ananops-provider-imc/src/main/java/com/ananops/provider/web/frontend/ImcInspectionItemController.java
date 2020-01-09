@@ -117,4 +117,10 @@ public class ImcInspectionItemController extends BaseController {
     public Wrapper<ItemChangeMaintainerDto> modifyMaintainerByItemId(@ApiParam(name = "modifyMaintainerByItemId",value = "修改巡检任务子项对应的工程师ID")@RequestBody ItemChangeMaintainerDto itemChangeMaintainerDto) {
         return WrapMapper.ok(imcInspectionItemService.modifyMaintainerIdByItemId(itemChangeMaintainerDto));
     }
+
+    @PostMapping(value = "/sendMdmcRequest")
+    @ApiOperation(httpMethod = "POST",value = "向mdmc发出维修维护申请")
+    public Wrapper<Integer> sendMdmcRequest(@ApiParam(name = "sendMdmcRequest",value = "向mdmc发出维修维护申请")@RequestBody Integer integer){
+        return null;
+    }
 }

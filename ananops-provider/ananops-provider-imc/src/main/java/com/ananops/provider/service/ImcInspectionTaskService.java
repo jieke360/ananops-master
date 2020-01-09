@@ -38,6 +38,13 @@ public interface ImcInspectionTaskService extends IService<ImcInspectionTask> {
 
     ImcTaskChangeStatusDto refuseImcTaskByTaskId(RefuseImcTaskDto refuseImcTaskDto);//服务商拒单
 
+    List<ImcInspectionTask> getAllUnauthorizedTaskByPrincipalId(TaskQueryDto taskQueryDto);//查询当前甲方负责人下面的全部未授权的任务
+
+    List<ImcInspectionTask> getAllDeniedTaskByPrincipalId(TaskQueryDto taskQueryDto);//查询当前甲方负责人下面的全部未授权的任务
+
+    ImcTaskChangeStatusDto acceptImcTaskByTaskId(ImcTaskChangeStatusDto imcTaskChangeStatusDto);//同意一项巡检任务
+
+    ImcTaskChangeStatusDto denyImcTaskByTaskId(ImcTaskChangeStatusDto imcTaskChangeStatusDto);//否决一项巡检任务
 //    List<ImcInspectionTask> getTaskByFacilitatorId(TaskQueryDto taskQueryDto);//根据服务商id查询对应的巡检任务
 //
 //    List<ImcInspectionTask> getTaskByFacilitatorIdAndStatus(TaskQueryDto taskQueryDto);//根据服务商id查询指定状态的巡检任务

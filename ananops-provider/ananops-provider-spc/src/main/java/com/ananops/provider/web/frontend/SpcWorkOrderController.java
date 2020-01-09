@@ -130,7 +130,7 @@ public class SpcWorkOrderController extends BaseController {
      */
     @PostMapping(value = "/transferWorkOrder")
     @LogAnnotation
-    @ApiOperation(httpMethod = "POST", value = "转单,将工单信息中工程师置空")
+    @ApiOperation(httpMethod = "POST", value = "转单，相当于服务商拒单")
     public Wrapper<Integer> transferWorkOrder(@ApiParam(name = "workOrderDto", value = "工单ID") @RequestBody WorkOrderDto workOrderDto) {
         logger.info("getSpcWorkOrderById - 根据工单Id查询工单信息. workOrderQueryDto={}", workOrderDto);
         LoginAuthDto loginAuthDto = getLoginAuthDto();

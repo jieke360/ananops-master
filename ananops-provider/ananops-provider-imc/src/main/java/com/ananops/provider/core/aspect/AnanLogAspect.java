@@ -184,10 +184,10 @@ public class AnanLogAspect {
                 status = imcTaskChangeStatusDto.getStatus();
                 String statusMsg = imcTaskChangeStatusDto.getStatusMsg();
                 ImcInspectionTaskLog imcInspectionTaskLog;
-                if("服务商拒单".equals(movement)){
+                if("服务商拒单".equals(movement)||"同意执行巡检任务".equals(movement)||"否决执行巡检任务".equals(movement)){
                      imcInspectionTaskLog = createTaskLog(taskId,status,startTime,endTime,movement ,os,browser,ipAddress);
-                }else{
-                    imcInspectionTaskLog = createTaskLog(taskId,status,startTime,endTime,movement + "为：" + statusMsg,os,browser,ipAddress);
+                } else{
+                    imcInspectionTaskLog = createTaskLog(taskId,status,startTime,endTime,statusMsg,os,browser,ipAddress);
                 }
                 LoginAuthDto loginUser;
                 try{//如果是模块内部调用产生的日志打印，则通过此方法获取
@@ -212,7 +212,7 @@ public class AnanLogAspect {
                 if("工程师拒单".equals(movement)){
                     imcInspectionItemLog = createItemLog(itemId,taskId,status,startTime,endTime,movement,os,browser,ipAddress);
                 }else{
-                    imcInspectionItemLog = createItemLog(itemId,taskId,status,startTime,endTime,movement + "为：" + statusMsg,os,browser,ipAddress);
+                    imcInspectionItemLog = createItemLog(itemId,taskId,status,startTime,endTime,statusMsg,os,browser,ipAddress);
                 }
                 LoginAuthDto loginUser;
                 try{//如果是模块内部调用产生的日志打印，则通过此方法获取

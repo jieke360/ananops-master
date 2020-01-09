@@ -1,5 +1,6 @@
 package com.ananops.provider.model.dto;
 
+import com.ananops.base.dto.LoginAuthDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -128,4 +129,10 @@ public class ImcAddInspectionTaskDto implements Serializable {
 
     @ApiModelProperty(value = "巡检任务子项列表")
     private List<ImcAddInspectionItemDto> imcAddInspectionItemDtoList;
+
+    /**
+     * 当前操作用户的身份信息
+     */
+    @ApiModelProperty(value = "当前操作用户的LoginAuthDto")
+    private LoginAuthDto loginAuthDto;
 }

@@ -45,4 +45,7 @@ public interface ImcTaskFeignApi {
 
     @PostMapping(value = "/api/task/refuseImcTaskByTaskId")
     Wrapper<ImcTaskChangeStatusDto> refuseImcTaskByTaskId(@ApiParam(name = "refuseImcTaskByTaskId",value = "服务商拒单（巡检任务）")@RequestBody RefuseImcTaskDto refuseImcTaskDto);
+
+    @PostMapping(value = "/api/task/createImcTask")
+    Wrapper<ImcAddInspectionTaskDto> createImcTask(@ApiParam(name = "createImcTask",value = "创建巡检任务")@RequestBody ImcAddInspectionTaskDto imcAddInspectionTaskDto);
 }

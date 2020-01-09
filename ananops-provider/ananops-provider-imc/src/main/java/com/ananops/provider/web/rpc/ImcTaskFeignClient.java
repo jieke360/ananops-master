@@ -223,6 +223,14 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
         return WrapMapper.ok(imcInspectionTaskService.refuseImcTaskByTaskId(refuseImcTaskDto));
     }
 
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "编辑巡检任务")
+    @AnanLogAnnotation
+    public Wrapper<ImcAddInspectionTaskDto> createImcTask(@ApiParam(name = "createImcTask",value = "创建巡检任务")@RequestBody ImcAddInspectionTaskDto imcAddInspectionTaskDto){
+        LoginAuthDto loginAuthDto = imcAddInspectionTaskDto.getLoginAuthDto();
+        return WrapMapper.ok(imcInspectionTaskService.saveTask(imcAddInspectionTaskDto,loginAuthDto));
+    }
+
     public List<ItemDto> getItemList(Long taskId){
         Example example = new Example(ImcInspectionItem.class);
         Example.Criteria criteria = example.createCriteria();
@@ -236,5 +244,4 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
         });
         return itemDtoList;
     }
-
 }
