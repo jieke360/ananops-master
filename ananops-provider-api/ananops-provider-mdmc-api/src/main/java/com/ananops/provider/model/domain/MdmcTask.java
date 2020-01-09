@@ -146,4 +146,6 @@ public class MdmcTask extends BaseEntity {
     @Column(name = "maintenance_result")
     private Integer result;
 
+    private String note;
+
 }
