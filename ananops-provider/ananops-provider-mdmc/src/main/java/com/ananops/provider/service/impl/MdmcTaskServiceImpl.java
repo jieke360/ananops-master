@@ -10,6 +10,7 @@ import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.*;
+import com.ananops.provider.service.ImcTaskFeignApi;
 import com.ananops.provider.service.MdmcTaskItemService;
 import com.ananops.provider.service.MdmcTaskService;
 import com.ananops.wrapper.Wrapper;
@@ -36,6 +37,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     @Resource
     MdmcTaskItemService taskItemService;
 
+    @Resource
+    ImcTaskFeignApi imcTaskFeignApi;
+
 
     @Override
     public MdmcTask getTaskByTaskId(Long taskId) {
@@ -43,18 +47,12 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     }
 
     @Override
-    public MdmcAddTaskDto saveTask(MdmcAddTaskDto mdmcAddTaskDto,LoginAuthDto loginAuthDto) {
+    public MdmcAddTaskDto saveTask(MdmcAddTaskDto mdmcAddTaskDto, LoginAuthDto loginAuthDto) {
 
         MdmcTask task = new MdmcTask();
-        copyProperties(mdmcAddTaskDto,task);
+        copyPropertiesWithIgnoreNullProperties(mdmcAddTaskDto,task);
         task.setUpdateInfo(loginAuthDto);
-        if (mdmcAddTaskDto.getUserId()==null){
-           throw new BusinessException(ErrorCodeEnum.GL99990003);
-        }
-//        MqMessageData mqMessageData;
-//        String body = JSON.toJSONString(mdmcAddTaskDto);
-//        String topic = AliyunMqTopicConstants.MqTagEnum.UPDATE_INSPECTION_TASK.getTopic();
-//        String tag = AliyunMqTopicConstants.MqTagEnum.UPDATE_INSPECTION_TASK.getTag();
+
         if(mdmcAddTaskDto.getId()==null){
             logger.info("创建一条维修工单记录... CrateTaskInfo = {}", mdmcAddTaskDto);
 
@@ -63,48 +61,70 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList = mdmcAddTaskDto.getMdmcAddTaskItemDtoList();
             Long taskId = super.generateId();
             task.setId(taskId);
-//            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(taskId),body);
-//            mqMessageData = new MqMessageData(body, topic, tag, key);
-//            taskManager.saveTask(mqMessageData,task,true);
             task.setStatus(2);
             taskMapper.insert(task);
-            logger.info("新创建一条维修记录：" + task.toString());
+            logger.info("新创建一条维修任务记录 Task = {}" , task);
+
             mdmcAddTaskItemDtoList.forEach(taskItem->{//保存所有任务子项
                 taskItem.setTaskId(taskId);//设置任务子项对应的任务id
                 //创建新的任务子项，并更新返回结果
-                copyProperties(taskItemService.saveItem(taskItem,loginAuthDto),taskItem);
+                MdmcTaskItem item = taskItemService.saveItem(taskItem,loginAuthDto);
+                BeanUtils.copyProperties(item ,taskItem);
             });
+
             //更新返回结果
+            BeanUtils.copyProperties(task,mdmcAddTaskDto);
+            BeanUtils.copyProperties(mdmcAddTaskItemDtoList,mdmcAddTaskDto);
 
-            copyProperties(task,mdmcAddTaskDto);
-            copyProperties(mdmcAddTaskItemDtoList,mdmcAddTaskDto);
+            logger.info("创建维修工单成功[OK] TaskDetail = {}", mdmcAddTaskDto);
 
-            logger.info("创建维修工单成功[OK] Task = {}", task);
-
-        }else{
+        } else {
             logger.info("编辑/修改维修工单详情... UpdateInfo = {}", mdmcAddTaskDto);
 
             Long taskId = mdmcAddTaskDto.getId();
-            Example example = new Example(MdmcTask.class);
-            Example.Criteria criteria = example.createCriteria();
-            criteria.andEqualTo("id",taskId);
-            List<MdmcTask> taskList =taskMapper.selectByExample(example);
-            if(taskList.size()==0){//如果没有此任务
+            MdmcTask t =taskMapper.selectByPrimaryKey(taskId);
+            if (t == null) {//如果没有此任务
                 throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
             }
-            //如果当前是更新一条记录
-//            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(task.getId()),body);
-//            mqMessageData = new MqMessageData(body, topic, tag, key);
-//            taskManager.saveTask(mqMessageData,task,false);
+
+            // 更新工单信息和状态
             taskMapper.updateByPrimaryKeySelective(task);
-            //更新返回结果
-            copyProperties(task,mdmcAddTaskDto);
+
+            Integer status = task.getStatus();
+            Integer objectType = task.getObjectType();
+            if(status == MdmcTaskStatusEnum.WanCheng.getStatusNum() && objectType == MdmcObjectTypeEnum.IMC.getCode()) {
+                Long imcTaskId = task.getObjectId();
+                if(imcTaskId != null) {
+                    /*
+                    ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
+                    imcTaskChangeStatusDto.setLoginAuthDto(loginAuthDto);
+                    imcTaskChangeStatusDto.setTaskId(objectId);
+                    imcTaskChangeStatusDto.setStatus();
+                    imcTaskFeignApi.modifyTaskStatusByTaskId(imcTaskChangeStatusDto);
+
+                     */
+                    logger.info("维修工单完成，更新巡检状态");
+
+                }
+            }
+
+            // 更新返回结果
+            BeanUtils.copyProperties(task,mdmcAddTaskDto);
 
             logger.info("编辑/修改维修工单成功[OK] Task = {}", task);
 
         }
 
-        System.out.println(task.getTitle());
+        MdmcTaskLog taskLog=new MdmcTaskLog();
+        Long taskLogId = super.generateId();
+        taskLog.setId(taskLogId);
+        taskLog.setTaskId(task.getId());
+        taskLog.setStatus(task.getStatus());
+        taskLog.setMovement(MdmcTaskStatusEnum.getStatusMsg(task.getStatus()));
+        taskLogMapper.insert(taskLog);
+
+        logger.info("记录维修工单操作日志[OK] TaskLog = {}", taskLog);
+
         return mdmcAddTaskDto;
     }
 
@@ -113,7 +133,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         logger.info("修改维修工单详情... UpdateInfo = {}", mdmcTaskDto);
 
         MdmcTask task = new MdmcTask();
-        copyProperties(mdmcTaskDto,task);
+        copyPropertiesWithIgnoreNullProperties(mdmcTaskDto,task);
         Long taskId = mdmcTaskDto.getId();
         if (taskId==null){
             throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
@@ -131,7 +151,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //            taskManager.saveTask(mqMessageData,task,false);
         taskMapper.updateByPrimaryKeySelective(task);
         //更新返回结果
-        copyProperties(task,mdmcTaskDto);
+        BeanUtils.copyProperties(task,mdmcTaskDto);
 
         logger.info("修改维修工单详情成功[OK] Task = {}", task);
         return mdmcTaskDto;
@@ -400,7 +420,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         return emptyNames.toArray(result);
     }
 
-    public void copyProperties(Object source, Object target){
+    public void copyPropertiesWithIgnoreNullProperties(Object source, Object target){
         String[] ignore = getNullPropertyNames(source);
         BeanUtils.copyProperties(source, target, ignore);
     }

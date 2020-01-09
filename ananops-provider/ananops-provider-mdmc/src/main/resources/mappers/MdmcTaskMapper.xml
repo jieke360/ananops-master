@@ -30,6 +30,9 @@
       <arg column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="total_cost" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
       <arg column="clearing_form" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="note" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="objectType" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="objectId" jdbcType="BIGINT" javaType="java.lang.Long" />
     </constructor>
   </resultMap>
   <resultMap id="IDResultMap" type="com.ananops.provider.model.domain.MdmcTask">
