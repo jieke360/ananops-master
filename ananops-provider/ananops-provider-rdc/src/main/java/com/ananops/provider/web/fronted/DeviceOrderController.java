@@ -79,4 +79,12 @@ public class DeviceOrderController extends BaseController {
     public Wrapper<Object> getAllDevice(){
         return WrapMapper.ok(deviceService.selectAll());
     }
+
+
+    @ApiOperation(httpMethod = "GET", value = "根据绑定对象获取全部备品备件订单详情")
+    @GetMapping(value = "/all/object/{objectId}/{objectType}")
+    public Wrapper<Object> getAllDeviceOrderByObject(@ApiParam("备品备件订单来源对象的编号")@PathVariable("objectId")Long objectId,
+                                                     @ApiParam("备品备件订单来源对象的类型（维修维护填1）")@PathVariable("objectType")Integer objectType){
+        return WrapMapper.ok(orderService.getDeviceOrderByObject(objectId, objectType));
+    }
 }
