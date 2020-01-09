@@ -1,7 +1,6 @@
 package com.ananops.provider.service;
 
-import com.ananops.provider.model.dto.ItemChangeMaintainerDto;
-import com.ananops.provider.model.dto.TaskChangeFacilitatorDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.service.hystrix.ImcItemFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
@@ -21,4 +20,10 @@ public interface ImcItemFeignApi {
 
     @PostMapping(value = "/api/item/modifyMaintainerByItemId")
     Wrapper<ItemChangeMaintainerDto> modifyMaintainerByItemId(@ApiParam(name = "modifyMaintainerByItemId",value = "修改巡检任务子项对应的工程师ID")@RequestBody ItemChangeMaintainerDto itemChangeMaintainerDto);
+
+    @PostMapping(value = "/api/item/refuseImcItemByItemId")
+    Wrapper<ImcItemChangeStatusDto> refuseImcItemByItemId(@ApiParam(name = "refuseImcItemByItemId",value = "维修工拒单（巡检任务子项）")@RequestBody RefuseImcItemDto refuseImcItemDto);
+
+    @PostMapping(value = "/api/item/modifyImcItemStatus")
+    Wrapper<ImcItemChangeStatusDto> modifyImcItemStatus(@ApiParam(name = "modifyImcItemStatus",value = "修改巡检任务子项的状态")@RequestBody ImcItemChangeStatusDto imcItemChangeStatusDto);
 }

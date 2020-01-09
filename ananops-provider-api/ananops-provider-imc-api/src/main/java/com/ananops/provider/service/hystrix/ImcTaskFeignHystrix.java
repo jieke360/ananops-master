@@ -1,15 +1,11 @@
 package com.ananops.provider.service.hystrix;
 
-import com.ananops.provider.model.dto.TaskChangeFacilitatorDto;
-import com.ananops.provider.model.dto.TaskChangeStatusDto;
-import com.ananops.provider.model.dto.TaskDto;
-import com.ananops.provider.model.dto.TaskQueryDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.service.ImcTaskFeignApi;
 
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.ApiParam;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -53,7 +49,7 @@ public class ImcTaskFeignHystrix implements ImcTaskFeignApi {
     }
 
     @Override
-    public Wrapper<TaskChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatusByTaskId",value = "根据巡检任务的ID修改该任务的状态")@RequestBody TaskChangeStatusDto taskChangeStatusDto){
+    public Wrapper<ImcTaskChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatusByTaskId",value = "根据巡检任务的ID修改该任务的状态")@RequestBody ImcTaskChangeStatusDto imcTaskChangeStatusDto){
         return null;
     }
 
@@ -67,4 +63,8 @@ public class ImcTaskFeignHystrix implements ImcTaskFeignApi {
         return null;
     }
 
+    @Override
+    public Wrapper<ImcTaskChangeStatusDto> refuseImcTaskByTaskId(@ApiParam(name = "refuseImcTaskByTaskId",value = "服务商拒单（巡检任务）")@RequestBody RefuseImcTaskDto refuseImcTaskDto){
+        return null;
+    }
 }

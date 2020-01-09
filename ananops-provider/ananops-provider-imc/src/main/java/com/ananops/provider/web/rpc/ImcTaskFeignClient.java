@@ -10,6 +10,7 @@ import com.ananops.provider.mapper.ImcInspectionTaskMapper;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionTaskLogService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.provider.service.ImcTaskFeignApi;
@@ -23,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -177,12 +177,10 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
     @Override
     @ApiOperation(httpMethod = "POST", value = "根据巡检任务的ID修改任务的状态")
     @AnanLogAnnotation
-    public Wrapper<TaskChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatusByTaskId",value = "根据巡检任务的ID修改该任务的状态")@RequestBody TaskChangeStatusDto taskChangeStatusDto){
-        LoginAuthDto loginAuthDto = taskChangeStatusDto.getLoginAuthDto();
-        ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
-        BeanUtils.copyProperties(taskChangeStatusDto,imcTaskChangeStatusDto);
+    public Wrapper<ImcTaskChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatusByTaskId",value = "根据巡检任务的ID修改该任务的状态")@RequestBody ImcTaskChangeStatusDto imcTaskChangeStatusDto){
+        LoginAuthDto loginAuthDto = imcTaskChangeStatusDto.getLoginAuthDto();
         imcInspectionTaskService.modifyTaskStatus(imcTaskChangeStatusDto,loginAuthDto);
-        return WrapMapper.ok(taskChangeStatusDto);
+        return WrapMapper.ok(imcTaskChangeStatusDto);
     }
 
     @Override
@@ -216,6 +214,13 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
         throw new BusinessException(ErrorCodeEnum.GL9999093);
     }
 
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "服务商拒单（巡检任务）")
+    public Wrapper<ImcTaskChangeStatusDto> refuseImcTaskByTaskId(@ApiParam(name = "refuseImcTaskByTaskId",value = "服务商拒单（巡检任务）")@RequestBody RefuseImcTaskDto refuseImcTaskDto){
+        return WrapMapper.ok(imcInspectionTaskService.refuseImcTaskByTaskId(refuseImcTaskDto));
+    }
+
     public List<ItemDto> getItemList(Long taskId){
         Example example = new Example(ImcInspectionItem.class);
         Example.Criteria criteria = example.createCriteria();
@@ -229,4 +234,5 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
         });
         return itemDtoList;
     }
+
 }

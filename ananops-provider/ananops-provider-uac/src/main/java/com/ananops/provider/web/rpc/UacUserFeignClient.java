@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -112,5 +113,20 @@ public class UacUserFeignClient extends BaseController implements UacUserFeignAp
         uacUserService.saveUacUser(uacUser, loginAuthDto);
         UacUser result = uacUserService.selectOne(uacUser);
         return WrapMapper.ok(result.getId());
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "验证用户是否存在以及身份是否属实")
+    public Wrapper<Boolean> validateUser(Long userId, String roleCode) {
+        UacUser user = uacUserService.queryByUserId(userId);
+        if (user == null) {
+            return WrapMapper.ok(Boolean.FALSE);
+        }
+        UacRole role = uacRoleService.selectByKey(userId);
+        if (!role.getRoleCode().equals(roleCode)) {
+            return WrapMapper.ok(Boolean.FALSE);
+        }
+        return WrapMapper.ok(Boolean.TRUE);
+
     }
 }

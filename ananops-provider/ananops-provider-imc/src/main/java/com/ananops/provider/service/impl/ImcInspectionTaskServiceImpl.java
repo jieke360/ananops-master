@@ -17,11 +17,14 @@ import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.wrapper.WrapMapper;
+import com.ananops.wrapper.Wrapper;
 import com.github.pagehelper.PageHelper;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -77,9 +80,14 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             Long userId = imcAddInspectionTaskDto.getUserId();
             Long facilitatorManagerId = imcAddInspectionTaskDto.getFacilitatorManagerId();
             Long facilitatorGroupId = imcAddInspectionTaskDto.getFacilitatorGroupId();
+            Long facilitatorId = imcAddInspectionTaskDto.getFacilitatorId();
             imcInspectionTask.setId(taskId);
             //将巡检任务状态设置为等待服务商接单
-            imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
+            if(facilitatorId ==null){//如果当前巡检任务不存在服务商
+                imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
+            }else{//如果存在服务商
+                imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_ACCEPT.getStatusNum());
+            }
             String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(taskId),body);
             mqMessageData = new MqMessageData(body, topic, tag, key);
             imcTaskManager.saveInspectionTask(mqMessageData,imcInspectionTask,true);
@@ -108,8 +116,8 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                 Long scheduledStartTime = item.getScheduledStartTime().getTime();//获得巡检任务子项的预计开始时间
                 Long currentTime = System.currentTimeMillis();//获得当前时间
                 if(scheduledStartTime<=currentTime){//如果计划执行时间<=当前时间，说明，巡检任务需要立即执行
-                    //将巡检任务子项的状态设置为等待巡检
-                    item.setStatus(ItemStatusEnum.WAITING_FOR_INSPECTION.getStatusNum());
+                    //将巡检任务子项的状态设置为等待分配工程师
+                    item.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
                 }
                 //创建新的任务子项，并更新返回结果
                 BeanUtils.copyProperties(imcInspectionItemService.saveInspectionItem(item,loginAuthDto),item);
@@ -157,6 +165,16 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
         }
         //如果当前任务存在
+        if(status.equals(TaskStatusEnum.WAITING_FOR_PAY.getStatusNum())){//如果当前任务状态修改为等待支付，意味着任务已经被确认
+            Example example2 = new Example(ImcInspectionItem.class);
+            Example.Criteria criteria2 = example2.createCriteria();
+            criteria2.andEqualTo("inspectionTaskId",taskId);
+            List<ImcInspectionItem> imcInspectionItemList = imcInspectionItemMapper.selectByExample(example2);
+            imcInspectionItemList.forEach(imcInspectionItem -> {//任务已经巡检完毕，将全部任务子项的状态修改为已完成
+                imcInspectionItem.setStatus(ItemStatusEnum.VERIFIED.getStatusNum());
+                imcInspectionItemService.update(imcInspectionItem);
+            });
+        }
         imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(status));
         imcInspectionTask.setId(taskId);
         imcInspectionTask.setStatus(status);
@@ -375,6 +393,38 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     }
 
     /**
+     * 服务商拒单
+     * @param refuseImcTaskDto
+     * @return
+     */
+    public ImcTaskChangeStatusDto refuseImcTaskByTaskId(RefuseImcTaskDto refuseImcTaskDto){
+        LoginAuthDto loginAuthDto = refuseImcTaskDto.getLoginAuthDto();
+        Long taskId = refuseImcTaskDto.getTaskId();
+        ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
+        imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum()));
+        imcTaskChangeStatusDto.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
+        imcTaskChangeStatusDto.setTaskId(taskId);
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        if(imcInspectionTaskMapper.selectCountByExample(example)==0){
+            //如果当前任务不存在
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        ImcInspectionTask imcInspectionTask = imcInspectionTaskMapper.selectByExample(example).get(0);
+        if(imcInspectionTask.getStatus().equals(TaskStatusEnum.WAITING_FOR_ACCEPT.getStatusNum())){
+            //如果当前任务的状态是等待服务商接单，才允许服务商拒单
+            imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
+            imcInspectionTask.setUpdateInfo(loginAuthDto);
+            imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
+        }else{
+            throw new BusinessException(ErrorCodeEnum.GL9999086);
+        }
+        return imcTaskChangeStatusDto;
+    }
+
+
+    /**
      * 判断巡检任务是否完成
      * @param taskId
      * @return
@@ -385,7 +435,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         criteria.andEqualTo("inspectionTaskId",taskId);
         List<ImcInspectionItem> imcInspectionItemList = imcInspectionItemMapper.selectByExample(example);
         for(int i=0;i<imcInspectionItemList.size();i++){
-            if(imcInspectionItemList.get(i).getStatus()<3){//如果还有巡检任务子项没完成
+            if(imcInspectionItemList.get(i).getStatus()<ItemStatusEnum.INSPECTION_OVER.getStatusNum()){//如果还有巡检任务子项没完成
                 return false;
             }
         }

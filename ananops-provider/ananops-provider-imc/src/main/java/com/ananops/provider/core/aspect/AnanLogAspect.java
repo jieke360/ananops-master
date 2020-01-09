@@ -197,10 +197,10 @@ public class AnanLogAspect {
                 if(imcInspectionItemLogService.createInspectionItemLog(imcInspectionItemLog,loginUser) == 1){
                     System.out.println("巡检任务子项日志创建成功" + imcInspectionItemLog);
                 }
-                if(imcInspectionTaskService.getTaskByTaskId(taskId).getStatus()==3){
+                if(imcInspectionTaskService.getTaskByTaskId(taskId).getStatus()==TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusNum()){
                     //如果在巡检任务子项状态改变的同时，巡检任务的状态也改变
 
-                    ImcInspectionTaskLog imcInspectionTaskLog = createTaskLog(taskId,3,startTime,endTime,"修改巡检任务状态为" + TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusMsg(),os,browser,ipAddress);
+                    ImcInspectionTaskLog imcInspectionTaskLog = createTaskLog(taskId,4,startTime,endTime,"修改巡检任务状态为" + TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusMsg(),os,browser,ipAddress);
                     if(imcInspectionTaskLogService.createInspectionTaskLog(imcInspectionTaskLog,loginUser)==1){
                         System.out.println("巡检任务日志创建成功" + imcInspectionTaskLog);
                     }

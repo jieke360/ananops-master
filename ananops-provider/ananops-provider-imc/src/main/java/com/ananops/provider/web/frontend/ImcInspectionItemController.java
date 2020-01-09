@@ -9,6 +9,7 @@ import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.ItemStatusEnum;
+import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.model.vo.ItemLogVo;
 import com.ananops.provider.service.ImcInspectionItemLogService;
 import com.ananops.provider.service.ImcInspectionItemService;
@@ -87,12 +88,12 @@ public class ImcInspectionItemController extends BaseController {
         imcInspectionItem.setUpdateInfo(loginAuthDto);
         imcInspectionItemService.update(imcInspectionItem);//更新当前巡检任务子项的状态
         Long taskId = imcInspectionItemService.getItemByItemId(itemId).getInspectionTaskId();
-        if(status==3 && imcInspectionTaskService.isTaskFinish(taskId)){
+        if(status==ItemStatusEnum.INSPECTION_OVER.getStatusNum() && imcInspectionTaskService.isTaskFinish(taskId)){
             //如果该巡检子项对应的巡检任务中全部的任务子项均已完成
             //则修改对应的巡检任务状态为已完成
             ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
             imcTaskChangeStatusDto.setTaskId(taskId);
-            imcTaskChangeStatusDto.setStatus(3);//将巡检任务状态修改为“巡检结果待审核”
+            imcTaskChangeStatusDto.setStatus(TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusNum());//将巡检任务状态修改为“巡检结果待审核”
             imcInspectionTaskService.modifyTaskStatus(imcTaskChangeStatusDto,loginAuthDto);
         }
         return WrapMapper.ok(imcItemChangeStatusDto);

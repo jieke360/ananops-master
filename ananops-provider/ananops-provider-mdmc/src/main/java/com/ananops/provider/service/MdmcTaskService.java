@@ -55,4 +55,11 @@ public interface MdmcTaskService extends IService<MdmcTask> {
     List<MdmcListDto> getTaskListByIdAndStatusArrary(MdmcStatusArrayDto statusArrayDto);
 
     MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto);
+
+    MdmcTask modifyMaintainer(MdmcChangeMaintainerDto mdmcChangeMaintainerDto);
+
+    MdmcChangeStatusDto refuseTaskByMaintainer(RefuseMdmcTaskDto refuseMdmcTaskDto);
+
+    MdmcChangeStatusDto refuseTaskByFacilitator(RefuseMdmcTaskDto refuseMdmcTaskDto);
+
 }

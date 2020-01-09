@@ -7,6 +7,8 @@ import com.ananops.provider.model.dto.TaskDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * 加盟服务商查询返回的工单详细信息Vo
  *
@@ -35,4 +37,14 @@ public class WorkOrderDetailVo extends BaseVo {
      * 工单关联的项目详情
      */
     private PmcProjectDto pmcProjectDto;
+
+    /**
+     * 工单相关服务商信息
+     */
+    private CompanyVo companyVo;
+
+    /**
+     * 工单相关工程师信息
+     */
+    private List<EngineerVo> engineerVos;
 }

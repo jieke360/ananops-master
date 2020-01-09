@@ -1,5 +1,6 @@
 package com.ananops.provider.web.rpc;
 
+import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.dto.*;
@@ -21,7 +22,7 @@ import java.util.List;
 @RefreshScope
 @RestController
 @Api(value = "API - MdmcQueryFeignClient", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class MdmcTaskQueryFeiginClient extends BaseController implements MdmcTaskFeignApi {
+public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeignApi {
     
     @Resource
     MdmcTaskService taskService;
@@ -62,4 +63,34 @@ public class MdmcTaskQueryFeiginClient extends BaseController implements MdmcTas
         MdmcPageDto pageDto=taskService.getTaskListByPage(queryDto);
         return WrapMapper.ok(pageDto);
     }
+
+    @Override
+    public Wrapper saveTask(@RequestBody MdmcFeignTaskDto mdmcFeignTaskDto) {
+        LoginAuthDto loginAuthDto = mdmcFeignTaskDto.getLoginAuthDto();
+        MdmcAddTaskDto mdmcAddTaskDto = mdmcFeignTaskDto.getMdmcAddTaskDto();
+        taskService.saveTask(mdmcAddTaskDto,loginAuthDto);
+        return WrapMapper.ok();
+    }
+
+    @Override
+    public Wrapper<MdmcTask> modifyTaskStatusByTaskId(MdmcChangeStatusDto mdmcChangeStatusDto){
+        LoginAuthDto loginAuthDto = mdmcChangeStatusDto.getLoginAuthDto();
+        return WrapMapper.ok(taskService.modifyTaskStatus(mdmcChangeStatusDto,loginAuthDto));
+    }
+
+    @Override
+    public Wrapper<MdmcTask> modifyMaintainerByTaskId(MdmcChangeMaintainerDto mdmcChangeMaintainerDto){
+        return WrapMapper.ok(taskService.modifyMaintainer(mdmcChangeMaintainerDto));
+    }
+
+    @Override
+    public Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByMaintainer(RefuseMdmcTaskDto refuseMdmcTaskDto){
+        return WrapMapper.ok(taskService.refuseTaskByMaintainer(refuseMdmcTaskDto));
+    }
+
+    @Override
+    public Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(RefuseMdmcTaskDto refuseMdmcTaskDto){
+        return WrapMapper.ok(taskService.refuseTaskByFacilitator(refuseMdmcTaskDto));
+    }
+
 }

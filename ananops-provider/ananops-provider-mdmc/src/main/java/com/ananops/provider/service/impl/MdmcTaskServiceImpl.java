@@ -12,6 +12,7 @@ import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.*;
 import com.ananops.provider.service.MdmcTaskItemService;
 import com.ananops.provider.service.MdmcTaskService;
+import com.ananops.wrapper.Wrapper;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -125,7 +126,6 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //        MqMessageData mqMessageData;
         Long taskId = changeStatusDto.getTaskId();
         Integer status = changeStatusDto.getStatus();
-        MdmcTask task = new MdmcTask();
         Example example = new Example(MdmcTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
@@ -133,6 +133,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
         }
         //如果当前任务存在
+        MdmcTask task = taskMapper.selectByExample(example).get(0);//获取当前任务
         changeStatusDto.setStatusMsg(MdmcTaskStatusEnum.getStatusMsg(status));
         if (status==1){taskMapper.deleteByPrimaryKey(taskId);}
         else if (status==14){FacilitatorTransfer();}
@@ -409,5 +410,81 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     }
 
+    @Override
+    public MdmcTask modifyMaintainer(MdmcChangeMaintainerDto mdmcChangeMaintainerDto){
+        LoginAuthDto loginAuthDto = mdmcChangeMaintainerDto.getLoginAuthDto();
+        Long taskId = mdmcChangeMaintainerDto.getTaskId();
+        Long maintainerId = mdmcChangeMaintainerDto.getMaintainerId();
+        Example example = new Example(MdmcTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        if(taskMapper.selectCountByExample(example) == 0){//如果当前任务不存在
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        MdmcTask mdmcTask = taskMapper.selectByExample(example).get(0);
+        mdmcTask.setMaintainerId(maintainerId);
+        mdmcTask.setUpdateInfo(loginAuthDto);
+        taskMapper.updateByPrimaryKey(mdmcTask);
+        return mdmcTask;
+    }
 
+    /**
+     * 工程师拒单
+     * @param refuseMdmcTaskDto
+     * @return
+     */
+    @Override
+    public MdmcChangeStatusDto refuseTaskByMaintainer(RefuseMdmcTaskDto refuseMdmcTaskDto){
+        Long taskId = refuseMdmcTaskDto.getTaskId();
+        LoginAuthDto loginAuthDto = refuseMdmcTaskDto.getLoginAuthDto();
+        MdmcChangeStatusDto mdmcChangeStatusDto = new MdmcChangeStatusDto();
+        Example example = new Example(MdmcTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        if(taskMapper.selectCountByExample(example) == 0){//如果当前任务不存在
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        MdmcTask mdmcTask = taskMapper.selectByExample(example).get(0);
+        if(mdmcTask.getStatus()==MdmcTaskStatusEnum.JieDan3.getStatusNum()){
+            //如果当前任务的状态处于“已分配维修工，待维修工接单”，工程师才能拒单
+            mdmcChangeStatusDto.setLoginAuthDto(loginAuthDto);
+            mdmcChangeStatusDto.setStatus(MdmcTaskStatusEnum.JieDan2.getStatusNum());
+            mdmcChangeStatusDto.setStatusMsg(MdmcTaskStatusEnum.JieDan2.getStatusMsg());
+            this.modifyTaskStatus(mdmcChangeStatusDto,loginAuthDto);
+
+        }else{
+            throw new BusinessException(ErrorCodeEnum.GL9999087);
+        }
+        return mdmcChangeStatusDto;
+    }
+
+    /**
+     * 服务商拒单
+     * @param refuseMdmcTaskDto
+     * @return
+     */
+    @Override
+    public MdmcChangeStatusDto refuseTaskByFacilitator(RefuseMdmcTaskDto refuseMdmcTaskDto){
+        Long taskId = refuseMdmcTaskDto.getTaskId();
+        LoginAuthDto loginAuthDto = refuseMdmcTaskDto.getLoginAuthDto();
+        MdmcChangeStatusDto mdmcChangeStatusDto = new MdmcChangeStatusDto();
+        Example example = new Example(MdmcTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        if(taskMapper.selectCountByExample(example) == 0){//如果当前任务不存在
+            throw new BusinessException(ErrorCodeEnum.GL9999098);
+        }
+        MdmcTask mdmcTask = taskMapper.selectByExample(example).get(0);
+        if(mdmcTask.getStatus()==MdmcTaskStatusEnum.JieDan1.getStatusNum()){
+            //如果当前任务的状态处于“审核通过，待服务商接单”，服务商才能拒单
+            mdmcChangeStatusDto.setLoginAuthDto(loginAuthDto);
+            mdmcChangeStatusDto.setStatus(MdmcTaskStatusEnum.ShenHeZhong1.getStatusNum());
+            mdmcChangeStatusDto.setStatusMsg(MdmcTaskStatusEnum.ShenHeZhong1.getStatusMsg());
+            this.modifyTaskStatus(mdmcChangeStatusDto,loginAuthDto);
+
+        }else{
+            throw new BusinessException(ErrorCodeEnum.GL9999087);
+        }
+        return mdmcChangeStatusDto;
+    }
 }

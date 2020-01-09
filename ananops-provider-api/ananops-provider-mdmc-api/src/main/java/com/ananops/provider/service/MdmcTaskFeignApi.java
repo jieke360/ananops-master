@@ -36,4 +36,19 @@ public interface MdmcTaskFeignApi {
     
     @PostMapping(value = "api/mdmcTask/getTaskList")
     Wrapper<MdmcPageDto> getTaskList(@RequestBody MdmcQueryDto queryDto);
+
+    @PostMapping(value = "api/mdmcTask/saveTask")
+    Wrapper saveTask(@RequestBody MdmcFeignTaskDto mdmcFeignTaskDto);
+
+    @PostMapping(value = "/api/mdmcTask/modifyTaskStausByTaskId")
+    Wrapper<MdmcTask> modifyTaskStatusByTaskId(MdmcChangeStatusDto mdmcChangeStatusDto);
+
+    @PostMapping(value = "/api/mdmcTask/modifyMaintainerByTaskId")
+    Wrapper<MdmcTask> modifyMaintainerByTaskId(MdmcChangeMaintainerDto mdmcChangeMaintainerDto);
+
+    @PostMapping(value = "/api/mdmcTask/refuseMdmcTaskByMaintainer")
+    Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByMaintainer(RefuseMdmcTaskDto refuseMdmcTaskDto);
+
+    @PostMapping(value = "/api/mdmcTask/refuseMdmcTaskByFacilitator")
+    Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(RefuseMdmcTaskDto refuseMdmcTaskDto);
 }

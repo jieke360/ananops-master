@@ -38,4 +38,9 @@ public class UacGroupFeignHystrix implements UacGroupFeignApi {
     public Wrapper<GroupSaveDto> getUacGroupById(@RequestParam("groupId") Long groupId) {
         return null;
     }
+
+    @Override
+    public Wrapper<List<Long>> getUacUserIdListByGroupId(@RequestParam("groupId")Long groupId){
+        return null;
+    }
 }
