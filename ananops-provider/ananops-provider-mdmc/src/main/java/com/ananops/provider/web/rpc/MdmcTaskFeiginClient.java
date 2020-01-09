@@ -28,11 +28,11 @@ public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeig
     MdmcTaskService taskService;
     
     
-    @ApiOperation(httpMethod = "POST",value = "根据任务的状态，获取工单列表")
-    public Wrapper<List<MdmcTask>> getTaskByStatus(@RequestBody MdmcStatusDto statusDto){
-        List<MdmcTask> taskList = taskService.getTaskListByStatus(statusDto);
-        return WrapMapper.ok(taskList);
-    }
+//    @ApiOperation(httpMethod = "POST",value = "根据任务的状态，获取工单列表")
+//    public Wrapper<List<MdmcTask>> getTaskByStatus(@RequestBody MdmcStatusDto statusDto){
+//        List<MdmcTask> taskList = taskService.getTaskListByStatus(statusDto);
+//        return WrapMapper.ok(taskList);
+//    }
     
     @ApiOperation(httpMethod = "POST",value = "根据任务的ID，获取当前的任务详情")
     public Wrapper<MdmcTask> getTaskByTaskId(@PathVariable("taskId") Long taskId){
@@ -65,6 +65,7 @@ public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeig
     }
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "创建/编辑维修工单")
     public Wrapper saveTask(@RequestBody MdmcFeignTaskDto mdmcFeignTaskDto) {
         LoginAuthDto loginAuthDto = mdmcFeignTaskDto.getLoginAuthDto();
         MdmcAddTaskDto mdmcAddTaskDto = mdmcFeignTaskDto.getMdmcAddTaskDto();
@@ -73,23 +74,23 @@ public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeig
     }
 
     @Override
-    public Wrapper<MdmcTask> modifyTaskStatusByTaskId(MdmcChangeStatusDto mdmcChangeStatusDto){
+    public Wrapper<MdmcTask> modifyTaskStatusByTaskId(@RequestBody MdmcChangeStatusDto mdmcChangeStatusDto){
         LoginAuthDto loginAuthDto = mdmcChangeStatusDto.getLoginAuthDto();
         return WrapMapper.ok(taskService.modifyTaskStatus(mdmcChangeStatusDto,loginAuthDto));
     }
 
     @Override
-    public Wrapper<MdmcTask> modifyMaintainerByTaskId(MdmcChangeMaintainerDto mdmcChangeMaintainerDto){
+    public Wrapper<MdmcTask> modifyMaintainerByTaskId(@RequestBody MdmcChangeMaintainerDto mdmcChangeMaintainerDto){
         return WrapMapper.ok(taskService.modifyMaintainer(mdmcChangeMaintainerDto));
     }
 
     @Override
-    public Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByMaintainer(RefuseMdmcTaskDto refuseMdmcTaskDto){
+    public Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByMaintainer(@RequestBody RefuseMdmcTaskDto refuseMdmcTaskDto){
         return WrapMapper.ok(taskService.refuseTaskByMaintainer(refuseMdmcTaskDto));
     }
 
     @Override
-    public Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(RefuseMdmcTaskDto refuseMdmcTaskDto){
+    public Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(@RequestBody RefuseMdmcTaskDto refuseMdmcTaskDto){
         return WrapMapper.ok(taskService.refuseTaskByFacilitator(refuseMdmcTaskDto));
     }
 
