@@ -11,10 +11,7 @@ import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.model.vo.ItemLogVo;
-import com.ananops.provider.service.ImcInspectionItemLogService;
-import com.ananops.provider.service.ImcInspectionItemService;
-import com.ananops.provider.service.ImcInspectionTaskService;
-import com.ananops.provider.service.ImcItemFeignApi;
+import com.ananops.provider.service.*;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
@@ -46,6 +43,9 @@ public class ImcInspectionItemController extends BaseController {
     @Resource
     ImcItemFeignApi imcItemQueryFeignApi;
 
+    @Resource
+    MdmcTaskFeignApi mdmcTaskFeignApi;
+
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "编辑巡检任务子项记录")
     @AnanLogAnnotation
@@ -70,33 +70,9 @@ public class ImcInspectionItemController extends BaseController {
     @ApiOperation(httpMethod = "POST",value = "更改巡检任务子项的状态")
     @AnanLogAnnotation
     public Wrapper<ImcItemChangeStatusDto> modifyItemStatusByItemId(@ApiParam(name = "modifyItemStatus",value = "根据巡检任务子项ID，更改子项的状态")@RequestBody ImcItemChangeStatusDto imcItemChangeStatusDto){
-        Long itemId = imcItemChangeStatusDto.getItemId();
-        Integer status = imcItemChangeStatusDto.getStatus();
-        Example example = new Example(ImcInspectionItem.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("id",itemId);
-        if(imcInspectionItemService.selectCountByExample(example)==0){
-            //如果当前巡检任务子项不存在
-            throw new BusinessException(ErrorCodeEnum.GL9999097,itemId);
-        }
-        //如果当前巡检任务子项存在
-        imcItemChangeStatusDto.setStatusMsg(ItemStatusEnum.getStatusMsg(status));
-        ImcInspectionItem imcInspectionItem = new ImcInspectionItem();
-        imcInspectionItem.setId(itemId);
-        imcInspectionItem.setStatus(status);
         LoginAuthDto loginAuthDto = getLoginAuthDto();
-        imcInspectionItem.setUpdateInfo(loginAuthDto);
-        imcInspectionItemService.update(imcInspectionItem);//更新当前巡检任务子项的状态
-        Long taskId = imcInspectionItemService.getItemByItemId(itemId).getInspectionTaskId();
-        if(status==ItemStatusEnum.INSPECTION_OVER.getStatusNum() && imcInspectionTaskService.isTaskFinish(taskId)){
-            //如果该巡检子项对应的巡检任务中全部的任务子项均已完成
-            //则修改对应的巡检任务状态为已完成
-            ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
-            imcTaskChangeStatusDto.setTaskId(taskId);
-            imcTaskChangeStatusDto.setStatus(TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusNum());//将巡检任务状态修改为“巡检结果待审核”
-            imcInspectionTaskService.modifyTaskStatus(imcTaskChangeStatusDto,loginAuthDto);
-        }
-        return WrapMapper.ok(imcItemChangeStatusDto);
+        imcItemChangeStatusDto.setLoginAuthDto(loginAuthDto);
+        return WrapMapper.ok(imcInspectionItemService.modifyImcItemStatusByItemId(imcItemChangeStatusDto));
     }
 
     @PostMapping(value = "/getItemLogs")
@@ -136,8 +112,23 @@ public class ImcInspectionItemController extends BaseController {
     }
 
     @PostMapping(value = "/modifyMaintainerIdByItemId")
-    @ApiOperation(httpMethod = "POST",value = "修改巡检任务子项对应的维修工ID")
+    @ApiOperation(httpMethod = "POST",value = "修改巡检任务子项对应的工程师")
+    @AnanLogAnnotation
     public Wrapper<ItemChangeMaintainerDto> modifyMaintainerByItemId(@ApiParam(name = "modifyMaintainerByItemId",value = "修改巡检任务子项对应的工程师ID")@RequestBody ItemChangeMaintainerDto itemChangeMaintainerDto) {
         return WrapMapper.ok(imcInspectionItemService.modifyMaintainerIdByItemId(itemChangeMaintainerDto));
+    }
+
+    @PostMapping(value = "/sendMdmcRequest")
+    @ApiOperation(httpMethod = "POST",value = "向mdmc发出维修维护申请")
+    public Wrapper<Integer> sendMdmcRequest(@ApiParam(name = "sendMdmcRequest",value = "向mdmc发出维修维护申请")@RequestBody Integer integer){
+        return null;
+    }
+
+    @PostMapping(value = "/createMdmcTask")
+    @ApiOperation(httpMethod = "POST",value = "创建一条维修维护任务申请")
+    public Wrapper createMdmcTask(@RequestBody MdmcFeignTaskDto mdmcFeignTaskDto){
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        mdmcFeignTaskDto.setLoginAuthDto(loginAuthDto);
+        return WrapMapper.ok(mdmcTaskFeignApi.saveTask(mdmcFeignTaskDto));
     }
 }

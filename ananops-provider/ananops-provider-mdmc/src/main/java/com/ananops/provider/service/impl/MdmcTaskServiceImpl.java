@@ -10,6 +10,7 @@ import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.*;
+import com.ananops.provider.service.ImcItemFeignApi;
 import com.ananops.provider.service.ImcTaskFeignApi;
 import com.ananops.provider.service.MdmcTaskItemService;
 import com.ananops.provider.service.MdmcTaskService;
@@ -38,7 +39,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     MdmcTaskItemService taskItemService;
 
     @Resource
-    ImcTaskFeignApi imcTaskFeignApi;
+    ImcItemFeignApi imcItemFeignApi;
 
 
     @Override
@@ -93,16 +94,14 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             Integer status = task.getStatus();
             Integer objectType = task.getObjectType();
             if(status == MdmcTaskStatusEnum.WanCheng.getStatusNum() && objectType == MdmcObjectTypeEnum.IMC.getCode()) {
-                Long imcTaskId = task.getObjectId();
-                if(imcTaskId != null) {
-                    /*
-                    ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
-                    imcTaskChangeStatusDto.setLoginAuthDto(loginAuthDto);
-                    imcTaskChangeStatusDto.setTaskId(objectId);
-                    imcTaskChangeStatusDto.setStatus();
-                    imcTaskFeignApi.modifyTaskStatusByTaskId(imcTaskChangeStatusDto);
+                Long imcItemId = task.getObjectId();
+                if(imcItemId != null) {
 
-                     */
+                    ImcItemChangeStatusDto imcItemChangeStatusDto = new ImcItemChangeStatusDto();
+                    imcItemChangeStatusDto.setLoginAuthDto(loginAuthDto);
+                    imcItemChangeStatusDto.setStatus(4);
+                    imcItemChangeStatusDto.setItemId(imcItemId);
+                    imcItemFeignApi.modifyImcItemStatus(imcItemChangeStatusDto);
                     logger.info("维修工单完成，更新巡检状态");
 
                 }
@@ -187,6 +186,20 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //        mqMessageData = new MqMessageData(body, topic, tag, key);
 //        taskManager.modifyTaskStatus(mqMessageData,task);
         taskMapper.updateByPrimaryKey(task);
+        Integer objectType = task.getObjectType();
+        if(status == MdmcTaskStatusEnum.WanCheng.getStatusNum() && objectType == MdmcObjectTypeEnum.IMC.getCode()) {
+            Long imcItemId = task.getObjectId();
+            if(imcItemId != null) {
+
+                ImcItemChangeStatusDto imcItemChangeStatusDto = new ImcItemChangeStatusDto();
+                imcItemChangeStatusDto.setLoginAuthDto(loginAuthDto);
+                imcItemChangeStatusDto.setStatus(4);
+                imcItemChangeStatusDto.setItemId(imcItemId);
+                imcItemFeignApi.modifyImcItemStatus(imcItemChangeStatusDto);
+                logger.info("维修工单完成，更新巡检状态");
+
+            }
+        }
         logger.info("更新维修工单状态成功[OK] Task = {}", task);
 
         MdmcTaskLog taskLog=new MdmcTaskLog();

@@ -67,4 +67,9 @@ public class ImcTaskFeignHystrix implements ImcTaskFeignApi {
     public Wrapper<ImcTaskChangeStatusDto> refuseImcTaskByTaskId(@ApiParam(name = "refuseImcTaskByTaskId",value = "服务商拒单（巡检任务）")@RequestBody RefuseImcTaskDto refuseImcTaskDto){
         return null;
     }
+
+    @Override
+    public Wrapper<ImcAddInspectionTaskDto> createImcTask(@ApiParam(name = "createImcTask",value = "创建巡检任务")@RequestBody ImcAddInspectionTaskDto imcAddInspectionTaskDto){
+        return null;
+    }
 }

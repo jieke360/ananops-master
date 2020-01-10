@@ -4,6 +4,7 @@ import com.ananops.PubUtils;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.dto.CompanyDto;
+import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.service.SpcCompanyFeignApi;
 import com.ananops.provider.service.SpcCompanyService;
 import com.ananops.wrapper.WrapMapper;
@@ -13,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,5 +40,13 @@ public class SpcCompanyFeignClient extends BaseController implements SpcCompanyF
         Preconditions.checkArgument(!PubUtils.isNull(companyDto, companyDto.getId()), ErrorCodeEnum.MDC10021021.msg());
         int result = spcCompanyService.getCompanyById(companyDto);
         return WrapMapper.ok(result);
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "根据服务商Id获取服务商的详情")
+    public Wrapper<CompanyVo> getCompanyDetailsById(@PathVariable(value = "companyId") Long companyId){
+        logger.info("查询服务商详情. companyId={}", companyId);
+        CompanyVo companyVo = spcCompanyService.queryByCompanyId(companyId);
+        return WrapMapper.ok(companyVo);
     }
 }

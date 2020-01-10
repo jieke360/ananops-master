@@ -2,7 +2,7 @@ package com.ananops.provider.model.vo;
 
 import com.ananops.base.dto.BaseVo;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+    import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 

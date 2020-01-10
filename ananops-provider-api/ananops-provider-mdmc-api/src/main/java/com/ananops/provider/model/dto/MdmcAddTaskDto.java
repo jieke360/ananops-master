@@ -1,8 +1,10 @@
 package com.ananops.provider.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import java.io.Serializable;
@@ -49,6 +51,8 @@ public class MdmcAddTaskDto implements Serializable {
     private Integer level;
 
     @ApiModelProperty("预约时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date appointTime;
 
     @ApiModelProperty("维修结果")
