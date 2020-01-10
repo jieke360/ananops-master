@@ -254,7 +254,7 @@ public class UacUserMainController extends BaseController {
 		String loginName = SecurityUtils.getCurrentLoginName();
 		logger.info("{}", loginName);
 		UacUser user = uacUserService.findByLoginName(loginName);
-		return user == null ? null : new SecurityUser(user.getId(), user.getLoginName(), user.getLoginPwd(), user.getUserName(), user.getGroupId(), user.getGroupName());
+		return user == null ? null : new SecurityUser(user.getId(), user.getLoginName(), user.getLoginPwd(), user.getUserName(), user.getGroupId(), user.getGroupName(), user.getDepartmentId(), user.getDepartmentName());
 	}
 
 }

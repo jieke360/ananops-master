@@ -61,5 +61,12 @@
     AND `status` = 1
   </select>
 
+  <select id="selectAllByObject" resultMap="BaseResultMap">
+    SELECT *
+    FROM an_rdc_order
+    WHERE object_type = #{objectType, jdbcType=INTEGER}
+    AND object_id = #{objectId, jdbcType=BIGINT}
+  </select>
+
 
 </mapper>

@@ -98,6 +98,12 @@ public class UserInfoDto implements Serializable {
 	@ApiModelProperty(value = "用户所属的组织名称")
 	private String groupName;
 
+	@ApiModelProperty(value = "用户所属的部门ID")
+	private Long departmentId;
+
+	@ApiModelProperty(value = "用户所属的部门名称")
+	private String departmentName;
+
 	@ApiModelProperty("角色id")
 	private Long roleId;
 

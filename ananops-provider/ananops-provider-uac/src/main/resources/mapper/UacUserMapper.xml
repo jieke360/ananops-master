@@ -273,11 +273,15 @@
         SELECT
         <include refid="Base_Column_List"/>,
         g.id as groupId,
-        g.group_name as groupName
+        g.group_name as groupName,
+        d.id as departmentId,
+        d.department_name as departmentName
         FROM
             an_uac_user u
             LEFT JOIN an_uac_group_user gu on u.id = gu.user_id
             LEFT JOIN an_uac_group g on gu.group_id = g.id
+            LEFT JOIN an_uac_department_user du on u.id = du.user_id
+            LEFT JOIN an_uac_department d on du.department_id = d.id
         WHERE u.id = #{userId}
     </select>
     <select id="selectAllNeedBindRole" parameterType="long" resultType="com.ananops.provider.model.dto.user.BindRoleDto">

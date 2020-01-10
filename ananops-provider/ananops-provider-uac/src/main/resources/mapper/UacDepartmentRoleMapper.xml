@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ananops.provider.mapper.UacDepartmentRoleMapper">
+    <resultMap id="BaseResultMap" type="com.ananops.provider.model.domain.UacDepartmentRole">
+        <result column="department_id" jdbcType="BIGINT" property="departmentId"/>
+        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        dr.department_id,
+        dr.role_id
+    </sql>
+
+    <update id="updateByRoleId" parameterType="uacDepartmentRole">
+        update
+            an_uac_department_role
+        set
+            department_id=#{departmentId}
+        where
+            role_id=#{roleId}
+    </update>
+    <delete id="deleteExcludeSuperMng" parameterType="map">
+        DELETE
+        FROM
+            an_uac_department_role
+        WHERE
+            role_id IN (
+                SELECT
+                    temp.role_id
+                FROM
+                    (
+                        SELECT
+                            dr.role_id
+                        FROM
+                            `an_uac_department_role` dr
+                            LEFT JOIN an_uac_role r ON dr.role_id = r.id
+                        WHERE
+                            dr.department_id = #{departmentId}
+                            AND dr.role_id NOT IN (
+                                SELECT
+                                    ru.role_id
+                                FROM
+                                    `an_uac_role_user` ru
+                                    LEFT JOIN an_uac_user u ON ru.role_id = u.id
+                                WHERE
+                                    ru.role_id = #{superManagerRoleId}
+                            )
+                    ) temp
+            )
+    </delete>
+    <select id="getByroleId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM an_uac_department_role dr
+        WHERE dr.role_id = #{roleId, jdbcType=BIGINT}
+    </select>
+    <select id="selectDepartmentListByRoleId" resultType="uacDepartment">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+            an_uac_department d, an_uac_role r , an_uac_department_role dr
+        where
+            1=1
+            and d.id = dr.department_id
+            and r.id = dr.role_id
+            and r.id = #{roleId,jdbcType=BIGINT}
+    </select>
+    <select id="listByDepartmentId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM an_uac_department_role dr
+        WHERE dr.department_id = #{departmentId, jdbcType=BIGINT}
+    </select>
+</mapper>
