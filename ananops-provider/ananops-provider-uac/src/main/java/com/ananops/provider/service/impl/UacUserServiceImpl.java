@@ -1,6 +1,7 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.provider.mapper.*;
+import com.ananops.provider.model.dto.group.GroupBindUserDto;
 import com.ananops.provider.model.vo.UserVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -72,12 +73,6 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	@Resource
 	private UacGroupUserMapper uacGroupUserMapper;
 	@Resource
-	private UacDepartmentUserService uacDepartmentUserService;
-	@Resource
-	private UacDepartmentMapper uacDepartmentMapper;
-	@Resource
-	private UacDepartmentUserMapper uacDepartmentUserMapper;
-	@Resource
 	private UacLogService uacLogService;
 	@Resource
 	private UacRoleService uacRoleService;
@@ -114,14 +109,9 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		logger.info("findByLoginName - 根据用户名查询用户信息. loginName={}", loginName);
 		UacUser uacUser = uacUserMapper.findByLoginName(loginName);
 		List<UacGroup> uacGroups = uacGroupMapper.selectGroupListByUserId(uacUser.getId());
-		List<UacDepartment> uacDepartments = uacDepartmentMapper.selectDepartmentListByUserId(uacUser.getId());
 		if(PublicUtil.isNotEmpty(uacGroups)){
 			uacUser.setGroupId(uacGroups.get(0).getId());
 			uacUser.setGroupName(uacGroups.get(0).getGroupName());
-		}
-		if (PublicUtil.isNotEmpty(uacDepartments)) {
-			uacUser.setDepartmentId(uacDepartments.get(0).getId());
-			uacUser.setDepartmentName(uacDepartments.get(0).getDepartmentName());
 		}
 		return uacUser;
 	}
@@ -261,19 +251,6 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 				groupUser.setUserId(user.getId());
 				groupUser.setGroupId(user.getGroupId());
 				uacGroupUserService.updateByUserId(groupUser);
-			}
-
-			UacDepartmentUser uacDepartmentUser = uacDepartmentUserService.queryByUserId(user.getId());
-			if (uacDepartmentUser == null) {
-				UacDepartmentUser departmentUser = new UacDepartmentUser();
-				departmentUser.setUserId(user.getId());
-				departmentUser.setDepartmentId(user.getDepartmentId());
-				uacDepartmentUserService.save(departmentUser);
-			} else {
-				UacDepartmentUser departmentUser = new UacDepartmentUser();
-				departmentUser.setUserId(user.getId());
-				departmentUser.setDepartmentId(user.getDepartmentId());
-				uacDepartmentUserService.updateByUserId(departmentUser);
 			}
 		}
 
@@ -860,7 +837,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		uacUser.setLastLoginTime(new Date());
 		uacUser.setLastLoginLocation(remoteLocation);
 		//token对应的value loginAuthDto
-		LoginAuthDto loginAuthDto = new LoginAuthDto(userId, principal.getLoginName(), principal.getNickName(), principal.getGroupId(), principal.getGroupName(), principal.getDepartmentId(), principal.getDepartmentName());
+		LoginAuthDto loginAuthDto = new LoginAuthDto(userId, principal.getLoginName(), principal.getNickName(), principal.getGroupId(), principal.getGroupName());
 		// 记录token日志
 		String accessToken = token.getValue();
 		String refreshToken = token.getRefreshToken().getValue();
@@ -1028,18 +1005,27 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	}
 
 	@Override
-	public List<UserVo> getApprovalUserListById(Long departmentId) {
+	public List<UserVo> getApprovalUserListById(Long groupId, Long userId) {
 		List<UserVo> userVoList = new ArrayList<>();
-		//获取父组织的groupid
-		UacDepartment uacDepartment = uacDepartmentMapper.selectByPrimaryKey(departmentId);
-		Long pid = uacDepartment.getPid();
 		// 该组织已经绑定的用户
-		List<UacDepartmentUser> alreadyBindUserSet = uacDepartmentUserMapper.listByDepartmentId(pid);
-		for (UacDepartmentUser uacDepartmentUser : alreadyBindUserSet) {
+		List<UacGroupUser> alreadyBindUserSet = uacGroupUserMapper.listByGroupId(groupId);
+		for (UacGroupUser uacGroupUser : alreadyBindUserSet) {
+			//每个用户的信息
 			UserVo userVo = new UserVo();
-			Long userApprovvalId = uacDepartmentUser.getUserId();
-			UacUser uacUser = uacUserMapper.selectByPrimaryKey(userApprovvalId);
-			if (uacUser != null) {
+			//用户id
+			Long userApprovalId = uacGroupUser.getUserId();
+			UacUser uacUser = uacUserMapper.selectByPrimaryKey(userApprovalId);
+			//根据用户id获取用户角色列表
+			List<UacRoleUser> roleUserList = uacRoleUserService.queryByUserId(userApprovalId);
+			//根据用户的id获取该用户roleCodeList
+			List<String> roleCodeList = new ArrayList<>();
+			for (UacRoleUser uacRoleUser : roleUserList) {
+				Long roleId = uacRoleUser.getRoleId();
+				UacRole uacRole = uacRoleService.getRoleById(roleId);
+				roleCodeList.add(uacRole.getRoleCode());
+			}
+			//如果该用户是用户负责人的角色就添加到用户负责人列表
+			if (roleCodeList.contains("user_leader")) {
 				try {
 					BeanUtils.copyProperties(userVo, uacUser);
 				}catch (Exception e) {

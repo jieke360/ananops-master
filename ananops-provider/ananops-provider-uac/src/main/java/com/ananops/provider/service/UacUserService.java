@@ -322,8 +322,8 @@ public interface UacUserService extends IService<UacUser> {
 	/**
 	 * 根据用户值机员id获取用户负责人列表
 	 *
-	 * @param departmentId
+	 * @param groupId,userId
 	 * @return userVo
 	 */
-	List<UserVo> getApprovalUserListById(Long departmentId);
+	List<UserVo> getApprovalUserListById(Long groupId, Long userId);
 }

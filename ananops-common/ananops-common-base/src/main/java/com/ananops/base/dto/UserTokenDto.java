@@ -2,7 +2,6 @@
 package com.ananops.base.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +15,6 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserTokenDto extends LoginAuthDto {
 	private static final long serialVersionUID = 3136723742371575367L;
 	private Long id;

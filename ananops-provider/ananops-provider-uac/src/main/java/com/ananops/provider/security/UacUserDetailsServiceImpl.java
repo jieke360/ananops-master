@@ -45,6 +45,6 @@ public class UacUserDetailsServiceImpl implements UserDetailsService {
 		grantedAuthorities = uacUserService.loadUserAuthorities(user.getId()); //
 		log.info("grantedAuthorities: "+grantedAuthorities);
 		return new SecurityUser(user.getId(), user.getLoginName(), user.getLoginPwd(),
-				user.getUserName(), user.getGroupId(), user.getGroupName(), user.getDepartmentId(), user.getDepartmentName(), user.getStatus(), grantedAuthorities);
+				user.getUserName(), user.getGroupId(), user.getGroupName(), user.getStatus(), grantedAuthorities);
 	}
 }

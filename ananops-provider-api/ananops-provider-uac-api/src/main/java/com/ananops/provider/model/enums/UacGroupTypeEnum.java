@@ -42,11 +42,7 @@ public enum UacGroupTypeEnum {
 	/**
 	 * Group other uac group type enum.
 	 */
-	GROUP_OTHER("4", "其它"),
-
-	GROUP_USER("10", "用户甲方"),
-
-	GROUP_COMPANY("20", "服务商乙方");
+	GROUP_OTHER("4", "其它"),;
 
 	/**
 	 * The Key.
