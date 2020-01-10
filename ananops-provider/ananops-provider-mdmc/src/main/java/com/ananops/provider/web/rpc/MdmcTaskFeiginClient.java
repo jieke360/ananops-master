@@ -108,4 +108,11 @@ public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeig
         return WrapMapper.ok(taskService.modifyTaskStatus(changeStatusDto, loginAuthDto));
     }
 
+    @Override
+    public Wrapper<Object> updateStatusAfterPaymentDone(LoginAuthDto loginAuthDto) {
+        MdmcChangeStatusDto changeStatusDto = new MdmcChangeStatusDto();
+        changeStatusDto.setStatus(13);
+        return WrapMapper.ok(taskService.modifyTaskStatus(changeStatusDto, loginAuthDto));
+    }
+
 }

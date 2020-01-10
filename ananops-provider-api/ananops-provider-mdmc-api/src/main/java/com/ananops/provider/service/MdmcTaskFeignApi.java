@@ -57,4 +57,7 @@ public interface MdmcTaskFeignApi {
 
     @PostMapping(value = "/api/mamcTask/deviceOrder/created")
     Wrapper<Object> updateStatusAfterDeviceOrderCreated(@RequestBody LoginAuthDto loginAuthDto);
+
+    @PostMapping(value = "/api/mamcTask/payment/done")
+    Wrapper<Object> updateStatusAfterPaymentDone(@RequestBody LoginAuthDto loginAuthDto);
 }
