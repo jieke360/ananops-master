@@ -1,6 +1,7 @@
 
 package com.ananops.base.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.io.Serializable;
  * @author ananops.net@gmail.com
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 @ApiModel(value = "登录人信息")
 public class LoginAuthDto implements Serializable {
 	private static final long serialVersionUID = -1137852221455042256L;
