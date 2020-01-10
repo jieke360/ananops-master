@@ -80,4 +80,9 @@ public class MdmcTaskFeignHystrix implements MdmcTaskFeignApi {
     public Wrapper<Object> updateStatusAfterDeviceOrderCreated(LoginAuthDto loginAuthDto) {
         return null;
     }
+
+    @Override
+    public Wrapper<Object> updateStatusAfterPaymentDone(LoginAuthDto loginAuthDto) {
+        return null;
+    }
 }
