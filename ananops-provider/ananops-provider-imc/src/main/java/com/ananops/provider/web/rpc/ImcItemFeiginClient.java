@@ -9,7 +9,6 @@ import com.ananops.provider.mapper.ImcInspectionItemMapper;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.ItemStatusEnum;
-import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.provider.service.ImcItemFeignApi;
@@ -64,15 +63,15 @@ public class ImcItemFeiginClient extends BaseController implements ImcItemFeignA
 
     /**
      * 工程师拒单
-     * @param refuseImcItemDto
+     * @param confirmImcItemDto
      * @return
      */
     @Override
     @ApiOperation(httpMethod = "POST", value = "工程师拒单")
     @AnanLogAnnotation
-    public Wrapper<ImcItemChangeStatusDto> refuseImcItemByItemId(@ApiParam(name = "refuseImcItemByItemId",value = "维修工拒单（巡检任务子项）")@RequestBody RefuseImcItemDto refuseImcItemDto){
-        LoginAuthDto loginAuthDto = refuseImcItemDto.getLoginAuthDto();
-        Long itemId = refuseImcItemDto.getItemId();
+    public Wrapper<ImcItemChangeStatusDto> refuseImcItemByItemId(@ApiParam(name = "refuseImcItemByItemId",value = "维修工拒单（巡检任务子项）")@RequestBody ConfirmImcItemDto confirmImcItemDto){
+        LoginAuthDto loginAuthDto = confirmImcItemDto.getLoginAuthDto();
+        Long itemId = confirmImcItemDto.getItemId();
         ImcItemChangeStatusDto imcItemChangeStatusDto = new ImcItemChangeStatusDto();
         //将任务子项状态重新修改为等待分配维修工
         imcItemChangeStatusDto.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());

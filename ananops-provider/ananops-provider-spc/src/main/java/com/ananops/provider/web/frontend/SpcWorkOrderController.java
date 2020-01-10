@@ -121,22 +121,22 @@ public class SpcWorkOrderController extends BaseController {
         return WrapMapper.ok();
     }
 
-    /**
-     *转单
-     *
-     * @param workOrderDto engineerDto 工单查询参数
-     *
-     * @return  是否成功
-     */
-    @PostMapping(value = "/transferWorkOrder")
-    @LogAnnotation
-    @ApiOperation(httpMethod = "POST", value = "转单，相当于服务商拒单")
-    public Wrapper<Integer> transferWorkOrder(@ApiParam(name = "workOrderDto", value = "工单ID") @RequestBody WorkOrderDto workOrderDto) {
-        logger.info("getSpcWorkOrderById - 根据工单Id查询工单信息. workOrderQueryDto={}", workOrderDto);
-        LoginAuthDto loginAuthDto = getLoginAuthDto();
-        spcWorkOrderService.transferWorkOrder(workOrderDto,loginAuthDto);
-        return WrapMapper.ok();
-    }
+//    /**
+//     *转单
+//     *
+//     * @param workOrderDto engineerDto 工单查询参数
+//     *
+//     * @return  是否成功
+//     */
+//    @PostMapping(value = "/transferWorkOrder")
+//    @LogAnnotation
+//    @ApiOperation(httpMethod = "POST", value = "转单，相当于服务商拒单")
+//    public Wrapper<Integer> transferWorkOrder(@ApiParam(name = "workOrderDto", value = "工单ID") @RequestBody WorkOrderDto workOrderDto) {
+//        logger.info("getSpcWorkOrderById - 根据工单Id查询工单信息. workOrderQueryDto={}", workOrderDto);
+//        LoginAuthDto loginAuthDto = getLoginAuthDto();
+//        spcWorkOrderService.transferWorkOrder(workOrderDto,loginAuthDto);
+//        return WrapMapper.ok();
+//    }
 
     /**
      * 获取全部未分配工程师的工单
@@ -172,6 +172,18 @@ public class SpcWorkOrderController extends BaseController {
         workOrderStatusQueryDto.setOrderBy("update_time desc");
         List<WorkOrderVo> workOrderVoVoList = spcWorkOrderService.queryAllUnConfirmedWorkOrders(workOrderStatusQueryDto, loginAuthDto);
         return WrapMapper.ok(new PageInfo<>(workOrderVoVoList));
+    }
+
+    /**
+     * 工单审批
+     * @param workOrderConfirmDto
+     * @return
+     */
+    @PostMapping(value = "/confirmWorkOrder")
+    @ApiOperation(httpMethod = "POST",value = "审批工单")
+    public Wrapper confirmWorkOrder(@ApiParam(name = "WorkOrderConfirmDto",value = "工单详情查询Dto")@RequestBody WorkOrderConfirmDto workOrderConfirmDto){
+        logger.info("confirmWorkOrder - 审批工单. workOrderConfirmDto={}", workOrderConfirmDto);
+        return WrapMapper.ok(spcWorkOrderService.confirmWorkOrder(workOrderConfirmDto,getLoginAuthDto()));
     }
 
 }

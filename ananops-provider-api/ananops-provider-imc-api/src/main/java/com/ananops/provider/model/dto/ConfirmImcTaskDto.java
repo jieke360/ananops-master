@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Data
 @ApiModel
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class RefuseImcTaskDto implements Serializable {
+public class ConfirmImcTaskDto implements Serializable {
     private static final long serialVersionUID = 5684336247155618863L;
     /**
      * 巡检任务ID

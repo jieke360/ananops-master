@@ -1,6 +1,8 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.base.dto.LoginAuthDto;
+import com.ananops.base.enums.ErrorCodeEnum;
+import com.ananops.base.exception.BusinessException;
 import com.ananops.provider.mapper.SpcCompanyEngineerMapper;
 import com.ananops.provider.mapper.SpcCompanyMapper;
 import com.ananops.provider.mapper.SpcEngineerMapper;
@@ -245,8 +247,10 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         }
         // 填充项目信息
         log.info("工单项目ID：projectId=" + projectId);
-        PmcProjectDto pmcProjectDto = pmcProjectFeignApi.getProjectByProjectId(projectId).getResult();
-        workOrderDetailVo.setPmcProjectDto(pmcProjectDto);
+        if(projectId != null){
+            PmcProjectDto pmcProjectDto = pmcProjectFeignApi.getProjectByProjectId(projectId).getResult();
+            workOrderDetailVo.setPmcProjectDto(pmcProjectDto);
+        }
         // 填充服务商信息
         CompanyVo companyVo = new CompanyVo();
         SpcCompany queryC = new SpcCompany();
@@ -280,8 +284,10 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
             });
         }
         engineerIdList.forEach(engineerId->{//根据工单对应的全部工程师Id获取全部的工程师
-            EngineerVo engineerVo = spcEngineerService.queryByEngineerId(engineerId);
-            engineerVos.add(engineerVo);
+            if(engineerId != null){
+                EngineerVo engineerVo = spcEngineerService.queryByEngineerId(engineerId);
+                engineerVos.add(engineerVo);
+            }
         });
         workOrderDetailVo.setEngineerVos(engineerVos);
         workOrderDetailVo.setCompanyVo(companyVo);
@@ -366,29 +372,29 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
         imcItemFeignApi.modifyImcItemStatus(imcItemChangeStatusDto);
     }
 
-    /**
-     * 服务商转单操作（拒单）
-     * @param workOrderDto
-     */
-    @Override
-    public void transferWorkOrder(WorkOrderDto workOrderDto,LoginAuthDto loginAuthDto) {
-        Long taskId = workOrderDto.getId();
-        String workOrderType = workOrderDto.getType();
-        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
-            log.info("查询巡检工单：taskId=" + taskId);
-            RefuseImcTaskDto refuseImcTaskDto = new RefuseImcTaskDto();
-            refuseImcTaskDto.setLoginAuthDto(loginAuthDto);
-            refuseImcTaskDto.setTaskId(taskId);
-            imcTaskFeignApi.refuseImcTaskByTaskId(refuseImcTaskDto);//服务商拒单
-
-        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
-            log.info("查询维修维护工单：taskId=" + taskId);
-            RefuseMdmcTaskDto refuseMdmcTaskDto = new RefuseMdmcTaskDto();
-            refuseMdmcTaskDto.setLoginAuthDto(loginAuthDto);
-            refuseMdmcTaskDto.setTaskId(taskId);
-            mdmcTaskFeignApi.refuseMdmcTaskByFacilitator(refuseMdmcTaskDto);
-        }
-    }
+//    /**
+//     * 服务商转单操作（拒单）
+//     * @param workOrderDto
+//     */
+//    @Override
+//    public void transferWorkOrder(WorkOrderDto workOrderDto,LoginAuthDto loginAuthDto) {
+//        Long taskId = workOrderDto.getId();
+//        String workOrderType = workOrderDto.getType();
+//        if (!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)) {
+//            log.info("查询巡检工单：taskId=" + taskId);
+//            ConfirmImcTaskDto confirmImcTaskDto = new ConfirmImcTaskDto();
+//            confirmImcTaskDto.setLoginAuthDto(loginAuthDto);
+//            confirmImcTaskDto.setTaskId(taskId);
+//            imcTaskFeignApi.refuseImcTaskByFacilitator(confirmImcTaskDto);//服务商拒单
+//
+//        } else if (!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)) {
+//            log.info("查询维修维护工单：taskId=" + taskId);
+//            RefuseMdmcTaskDto refuseMdmcTaskDto = new RefuseMdmcTaskDto();
+//            refuseMdmcTaskDto.setLoginAuthDto(loginAuthDto);
+//            refuseMdmcTaskDto.setTaskId(taskId);
+//            mdmcTaskFeignApi.refuseMdmcTaskByFacilitator(refuseMdmcTaskDto);
+//        }
+//    }
 
     /**
      * 查询所有待审批的工单
@@ -398,25 +404,43 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
      */
     @Override
     public List<WorkOrderVo> queryAllUnConfirmedWorkOrders(WorkOrderStatusQueryDto workOrderStatusQueryDto, LoginAuthDto loginAuthDto){
-        List<WorkOrderVo> workOrderVoVoList = this.queryAllWorkOrders(workOrderStatusQueryDto, loginAuthDto);
-        workOrderVoVoList.forEach(workOrderVo -> {
+        List<WorkOrderVo> workOrderVoList = this.queryAllWorkOrders(workOrderStatusQueryDto, loginAuthDto);
+        List<WorkOrderVo> unconfirmedWorkOrders = new ArrayList<>();
+        for(WorkOrderVo workOrderVo:workOrderVoList){
             Long taskId = workOrderVo.getId();//工单Id（维修维护or巡检的）
             String type = workOrderVo.getType();//工单类型，巡检(inspection)和维修维护(maintain)
             if("inspection".equals(type)){//如果当前工单类型是巡检工单
                 int status = imcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
-                if(status != 4){
-                    //如果巡检任务不是处于“巡检结果待确认”的阶段
-                    workOrderVoVoList.remove(workOrderVo);//将次任务从列表中移除掉
+                if(status == 2){
+                    //如果巡检任务不是处于“等待服务商接单”的阶段
+                    unconfirmedWorkOrders.add(workOrderVo);//将次任务从列表中移除掉
                 }
             }else if("maintain".equals(type)){//如果当前工单类型是维修维护工单
                 int status = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
-                if(status != 8){
-                    //如果维修维护任务不是处于“维修工提交维修结果，待服务商审核维修结果”这一状态
-                    workOrderVoVoList.remove(workOrderVo);//将此次任务从列表中移除
+                if(status == 3 || status == 7){
+                    //如果维修维护任务不是处于“服务商待接单”或者是“服务商待审核备品备件工单”这一状态
+                    unconfirmedWorkOrders.add(workOrderVo);//将此次任务从列表中移除
                 }
             }
-        });
-        return workOrderVoVoList;
+        }
+//        workOrderVoVoList.forEach(workOrderVo -> {
+//            Long taskId = workOrderVo.getId();//工单Id（维修维护or巡检的）
+//            String type = workOrderVo.getType();//工单类型，巡检(inspection)和维修维护(maintain)
+//            if("inspection".equals(type)){//如果当前工单类型是巡检工单
+//                int status = imcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
+//                if(status != 2){
+//                    //如果巡检任务不是处于“等待服务商接单”的阶段
+//                    workOrderVoVoList.remove(workOrderVo);//将次任务从列表中移除掉
+//                }
+//            }else if("maintain".equals(type)){//如果当前工单类型是维修维护工单
+//                int status = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
+//                if(status != 3 && status != 7){
+//                    //如果维修维护任务不是处于“服务商待接单”或者是“服务商待审核备品备件工单”这一状态
+//                    workOrderVoVoList.remove(workOrderVo);//将此次任务从列表中移除
+//                }
+//            }
+//        });
+        return unconfirmedWorkOrders;
     }
 
     /**
@@ -428,31 +452,103 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
     @Override
     public List<WorkOrderVo> queryAllUnDistributedWorkOrders(WorkOrderStatusQueryDto workOrderStatusQueryDto, LoginAuthDto loginAuthDto){
         List<WorkOrderVo> workOrderVoVoList = this.queryAllWorkOrders(workOrderStatusQueryDto, loginAuthDto);
+        List<WorkOrderVo> undistributedWorkOrders = new ArrayList<>();
         workOrderVoVoList.forEach(workOrderVo -> {
             Long taskId = workOrderVo.getId();//工单Id（维修维护or巡检的）
             String type = workOrderVo.getType();//工单类型，巡检(inspection)和维修维护(maintain)
             if("inspection".equals(type)){//如果当前工单类型是巡检工单
+                int inspectionTaskStatus = imcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
                 List<ItemDto> itemDtoList = imcTaskFeignApi.getTaskByTaskId(taskId).getResult().getItemDtoList();
-                int mark=0;
-                for(ItemDto itemDto : itemDtoList){
-                    if(itemDto.getStatus()==1){
-                        mark=1;
-                        break;
+                if(inspectionTaskStatus == 3){
+                    int mark=0;
+                    for(ItemDto itemDto : itemDtoList){
+                        if(itemDto.getStatus()==1){
+                            mark=1;
+                            break;
+                        }
                     }
-                }
-                if(mark==0){
-                    //如果巡检任务的全部任务子项都已经被分配了工程师
-                    workOrderVoVoList.remove(workOrderVo);//将此任务从列表中移除掉
+                    if(mark==1){
+                        //如果巡检任务的全部任务子项仍然有没分配工程师的
+                        undistributedWorkOrders.add(workOrderVo);//将此任务从列表中移除掉
+                    }
                 }
             }else if("maintain".equals(type)){//如果当前工单类型是维修维护工单
                 int status = mdmcTaskFeignApi.getTaskByTaskId(taskId).getResult().getStatus();
-                if(status != 4){
-                    //如果维修维护任务不是处于“服务商已接单，待分配维修工”这一状态
-                    workOrderVoVoList.remove(workOrderVo);//将此次任务从列表中移除
+                if(status == 4){
+                    //如果维修维护任务处于“服务商已接单，待分配维修工”这一状态
+                    undistributedWorkOrders.add(workOrderVo);//将此次任务从列表中移除
                 }
             }
         });
-        return workOrderVoVoList;
+        return undistributedWorkOrders;
+    }
+
+    @Override
+    public WorkOrderDetailVo confirmWorkOrder(WorkOrderConfirmDto workOrderConfirmDto,LoginAuthDto loginAuthDto){
+        WorkOrderQueryDto workOrderQueryDto = workOrderConfirmDto.getWorkOrderQueryDto();
+        int decision = workOrderConfirmDto.getDecision();
+        Long workOrderId = workOrderQueryDto.getId();
+        String workOrderType =  workOrderQueryDto.getType();
+        //获取工单的细节
+        WorkOrderDetailVo workOrderDetailVo = this.queryByWorkOrderId(workOrderQueryDto);
+        if(!Strings.isNullOrEmpty(workOrderType) && "maintain".equals(workOrderType)){
+            //如果当前审批的是维修维护工单
+            MdmcTask mdmcTask = workOrderDetailVo.getMaintainTask();
+            int maintainStatus = mdmcTask.getStatus();
+            MdmcChangeStatusDto mdmcChangeStatusDto = new MdmcChangeStatusDto();
+            mdmcChangeStatusDto.setTaskId(workOrderId);
+            mdmcChangeStatusDto.setLoginAuthDto(loginAuthDto);
+            switch (maintainStatus){
+                case 3://服务商待接单
+                    if(decision == 0){
+                        //如果服务商拒单
+                        mdmcChangeStatusDto.setStatus(14);
+                        mdmcTaskFeignApi.modifyTaskStatusByTaskId(mdmcChangeStatusDto);
+                    }else if(decision == 1){
+                        //如果服务商接单
+                        mdmcChangeStatusDto.setStatus(4);
+                        mdmcTaskFeignApi.modifyTaskStatusByTaskId(mdmcChangeStatusDto);
+                    }else{
+                        throw new BusinessException(ErrorCodeEnum.SPC100850019);//无此审批操作
+                    }
+                case 7://服务商待审核备品备件工单
+                    if(decision == 0){
+                        //如果服务商拒绝备品备件申请
+                        mdmcChangeStatusDto.setStatus(16);
+                        mdmcTaskFeignApi.modifyTaskStatusByTaskId(mdmcChangeStatusDto);
+                    }else if(decision == 1){
+                        //如果服务商同意备品备件申请
+                        mdmcChangeStatusDto.setStatus(8);
+                        mdmcTaskFeignApi.modifyTaskStatusByTaskId(mdmcChangeStatusDto);
+                    }else{
+                        throw new BusinessException(ErrorCodeEnum.SPC100850019);//无此审批操作
+                    }
+                default:
+                    throw new BusinessException(ErrorCodeEnum.GL9999084); //当前状态不允许服务商审批
+            }
+        }else if(!Strings.isNullOrEmpty(workOrderType) && "inspection".equals(workOrderType)){
+            //如果当前审批的是巡检工单
+            TaskDto imcTaskDto = workOrderDetailVo.getInspectionTask();
+            int inspectionStatus = imcTaskDto.getStatus();
+            if (inspectionStatus == 2) {//如果工单状态是“已分配服务商，等待服务商接单”
+                ConfirmImcTaskDto confirmImcTaskDto = new ConfirmImcTaskDto();
+                confirmImcTaskDto.setLoginAuthDto(loginAuthDto);
+                confirmImcTaskDto.setTaskId(workOrderId);
+                if (decision == 0) {
+                    //否决
+                    imcTaskFeignApi.refuseImcTaskByFacilitator(confirmImcTaskDto);//服务商拒单
+                } else if (decision == 1) {
+                    //同意
+                    imcTaskFeignApi.acceptImcTaskByFacilitator(confirmImcTaskDto);//服务商接单
+                } else {
+                    throw new BusinessException(ErrorCodeEnum.SPC100850019);//无此审批操作
+                }
+            }else{
+                throw new BusinessException(ErrorCodeEnum.GL9999084); //当前状态不允许服务商审批
+            }
+
+        }
+        return null;
     }
 
 }
