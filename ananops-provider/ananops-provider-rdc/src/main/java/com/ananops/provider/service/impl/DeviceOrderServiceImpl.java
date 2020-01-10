@@ -1,8 +1,6 @@
 package com.ananops.provider.service.impl;
 
-import com.alibaba.druid.support.json.JSONParser;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
@@ -13,20 +11,26 @@ import com.ananops.provider.model.domain.Device;
 import com.ananops.provider.model.domain.DeviceOrder;
 import com.ananops.provider.model.dto.CreateNewOrderDto;
 import com.ananops.provider.model.dto.DeviceOrderItemInfoDto;
+import com.ananops.provider.model.dto.MdmcChangeStatusDto;
 import com.ananops.provider.model.dto.ProcessOrderDto;
 import com.ananops.provider.model.enums.DeviceOrderStatusEnum;
+import com.ananops.provider.model.vo.DeviceOrderDetailVo;
+import com.ananops.provider.model.vo.DeviceOrderListVo;
+import com.ananops.provider.model.vo.DeviceOrderVo;
 import com.ananops.provider.model.vo.ProcessOrderResultVo;
 import com.ananops.provider.service.ApproveService;
 import com.ananops.provider.service.DeviceOrderService;
 import com.ananops.provider.service.DeviceService;
+import com.ananops.provider.service.MdmcTaskFeignApi;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,6 +44,9 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
     
     @Autowired
     DeviceService deviceService;
+
+    @Resource
+    private MdmcTaskFeignApi mdmcTaskFeignApi;
 
 
     public ProcessOrderResultVo createNewOrder(LoginAuthDto loginAuthDto, CreateNewOrderDto createNewOrderDto) {
@@ -87,7 +94,19 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
         ret.setApproveInfo(approves);
         
         logger.info("创建审批记录成功[OK], Approves = {}", approve);
-        
+
+        if(deviceOrder.getObjectType() == 1){
+//            Long taskId = deviceOrder.getObjectId();
+//            MdmcChangeStatusDto changeStatusDto= new MdmcChangeStatusDto();
+//            changeStatusDto.setStatus(7);
+//            changeStatusDto.setTaskId(taskId);
+//            changeStatusDto.setLoginAuthDto(loginAuthDto);
+//            mdmcTaskFeignApi.modifyTaskStatusByTaskId(changeStatusDto);
+            mdmcTaskFeignApi.updateStatusAfterDeviceOrderCreated(loginAuthDto);
+
+            logger.info("更新维修维护工单状态成功[OK]");
+        }
+
         return ret;
     }
 
@@ -168,6 +187,17 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
             // todo 添加报价单
             order.setUpdateInfo(loginAuthDto);
             update(order);
+            if(order.getObjectType() == 1){
+
+//                Long taskId = order.getObjectId();
+//                MdmcChangeStatusDto changeStatusDto= new MdmcChangeStatusDto();
+//                changeStatusDto.setStatus(8);
+//                changeStatusDto.setTaskId(taskId);
+//                changeStatusDto.setLoginAuthDto(loginAuthDto);
+//                mdmcTaskFeignApi.modifyTaskStatusByTaskId(changeStatusDto);
+
+                logger.info("更新维修维护工单状态成功[OK]");
+            }
         }
         
         ret.setDeviceOrderInfo(order);
@@ -175,6 +205,7 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
         ret.setApproveInfo(approves);
 
         logger.info("处理备品备件成功[OK]，ProcessOrderResult = {}", ret);
+
         return ret;
     }
     
@@ -193,6 +224,33 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
             logger.error(e.getMessage());
         }
         return null;
+    }
+
+    public DeviceOrderListVo getDeviceOrderByObject(Long objectId, Integer objectType){
+
+        DeviceOrderListVo deviceOrderListVo = new DeviceOrderListVo();
+
+        List<DeviceOrder> deviceOrderList = deviceOrderMapper.selectAllByObject(objectType, objectId);
+        deviceOrderListVo.setDeviceOrderCount(deviceOrderList.size());
+
+        List<DeviceOrderDetailVo> deviceOrderDetailVoList = new ArrayList<>();
+        for(DeviceOrder order: deviceOrderList){
+            DeviceOrderDetailVo orderDetailVo = new DeviceOrderDetailVo();
+
+            DeviceOrderVo orderVo = new DeviceOrderVo();
+            BeanUtils.copyProperties(order, orderVo);
+            orderDetailVo.setDeviceOrder(orderVo);
+            List<Approve> approveList = approveService.selectByObject(1, order.getId());
+            orderDetailVo.setApproveCount(approveList.size());
+            orderDetailVo.setApproves(approveList);
+            deviceOrderDetailVoList.add(orderDetailVo);
+        }
+        deviceOrderListVo.setDeviceOrderList(deviceOrderDetailVoList);
+
+
+        logger.info("Object(type = {}, id = {}), 查询备品备件订单 = {}", deviceOrderListVo);
+
+        return deviceOrderListVo;
     }
     
 }

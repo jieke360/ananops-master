@@ -27,4 +27,6 @@ public interface DeviceOrderMapper extends MyMapper<DeviceOrder> {
     
     
     DeviceOrder selectByObject(@Param("objectType")Integer objectType, @Param("objectId")Long objectId);
+
+    List<DeviceOrder> selectAllByObject(@Param("objectType")Integer objectType, @Param("objectId")Long objectId);
 }
