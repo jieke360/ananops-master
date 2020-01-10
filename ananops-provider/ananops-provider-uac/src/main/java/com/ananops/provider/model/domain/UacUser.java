@@ -141,4 +141,15 @@ public class UacUser extends BaseEntity {
 	@ApiModelProperty(value = "用户所属的组织名称")
 	@Transient
 	private String groupName;
+
+	/**
+	 * 用户所属的部门ID
+	 */
+	@ApiModelProperty(value = "用户所属的部门ID")
+	@Transient
+	private Long departmentId;
+
+	@ApiModelProperty(value = "用户所属的部门名称")
+	@Transient
+	private String departmentName;
 }
