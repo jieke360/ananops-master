@@ -60,32 +60,50 @@ public class MdmcTask extends BaseEntity {
     private Long maintainerId;
 
     /**
+     * 预约维修时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @Column(name = "appoint_time")
+    private Date appointTime;
+
+    /**
      * 预计完成时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "scheduled_finish_time")
     private Date scheduledFinishTime;
 
     /**
      * 实际完成时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "actual_finish_time")
     private Date actualFinishTime;
 
     /**
      * 预计开始时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "scheduled_start_time")
     private Date scheduledStartTime;
 
     /**
      * 实际开始时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "actual_start_time")
     private Date actualStartTime;
 
     /**
      * 最迟完成时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date deadline;
 
     /**
@@ -97,6 +115,8 @@ public class MdmcTask extends BaseEntity {
     /**
      * 请求维修的地点，经度
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "request_longitude")
     private BigDecimal requestLongitude;
 
@@ -142,15 +162,10 @@ public class MdmcTask extends BaseEntity {
     @Column(name = "level")
     private Integer level;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @Column(name = "appoint_time")
-    private Date appointTime;
-
     @Column(name = "suggestion")
     private String suggestion;
 
-    @Column(name = "maintenance_result")
+    @Column(name = "result")
     private Integer result;
 
     private String note;
