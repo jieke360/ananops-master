@@ -11,10 +11,8 @@ import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.*;
 import com.ananops.provider.service.ImcItemFeignApi;
-import com.ananops.provider.service.ImcTaskFeignApi;
 import com.ananops.provider.service.MdmcTaskItemService;
 import com.ananops.provider.service.MdmcTaskService;
-import com.ananops.wrapper.Wrapper;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -64,7 +62,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             task.setId(taskId);
             task.setStatus(2);
             taskMapper.insert(task);
-            logger.info("新创建一条维修任务记录 Task = {}" , task);
+            logger.info("新创建一条维修任务记录成功[OK], 创建维修任务子项中...");
 
             mdmcAddTaskItemDtoList.forEach(taskItem->{//保存所有任务子项
                 taskItem.setTaskId(taskId);//设置任务子项对应的任务id
