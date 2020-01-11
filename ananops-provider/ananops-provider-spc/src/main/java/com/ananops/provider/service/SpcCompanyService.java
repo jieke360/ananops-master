@@ -79,4 +79,13 @@ public interface SpcCompanyService extends IService<SpcCompany> {
      * @param loginAuthDto 登录信息
      */
     void saveUacCompany(CompanyVo companyVo, LoginAuthDto loginAuthDto);
+
+    /**
+     * 根据公司名称模糊查询公司详细信息
+     *
+     * @param companyName 公司名称
+     *
+     * @return 返回公司信息
+     */
+    List<CompanyVo> queryByLikeCompanyName(String companyName);
 }

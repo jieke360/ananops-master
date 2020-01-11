@@ -139,21 +139,51 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
 
     @Override
     public CompanyVo queryByCompanyId(Long companyId) {
-        logger.info("queryByCompanyId - 根据公司Id查询公司信息接口. companyId={}", companyId);
+        logger.info("queryByCompanyId - 根据公司Id(groupId)查询公司信息接口. companyId={}", companyId);
         CompanyVo companyVo = new CompanyVo();
-        SpcCompany spcCompany = spcCompanyMapper.selectByPrimaryKey(companyId);
-        Long groupId = spcCompany.getGroupId();
-        if (!StringUtils.isEmpty(groupId)) {
-            GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(groupId).getResult();
+        SpcCompany queryC = new SpcCompany();
+        queryC.setGroupId(companyId);
+        SpcCompany spcCompany = spcCompanyMapper.selectOne(queryC);
+        if (companyId != null) {
+            GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(companyId).getResult();
             try {
-                BeanUtils.copyProperties(companyVo, spcCompany);
-                BeanUtils.copyProperties(companyVo, groupSaveDto);
+                if (spcCompany != null)
+                    BeanUtils.copyProperties(companyVo, spcCompany);
+                if (groupSaveDto != null)
+                    BeanUtils.copyProperties(companyVo, groupSaveDto);
             } catch (Exception e) {
                 logger.error("queryByCompanyId 服务商Dto与用户组Dto属性拷贝异常");
                 e.printStackTrace();
             }
         }
         return companyVo;
+    }
+
+    @Override
+    public List<CompanyVo> queryByLikeCompanyName(String companyName) {
+        logger.info("queryByLikeCompanyName - 根据公司名称模糊查询公司信息. companyName={}", companyName);
+        List<CompanyVo> companyVos = new ArrayList<>();
+        List<GroupSaveDto> groupSaveDtos = uacGroupFeignApi.getUacGroupByLikeName(companyName).getResult();
+        if (groupSaveDtos != null) {
+            for (GroupSaveDto groupSaveDto : groupSaveDtos) {
+                CompanyVo companyVo = new CompanyVo();
+                Long groupId = groupSaveDto.getId();
+                SpcCompany queryC = new SpcCompany();
+                queryC.setGroupId(groupId);
+                SpcCompany spcCompany = spcCompanyMapper.selectOne(queryC);
+                try {
+                    if (spcCompany != null)
+                        BeanUtils.copyProperties(companyVo, spcCompany);
+                    BeanUtils.copyProperties(companyVo, groupSaveDto);
+                } catch (Exception e) {
+                    logger.error("queryByCompanyId 服务商Dto与用户组Dto属性拷贝异常");
+                    e.printStackTrace();
+                }
+                companyVos.add(companyVo);
+            }
+
+        }
+        return companyVos;
     }
 
     @Override
