@@ -51,11 +51,11 @@ public interface SpcWorkOrderService {
      */
     void distributeEngineerForImc(EngineerDistributeDto engineerDistributeDto,LoginAuthDto loginAuthDto);
 
-    /**
-     * 转单
-     * @param workOrderDto
-     */
-    void transferWorkOrder(WorkOrderDto workOrderDto,LoginAuthDto loginAuthDto);
+//    /**
+//     * 转单
+//     * @param workOrderDto
+//     */
+//    void transferWorkOrder(WorkOrderDto workOrderDto,LoginAuthDto loginAuthDto);
 
     /**
      * 查询所有待审批的工单
@@ -73,4 +73,10 @@ public interface SpcWorkOrderService {
      */
     List<WorkOrderVo> queryAllUnDistributedWorkOrders(WorkOrderStatusQueryDto workOrderStatusQueryDto, LoginAuthDto loginAuthDto);
 
+    /**
+     * 审批工单
+     * @param workOrderConfirmDto
+     * @return
+     */
+    WorkOrderDetailVo confirmWorkOrder(WorkOrderConfirmDto workOrderConfirmDto,LoginAuthDto loginAuthDto);//审批工单
 }

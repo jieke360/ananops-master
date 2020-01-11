@@ -131,4 +131,20 @@ public class ImcInspectionItemController extends BaseController {
         mdmcFeignTaskDto.setLoginAuthDto(loginAuthDto);
         return WrapMapper.ok(mdmcTaskFeignApi.saveTask(mdmcFeignTaskDto));
     }
+
+    @PostMapping(value = "/refuseItemByMaintainer")
+    @ApiOperation(httpMethod = "POST",value = "工程师拒单")
+    @AnanLogAnnotation
+    public Wrapper<ImcItemChangeStatusDto> refuseItemByMaintainer(@RequestBody ConfirmImcItemDto confirmImcItemDto){
+        confirmImcItemDto.setLoginAuthDto(getLoginAuthDto());
+        return WrapMapper.ok(imcInspectionItemService.refuseImcItemByItemId(confirmImcItemDto));
+    }
+
+    @PostMapping(value = "/acceptItemByMaintainer")
+    @ApiOperation(httpMethod = "POST",value = "工程师接单")
+    @AnanLogAnnotation
+    public Wrapper<ImcItemChangeStatusDto> acceptItemByMaintainer(@RequestBody ConfirmImcItemDto confirmImcItemDto){
+        confirmImcItemDto.setLoginAuthDto(getLoginAuthDto());
+        return WrapMapper.ok(imcInspectionItemService.acceptImcItemByItemId(confirmImcItemDto));
+    }
 }

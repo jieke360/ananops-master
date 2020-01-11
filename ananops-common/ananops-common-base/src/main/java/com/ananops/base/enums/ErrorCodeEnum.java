@@ -9,6 +9,14 @@ package com.ananops.base.enums;
  */
 public enum ErrorCodeEnum {
 	/**
+	 * Gl 9999084 error code enum.
+	 */
+	GL9999084(9999084,"当前状态不允许服务商审批"),
+	/**
+	 * Gl 9999085 error code enum.
+	 */
+	GL9999085(9999085,"当前状态不允许服务商接单"),
+	/**
 	 * Gl 9999086 error code enum.
 	 */
 	GL9999086(9999086,"当前状态不允许服务商拒单"),
@@ -738,6 +746,10 @@ public enum ErrorCodeEnum {
 	 * Spc 100850018 error code enum.
 	 */
 	SPC100850018(100850018, "工程师身份证号码不能为空"),
+	/**
+	 * Spc 100850019 error code enum.
+	 */
+	SPC100850019(100850019, "无此审批操作"),
 	
 	
 	RDC100000000(10000000, "新建备品备件订单失败，数据库操作异常"),

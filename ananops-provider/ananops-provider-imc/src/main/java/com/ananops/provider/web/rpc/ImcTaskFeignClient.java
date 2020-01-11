@@ -10,7 +10,6 @@ import com.ananops.provider.mapper.ImcInspectionTaskMapper;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.dto.*;
-import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionTaskLogService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.provider.service.ImcTaskFeignApi;
@@ -219,8 +218,15 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
     @Override
     @ApiOperation(httpMethod = "POST", value = "服务商拒单")
     @AnanLogAnnotation
-    public Wrapper<ImcTaskChangeStatusDto> refuseImcTaskByTaskId(@ApiParam(name = "refuseImcTaskByTaskId",value = "服务商拒单（巡检任务）")@RequestBody RefuseImcTaskDto refuseImcTaskDto){
-        return WrapMapper.ok(imcInspectionTaskService.refuseImcTaskByTaskId(refuseImcTaskDto));
+    public Wrapper<ImcTaskChangeStatusDto> refuseImcTaskByFacilitator(@ApiParam(name = "refuseImcTaskByTaskId",value = "服务商拒单（巡检任务）")@RequestBody ConfirmImcTaskDto confirmImcTaskDto){
+        return WrapMapper.ok(imcInspectionTaskService.refuseImcTaskByFacilitator(confirmImcTaskDto));
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "服务商接单")
+    @AnanLogAnnotation
+    public Wrapper<ImcTaskChangeStatusDto> acceptImcTaskByFacilitator(@ApiParam(name = "acceptImcTaskByTaskId",value = "服务商接单（巡检任务）")@RequestBody ConfirmImcTaskDto confirmImcTaskDto){
+        return WrapMapper.ok(imcInspectionTaskService.acceptImcTaskByFacilitator(confirmImcTaskDto));
     }
 
     @Override
@@ -230,6 +236,7 @@ public class ImcTaskFeignClient extends BaseController implements ImcTaskFeignAp
         LoginAuthDto loginAuthDto = imcAddInspectionTaskDto.getLoginAuthDto();
         return WrapMapper.ok(imcInspectionTaskService.saveTask(imcAddInspectionTaskDto,loginAuthDto));
     }
+
 
     public List<ItemDto> getItemList(Long taskId){
         Example example = new Example(ImcInspectionItem.class);

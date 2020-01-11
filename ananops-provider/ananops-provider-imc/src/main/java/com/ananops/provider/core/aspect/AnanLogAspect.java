@@ -184,7 +184,7 @@ public class AnanLogAspect {
                 status = imcTaskChangeStatusDto.getStatus();
                 String statusMsg = imcTaskChangeStatusDto.getStatusMsg();
                 ImcInspectionTaskLog imcInspectionTaskLog;
-                if("服务商拒单".equals(movement)||"同意执行巡检任务".equals(movement)||"否决执行巡检任务".equals(movement)){
+                if("服务商拒单".equals(movement)||"服务商接单".equals(movement)||"同意执行巡检任务".equals(movement)||"否决执行巡检任务".equals(movement)){
                      imcInspectionTaskLog = createTaskLog(taskId,status,startTime,endTime,movement ,os,browser,ipAddress);
                 } else{
                     imcInspectionTaskLog = createTaskLog(taskId,status,startTime,endTime,statusMsg,os,browser,ipAddress);
@@ -209,7 +209,7 @@ public class AnanLogAspect {
                 taskId = imcInspectionItemService.selectByExample(example).get(0).getInspectionTaskId();
                 String statusMsg = imcItemChangeStatusDto.getStatusMsg();
                 ImcInspectionItemLog imcInspectionItemLog;
-                if("工程师拒单".equals(movement)){
+                if("工程师拒单".equals(movement)||"工程师接单".equals(movement)){
                     imcInspectionItemLog = createItemLog(itemId,taskId,status,startTime,endTime,movement,os,browser,ipAddress);
                 }else{
                     imcInspectionItemLog = createItemLog(itemId,taskId,status,startTime,endTime,statusMsg,os,browser,ipAddress);

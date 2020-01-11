@@ -24,6 +24,7 @@
         <module>ananops-provider-pmc-api</module>
         <module>ananops-provider-bill-api</module>
         <module>ananops-provider-activiti-api</module>
+        <module>ananops-provider-rdc-api</module>
     </modules>
 
     <dependencies>
