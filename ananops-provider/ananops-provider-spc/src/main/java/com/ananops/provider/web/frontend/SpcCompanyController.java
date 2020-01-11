@@ -64,7 +64,7 @@ public class SpcCompanyController extends BaseController {
     /**
      * 根据公司状态分页查询公司列表.
      *
-     * @param CompanyStatusDto
+     * @param companyStatusDto 传入参数
      *
      * @return the wrapper
      */
@@ -88,12 +88,29 @@ public class SpcCompanyController extends BaseController {
      */
     @PostMapping(value = "/getSpcCompanyById/{companyId}")
     @LogAnnotation
-    @ApiOperation(httpMethod = "POST", value = "根据用户Id查询用户信息")
+    @ApiOperation(httpMethod = "POST", value = "根据公司Id（groupId）查询公司信息")
     public Wrapper<CompanyVo> getSpcCompanyById(@ApiParam(name = "companyId", value = "公司ID") @PathVariable Long companyId) {
         logger.info("getSpcCompanyById - 根据公司Id查询公司信息. companyId={}", companyId);
         CompanyVo uacCompany = spcCompanyService.queryByCompanyId(companyId);
         logger.info("getUacUserById - 根据公司Id查询公司信息. [OK] uacCompany={}", uacCompany);
         return WrapMapper.ok(uacCompany);
+    }
+
+    /**
+     * 根据公司名称模糊查询公司信息.
+     *
+     * @param companyName the company name
+     *
+     * @return the spc company by like name
+     */
+    @PostMapping(value = "/getSpcCompanyByLikeName/{companyName}")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据公司名称模糊查询公司信息")
+    public Wrapper<List<CompanyVo>> getSpcCompanyByLikeName(@ApiParam(name = "companyName", value = "公司名称") @PathVariable("companyName") String companyName) {
+        logger.info("getSpcCompanyByLikeName - 根据公司名称模糊查询公司信息. companyName={}", companyName);
+        List<CompanyVo> uacCompanys = spcCompanyService.queryByLikeCompanyName(companyName);
+        logger.info("getSpcCompanyByLikeName - 根据公司名称模糊查询公司信息. [OK] uacCompany={}", uacCompanys);
+        return WrapMapper.ok(uacCompanys);
     }
 
     /**

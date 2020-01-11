@@ -234,17 +234,12 @@ public class UacUserCommonController extends BaseController {
 		return WrapMapper.ok(tree);
 	}
 
-	@GetMapping(value = "/getApprovalUserList/{departmentId}")
+	@GetMapping(value = "/getApprovalUserList")
 	@ApiOperation(httpMethod = "GET", value = "获取用户负责人列表")
-	public Wrapper<List<UserVo>> getApprovalUserList(@PathVariable(value = "departmentId") Long departmentId) {
-		logger.info("根据departmentId和userId获取用户领导列表");
+	public Wrapper<List<UserVo>> getApprovalUserList(@RequestParam("groupId") Long groupId, @RequestParam("userId") Long userId) {
+		logger.info("根据groupId和userId获取用户负责人列表");
 //		LoginAuthDto loginAuthDto = getLoginAuthDto();
-//		Long curUserGroupId = loginAuthDto.getGroupId();
-//		if (curUserGroupId != departmentId) {
-//			logger.info("该组不是该用户所在的组织!");
-//			return WrapMapper.ok();
-//		}
-		List<UserVo> userVoList = uacUserService.getApprovalUserListById(departmentId);
+		List<UserVo> userVoList = uacUserService.getApprovalUserListById(groupId, userId);
 		return WrapMapper.ok(userVoList);
 	}
 }

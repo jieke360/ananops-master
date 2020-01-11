@@ -6,10 +6,12 @@ import com.ananops.provider.model.dto.user.UserRegisterDto;
 import com.ananops.provider.model.service.hystrix.UacUserFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 开放内部模块对UAC User的API
@@ -66,11 +68,6 @@ public interface UacUserFeignApi {
      *
      * @return the wrapper
      */
-    @PostMapping(value = "/api/uac/user/validateUser")
+    @PostMapping(value = "/api/uac/user/validateUser/{userId}/{roleCode}")
     Wrapper<Boolean> validateUser(@RequestParam("userId") Long userId, @RequestParam("roleCode") String roleCode);
-//
-//    @GetMapping(value = "/api/uac/user/getUserByGIdAndRId")
-//    Wrapper<List<UserInfoDto>> getUserByGIdAndRId(@RequestParam("groupId") Long groupId,@RequestParam("roleCode") Long roleCode);
-//
-//    Wrapper<List<>>
 }

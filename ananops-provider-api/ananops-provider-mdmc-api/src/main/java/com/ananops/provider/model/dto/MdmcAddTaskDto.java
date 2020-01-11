@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -55,6 +54,30 @@ public class MdmcAddTaskDto implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date appointTime;
 
+    @ApiModelProperty("最晚维修时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date deadline;
+
+    @ApiModelProperty("实际开始维修时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date scheduledStartTime;
+
+    @ApiModelProperty("实际结束维修时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date scheduledFinishTime;
+
+    @ApiModelProperty("报修地址（经度）")
+    private BigDecimal requestLatitude;
+
+    @ApiModelProperty("报修地址（纬度）")
+    private BigDecimal requestLongitude;
+
+    @ApiModelProperty("报修地址（小程序报修要转换成字符串地址填入）")
+    private String addressName;
+
     @ApiModelProperty("维修结果")
     private Integer result;
 
@@ -67,10 +90,10 @@ public class MdmcAddTaskDto implements Serializable {
     @ApiModelProperty("备注")
     private String note;
 
-    @ApiModelProperty("维修工单类型（正常填1，巡检填2）")
+    @ApiModelProperty("维修工单类型（维修填1，巡检填2）")
     private Integer objectType;
 
-    @ApiModelProperty("维修工单编号")
+    @ApiModelProperty("维修类型不填，巡检类型填巡检工单编号")
     private Long objectId;
 
     @ApiModelProperty("任务子项")

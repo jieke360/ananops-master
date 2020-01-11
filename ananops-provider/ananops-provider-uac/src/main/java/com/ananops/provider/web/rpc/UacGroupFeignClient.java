@@ -106,6 +106,28 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
     }
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "通过公司名称模糊查询Group信息")
+    public Wrapper<List<GroupSaveDto>> getUacGroupByLikeName(String groupName) {
+        logger.info("通过公司名称模糊查询Group信息");
+        List<GroupSaveDto> groupSaveDtos = new ArrayList<>();
+        List<UacGroup> uacGroups = uacGroupService.queryByLikeName(groupName);
+        if (uacGroups != null) {
+            for (UacGroup uacGroup : uacGroups) {
+                GroupSaveDto groupSaveDto = new GroupSaveDto();
+                try {
+                    BeanUtils.copyProperties(groupSaveDto, uacGroup);
+                } catch (Exception e) {
+                    logger.error("用户组Dto与用户组传输Dto属性拷贝异常");
+                    e.printStackTrace();
+                }
+                groupSaveDtos.add(groupSaveDto);
+            }
+
+        }
+        return WrapMapper.ok(groupSaveDtos);
+    }
+
+    @Override
     @ApiOperation(httpMethod = "POST", value = "根据Group的Id查询对应的全部User的Id")
     public Wrapper<List<Long>> getUacUserIdListByGroupId(@RequestParam("groupId")Long groupId){
         logger.info("根据组织Id查询组织对应的全部用户的Id");

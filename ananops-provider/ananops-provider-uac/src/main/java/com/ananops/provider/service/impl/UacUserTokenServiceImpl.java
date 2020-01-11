@@ -172,7 +172,7 @@ public class UacUserTokenServiceImpl extends BaseService<UacUserToken> implement
 		tokenDto.setStatus(UacUserTokenStatusEnum.ON_REFRESH.getStatus());
 		UacUser uacUser = uacUserService.findUserInfoByLoginName(loginName);
 
-		LoginAuthDto loginAuthDto = new LoginAuthDto(uacUser.getId(), uacUser.getLoginName(), uacUser.getUserName(), uacUser.getGroupId(), uacUser.getGroupName(), uacUser.getDepartmentId(), uacUser.getDepartmentName());
+		LoginAuthDto loginAuthDto = new LoginAuthDto(uacUser.getId(), uacUser.getLoginName(), uacUser.getUserName(), uacUser.getGroupId(), uacUser.getGroupName());
 		this.updateUacUserToken(tokenDto, loginAuthDto);
 		// 创建刷新token
 		this.saveUserToken(accessTokenNew, refreshTokenNew, loginAuthDto, request);

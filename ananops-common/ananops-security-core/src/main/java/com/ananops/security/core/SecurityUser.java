@@ -43,30 +43,22 @@ public class SecurityUser implements UserDetails {
 
 	private String groupName;
 
-	private Long departmentId;
-
-	private String departmentName;
-
-	public SecurityUser(Long userId, String loginName, String loginPwd, String nickName, Long groupId, String groupName, Long departmentId, String departmentName) {
+	public SecurityUser(Long userId, String loginName, String loginPwd, String nickName, Long groupId, String groupName) {
 		this.setUserId(userId);
 		this.setLoginName(loginName);
 		this.setLoginPwd(loginPwd);
 		this.setNickName(nickName);
 		this.setGroupId(groupId);
 		this.setGroupName(groupName);
-		this.setDepartmentId(departmentId);
-		this.setDepartmentName(departmentName);
 	}
 
-	public SecurityUser(Long userId, String loginName, String loginPwd, String nickName, Long groupId, String groupName, Long departmentId, String departmentName, String status, Collection<GrantedAuthority> grantedAuthorities) {
+	public SecurityUser(Long userId, String loginName, String loginPwd, String nickName, Long groupId, String groupName, String status, Collection<GrantedAuthority> grantedAuthorities) {
 		this.setUserId(userId);
 		this.setLoginName(loginName);
 		this.setLoginPwd(loginPwd);
 		this.setNickName(nickName);
 		this.setGroupId(groupId);
 		this.setGroupName(groupName);
-		this.setDepartmentId(departmentId);
-		this.setDepartmentName(departmentName);
 		this.setStatus(status);
 		this.authorities = grantedAuthorities;
 	}
@@ -160,21 +152,5 @@ public class SecurityUser implements UserDetails {
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
-	}
-
-	public Long getDepartmentId() {
-		return departmentId;
-	}
-
-	public void setDepartmentId(Long departmentId) {
-		this.departmentId = departmentId;
-	}
-
-	public String getDepartmentName() {
-		return departmentName;
-	}
-
-	public void setDepartmentName(String departmentName) {
-		this.departmentName = departmentName;
 	}
 }

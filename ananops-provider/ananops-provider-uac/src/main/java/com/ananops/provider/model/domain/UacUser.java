@@ -10,7 +10,6 @@ package com.ananops.provider.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ananops.core.mybatis.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -142,17 +141,4 @@ public class UacUser extends BaseEntity {
 	@ApiModelProperty(value = "用户所属的组织名称")
 	@Transient
 	private String groupName;
-
-	/**
-	 * 用户所属的部门ID
-	 */
-	@ApiModelProperty(value = "用户所属的部门ID")
-	@Transient
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	private Long departmentId;
-
-	@ApiModelProperty(value = "用户所属的部门名称")
-	@Transient
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	private String departmentName;
 }
