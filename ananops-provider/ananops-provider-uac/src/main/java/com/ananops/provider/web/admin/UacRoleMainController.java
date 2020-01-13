@@ -8,6 +8,9 @@
 
 package com.ananops.provider.web.admin;
 
+import com.ananops.base.dto.BaseQuery;
+import com.ananops.provider.model.dto.user.UserInfoDto;
+import com.ananops.provider.model.service.UacUserFeignApi;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ananops.base.dto.LoginAuthDto;
@@ -51,6 +54,9 @@ public class UacRoleMainController extends BaseController {
 	@Resource
 	private UacRoleUserService uacRoleUserService;
 
+	@Resource
+	UacUserFeignApi uacUserFeignApi;
+
 	/**
 	 * 分页查询角色信息.
 	 *
@@ -67,6 +73,22 @@ public class UacRoleMainController extends BaseController {
 		role.setOrderBy("created_time desc");
 		List<RoleVo> roleVoList = uacRoleService.queryRoleListWithPage(role);
 		return WrapMapper.ok(new PageInfo<>(roleVoList));
+	}
+
+
+	/**
+	 * 查询用户可以绑定的角色列表
+	 * @param baseQuery
+	 * @return
+	 */
+	@PostMapping(value = "/queryBindRoleWithPage")
+	@ApiOperation(httpMethod = "POST", value = "查询用户可以绑定的角色列表")
+	public Wrapper<PageInfo<UacRole>> queryBindRoleWithPage(@RequestBody BaseQuery baseQuery) {
+		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
+		Wrapper<UserInfoDto> wrapper = uacUserFeignApi.getUacUserById(loginAuthDto.getUserId());
+		PageHelper.startPage(baseQuery.getPageNum(),baseQuery.getPageSize());
+		List<UacRole> uacRoleList = uacRoleService.queryBindRoleWithPage(wrapper.getResult().getRoleId());
+		return WrapMapper.ok(new PageInfo<>(uacRoleList));
 	}
 
 	/**

@@ -51,7 +51,7 @@ public class UacUserMainController extends BaseController {
 	private UacUserService uacUserService;
 
 	/**
-	 * 查询角色列表.
+	 * 查询用户列表.
 	 *
 	 * @param uacUser the uac user
 	 *
