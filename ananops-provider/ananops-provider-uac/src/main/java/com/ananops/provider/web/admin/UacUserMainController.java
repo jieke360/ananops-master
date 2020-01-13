@@ -9,6 +9,8 @@
 package com.ananops.provider.web.admin;
 
 import com.ananops.provider.model.dto.log.PageLog;
+import com.ananops.provider.model.dto.user.UserInfoDto;
+import com.ananops.provider.model.service.UacUserFeignApi;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ananops.base.dto.LoginAuthDto;
@@ -49,6 +51,9 @@ import java.util.Objects;
 public class UacUserMainController extends BaseController {
 	@Resource
 	private UacUserService uacUserService;
+
+	@Resource
+	UacUserFeignApi uacUserFeignApi;
 
 	/**
 	 * 查询用户列表.
@@ -147,11 +152,11 @@ public class UacUserMainController extends BaseController {
 	 */
 	@PostMapping(value = "/getBindRole/{userId}")
 	@ApiOperation(httpMethod = "POST", value = "获取用户绑定角色页面数据")
-	public Wrapper<UserBindRoleVo> getBindRole(@ApiParam(name = "userId", value = "角色id") @PathVariable Long userId) {
+	public Wrapper<UserBindRoleVo> getBindRole(@ApiParam(name = "userId", value = "用户id") @PathVariable Long userId) {
 		logger.info("获取用户绑定角色页面数据. userId={}", userId);
 		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
 		Long currentUserId = loginAuthDto.getUserId();
-		if (!Objects.equals(userId, currentUserId)) {
+		if (Objects.equals(userId, currentUserId)) {
 			throw new UacBizException(ErrorCodeEnum.UAC10011023);
 		}
 
@@ -159,6 +164,25 @@ public class UacUserMainController extends BaseController {
 		return WrapMapper.ok(bindUserDto);
 	}
 
+	/**
+	 * 获取用户可以绑定角色页面数据.
+	 *
+	 * @param userId the user id
+	 *
+	 * @return the bind role
+	 */
+	@PostMapping(value = "/getPermitBindRole/{userId}")
+	@ApiOperation(httpMethod = "POST", value = "获取用户可以绑定角色页面数据")
+	public Wrapper<UserBindRoleVo> getPermitBindRole(@ApiParam(name = "userId", value = "用户id") @PathVariable Long userId) {
+		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
+		Long currentUserId = loginAuthDto.getUserId();
+		if (Objects.equals(userId, currentUserId)) {
+			throw new UacBizException(ErrorCodeEnum.UAC10011023);
+		}
+		Wrapper<UserInfoDto> wrapper = uacUserFeignApi.getUacUserById(loginAuthDto.getUserId());
+		UserBindRoleVo bindUserDto = uacUserService.getUserPermitBindRoleDto(userId,wrapper.getResult().getRoleId());
+		return WrapMapper.ok(bindUserDto);
+	}
 	/**
 	 * 用户绑定角色.
 	 *
