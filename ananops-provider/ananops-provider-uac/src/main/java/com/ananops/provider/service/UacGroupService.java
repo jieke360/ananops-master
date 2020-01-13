@@ -109,4 +109,13 @@ public interface UacGroupService extends IService<UacGroup> {
 	 * @return the by id
 	 */
 	UacGroup getById(Long id);
+
+	/**
+	 * 根据公司名称模糊查询公司信息
+	 *
+	 * @param groupName 组名称
+	 *
+	 * @return 返回Group
+	 */
+	List<UacGroup> queryByLikeName(String groupName);
 }

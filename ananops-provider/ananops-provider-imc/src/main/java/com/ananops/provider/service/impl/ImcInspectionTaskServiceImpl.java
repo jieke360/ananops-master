@@ -263,6 +263,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         String taskName = taskQueryDto.getTaskName();
         if(StringUtils.isNotBlank(taskName)){
             taskName = "%" + taskName + "%";
+            if(role == null){
+                throw new BusinessException(ErrorCodeEnum.GL9999089);
+            }
             switch (role){
                 case 1://如果角色是甲方用户
                     return imcInspectionTaskMapper.queryTaskByUserIdAndTaskName(taskQueryDto.getUserId(),taskName);
@@ -276,6 +279,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
         }else{
+            if(role == null){
+                throw new BusinessException(ErrorCodeEnum.GL9999089);
+            }
             switch (role){
                 case 1://如果角色是甲方用户
                     return imcInspectionTaskMapper.queryTaskByUserId(taskQueryDto.getUserId());

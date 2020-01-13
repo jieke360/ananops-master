@@ -56,9 +56,9 @@ public class UacUserCommonController extends BaseController {
 	 * @return the wrapper
 	 */
 	@PostMapping(value = "/queryUserInfo/{loginName}")
-	@ApiOperation(httpMethod = "POST", value = "根据userId查询用户详细信息")
+	@ApiOperation(httpMethod = "POST", value = "根据loginName查询用户详细信息")
 	public Wrapper<UserVo> queryUserInfo(@PathVariable String loginName) {
-		logger.info("根据userId查询用户详细信息");
+		logger.info("根据loginName查询用户详细信息");
 		UserVo userVo = new UserVo();
 		UacUser uacUser = uacUserService.findByLoginName(loginName);
 		uacUser = uacUserService.findUserInfoByUserId(uacUser.getId());
