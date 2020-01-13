@@ -262,6 +262,9 @@
         <if test="mobileNo != null and mobileNo != ''">
             AND u.mobile_no LIKE concat('%',#{mobileNo},'%')
         </if>
+        <if test="groupId != null and groupId != ''">
+            AND g.id LIKE concat('%',#{groupId},'%')
+        </if>
         <!--        <include refid="Base_Where_Condition">-->
         <!--            <property name="alias" value="u"></property>-->
         <!--        </include>-->
