@@ -76,26 +76,22 @@ public class UacRoleMainController extends BaseController {
 		return WrapMapper.ok(new PageInfo<>(roleVoList));
 	}
 
-
 	/**
 	 * 查询用户可以绑定的角色列表
-	 * @param baseQuery
 	 * @return
 	 */
 	@PostMapping(value = "/queryBindRoleWithPage")
 	@ApiOperation(httpMethod = "POST", value = "查询用户可以绑定的角色列表")
-	public Wrapper<PageInfo<UacRole>> queryBindRoleWithPage(@RequestBody BaseQuery baseQuery) {
+	public Wrapper<List<UacRole>> queryBindRoleWithPage() {
 		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
 		List<UacRole> uacRoleList = new ArrayList<>();
 		if(loginAuthDto.getLoginName().equals("admin")){
 			uacRoleList = uacRoleService.selectAll();
 		}else{
 			Wrapper<UserInfoDto> wrapper = uacUserFeignApi.getUacUserById(loginAuthDto.getUserId());
-			PageHelper.startPage(baseQuery.getPageNum(),baseQuery.getPageSize());
 			uacRoleList = uacRoleService.queryBindRoleWithPage(wrapper.getResult().getRoleId());
 		}
-
-		return WrapMapper.ok(new PageInfo<>(uacRoleList));
+		return WrapMapper.ok(uacRoleList);
 	}
 
 	/**
