@@ -16,6 +16,8 @@ public interface ImcInspectionTaskService extends IService<ImcInspectionTask> {
 
     ImcInspectionTask getTaskByTaskId(Long taskId);//根据巡检任务的ID，获得当前巡检任务的详情
 
+    void deleteTaskById(Long taskId);
+
     ImcInspectionTask modifyTaskStatus(ImcTaskChangeStatusDto imcTaskChangeStatusDto, LoginAuthDto loginAuthDto);//修改巡检任务的状态
 
     List<ImcInspectionTask> getTaskByStatus(TaskQueryDto taskQueryDto);//根据巡检任务的状态查询对应的任务

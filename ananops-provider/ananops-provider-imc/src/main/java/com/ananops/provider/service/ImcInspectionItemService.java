@@ -16,6 +16,10 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
 
     List<ImcInspectionItem> getAllItemByTaskId(ItemQueryDto itemQueryDto);//根据巡检任务ID，获取当前任务下的所有巡检任务子项
 
+    void deleteItemByItemId(Long itemId);
+
+    List<ImcInspectionItem> getAllItemByTaskIdAndStatus(ItemQueryDto itemQueryDto);
+
     ImcInspectionItem getItemByItemId(Long itemId);//根据巡检任务子项ID，获取对应的巡检任务子项
 
     List<ImcInspectionItem> getItemByItemStatusAndTaskId(ItemQueryDto itemQueryDto);//根据任务子项对应的任务ID以及任务状态查询对应的任务
