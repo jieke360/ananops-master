@@ -1,7 +1,9 @@
 package com.ananops.provider.web.rpc;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
+import com.ananops.provider.model.domain.DeviceOrder;
 import com.ananops.provider.model.dto.CreateNewOrderDto;
 import com.ananops.provider.model.dto.ProcessOrderDto;
 import com.ananops.provider.service.DeviceOrderService;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import service.RdcDeviceOrderFeignApi;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 /**
  * @author zhs
@@ -73,5 +76,14 @@ public class RdcDeviceOrderFeignClient extends BaseController implements RdcDevi
     @Override
     public Wrapper<Object> getAllDevice() {
         return WrapMapper.ok(deviceService.selectAll());
+    }
+
+    @Override
+    public Wrapper<Object> getTotalCost(Long orderId) {
+        JSONObject ret = new JSONObject();
+        DeviceOrder order = deviceOrderService.selectByKey(orderId);
+        BigDecimal totalCost = order != null ? order.getTotalPrice() : null;
+        ret.put("totalCost", totalCost);
+        return WrapMapper.ok(ret);
     }
 }
