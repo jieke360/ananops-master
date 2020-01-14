@@ -1,6 +1,7 @@
 package com.ananops.provider.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
@@ -11,13 +12,9 @@ import com.ananops.provider.model.domain.Device;
 import com.ananops.provider.model.domain.DeviceOrder;
 import com.ananops.provider.model.dto.CreateNewOrderDto;
 import com.ananops.provider.model.dto.DeviceOrderItemInfoDto;
-import com.ananops.provider.model.dto.MdmcChangeStatusDto;
 import com.ananops.provider.model.dto.ProcessOrderDto;
 import com.ananops.provider.model.enums.DeviceOrderStatusEnum;
-import com.ananops.provider.model.vo.DeviceOrderDetailVo;
-import com.ananops.provider.model.vo.DeviceOrderListVo;
-import com.ananops.provider.model.vo.DeviceOrderVo;
-import com.ananops.provider.model.vo.ProcessOrderResultVo;
+import com.ananops.provider.model.vo.*;
 import com.ananops.provider.service.ApproveService;
 import com.ananops.provider.service.DeviceOrderService;
 import com.ananops.provider.service.DeviceService;
@@ -29,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.awt.event.WindowFocusListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +57,7 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
         List<DeviceOrderItemInfoDto> items = createNewOrderDto.getItems();
         JSONArray itemArray = new JSONArray();
         for (DeviceOrderItemInfoDto item: items){
-            Device device = new Device();
+            DeviceVo device = new DeviceVo();
             BeanUtils.copyProperties(item, device);
             itemArray.add(device);
         }
@@ -96,14 +94,7 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
         logger.info("创建审批记录成功[OK], Approves = {}", approve);
 
         if(deviceOrder.getObjectType() == 1){
-//            Long taskId = deviceOrder.getObjectId();
-//            MdmcChangeStatusDto changeStatusDto= new MdmcChangeStatusDto();
-//            changeStatusDto.setStatus(7);
-//            changeStatusDto.setTaskId(taskId);
-//            changeStatusDto.setLoginAuthDto(loginAuthDto);
-//            mdmcTaskFeignApi.modifyTaskStatusByTaskId(changeStatusDto);
             mdmcTaskFeignApi.updateStatusAfterDeviceOrderCreated(loginAuthDto);
-
             logger.info("更新维修维护工单状态成功[OK]");
         }
 
@@ -127,7 +118,7 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
         // 获取当前审核记录
         Long objectId = processOrderDto.getObjectId();
         List<Approve> approveList = approveService.selectByObject(1, objectId);
-        logger.info("获取当前订单审核记录，Approve = {}", approveList);
+        logger.info("获取当前订单审核记录，ApproveList = {}", approveList);
         if(approveList.size() == 0) {
             throw new BusinessException(ErrorCodeEnum.RDC100000002);
         }
@@ -180,29 +171,39 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
             if (discount == null) {
                 discount = 10.0f;
             }
-            BigDecimal totalPrice = processOrderDto.getTotalPrice().multiply(new BigDecimal(discount*0.1));
+            BigDecimal totalPrice = processOrderDto.getTotalPrice();
+            if(totalPrice == null) {
+                // 计算总价
+                BigDecimal total = new BigDecimal(0);
+                JSONArray items = JSONArray.parseArray(order.getItems());
+                items.forEach(item->{
+                    JSONObject json = (JSONObject)item;
+                    Integer count = json.getInteger("count");
+                    Long deviceId = json.getLong("id");
+                    Device device = deviceService.getDeviceById(deviceId);
+                    BigDecimal price = device == null ? new BigDecimal(0) : device.getPrice();
+                    total.add(price.multiply(new BigDecimal(count)));
+                });
+                totalPrice = total;
+            }
+            totalPrice = totalPrice.multiply(new BigDecimal(discount*0.1));
             order.setTotalPrice(totalPrice);
             order.setProcessResult(result);
             order.setProcessMsg(suggestion);
             // todo 添加报价单
             order.setUpdateInfo(loginAuthDto);
             update(order);
+            logger.info("备件订单状态已更新，正在更新维修维护工单状态...");
+
             if(order.getObjectType() == 1){
-
-//                Long taskId = order.getObjectId();
-//                MdmcChangeStatusDto changeStatusDto= new MdmcChangeStatusDto();
-//                changeStatusDto.setStatus(8);
-//                changeStatusDto.setTaskId(taskId);
-//                changeStatusDto.setLoginAuthDto(loginAuthDto);
-//                mdmcTaskFeignApi.modifyTaskStatusByTaskId(changeStatusDto);
-
+                mdmcTaskFeignApi.updateStatusAfterDeviceOrderDone(loginAuthDto);
                 logger.info("更新维修维护工单状态成功[OK]");
             }
         }
         
-        ret.setDeviceOrderInfo(order);
+        BeanUtils.copyProperties(order, ret);
         List<Approve> approves = approveService.selectByObject(1, objectId);
-        ret.setApproveInfo(approves);
+        BeanUtils.copyProperties(approves, ret);
 
         logger.info("处理备品备件成功[OK]，ProcessOrderResult = {}", ret);
 
