@@ -6,10 +6,12 @@ import io.swagger.annotations.ApiParam;
 import model.dto.CreateNewOrderFeignDto;
 import model.dto.ProcessOrderFeignDto;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import service.hystrix.RdcDeviceOrderFeignApiFeignHystrix;
+
 
 /**
  * @author zhs
@@ -39,4 +41,7 @@ public interface RdcDeviceOrderFeignApi {
 
     @PostMapping(value = "/devices")
     Wrapper<Object> getAllDevice();
+
+    @PostMapping(value = "/totalCost/{orderId}")
+    Wrapper<Object> getTotalCost(@ApiParam(name="orderId", value = "订单编号")@PathVariable("orderId")Long orderId);
 }
