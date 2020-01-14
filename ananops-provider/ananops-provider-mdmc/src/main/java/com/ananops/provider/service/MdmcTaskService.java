@@ -118,4 +118,17 @@ public interface MdmcTaskService extends IService<MdmcTask> {
      * @param target
      */
     void copyPropertiesWithIgnoreNullProperties(Object source, Object target);
+
+    /**
+     * =========================== 待优化 ============================
+     *
+     * 1. 将工单数据和状态流转分开，用户操作只修改数据，不修改状态
+     * 2. 将可靠服务用于工单状态流转，两阶段提交工单修改的数据
+     * 3. 考虑工单数据改变时通知用户消息
+     * 4. AOP -> 参数校验/数据检查/操作日志
+     * 5. 订单跟踪的消息写到可靠服务里
+     * 6. 数据库查询操作应将所有相关数据封装
+     * 7. 数据库查询操作应支持相关字段的排序和分页（pageHelper）
+     * 8.
+     */
 }
