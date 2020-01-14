@@ -9,6 +9,10 @@
 package com.ananops.provider.web.admin;
 
 import com.ananops.provider.model.dto.log.PageLog;
+import com.ananops.provider.model.dto.user.*;
+import com.ananops.provider.model.service.UacUserFeignApi;
+import com.ananops.provider.model.vo.AlreadyBindRoleVo;
+import com.ananops.provider.model.vo.UserBindRoleNeedKeyVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ananops.base.dto.LoginAuthDto;
@@ -18,9 +22,6 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.UacLog;
 import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.menu.UserMenuDto;
-import com.ananops.provider.model.dto.user.BindUserMenusDto;
-import com.ananops.provider.model.dto.user.BindUserRolesDto;
-import com.ananops.provider.model.dto.user.ModifyUserStatusDto;
 import com.ananops.provider.model.exceptions.UacBizException;
 import com.ananops.provider.model.vo.UserBindRoleVo;
 import com.ananops.provider.security.SecurityUtils;
@@ -35,8 +36,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 用户管理主页面.
@@ -50,6 +50,9 @@ public class UacUserMainController extends BaseController {
 	@Resource
 	private UacUserService uacUserService;
 
+	@Resource
+	UacUserFeignApi uacUserFeignApi;
+
 	/**
 	 * 查询用户列表.
 	 *
@@ -62,6 +65,9 @@ public class UacUserMainController extends BaseController {
 	public Wrapper<PageInfo> queryUserListWithPage(@ApiParam(name = "role", value = "用户信息") @RequestBody UacUser uacUser) {
 
 		logger.info("查询用户列表uacUser={}", uacUser);
+		if(uacUser.getGroupId()==1){
+			uacUser.setGroupId(null);
+		}
 		PageInfo pageInfo = uacUserService.queryUserListWithPage(uacUser);
 		return WrapMapper.ok(pageInfo);
 	}
@@ -147,11 +153,11 @@ public class UacUserMainController extends BaseController {
 	 */
 	@PostMapping(value = "/getBindRole/{userId}")
 	@ApiOperation(httpMethod = "POST", value = "获取用户绑定角色页面数据")
-	public Wrapper<UserBindRoleVo> getBindRole(@ApiParam(name = "userId", value = "角色id") @PathVariable Long userId) {
+	public Wrapper<UserBindRoleVo> getBindRole(@ApiParam(name = "userId", value = "用户id") @PathVariable Long userId) {
 		logger.info("获取用户绑定角色页面数据. userId={}", userId);
 		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
 		Long currentUserId = loginAuthDto.getUserId();
-		if (!Objects.equals(userId, currentUserId)) {
+		if (Objects.equals(userId, currentUserId)) {
 			throw new UacBizException(ErrorCodeEnum.UAC10011023);
 		}
 
@@ -159,6 +165,39 @@ public class UacUserMainController extends BaseController {
 		return WrapMapper.ok(bindUserDto);
 	}
 
+	/**
+	 * 获取用户可以绑定角色页面数据.
+	 *
+	 * @param userId the user id
+	 *
+	 * @return the bind role
+	 */
+	@PostMapping(value = "/getPermitBindRole/{userId}")
+	@ApiOperation(httpMethod = "POST", value = "获取用户可以绑定角色页面数据")
+	public Wrapper<UserBindRoleNeedKeyVo> getPermitBindRole(@ApiParam(name = "userId", value = "用户id") @PathVariable Long userId) {
+		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
+		Long currentUserId = loginAuthDto.getUserId();
+		if (Objects.equals(userId, currentUserId)) {
+			throw new UacBizException(ErrorCodeEnum.UAC10011023);
+		}
+		Wrapper<UserInfoDto> wrapper = uacUserFeignApi.getUacUserById(loginAuthDto.getUserId());
+		UserBindRoleVo bindUserDto = uacUserService.getUserPermitBindRoleDto(userId,wrapper.getResult().getRoleId());
+		UserBindRoleNeedKeyVo userBindRoleNeedKeyVo = new UserBindRoleNeedKeyVo();
+		for (BindRoleDto bindRoleDto : bindUserDto.getAllRoleSet()) {
+			bindRoleDto.setKey(bindRoleDto.getRoleId());
+		}
+		userBindRoleNeedKeyVo.setAllRoleSet(bindUserDto.getAllRoleSet());
+		List<AlreadyBindRoleVo> alreadyBindRoleVos = new ArrayList<>();
+		for (Long aLong : bindUserDto.getAlreadyBindRoleIdSet()) {
+			AlreadyBindRoleVo alreadyBindRoleVo = new AlreadyBindRoleVo();
+			alreadyBindRoleVo.setRoleId(aLong);
+			alreadyBindRoleVo.setKey(aLong);
+			alreadyBindRoleVos.add(alreadyBindRoleVo);
+		}
+		Set<AlreadyBindRoleVo> alreadyBindRoleVoSet = new HashSet<>(alreadyBindRoleVos);
+		userBindRoleNeedKeyVo.setAlreadyBindRoleIdSet(alreadyBindRoleVoSet);
+		return WrapMapper.ok(userBindRoleNeedKeyVo);
+	}
 	/**
 	 * 用户绑定角色.
 	 *

@@ -102,6 +102,8 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	private UserManager userManager;
 	@Resource
 	private UacGroupMapper uacGroupMapper;
+	@Resource
+	private UacRoleMapper uacRoleMapper;
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -762,6 +764,39 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	}
 
 	@Override
+	public UserBindRoleVo getUserPermitBindRoleDto(Long userId, Long roleId) {
+		UserBindRoleVo userBindRoleVo = new UserBindRoleVo();
+		Set<Long> alreadyBindRoleIdSet = Sets.newHashSet();
+		UacUser uacUser = this.queryByUserId(userId);
+		if (uacUser == null) {
+			logger.error("找不到userId={}, 的用户", userId);
+			throw new UacBizException(ErrorCodeEnum.UAC10011003, userId);
+		}
+		List<BindRoleDto> bindRoleDtoList = new ArrayList<>();
+		if(roleId == null){
+			 bindRoleDtoList = uacUserMapper.selectAllNeedBindRole(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID);
+		}else{
+			UacRole uacRole = uacRoleMapper.selectByPrimaryKey(roleId);
+			// 查询该用户可以绑定的角色
+		     bindRoleDtoList = uacUserMapper.selectAllPermitBindRole(uacRole.getVersion()+1);
+		}
+
+		// 该角色已经绑定的用户
+		List<UacRoleUser> setAlreadyBindRoleSet = uacRoleUserService.listByUserId(userId);
+
+		Set<BindRoleDto> allUserSet = new HashSet<>(bindRoleDtoList);
+
+		for (UacRoleUser uacRoleUser : setAlreadyBindRoleSet) {
+			alreadyBindRoleIdSet.add(uacRoleUser.getRoleId());
+		}
+
+		userBindRoleVo.setAllRoleSet(allUserSet);
+		userBindRoleVo.setAlreadyBindRoleIdSet(alreadyBindRoleIdSet);
+
+		return userBindRoleVo;
+	}
+
+	@Override
 	public void activeUser(String activeUserToken) {
 		Preconditions.checkArgument(!StringUtils.isEmpty(activeUserToken), "激活用户失败");
 
@@ -1006,34 +1041,48 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 
 	@Override
 	public List<UserVo> getApprovalUserListById(Long groupId, Long userId) {
+		if (Objects.equals(userId, GlobalConstant.Sys.SUPER_MANAGER_USER_ID)) {
+			logger.error("超级管理员没有父id userId={}", userId);
+			throw new UacBizException(ErrorCodeEnum.UAC10011023);
+		}
 		List<UserVo> userVoList = new ArrayList<>();
 		// 该组织已经绑定的用户
-		List<UacGroupUser> alreadyBindUserSet = uacGroupUserMapper.listByGroupId(groupId);
+		UacGroup uacGroup = uacGroupMapper.selectByPrimaryKey(groupId);
+		Long groupPId = uacGroup.getPid();
+		List<UacGroupUser> alreadyBindUserSet = uacGroupUserMapper.listByGroupId(groupPId);
 		for (UacGroupUser uacGroupUser : alreadyBindUserSet) {
 			//每个用户的信息
 			UserVo userVo = new UserVo();
 			//用户id
 			Long userApprovalId = uacGroupUser.getUserId();
 			UacUser uacUser = uacUserMapper.selectByPrimaryKey(userApprovalId);
-			//根据用户id获取用户角色列表
-			List<UacRoleUser> roleUserList = uacRoleUserService.queryByUserId(userApprovalId);
-			//根据用户的id获取该用户roleCodeList
-			List<String> roleCodeList = new ArrayList<>();
-			for (UacRoleUser uacRoleUser : roleUserList) {
-				Long roleId = uacRoleUser.getRoleId();
-				UacRole uacRole = uacRoleService.getRoleById(roleId);
-				roleCodeList.add(uacRole.getRoleCode());
-			}
-			//如果该用户是用户负责人的角色就添加到用户负责人列表
-			if (roleCodeList.contains("user_leader")) {
-				try {
+//			//根据用户id获取用户角色列表
+//			List<UacRoleUser> roleUserList = uacRoleUserService.queryByUserId(userApprovalId);
+//			//根据用户的id获取该用户roleCodeList
+//			List<String> roleCodeList = new ArrayList<>();
+//			for (UacRoleUser uacRoleUser : roleUserList) {
+//				Long roleId = uacRoleUser.getRoleId();
+//				UacRole uacRole = uacRoleService.getRoleById(roleId);
+//				roleCodeList.add(uacRole.getRoleCode());
+//			}
+//			//如果该用户是用户负责人的角色就添加到用户负责人列表
+//			if (roleCodeList.contains("user_leader")) {
+//				try {
+//					BeanUtils.copyProperties(userVo, uacUser);
+//				}catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				userVoList.add(userVo);
+//			}
+			try {
 					BeanUtils.copyProperties(userVo, uacUser);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
 				userVoList.add(userVo);
-			}
 		}
 		return userVoList;
 	}
+
+
 }
