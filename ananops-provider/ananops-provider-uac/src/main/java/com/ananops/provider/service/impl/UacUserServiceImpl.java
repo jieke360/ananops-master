@@ -1041,33 +1041,45 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 
 	@Override
 	public List<UserVo> getApprovalUserListById(Long groupId, Long userId) {
+		if (Objects.equals(userId, GlobalConstant.Sys.SUPER_MANAGER_USER_ID)) {
+			logger.error("超级管理员没有父id userId={}", userId);
+			throw new UacBizException(ErrorCodeEnum.UAC10011023);
+		}
 		List<UserVo> userVoList = new ArrayList<>();
 		// 该组织已经绑定的用户
-		List<UacGroupUser> alreadyBindUserSet = uacGroupUserMapper.listByGroupId(groupId);
+		UacGroup uacGroup = uacGroupMapper.selectByPrimaryKey(groupId);
+		Long groupPId = uacGroup.getPid();
+		List<UacGroupUser> alreadyBindUserSet = uacGroupUserMapper.listByGroupId(groupPId);
 		for (UacGroupUser uacGroupUser : alreadyBindUserSet) {
 			//每个用户的信息
 			UserVo userVo = new UserVo();
 			//用户id
 			Long userApprovalId = uacGroupUser.getUserId();
 			UacUser uacUser = uacUserMapper.selectByPrimaryKey(userApprovalId);
-			//根据用户id获取用户角色列表
-			List<UacRoleUser> roleUserList = uacRoleUserService.queryByUserId(userApprovalId);
-			//根据用户的id获取该用户roleCodeList
-			List<String> roleCodeList = new ArrayList<>();
-			for (UacRoleUser uacRoleUser : roleUserList) {
-				Long roleId = uacRoleUser.getRoleId();
-				UacRole uacRole = uacRoleService.getRoleById(roleId);
-				roleCodeList.add(uacRole.getRoleCode());
-			}
-			//如果该用户是用户负责人的角色就添加到用户负责人列表
-			if (roleCodeList.contains("user_leader")) {
-				try {
+//			//根据用户id获取用户角色列表
+//			List<UacRoleUser> roleUserList = uacRoleUserService.queryByUserId(userApprovalId);
+//			//根据用户的id获取该用户roleCodeList
+//			List<String> roleCodeList = new ArrayList<>();
+//			for (UacRoleUser uacRoleUser : roleUserList) {
+//				Long roleId = uacRoleUser.getRoleId();
+//				UacRole uacRole = uacRoleService.getRoleById(roleId);
+//				roleCodeList.add(uacRole.getRoleCode());
+//			}
+//			//如果该用户是用户负责人的角色就添加到用户负责人列表
+//			if (roleCodeList.contains("user_leader")) {
+//				try {
+//					BeanUtils.copyProperties(userVo, uacUser);
+//				}catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				userVoList.add(userVo);
+//			}
+			try {
 					BeanUtils.copyProperties(userVo, uacUser);
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
 				userVoList.add(userVo);
-			}
 		}
 		return userVoList;
 	}
