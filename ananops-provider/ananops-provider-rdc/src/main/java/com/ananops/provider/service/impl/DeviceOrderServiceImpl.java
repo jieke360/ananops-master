@@ -94,7 +94,7 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
         logger.info("创建审批记录成功[OK], Approves = {}", approve);
 
         if(deviceOrder.getObjectType() == 1){
-            mdmcTaskFeignApi.updateStatusAfterDeviceOrderCreated(loginAuthDto);
+            mdmcTaskFeignApi.updateStatusAfterDeviceOrderCreated(deviceOrder.getObjectId(), loginAuthDto);
             logger.info("更新维修维护工单状态成功[OK]");
         }
 
@@ -196,7 +196,7 @@ public class DeviceOrderServiceImpl extends BaseService<DeviceOrder> implements 
             logger.info("备件订单状态已更新，正在更新维修维护工单状态...");
 
             if(order.getObjectType() == 1){
-                mdmcTaskFeignApi.updateStatusAfterDeviceOrderDone(loginAuthDto);
+                mdmcTaskFeignApi.updateStatusAfterDeviceOrderDone(order.getObjectId(), loginAuthDto);
                 logger.info("更新维修维护工单状态成功[OK]");
             }
         }
