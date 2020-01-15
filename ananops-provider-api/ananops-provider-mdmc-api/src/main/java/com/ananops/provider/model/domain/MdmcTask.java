@@ -148,7 +148,7 @@ public class MdmcTask extends BaseEntity {
      * 地址名称
      */
     @Column(name = "address_name")
-    private String address_name;
+    private String addressName;
 
     /**
      * 合同id
