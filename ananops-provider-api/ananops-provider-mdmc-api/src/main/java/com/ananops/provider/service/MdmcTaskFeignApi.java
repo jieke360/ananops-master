@@ -52,12 +52,12 @@ public interface MdmcTaskFeignApi {
     @PostMapping(value = "/api/mdmcTask/refuseMdmcTaskByFacilitator")
     Wrapper<MdmcChangeStatusDto> refuseMdmcTaskByFacilitator(@RequestBody RefuseMdmcTaskDto refuseMdmcTaskDto);
 
-    @PostMapping(value = "/api/mamcTask/deviceOrder/done")
-    Wrapper<Object> updateStatusAfterDeviceOrderDone(@RequestBody LoginAuthDto loginAuthDto);
+    @PostMapping(value = "/api/mamcTask/deviceOrder/done/{taskId}")
+    Wrapper<Object> updateStatusAfterDeviceOrderDone(@PathVariable("taskId") Long taskId, @RequestBody LoginAuthDto loginAuthDto);
 
-    @PostMapping(value = "/api/mamcTask/deviceOrder/created")
-    Wrapper<Object> updateStatusAfterDeviceOrderCreated(@RequestBody LoginAuthDto loginAuthDto);
+    @PostMapping(value = "/api/mamcTask/deviceOrder/created/{taskId}")
+    Wrapper<Object> updateStatusAfterDeviceOrderCreated(@PathVariable("taskId") Long taskId, @RequestBody LoginAuthDto loginAuthDto);
 
-    @PostMapping(value = "/api/mamcTask/payment/done")
-    Wrapper<Object> updateStatusAfterPaymentDone(@RequestBody LoginAuthDto loginAuthDto);
+    @PostMapping(value = "/api/mamcTask/payment/done/{taskId}")
+    Wrapper<Object> updateStatusAfterPaymentDone(@PathVariable("taskId") Long taskId, @RequestBody LoginAuthDto loginAuthDto);
 }
