@@ -9,10 +9,12 @@ import com.ananops.provider.model.dto.CompanyDto;
 import com.ananops.provider.model.dto.CompanyRegisterDto;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
+import com.ananops.provider.model.dto.group.GroupBindUserDto;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.dto.user.UserRegisterDto;
+import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
@@ -26,6 +28,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +51,9 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
     @Resource
     private UacGroupFeignApi uacGroupFeignApi;
 
+    @Resource
+    private UacGroupBindUserFeignApi uacGroupBindUserFeignApi;
+
     @Override
     public int getCompanyById(CompanyDto companyDto) {
         return spcCompanyMapper.selectCount(new SpcCompany());
@@ -66,14 +72,34 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
         UserRegisterDto userRegisterDto = new UserRegisterDto();
         GroupSaveDto groupSaveDto = new GroupSaveDto();
         try {
+            // 绑定用户注册信息
             BeanUtils.copyProperties(userRegisterDto, company);
+            userRegisterDto.setLoginName(company.getGroupName());
+            userRegisterDto.setMobileNo(company.getContactPhone());
+
+            // 绑定组织注册信息
             BeanUtils.copyProperties(groupSaveDto, company);
         } catch (Exception e) {
             logger.error("服务商Dto与用户Dto属性拷贝异常");
             e.printStackTrace();
         }
+        logger.info("注册用户. userRegisterDto={}", userRegisterDto);
         Long uacUserId = uacUserFeignApi.userRegister(userRegisterDto).getResult();
+        logger.info("注册用户.【ok】uacUserId={}", uacUserId);
+
+        logger.info("注册组织. groupSaveDto={}", groupSaveDto);
         Long uacGroupId = uacGroupFeignApi.groupSave(groupSaveDto).getResult();
+        logger.info("注册组织.【ok】uacGroupId={}", uacGroupId);
+
+        if (uacUserId != null && uacGroupId != null) {
+            GroupBindUserDto groupBindUserDto = new GroupBindUserDto();
+            groupBindUserDto.setGroupId(uacGroupId);
+            groupBindUserDto.setUserIdList(Arrays.asList(uacUserId));
+            logger.info("绑定用户到组织. groupBindUserDto={}", groupBindUserDto);
+            uacGroupBindUserFeignApi.bindUacUser4Group(groupBindUserDto);
+            logger.info("绑定用户到组织.【ok】");
+        }
+
 
         if (!StringUtils.isEmpty(uacUserId) && !StringUtils.isEmpty(uacGroupId)) {
             Date row = new Date();

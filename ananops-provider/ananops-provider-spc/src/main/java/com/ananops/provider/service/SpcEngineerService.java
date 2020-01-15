@@ -7,6 +7,7 @@ import com.ananops.provider.model.dto.EngineerDto;
 import com.ananops.provider.model.dto.EngineerRegisterDto;
 import com.ananops.provider.model.dto.EngineerStatusDto;
 import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
+import com.ananops.provider.model.vo.EngineerSimpleVo;
 import com.ananops.provider.model.vo.EngineerVo;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -114,4 +115,13 @@ public interface SpcEngineerService extends IService<SpcEngineer> {
      * @param loginAuthDto 登录信息
      */
     void saveSpcEngineer(EngineerVo engineerVo, LoginAuthDto loginAuthDto);
+
+    /**
+     * 根据项目Id查询工程师简单信息（id、名称）
+     *
+     * @param projectId 项目Id
+     *
+     * @return 返回工程师简单信息集合
+     */
+    List<EngineerSimpleVo> getEngineersListByProjectId(Long projectId);
 }
