@@ -47,7 +47,7 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
         LoginAuthDto loginAuthDto = super.getLoginAuthDto();
         logger.info("groupSave - 注册或更新组织. groupSaveDto={}", groupSaveDto);
         UacGroup uacGroup = new UacGroup();
-        uacGroup.setPid(0L);
+        uacGroup.setPid(1L);
         try {
             BeanUtils.copyProperties(uacGroup, groupSaveDto);
         } catch (Exception e) {

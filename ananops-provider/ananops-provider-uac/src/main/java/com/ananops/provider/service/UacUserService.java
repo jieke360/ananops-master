@@ -197,7 +197,7 @@ public interface UacUserService extends IService<UacUser> {
 	 *
 	 * @param registerDto the register dto
 	 */
-	void register(UserRegisterDto registerDto);
+	Long register(UserRegisterDto registerDto);
 
 	/**
 	 * 校验登录名是否存在.
