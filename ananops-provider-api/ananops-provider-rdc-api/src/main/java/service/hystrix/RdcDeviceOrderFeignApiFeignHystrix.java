@@ -6,6 +6,7 @@ import model.dto.ProcessOrderFeignDto;
 import service.RdcDeviceOrderFeignApi;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class RdcDeviceOrderFeignApiFeignHystrix implements RdcDeviceOrderFeignApi {
     @Override
@@ -45,6 +46,11 @@ public class RdcDeviceOrderFeignApiFeignHystrix implements RdcDeviceOrderFeignAp
 
     @Override
     public Wrapper<Object> getTotalCost(Long orderId) {
+        return null;
+    }
+
+    @Override
+    public Wrapper<Object> getPriceOfDevices(List<Long> deviceIdArray) {
         return null;
     }
 }
