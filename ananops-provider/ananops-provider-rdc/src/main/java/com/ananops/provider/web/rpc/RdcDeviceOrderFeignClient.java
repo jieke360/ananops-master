@@ -1,8 +1,10 @@
 package com.ananops.provider.web.rpc;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
+import com.ananops.provider.model.domain.Device;
 import com.ananops.provider.model.domain.DeviceOrder;
 import com.ananops.provider.model.dto.CreateNewOrderDto;
 import com.ananops.provider.model.dto.ProcessOrderDto;
@@ -21,6 +23,8 @@ import service.RdcDeviceOrderFeignApi;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author zhs
@@ -70,7 +74,7 @@ public class RdcDeviceOrderFeignClient extends BaseController implements RdcDevi
 
     @Override
     public Wrapper<Object> getDeviceOrderByObject(Long objectId, Integer objectType) {
-        return WrapMapper.ok(deviceOrderService.getOrderByObjectIdAndObjectType(objectId,objectType));
+        return WrapMapper.ok(deviceOrderService.getDeviceOrderByObject(objectId,objectType));
     }
 
     @Override
@@ -85,5 +89,20 @@ public class RdcDeviceOrderFeignClient extends BaseController implements RdcDevi
         BigDecimal totalCost = order != null ? order.getTotalPrice() : null;
         ret.put("totalCost", totalCost);
         return WrapMapper.ok(ret);
+    }
+
+    @Override
+    public Wrapper<Object> getPriceOfDevices(List<Long> deviceIdArray) {
+        List<JSONObject> devicePriceJson = new ArrayList<>();
+        deviceIdArray.forEach(id->{
+            JSONObject item = new JSONObject();
+            Device d = deviceService.getDeviceById(id);
+            if(d != null) {
+                item.put("deviceId", d.getId());
+                item.put("price", d.getPrice());
+            }
+            devicePriceJson.add(item);
+        });
+        return WrapMapper.ok(devicePriceJson);
     }
 }
