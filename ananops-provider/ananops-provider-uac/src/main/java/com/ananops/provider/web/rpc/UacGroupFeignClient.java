@@ -45,7 +45,9 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
     @ApiOperation(httpMethod = "POST", value = "编辑用户组")
     public Wrapper<Long> groupSave(@RequestBody GroupSaveDto groupSaveDto) {
         LoginAuthDto loginAuthDto = super.getLoginAuthDto();
+        logger.info("groupSave - 注册或更新组织. groupSaveDto={}", groupSaveDto);
         UacGroup uacGroup = new UacGroup();
+        uacGroup.setPid(0L);
         try {
             BeanUtils.copyProperties(uacGroup, groupSaveDto);
         } catch (Exception e) {

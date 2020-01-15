@@ -549,19 +549,21 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		uacUser.setLastOperator(registerDto.getLoginName());
 
 		// 发送激活邮件
-		String activeToken = PubUtils.uuid() + super.generateId();
-		redisService.setKey(RedisKeyUtil.getActiveUserKey(activeToken), email, 1, TimeUnit.DAYS);
-
-		Map<String, Object> param = Maps.newHashMap();
-		param.put("loginName", registerDto.getLoginName());
-		param.put("email", registerDto.getEmail());
-		param.put("activeUserUrl", activeUserUrl + activeToken);
-		param.put("dateTime", DateUtil.formatDateTime(new Date()));
-
-		Set<String> to = Sets.newHashSet();
-		to.add(registerDto.getEmail());
-
-		MqMessageData mqMessageData = emailProducer.sendEmailMq(to, UacEmailTemplateEnum.ACTIVE_USER, AliyunMqTopicConstants.MqTagEnum.ACTIVE_USER, param);
+//		String activeToken = PubUtils.uuid() + super.generateId();
+//		redisService.setKey(RedisKeyUtil.getActiveUserKey(activeToken), email, 1, TimeUnit.DAYS);
+//
+//		Map<String, Object> param = Maps.newHashMap();
+//		param.put("loginName", registerDto.getLoginName());
+//		param.put("email", registerDto.getEmail());
+//		param.put("activeUserUrl", activeUserUrl + activeToken);
+//		param.put("dateTime", DateUtil.formatDateTime(new Date()));
+//
+//		Set<String> to = Sets.newHashSet();
+//		to.add(registerDto.getEmail());
+//
+//		MqMessageData mqMessageData = emailProducer.sendEmailMq(to, UacEmailTemplateEnum.ACTIVE_USER, AliyunMqTopicConstants.MqTagEnum.ACTIVE_USER, param);
+		MqMessageData mqMessageData = new MqMessageData();
+		mqMessageData.setMessageBody("Register User");
 		userManager.register(mqMessageData, uacUser);
 	}
 

@@ -7,8 +7,10 @@ import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +38,7 @@ public class AuthSpcRestController extends BaseController {
      */
     @PostMapping(value = "/company/registCompany")
     @ApiOperation(httpMethod = "POST", value = "注册服务商")
-    public Wrapper registerSpcCompany(CompanyRegisterDto company) {
+    public Wrapper registerSpcCompany(@ApiParam(name = "company", value = "服务商信息") @RequestBody CompanyRegisterDto company) {
         logger.info("注册服务商");
         spcCompanyService.register(company);
         return WrapMapper.ok();
