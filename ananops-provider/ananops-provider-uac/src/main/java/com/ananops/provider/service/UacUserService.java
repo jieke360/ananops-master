@@ -328,6 +328,14 @@ public interface UacUserService extends IService<UacUser> {
 	List<UserVo> getApprovalUserListById(Long groupId, Long userId);
 
 	/**
+	 * 根据用户id获取下级用户列表
+	 *
+	 * @param userId
+	 * @return userVo
+	 */
+	List<UserVo> getSubordinateUserListByUserId(Long userId);
+
+	/**
 	 * 获取用户可以绑定角色页面数据
 	 * @param userId
 	 * @param roleId
