@@ -110,6 +110,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                 item.setFrequency(imcInspectionTask.getFrequency());//设置巡检任务子项对应的巡检频率
                 item.setScheduledStartTime(imcInspectionTask.getScheduledStartTime());//设置巡检任务子项的对应的计划开始时间
                 item.setUserId(userId);
+                item.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
                 Long scheduledStartTime = item.getScheduledStartTime().getTime();//获得巡检任务子项的预计开始时间
                 Long currentTime = System.currentTimeMillis();//获得当前时间
                 if(scheduledStartTime<=currentTime){//如果计划执行时间<=当前时间，说明，巡检任务需要立即执行
@@ -185,6 +186,24 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
 //        imcTaskManager.modifyTaskStatus(mqMessageData,imcInspectionTask);
         imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
         return imcInspectionTask;
+    }
+
+    /**
+     * 删除指定的巡检任务以及对应的子项
+     * @param taskId
+     */
+    public void deleteTaskById(Long taskId){
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",taskId);
+        ItemQueryDto itemQueryDto = new ItemQueryDto();
+        itemQueryDto.setTaskId(taskId);
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemService.getAllItemByTaskId(itemQueryDto);
+        for(int i=0;i<imcInspectionItems.size();i++){
+            Long itemId = imcInspectionItems.get(i).getId();
+            imcInspectionItemService.deleteItemByItemId(itemId);
+        }
+        imcInspectionTaskMapper.deleteByExample(example);
     }
 
     /**

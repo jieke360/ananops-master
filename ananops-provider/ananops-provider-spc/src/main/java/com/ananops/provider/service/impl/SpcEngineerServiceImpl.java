@@ -20,6 +20,7 @@ import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.service.UacUserFeignApi;
+import com.ananops.provider.model.vo.EngineerSimpleVo;
 import com.ananops.provider.model.vo.EngineerVo;
 import com.ananops.provider.service.PmcProjectEngineerFeignApi;
 import com.ananops.provider.service.SpcEngineerService;
@@ -316,6 +317,25 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
             logger.info("注册工程师. spcEngineer={}", spcEngineer);
             spcEngineerMapper.insertSelective(spcEngineer);
         }
+    }
+
+    @Override
+    public List<EngineerSimpleVo> getEngineersListByProjectId(Long projectId) {
+        List<Long> engineerUserIdList = pmcProjectEngineerFeignApi.getEngineersIdByProjectId(projectId).getResult();
+        logger.info("getEngineersIdByProjectId - 根据项目Id查询工程师UserId列表. engineerUserIdList={}", engineerUserIdList);
+        List<EngineerSimpleVo> engineerSimpleVos = new ArrayList<>();
+        if (engineerUserIdList != null) {
+            for (Long userId : engineerUserIdList) {
+                UserInfoDto userInfoDto = uacUserFeignApi.getUacUserById(userId).getResult();
+                if (userInfoDto != null) {
+                    EngineerSimpleVo engineerSimpleVo = new EngineerSimpleVo();
+                    engineerSimpleVo.setId(userId);
+                    engineerSimpleVo.setName(userInfoDto.getUserName());
+                    engineerSimpleVos.add(engineerSimpleVo);
+                }
+            }
+        }
+        return engineerSimpleVos;
     }
 
     private void validateCompanyVo(EngineerVo engineerVo) {

@@ -8,10 +8,11 @@
 
 package com.ananops.provider.web.admin;
 
+import com.ananops.provider.mapper.UacRoleMapper;
+import com.ananops.provider.model.domain.UacRole;
 import com.ananops.provider.model.dto.log.PageLog;
 import com.ananops.provider.model.dto.user.*;
 import com.ananops.provider.model.service.UacUserFeignApi;
-import com.ananops.provider.model.vo.AlreadyBindRoleVo;
 import com.ananops.provider.model.vo.UserBindRoleNeedKeyVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -49,9 +50,10 @@ import java.util.*;
 public class UacUserMainController extends BaseController {
 	@Resource
 	private UacUserService uacUserService;
-
 	@Resource
 	UacUserFeignApi uacUserFeignApi;
+	@Resource
+	UacRoleMapper uacRoleMapper;
 
 	/**
 	 * 查询用户列表.
@@ -187,15 +189,19 @@ public class UacUserMainController extends BaseController {
 			bindRoleDto.setKey(bindRoleDto.getRoleId());
 		}
 		userBindRoleNeedKeyVo.setAllRoleSet(bindUserDto.getAllRoleSet());
-		List<AlreadyBindRoleVo> alreadyBindRoleVos = new ArrayList<>();
+
+		List<BindRoleDto> bindRoleDtoList = new ArrayList<>();
 		for (Long aLong : bindUserDto.getAlreadyBindRoleIdSet()) {
-			AlreadyBindRoleVo alreadyBindRoleVo = new AlreadyBindRoleVo();
-			alreadyBindRoleVo.setRoleId(aLong);
-			alreadyBindRoleVo.setKey(aLong);
-			alreadyBindRoleVos.add(alreadyBindRoleVo);
+			BindRoleDto bindRoleDto = new BindRoleDto();
+			UacRole uacRole = uacRoleMapper.selectByPrimaryKey(aLong);
+			bindRoleDto.setRoleId(aLong);
+			bindRoleDto.setRoleCode(uacRole.getRoleCode());
+			bindRoleDto.setRoleName(uacRole.getRoleName());
+			bindRoleDto.setKey(aLong);
+			bindRoleDtoList.add(bindRoleDto);
 		}
-		Set<AlreadyBindRoleVo> alreadyBindRoleVoSet = new HashSet<>(alreadyBindRoleVos);
-		userBindRoleNeedKeyVo.setAlreadyBindRoleIdSet(alreadyBindRoleVoSet);
+		Set<BindRoleDto> alreadyBindRoleVoSet = new HashSet<>(bindRoleDtoList);
+		userBindRoleNeedKeyVo.setAlreadyBindRoleSet(alreadyBindRoleVoSet);
 		return WrapMapper.ok(userBindRoleNeedKeyVo);
 	}
 	/**

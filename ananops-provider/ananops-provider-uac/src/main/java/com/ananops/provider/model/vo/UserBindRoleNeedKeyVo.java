@@ -26,5 +26,5 @@ public class UserBindRoleNeedKeyVo implements Serializable {
      * 已经绑定的用户集合
      */
     @ApiModelProperty(value = "已经绑定的用户集合")
-    private Set<AlreadyBindRoleVo> alreadyBindRoleIdSet;
+    private Set<BindRoleDto> alreadyBindRoleSet;
 }
