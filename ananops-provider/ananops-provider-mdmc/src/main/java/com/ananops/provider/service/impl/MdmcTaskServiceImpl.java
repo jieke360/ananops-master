@@ -55,17 +55,17 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         if(mdmcAddTaskDto.getId()==null){
             logger.info("创建一条维修工单记录... CrateTaskInfo = {}", mdmcAddTaskDto);
 
-            //如果当前是新建一条任务
-            //获取所有的巡检任务子项
-            List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList = mdmcAddTaskDto.getMdmcAddTaskItemDtoList();
             Long taskId = super.generateId();
             task.setId(taskId);
             task.setStatus(2);
             taskMapper.insert(task);
             logger.info("新创建一条维修任务记录成功[OK], 创建维修任务子项中...");
 
-            mdmcAddTaskItemDtoList.forEach(taskItem->{//保存所有任务子项
-                taskItem.setTaskId(taskId);//设置任务子项对应的任务id
+            //获取所有的巡检任务子项
+            List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList = mdmcAddTaskDto.getMdmcAddTaskItemDtoList();
+            mdmcAddTaskItemDtoList.forEach(taskItem->{
+                //设置任务子项对应的任务id
+                taskItem.setTaskId(taskId);
                 //创建新的任务子项，并更新返回结果
                 MdmcTaskItem item = taskItemService.saveItem(taskItem,loginAuthDto);
                 BeanUtils.copyProperties(item ,taskItem);
@@ -91,7 +91,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
             Integer status = task.getStatus();
             Integer objectType = task.getObjectType();
-            if(status == MdmcTaskStatusEnum.WanCheng.getStatusNum() && objectType == MdmcObjectTypeEnum.IMC.getCode()) {
+
+            // 维修工单完成(无需评价)时，如果是巡检发起的维修任务，更新巡检工单状态
+            if(status == MdmcTaskStatusEnum.DaiPingJia.getStatusNum() && objectType == MdmcObjectTypeEnum.IMC.getCode()) {
                 Long imcItemId = task.getObjectId();
                 if(imcItemId != null) {
 
@@ -100,7 +102,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
                     imcItemChangeStatusDto.setStatus(4);
                     imcItemChangeStatusDto.setItemId(imcItemId);
                     imcItemFeignApi.modifyImcItemStatus(imcItemChangeStatusDto);
-                    logger.info("维修工单完成，更新巡检状态");
+                    logger.info("用户负责人支付完成，更新巡检状态");
 
                 }
             }
@@ -159,47 +161,58 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     public MdmcTask modifyTaskStatus(MdmcChangeStatusDto changeStatusDto,LoginAuthDto loginAuthDto) {
         logger.info("更新维修工单状态... UpdateInfo = {}", changeStatusDto);
 
-//        MqMessageData mqMessageData;
+        if(loginAuthDto == null) {
+            logger.error("警告：匿名用户正在操作！");
+        }
+
         Long taskId = changeStatusDto.getTaskId();
-        Integer status = changeStatusDto.getStatus();
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("id",taskId);
-        if(taskMapper.selectCountByExample(example)==0){//如果当前任务不存在
+        MdmcTask task = getTaskByTaskId(taskId);
+        if(task == null){//如果当前任务不存在
             throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
         }
-        //如果当前任务存在
-        MdmcTask task = taskMapper.selectByExample(example).get(0);//获取当前任务
-        changeStatusDto.setStatusMsg(MdmcTaskStatusEnum.getStatusMsg(status));
-        if (status==1){taskMapper.deleteByPrimaryKey(taskId);}
-        else if (status==14){FacilitatorTransfer();}
-        else if (status==15){MaintainerTransfer();}
-        task.setId(taskId);
-        task.setStatus(status);
-        task.setUpdateInfo(loginAuthDto);
+
+        Integer status = changeStatusDto.getStatus();
+        if (status == MdmcTaskStatusEnum.QuXiao.getStatusNum()){          // 工单终止
+            logger.info("当前维修工单已被终止[Terminal] Task = {}", task);
+            taskMapper.deleteByPrimaryKey(taskId);
+        } else if (status == MdmcTaskStatusEnum.Reject1.getStatusNum()){  // 服务商拒单
+            logger.info("当前工单被服务商拒绝[Reject] Task = {}", task);
+            FacilitatorTransfer();
+        } else if (status == MdmcTaskStatusEnum.Reject2.getStatusNum()){  // 工程师拒单
+            logger.info("当前工单被工程师拒绝[Reject] Task = {}", task);
+            MaintainerTransfer();
+        } else {
+            task.setStatus(status);
+            task.setUpdateInfo(loginAuthDto);
+//        // 可靠服务
+//        MqMessageData mqMessageData;
 //        String body = JSON.toJSONString(changeStatusDto);
 //        String topic = AliyunMqTopicConstants.MqTagEnum.MODIFY_INSPECTION_TASK_STATUS.getTopic();
 //        String tag = AliyunMqTopicConstants.MqTagEnum.MODIFY_INSPECTION_TASK_STATUS.getTag();
 //        String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(task.getId()),body);
 //        mqMessageData = new MqMessageData(body, topic, tag, key);
 //        taskManager.modifyTaskStatus(mqMessageData,task);
-        taskMapper.updateByPrimaryKey(task);
-        Integer objectType = task.getObjectType();
-        if(status == MdmcTaskStatusEnum.WanCheng.getStatusNum() && objectType == MdmcObjectTypeEnum.IMC.getCode()) {
-            Long imcItemId = task.getObjectId();
-            if(imcItemId != null) {
+            taskMapper.updateByPrimaryKey(task);
 
-                ImcItemChangeStatusDto imcItemChangeStatusDto = new ImcItemChangeStatusDto();
-                imcItemChangeStatusDto.setLoginAuthDto(loginAuthDto);
-                imcItemChangeStatusDto.setStatus(4);
-                imcItemChangeStatusDto.setItemId(imcItemId);
-                imcItemFeignApi.modifyImcItemStatus(imcItemChangeStatusDto);
-                logger.info("维修工单完成，更新巡检状态");
+            // 如果是巡检发起的维修任务，更新巡检工单状态
+            Integer objectType = task.getObjectType();
+            if (status == MdmcTaskStatusEnum.WanCheng.getStatusNum() && objectType == MdmcObjectTypeEnum.IMC.getCode()) {
+                Long imcItemId = task.getObjectId();
+                if (imcItemId != null) {
 
+                    ImcItemChangeStatusDto imcItemChangeStatusDto = new ImcItemChangeStatusDto();
+                    imcItemChangeStatusDto.setLoginAuthDto(loginAuthDto);
+                    imcItemChangeStatusDto.setStatus(4);
+                    imcItemChangeStatusDto.setItemId(imcItemId);
+                    imcItemFeignApi.modifyImcItemStatus(imcItemChangeStatusDto);
+                    logger.info("维修工单完成，更新巡检状态");
+
+                }
             }
+            logger.info("更新维修工单状态成功[OK] Task = {}", task);
         }
-        logger.info("更新维修工单状态成功[OK] Task = {}", task);
 
+        // 记录维修工单状态更新
         MdmcTaskLog taskLog=new MdmcTaskLog();
         Long taskLogId = super.generateId();
         taskLog.setId(taskLogId);
@@ -244,100 +257,121 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     @Override
     public List<MdmcTask> getTaskListByIdAndStatus(MdmcQueryDto queryDto) {
-        String roleCode=queryDto.getRoleCode();
+        // todo 分页查询
+//        String roleCode=queryDto.getRoleCode();
         Long id=queryDto.getId();
         Integer status=queryDto.getStatus();
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        if (status!=null){
-        criteria.andEqualTo("status",queryDto.getStatus());
-        }
-        switch (roleCode){
-            case "user_watcher":criteria.andEqualTo("userId",id);break;
-            case "user_manager":criteria.andEqualTo("principalId",id);break;
-            case "engineer":criteria.andEqualTo("maintainerId",id);break;
-            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
-            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
-        }
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
-        PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
-        return taskMapper.selectByExample(example);
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        if (status!=null){
+//        criteria.andEqualTo("status",queryDto.getStatus());
+//        }
+//
+//        switch (roleCode){
+//            case "user_watcher":criteria.andEqualTo("userId",id);break;
+//            case "user_manager":criteria.andEqualTo("principalId",id);break;
+//            case "engineer":criteria.andEqualTo("maintainerId",id);break;
+//            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+//            case "fac_manager":criteria.andEqualTo("facilitatorId",id);break;
+//            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+//        }
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
+//        PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
 
+//        return taskMapper.selectByExample(example);
+
+        return getTaskListByUserIdAndStatusOptional(id, status);
     }
 
     @Override
     public List<MdmcListDto> getTaskListByIdAndStatusArrary(MdmcStatusArrayDto statusArrayDto) {
-        String roleCode=statusArrayDto.getRoleCode();
+//        String roleCode=statusArrayDto.getRoleCode();
         Long id=statusArrayDto.getId();
         Integer[] status=statusArrayDto.getStatus();
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
         List<MdmcListDto> listDtoList=new ArrayList<>();
-        switch (roleCode){
-            case "user_watcher":criteria.andEqualTo("userId",id);break;
-            case "user_manager":criteria.andEqualTo("principalId",id);break;
-            case "engineer":criteria.andEqualTo("maintainerId",id);break;
-            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
-            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
-        }
+//        switch (roleCode){
+//            case "user_watcher":criteria.andEqualTo("userId",id);break;
+//            case "user_manager":criteria.andEqualTo("principalId",id);break;
+//            case "engineer":criteria.andEqualTo("maintainerId",id);break;
+//            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+//            case "fac_manager":criteria.andEqualTo("facilitatorId",id);break;
+//            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+//        }
         if (status!=null){
             for (Integer i:status){
-                Example example1 = new Example(MdmcTask.class);
-                Example.Criteria criteria1 = example1.createCriteria();
-                criteria1.andEqualTo("status",i);
-                switch (roleCode){
-                    case "user_watcher":criteria1.andEqualTo("userId",id);break;
-                    case "user_manager":criteria1.andEqualTo("principalId",id);break;
-                    case "engineer":criteria1.andEqualTo("maintainerId",id);break;
-                    case "fac_service":criteria1.andEqualTo("facilitatorId",id);break;
-                    default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
-                }
+//                Example example1 = new Example(MdmcTask.class);
+//                Example.Criteria criteria1 = example1.createCriteria();
+//                criteria1.andEqualTo("status",i);
+//                switch (roleCode){
+//                    case "user_watcher":criteria1.andEqualTo("userId",id);break;
+//                    case "user_manager":criteria1.andEqualTo("principalId",id);break;
+//                    case "engineer":criteria1.andEqualTo("maintainerId",id);break;
+//                    case "fac_service":criteria1.andEqualTo("facilitatorId",id);break;
+//                    case "fac_manager":criteria.andEqualTo("facilitatorId",id);break;
+//                    default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+//                }
                 MdmcListDto listDto=new MdmcListDto();
                 listDto.setStatus(i);
-                listDto.setTaskList(taskMapper.selectByExample(example1));
+//                listDto.setTaskList(taskMapper.selectByExample(example1));
+                listDto.setTaskList(getTaskListByUserIdAndStatusOptional(id, i));
                 listDtoList.add(listDto);
             }
-        }
-       else{
-        MdmcListDto listDto1=new MdmcListDto();
 
-        listDto1.setTaskList(taskMapper.selectByExample(example));
-        listDtoList.add(listDto1);}
+        } else{
+            MdmcListDto listDto1=new MdmcListDto();
+//            listDto1.setTaskList(taskMapper.selectByExample(example));
+            listDto1.setTaskList(getTaskListByUserIdAndStatusOptional(id, null));
+            listDtoList.add(listDto1);
+        }
+
         PageHelper.startPage(statusArrayDto.getPageNum(),statusArrayDto.getPageSize());
         return listDtoList;
     }
 
     @Override
     public MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto) {
-        String roleCode=queryDto.getRoleCode();
+//        String roleCode=queryDto.getRoleCode();
         Long id=queryDto.getId();
         Integer status=queryDto.getStatus();
-        Example example = new Example(MdmcTask.class);
-        Example.Criteria criteria = example.createCriteria();
-        if (status!=null){
-            criteria.andEqualTo("status",queryDto.getStatus());
-        }
-        switch (roleCode){
-            case "user_watcher":criteria.andEqualTo("userId",id);break;
-            case "user_manager":criteria.andEqualTo("principalId",id);break;
-            case "engineer":criteria.andEqualTo("maintainerId",id);break;
-            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
-            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
-        }
-        if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
-        }
+//        Example example = new Example(MdmcTask.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        if (status!=null){
+//            criteria.andEqualTo("status",queryDto.getStatus());
+//        }
+//        switch (roleCode){
+//            case "user_watcher":criteria.andEqualTo("userId",id);break;
+//            case "user_manager":criteria.andEqualTo("principalId",id);break;
+//            case "engineer":criteria.andEqualTo("maintainerId",id);break;
+//            case "fac_service":criteria.andEqualTo("facilitatorId",id);break;
+//            case "fac_manager":criteria.andEqualTo("facilitatorId",id);break;
+//            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
+//        }
+//        if(taskMapper.selectCountByExample(example)==0){
+//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//        }
         PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
         MdmcPageDto pageDto=new MdmcPageDto();
-        pageDto.setTaskList(taskMapper.selectByExample(example));
+//        pageDto.setTaskList(taskMapper.selectByExample(example));
+        pageDto.setTaskList(getTaskListByUserIdAndStatusOptional(id, status));
         pageDto.setPageNum(queryDto.getPageNum());
         pageDto.setPageSize(queryDto.getPageSize());
 
         return pageDto;
 
     }
+
+    public List<MdmcTask> getTaskListByUserIdAndStatusOptional(Long userId, Integer status) {
+        if(status == null) {
+            return taskMapper.selectBySomeoneId(userId);
+        } else {
+            return taskMapper.selectBySomeoneIdAndStatus(userId, status);
+        }
+    }
+
 
     @Override
     public MdmcTask modifyMaintainer(MdmcChangeMaintainerDto mdmcChangeMaintainerDto){
@@ -357,11 +391,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         return mdmcTask;
     }
 
-    /**
-     * 工程师拒单
-     * @param refuseMdmcTaskDto
-     * @return
-     */
+
     @Override
     public MdmcChangeStatusDto refuseTaskByMaintainer(RefuseMdmcTaskDto refuseMdmcTaskDto){
         Long taskId = refuseMdmcTaskDto.getTaskId();
@@ -387,11 +417,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         return mdmcChangeStatusDto;
     }
 
-    /**
-     * 服务商拒单
-     * @param refuseMdmcTaskDto
-     * @return
-     */
+
     @Override
     public MdmcChangeStatusDto refuseTaskByFacilitator(RefuseMdmcTaskDto refuseMdmcTaskDto){
         Long taskId = refuseMdmcTaskDto.getTaskId();
