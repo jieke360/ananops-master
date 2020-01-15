@@ -86,6 +86,13 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         return imcAddInspectionItemDto;
     }
 
+    public void deleteItemByItemId(Long itemId){
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",itemId);
+        imcInspectionItemMapper.deleteByExample(example);
+    }
+
     /**
      *
      * @param itemQueryDto
@@ -103,6 +110,26 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Example example2 = new Example(ImcInspectionItem.class);
         Example.Criteria criteria2 = example2.createCriteria();
         criteria2.andEqualTo("inspectionTaskId",taskId);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example2);
+        return imcInspectionItems;
+    }
+
+    @Override
+    public List<ImcInspectionItem> getAllItemByTaskIdAndStatus(ItemQueryDto itemQueryDto){
+        Long taskId = itemQueryDto.getTaskId();
+        int status = itemQueryDto.getStatus();
+        Example example1 = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria1 = example1.createCriteria();
+        criteria1.andEqualTo("id",taskId);
+        if(imcInspectionTaskMapper.selectCountByExample(example1)==0){
+            //如果查询的任务不存在
+            throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+        }
+        Example example2 = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria2 = example2.createCriteria();
+        criteria2.andEqualTo("inspectionTaskId",taskId);
+        criteria2.andEqualTo("status",status);
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example2);
         return imcInspectionItems;

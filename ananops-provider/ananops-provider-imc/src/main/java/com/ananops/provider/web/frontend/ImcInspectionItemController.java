@@ -60,6 +60,19 @@ public class ImcInspectionItemController extends BaseController {
         return WrapMapper.ok(imcInspectionItemService.getAllItemByTaskId(itemQueryDto));
     }
 
+    @PostMapping(value = "/deleteItemByItemId/{itemId}")
+    @ApiOperation(httpMethod = "POST",value = "删除指定的巡检任务子项")
+    public Wrapper deleteItemByItemId(@PathVariable Long itemId){
+        imcInspectionItemService.deleteItemByItemId(itemId);
+        return WrapMapper.ok();
+    }
+
+    @PostMapping(value = "/getAllItemByTaskIdAndStatus")
+    @ApiOperation(httpMethod = "POST",value = "根据巡检任务ID，获取其对应的指定状态的全部任务子项")
+    public Wrapper<List<ImcInspectionItem>> getAllItemByTaskIdAndStatus(@ApiParam(name = "getAllItemByTaskIdAndStatus",value = "根据巡检任务ID，获取其对应的指定状态的全部任务子项")@RequestBody ItemQueryDto itemQueryDto){
+        return WrapMapper.ok(imcInspectionItemService.getAllItemByTaskIdAndStatus(itemQueryDto));
+    }
+
     @GetMapping(value = "/getItemByItemId/{itemId}")
     @ApiOperation(httpMethod = "GET",value = "根据巡检任务子项的ID，获取对应的巡检任务子项")
     public Wrapper<ImcInspectionItem> getItemByItemId(@PathVariable Long itemId){

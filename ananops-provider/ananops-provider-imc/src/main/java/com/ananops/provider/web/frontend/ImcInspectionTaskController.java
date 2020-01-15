@@ -110,10 +110,26 @@ public class ImcInspectionTaskController extends BaseController {
     @PostMapping(value = "/refuseTaskByFacilitator")
     @ApiOperation(httpMethod = "POST",value = "服务商拒单")
     @AnanLogAnnotation
-    public Wrapper<ImcTaskChangeStatusDto> refuseTaskByFacilitator(@RequestBody ConfirmImcTaskDto refuseMdmcTaskDto){
-        return WrapMapper.ok(imcInspectionTaskService.refuseImcTaskByFacilitator(refuseMdmcTaskDto));
+    public Wrapper<ImcTaskChangeStatusDto> refuseTaskByFacilitator(@RequestBody ConfirmImcTaskDto refuseImcTaskDto){
+        refuseImcTaskDto.setLoginAuthDto(getLoginAuthDto());
+        return WrapMapper.ok(imcInspectionTaskService.refuseImcTaskByFacilitator(refuseImcTaskDto));
     }
 
+    @PostMapping(value = "/acceptTaskByFacilitator")
+    @ApiOperation(httpMethod = "POST",value = "服务商接单")
+    @AnanLogAnnotation
+    public Wrapper<ImcTaskChangeStatusDto> acceptTaskByFacilitator(@RequestBody ConfirmImcTaskDto acceptImcTaskDto){
+        acceptImcTaskDto.setLoginAuthDto(getLoginAuthDto());
+        return WrapMapper.ok(imcInspectionTaskService.acceptImcTaskByFacilitator(acceptImcTaskDto));
+    }
+
+
+    @PostMapping(value = "/deleteTaskByTaskId/{taskId}")
+    @ApiOperation(httpMethod = "POST",value = "删除指定的巡检任务")
+    public Wrapper deleteTaskByTaskId(@PathVariable Long taskId){
+        imcInspectionTaskService.deleteTaskById(taskId);
+        return WrapMapper.ok();
+    }
 
     @PostMapping(value = "/getAllUnauthorizedTask")
     @ApiOperation(httpMethod = "POST",value = "查询当前甲方负责人下面的全部未授权的任务")

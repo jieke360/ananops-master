@@ -2,6 +2,7 @@ package com.ananops.provider.service.impl;
 
 import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.dto.group.GroupBindUserDto;
+import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.ananops.provider.model.vo.UserVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -70,6 +71,8 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	private UacMenuMapper uacMenuMapper;
 	@Resource
 	private UacGroupUserService uacGroupUserService;
+	@Resource
+	private UacGroupService uacGroupService;
 	@Resource
 	private UacGroupUserMapper uacGroupUserMapper;
 	@Resource
@@ -522,7 +525,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	}
 
 	@Override
-	public void register(UserRegisterDto registerDto) {
+	public Long register(UserRegisterDto registerDto) {
 		// 校验注册信息
 		validateRegisterInfo(registerDto);
 		String mobileNo = registerDto.getMobileNo();
@@ -563,6 +566,8 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 
 		MqMessageData mqMessageData = emailProducer.sendEmailMq(to, UacEmailTemplateEnum.ACTIVE_USER, AliyunMqTopicConstants.MqTagEnum.ACTIVE_USER, param);
 		userManager.register(mqMessageData, uacUser);
+
+		return id;
 	}
 
 	@Override
@@ -1080,6 +1085,47 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 					e.printStackTrace();
 				}
 				userVoList.add(userVo);
+		}
+		return userVoList;
+	}
+
+	@Override
+	public List<UserVo> getSubordinateUserListByUserId(Long userId) {
+		if (userId == null) {
+			logger.error("userId={} 不能为空", userId);
+			throw new UacBizException(ErrorCodeEnum.UAC10011001);
+		}
+		UacUser uacUser = uacUserMapper.selectByPrimaryKey(userId);
+		UacGroupUser uacGroupUser = uacGroupUserService.queryByUserId(uacUser.getId());
+		Long pid = uacGroupUser.getGroupId();
+		UacGroup uacGroup = uacGroupService.queryById(pid);
+		List<GroupZtreeVo> tree = uacGroupService.getGroupTree(uacGroup.getId());
+		Long subordinateGroupId = 1L;
+		for (GroupZtreeVo groupZtreeVo : tree) {
+			if (groupZtreeVo.getpId() == pid) {
+				subordinateGroupId = groupZtreeVo.getId();
+				break;
+			}
+		}
+		List<UacGroupUser> setAlreadyBindUserSet = uacGroupUserMapper.listByGroupId(subordinateGroupId);
+		List<Long> userIdList = new ArrayList<>();
+		List<UserVo> userVoList = new ArrayList<>();
+		for (UacGroupUser groupUser : setAlreadyBindUserSet) {
+			if (PublicUtil.isNotEmpty(groupUser)) {
+				userIdList.add(groupUser.getUserId());
+			}
+		}
+		for (Long userListId : userIdList) {
+			UacUser user = uacUserMapper.selectByPrimaryKey(userListId);
+			if (PublicUtil.isNotEmpty(user)) {
+				UserVo userVo = new UserVo();
+				try {
+					BeanUtils.copyProperties(userVo, user);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				userVoList.add(userVo);
+			}
 		}
 		return userVoList;
 	}
