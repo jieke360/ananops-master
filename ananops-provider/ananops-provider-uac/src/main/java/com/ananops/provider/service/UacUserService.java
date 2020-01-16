@@ -335,6 +335,15 @@ public interface UacUserService extends IService<UacUser> {
 	 */
 	List<UserVo> getSubordinateUserListByUserId(Long userId);
 
+
+	/**
+	 * 根据用户id获取用户领导的groupId
+	 *
+	 * @param userId
+	 * @return userVo
+	 */
+	Long getPGIdByUserId(Long userId);
+
 	/**
 	 * 获取用户可以绑定角色页面数据
 	 * @param userId

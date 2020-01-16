@@ -6,6 +6,7 @@ import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.ananops.provider.model.vo.UserVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -1128,6 +1129,22 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 			}
 		}
 		return userVoList;
+	}
+
+	@Override
+	public Long getPGIdByUserId(Long userId) {
+		if (Objects.equals(userId, GlobalConstant.Sys.SUPER_MANAGER_USER_ID)) {
+			logger.info("找不到上级组织");
+			throw new UacBizException(ErrorCodeEnum.UAC10015009);
+		}
+		UacGroupUser uacGroupUser = uacGroupUserService.queryByUserId(userId);
+		if (uacGroupUser == null) {
+			logger.info("找不到组织信息");
+			throw new UacBizException(ErrorCodeEnum.UAC10015001);
+		}
+		UacGroup uacGroup = uacGroupMapper.selectByPrimaryKey(uacGroupUser.getGroupId());
+		Long pid = uacGroup.getPid();
+		return pid;
 	}
 
 
