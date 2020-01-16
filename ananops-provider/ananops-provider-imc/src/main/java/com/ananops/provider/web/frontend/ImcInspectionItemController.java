@@ -160,4 +160,10 @@ public class ImcInspectionItemController extends BaseController {
         confirmImcItemDto.setLoginAuthDto(getLoginAuthDto());
         return WrapMapper.ok(imcInspectionItemService.acceptImcItemByItemId(confirmImcItemDto));
     }
+
+    @PostMapping(value = "/getAllAcceptedItemByMaintainer")
+    @ApiOperation(httpMethod = "POST",value = "获取工程师下面的全部已接单但是未完成的巡检任务子项")
+    public Wrapper<List<ImcInspectionItem>> getAllAcceptedItemByMaintainer(@RequestBody ItemQueryDto itemQueryDto){
+        return WrapMapper.ok(imcInspectionItemService.getAcceptedItemOfMaintainer(itemQueryDto));
+    }
 }

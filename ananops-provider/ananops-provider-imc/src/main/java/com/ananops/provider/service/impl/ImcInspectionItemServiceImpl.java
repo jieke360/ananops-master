@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -315,6 +316,25 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         }
         return imcItemChangeStatusDto;
     }
+
+    @Override
+    public List<ImcInspectionItem> getAcceptedItemOfMaintainer(ItemQueryDto itemQueryDto){
+        Long maintainerId = itemQueryDto.getMaintainerId();
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("maintainerId",maintainerId);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example);
+        List<ImcInspectionItem> imcInspectionItemsResult = new ArrayList<>();
+        imcInspectionItems.forEach(imcInspectionItem -> {
+            int status = imcInspectionItem.getStatus();
+            if(status!=ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum() && status != ItemStatusEnum.INSPECTION_OVER.getStatusNum() && status != ItemStatusEnum.VERIFIED.getStatusNum()){
+                imcInspectionItemsResult.add(imcInspectionItem);
+            }
+        });
+        return imcInspectionItemsResult;
+    }
+
     public Integer setBasicInfoFromContract(){//将从合同中获取到的基本信息填写到巡检任务中
         return 1;
     }

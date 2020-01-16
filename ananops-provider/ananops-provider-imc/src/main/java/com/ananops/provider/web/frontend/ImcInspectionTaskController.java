@@ -53,7 +53,7 @@ public class ImcInspectionTaskController extends BaseController {
         return WrapMapper.ok(imcInspectionTask);
     }
 
-    @PostMapping(value = "/modifyTaskStatusByTaskId/{taskId}")
+    @PostMapping(value = "/modifyTaskStatusByTaskId")
     @ApiOperation(httpMethod = "POST",value = "更改巡检任务的状态")
     @AnanLogAnnotation
     public Wrapper<ImcTaskChangeStatusDto> modifyTaskStatusByTaskId(@ApiParam(name = "modifyTaskStatus",value = "根据巡检任务的ID修改巡检任务的状态")@RequestBody ImcTaskChangeStatusDto imcTaskChangeStatusDto){
