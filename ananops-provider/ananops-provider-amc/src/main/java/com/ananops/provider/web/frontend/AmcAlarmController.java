@@ -75,6 +75,13 @@ public class AmcAlarmController extends BaseController {
         return WrapMapper.ok(pageInfo);
     }
 
+    @PostMapping("/getAllAlarmCount")
+    @ApiOperation(httpMethod = "POST", value = "获取总告警数")
+    public Wrapper getAllAlarmCount() {
+        int count = amcAlarmService.getAllAlarmCount();
+        return WrapMapper.ok(count);
+    }
+
     @PostMapping("/getDealingCount")
     @ApiOperation(httpMethod = "POST", value = "获取待处理告警数")
     public Wrapper getDealingCount() {

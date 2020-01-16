@@ -34,6 +34,7 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
         amcAlarm.setUpdateInfo(loginAuthDto);
         if (amcAlarm.isNew()) {
             amcAlarm.setId(super.generateId());
+            amcAlarm.setAlarmStatus(1);
             amcAlarm.setGroupId(loginAuthDto.getGroupId());
             amcAlarm.setGroupName(loginAuthDto.getGroupName());
             result = amcAlarmMapper.insertSelective(amcAlarm);
@@ -87,6 +88,15 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
     }
 
     @Override
+    public int getAllAlarmCount() {
+        Example example = new Example(AmcAlarm.class);
+        Example.Criteria criteria = example.createCriteria();
+        LoginAuthDto loginAuthDto = RequestUtil.getLoginUser();
+        criteria.andEqualTo("groupId", loginAuthDto.getGroupId());
+        return amcAlarmMapper.selectCountByExample(example);
+    }
+
+    @Override
     public int getDealingCount() {
         Example example = new Example(AmcAlarm.class);
         Example.Criteria criteria = example.createCriteria();
@@ -130,5 +140,7 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
         criteria.andEqualTo("alarmStatus", alarmStatus);
         return amcAlarmMapper.deleteByExample(example);
     }
+
+
 
 }

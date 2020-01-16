@@ -81,4 +81,10 @@ public interface AmcAlarmService extends IService<AmcAlarm> {
      * @return
      */
     int deleteAlarmsByAlarmStatus(int alarmStatus);
+
+    /**
+     * 获取总告警数
+     * @return
+     */
+    int getAllAlarmCount();
 }
