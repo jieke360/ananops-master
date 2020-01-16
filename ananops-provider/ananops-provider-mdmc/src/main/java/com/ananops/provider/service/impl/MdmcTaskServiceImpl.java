@@ -116,6 +116,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
         MdmcTaskLog taskLog=new MdmcTaskLog();
         Long taskLogId = super.generateId();
+        taskLog.setUpdateInfo(loginAuthDto);
         taskLog.setId(taskLogId);
         taskLog.setTaskId(task.getId());
         taskLog.setStatus(task.getStatus());
@@ -215,6 +216,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         // 记录维修工单状态更新
         MdmcTaskLog taskLog=new MdmcTaskLog();
         Long taskLogId = super.generateId();
+        taskLog.setUpdateInfo(loginAuthDto);
         taskLog.setId(taskLogId);
         taskLog.setTaskId(taskId);
         taskLog.setStatus(status);
