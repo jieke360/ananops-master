@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -173,6 +174,11 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                 imcInspectionItem.setStatus(ItemStatusEnum.VERIFIED.getStatusNum());
                 imcInspectionItemService.update(imcInspectionItem);
             });
+        }
+        else if(status.equals(TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusNum())){
+            //如果当前状态处于巡检完成等待甲方负责人确认的阶段
+            //更新巡检完成的实际时间
+            imcInspectionTask.setActualFinishTime(new Date(System.currentTimeMillis()));
         }
         imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(status));
         imcInspectionTask.setId(taskId);

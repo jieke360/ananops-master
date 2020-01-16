@@ -25,6 +25,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -304,8 +305,11 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         imcInspectionItem.setId(itemId);
         imcInspectionItem.setStatus(status);
         imcInspectionItem.setUpdateInfo(loginAuthDto);
-        this.update(imcInspectionItem);//更新当前巡检任务子项的状态
         Long taskId = this.getItemByItemId(itemId).getInspectionTaskId();
+        if(status == ItemStatusEnum.IN_THE_INSPECTION.getStatusNum()){
+            //如果工程师已接单，巡检任务开始
+            imcInspectionItem.setActualStartTime(new Date(System.currentTimeMillis()));
+        }
         if(status==ItemStatusEnum.INSPECTION_OVER.getStatusNum() && imcInspectionTaskService.isTaskFinish(taskId)){
             //如果该巡检子项对应的巡检任务中全部的任务子项均已完成
             //则修改对应的巡检任务状态为已完成
@@ -313,7 +317,11 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             imcTaskChangeStatusDto.setTaskId(taskId);
             imcTaskChangeStatusDto.setStatus(TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusNum());//将巡检任务状态修改为“巡检结果待审核”
             imcInspectionTaskService.modifyTaskStatus(imcTaskChangeStatusDto,loginAuthDto);
+            imcInspectionItem.setActualFinishTime(new Date(System.currentTimeMillis()));//设置任务子项的实际完成时间
         }
+        this.update(imcInspectionItem);//更新当前巡检任务子项的状态
+
+
         return imcItemChangeStatusDto;
     }
 
