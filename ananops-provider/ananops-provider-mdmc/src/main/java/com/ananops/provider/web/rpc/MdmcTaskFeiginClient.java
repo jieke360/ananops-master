@@ -95,22 +95,25 @@ public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeig
     }
 
     @Override
-    public Wrapper<Object> updateStatusAfterDeviceOrderDone(LoginAuthDto loginAuthDto) {
+    public Wrapper<Object> updateStatusAfterDeviceOrderDone(@PathVariable("taskId")Long taskId, @RequestBody LoginAuthDto loginAuthDto) {
         MdmcChangeStatusDto changeStatusDto = new MdmcChangeStatusDto();
+        changeStatusDto.setTaskId(taskId);
         changeStatusDto.setStatus(8);
         return WrapMapper.ok(taskService.modifyTaskStatus(changeStatusDto, loginAuthDto));
     }
 
     @Override
-    public Wrapper<Object> updateStatusAfterDeviceOrderCreated(LoginAuthDto loginAuthDto) {
+    public Wrapper<Object> updateStatusAfterDeviceOrderCreated(@PathVariable("taskId") Long taskId, @RequestBody LoginAuthDto loginAuthDto) {
         MdmcChangeStatusDto changeStatusDto = new MdmcChangeStatusDto();
+        changeStatusDto.setTaskId(taskId);
         changeStatusDto.setStatus(7);
         return WrapMapper.ok(taskService.modifyTaskStatus(changeStatusDto, loginAuthDto));
     }
 
     @Override
-    public Wrapper<Object> updateStatusAfterPaymentDone(LoginAuthDto loginAuthDto) {
+    public Wrapper<Object> updateStatusAfterPaymentDone(@PathVariable("taskId")Long taskId, @RequestBody LoginAuthDto loginAuthDto) {
         MdmcChangeStatusDto changeStatusDto = new MdmcChangeStatusDto();
+        changeStatusDto.setTaskId(taskId);
         changeStatusDto.setStatus(13);
         return WrapMapper.ok(taskService.modifyTaskStatus(changeStatusDto, loginAuthDto));
     }
