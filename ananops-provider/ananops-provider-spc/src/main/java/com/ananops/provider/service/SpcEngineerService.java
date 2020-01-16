@@ -9,6 +9,7 @@ import com.ananops.provider.model.dto.EngineerStatusDto;
 import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
 import com.ananops.provider.model.vo.EngineerSimpleVo;
 import com.ananops.provider.model.vo.EngineerVo;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
@@ -77,18 +78,6 @@ public interface SpcEngineerService extends IService<SpcEngineer> {
      * @param loginAuthDto 登录的服务商信息
      */
     void addSpcEngineer(EngineerRegisterDto engineerRegisterDto, LoginAuthDto loginAuthDto);
-
-    /**
-     * 通过上传的Excel文件批量创建工程师
-     *
-     * @param multipartRequest 文件输入流
-     *
-     * @param loginAuthDto 登录的用户信息
-     *
-     * @param b
-     */
-    void uploadEngineerExcelFile(MultipartHttpServletRequest multipartRequest, LoginAuthDto loginAuthDto);
-
     /**
      * 根据工程师Id查询工程师信息
      *

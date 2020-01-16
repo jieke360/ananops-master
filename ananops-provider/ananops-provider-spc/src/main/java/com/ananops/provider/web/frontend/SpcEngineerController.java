@@ -21,11 +21,17 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+
+import static com.ananops.provider.service.impl.SpcEngineerServiceImpl.readExcel;
 
 /**
  * 服务商模块对外提供操作Engineer(工程师)的Restful接口
@@ -102,16 +108,29 @@ public class SpcEngineerController extends BaseController {
      *
      * @return the wrapper
      */
-    @PostMapping(consumes = "multipart/form-data", value = "/uploadEngineerExcelFile")
+    @PostMapping(value = "/uploadEngineerExcelFile")
     @LogAnnotation
     @ApiOperation(httpMethod = "POST", value = "上传文件")
-    public Wrapper<String> uploadEngineerExcelFile(HttpServletRequest request) {
-        StringBuilder temp = new StringBuilder();
+    public Wrapper<String> uploadEngineerExcelFile(MultipartFile file,  HttpServletRequest request) {
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
         logger.info("uploadEngineerExcelFile - 上传文件.");
+        if (!file.isEmpty()) {
+            String fileName = file.getOriginalFilename();
 
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        spcEngineerService.uploadEngineerExcelFile(multipartRequest,getLoginAuthDto());
-        return WrapMapper.ok();
+            try {
+                logger.info("开始读取文件内容...filename = {}", fileName);
+                InputStream inputStream = file.getInputStream();
+                List<EngineerRegisterDto> engineerRegisterDtos = readExcel(inputStream, fileName);
+                for (EngineerRegisterDto engineerRegisterDto : engineerRegisterDtos) {
+                    spcEngineerService.addSpcEngineer(engineerRegisterDto, loginAuthDto);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return WrapMapper.ok("上传文件success");
+        } else {
+            return WrapMapper.ok("上传文件failure");
+        }
     }
 
     /**
