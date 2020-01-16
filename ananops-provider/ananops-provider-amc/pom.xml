@@ -30,6 +30,10 @@
         </dependency>
         <dependency>
             <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-uac-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ananops.provider.api</groupId>
             <artifactId>ananops-provider-mdmc-api</artifactId>
             <version>1.0</version>
         </dependency>
