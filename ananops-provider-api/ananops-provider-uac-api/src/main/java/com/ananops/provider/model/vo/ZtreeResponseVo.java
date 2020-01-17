@@ -9,7 +9,6 @@
 package com.ananops.provider.model.vo;
 
 
-import com.ananops.provider.model.enums.ZtreeAuthTypeEnum;
 
 import java.io.Serializable;
 
@@ -39,9 +38,7 @@ public class ZtreeResponseVo implements Serializable {
 
 	private String iconClose;
 
-	/**
-	 * {@link ZtreeAuthTypeEnum}
-	 */
+
 	private String type;
 
 	/**
