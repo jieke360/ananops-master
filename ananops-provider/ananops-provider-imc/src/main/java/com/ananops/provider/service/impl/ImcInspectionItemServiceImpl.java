@@ -311,15 +311,17 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             imcInspectionItem.setActualStartTime(new Date(System.currentTimeMillis()));
             this.update(imcInspectionItem);//更新当前巡检任务子项的状态
         }
-        else if(status==ItemStatusEnum.INSPECTION_OVER.getStatusNum() && imcInspectionTaskService.isTaskFinish(taskId)){
-            //如果该巡检子项对应的巡检任务中全部的任务子项均已完成
-            //则修改对应的巡检任务状态为已完成
-            ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
-            imcTaskChangeStatusDto.setTaskId(taskId);
-            imcTaskChangeStatusDto.setStatus(TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusNum());//将巡检任务状态修改为“巡检结果待审核”
-            imcInspectionTaskService.modifyTaskStatus(imcTaskChangeStatusDto,loginAuthDto);
-            this.update(imcInspectionItem);//更新当前巡检任务子项的状态
+        else if(status==ItemStatusEnum.INSPECTION_OVER.getStatusNum()){
             imcInspectionItem.setActualFinishTime(new Date(System.currentTimeMillis()));//设置任务子项的实际完成时间
+            this.update(imcInspectionItem);//更新当前巡检任务子项的状态
+            if(imcInspectionTaskService.isTaskFinish(taskId)){
+                //如果该巡检子项对应的巡检任务中全部的任务子项均已完成
+                //则修改对应的巡检任务状态为已完成
+                ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
+                imcTaskChangeStatusDto.setTaskId(taskId);
+                imcTaskChangeStatusDto.setStatus(TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusNum());//将巡检任务状态修改为“巡检结果待审核”
+                imcInspectionTaskService.modifyTaskStatus(imcTaskChangeStatusDto,loginAuthDto);
+            }
         }
         else{
             this.update(imcInspectionItem);//更新当前巡检任务子项的状态
