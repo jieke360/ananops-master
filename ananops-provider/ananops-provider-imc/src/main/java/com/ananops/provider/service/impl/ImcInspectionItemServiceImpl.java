@@ -280,6 +280,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             //如果当前任务的状态是等待工程师接单，才允许工程师接单
             imcInspectionItem.setStatus(ItemStatusEnum.IN_THE_INSPECTION.getStatusNum());
             imcInspectionItem.setUpdateInfo(loginAuthDto);
+            imcInspectionItem.setActualStartTime(new Date(System.currentTimeMillis()));
             imcInspectionItemMapper.updateByPrimaryKeySelective(imcInspectionItem);
         }else{
             throw new BusinessException(ErrorCodeEnum.GL9999087);
@@ -308,6 +309,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Long taskId = this.getItemByItemId(itemId).getInspectionTaskId();
         if(status == ItemStatusEnum.IN_THE_INSPECTION.getStatusNum()){
             //如果工程师已接单，巡检任务开始
+            System.out.println("++++工程师已接单");
             imcInspectionItem.setActualStartTime(new Date(System.currentTimeMillis()));
             this.update(imcInspectionItem);//更新当前巡检任务子项的状态
         }
