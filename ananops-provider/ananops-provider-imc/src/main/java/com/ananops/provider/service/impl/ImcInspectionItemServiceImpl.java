@@ -309,17 +309,21 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         if(status == ItemStatusEnum.IN_THE_INSPECTION.getStatusNum()){
             //如果工程师已接单，巡检任务开始
             imcInspectionItem.setActualStartTime(new Date(System.currentTimeMillis()));
+            this.update(imcInspectionItem);//更新当前巡检任务子项的状态
         }
-        if(status==ItemStatusEnum.INSPECTION_OVER.getStatusNum() && imcInspectionTaskService.isTaskFinish(taskId)){
+        else if(status==ItemStatusEnum.INSPECTION_OVER.getStatusNum() && imcInspectionTaskService.isTaskFinish(taskId)){
             //如果该巡检子项对应的巡检任务中全部的任务子项均已完成
             //则修改对应的巡检任务状态为已完成
             ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
             imcTaskChangeStatusDto.setTaskId(taskId);
             imcTaskChangeStatusDto.setStatus(TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusNum());//将巡检任务状态修改为“巡检结果待审核”
             imcInspectionTaskService.modifyTaskStatus(imcTaskChangeStatusDto,loginAuthDto);
+            this.update(imcInspectionItem);//更新当前巡检任务子项的状态
             imcInspectionItem.setActualFinishTime(new Date(System.currentTimeMillis()));//设置任务子项的实际完成时间
         }
-        this.update(imcInspectionItem);//更新当前巡检任务子项的状态
+        else{
+            this.update(imcInspectionItem);//更新当前巡检任务子项的状态
+        }
 
 
         return imcItemChangeStatusDto;
@@ -336,7 +340,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         List<ImcInspectionItem> imcInspectionItemsResult = new ArrayList<>();
         imcInspectionItems.forEach(imcInspectionItem -> {
             int status = imcInspectionItem.getStatus();
-            if(status!=ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum() && status != ItemStatusEnum.INSPECTION_OVER.getStatusNum() && status != ItemStatusEnum.VERIFIED.getStatusNum()){
+            if(status!=ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum() && status != ItemStatusEnum.WAITING_FOR_ACCEPT.getStatusNum() && status != ItemStatusEnum.INSPECTION_OVER.getStatusNum() && status != ItemStatusEnum.VERIFIED.getStatusNum()){
                 imcInspectionItemsResult.add(imcInspectionItem);
             }
         });
