@@ -51,6 +51,7 @@ public class SpcCompanyFeignClient extends BaseController implements SpcCompanyF
     }
 
     @Override
+    @ApiOperation(httpMethod = "POST", value = "注册一个新的服务商")
     public Wrapper<Integer> registerNewCompany(@RequestBody CompanyDto companyDto) {
         logger.info("服务商初始注册. companyDto={}", companyDto);
         Preconditions.checkArgument(!PubUtils.isNull(companyDto, companyDto.getUserId()), ErrorCodeEnum.UAC10011001.msg());
