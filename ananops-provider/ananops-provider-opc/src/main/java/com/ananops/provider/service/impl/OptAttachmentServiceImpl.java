@@ -47,10 +47,13 @@ import java.util.List;
  */
 @Service
 public class OptAttachmentServiceImpl extends BaseService<OptAttachment> implements OpcAttachmentService {
+
 	@Resource
 	private OptAttachmentMapper optAttachmentMapper;
+
 	@Resource
 	private OpcOssService optOssService;
+
 	@Resource
 	private AnanopsProperties ananOpsProperties;
 

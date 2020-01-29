@@ -405,6 +405,12 @@ public enum ErrorCodeEnum {
 	 */
 	UAC10015009(10015009, "找不到上级组织, groupId=%s"),
 	/**
+	 * Uac 10015010 error code enum.
+	 */
+	UAC10015010(10015010, "组织ID不能为空, groupId=%s"),
+
+
+	/**
 	 * Mdc 10021001 error code enum.
 	 */
 // 1002 数据中心
@@ -750,6 +756,10 @@ public enum ErrorCodeEnum {
 	 * Spc 100850019 error code enum.
 	 */
 	SPC100850019(100850019, "无此审批操作"),
+	/**
+	 * Spc 100850020 error code enum.
+	 */
+	SPC100850020(100850020, "服务商ID不能为空"),
 	
 	
 	RDC100000000(10000000, "新建备品备件订单失败，数据库操作异常"),

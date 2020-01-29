@@ -4,7 +4,6 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.CompanyDto;
-import com.ananops.provider.model.dto.CompanyRegisterDto;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
 import com.ananops.provider.model.vo.CompanyVo;
@@ -35,14 +34,6 @@ public interface SpcCompanyService extends IService<SpcCompany> {
      * @return
      */
     List<SpcCompany> queryAllCompanys(SpcCompany spcCompany);
-
-    /**
-     * 注册服务商
-     *
-     * @param company
-     *
-     */
-    void register(CompanyRegisterDto company);
 
     /**
      * 根据公司Id修改公司状态
@@ -88,4 +79,13 @@ public interface SpcCompanyService extends IService<SpcCompany> {
      * @return 返回公司信息
      */
     List<CompanyVo> queryByLikeCompanyName(String companyName);
+
+    /**
+     * 服务商初始注册
+     *
+     * @param companyDto
+     *
+     * @return
+     */
+    int registerNew(CompanyDto companyDto);
 }

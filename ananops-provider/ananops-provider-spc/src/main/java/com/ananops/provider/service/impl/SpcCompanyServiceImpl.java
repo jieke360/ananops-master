@@ -6,17 +6,12 @@ import com.ananops.core.support.BaseService;
 import com.ananops.provider.mapper.SpcCompanyMapper;
 import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.CompanyDto;
-import com.ananops.provider.model.dto.CompanyRegisterDto;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
-import com.ananops.provider.model.dto.group.GroupBindUserDto;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
-import com.ananops.provider.model.dto.user.UserRegisterDto;
-import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
 import com.ananops.provider.model.service.UacGroupFeignApi;
-import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.service.SpcCompanyService;
 import com.google.common.base.Preconditions;
@@ -28,7 +23,6 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -46,13 +40,7 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
     private SpcCompanyMapper spcCompanyMapper;
 
     @Resource
-    private UacUserFeignApi uacUserFeignApi;
-
-    @Resource
     private UacGroupFeignApi uacGroupFeignApi;
-
-    @Resource
-    private UacGroupBindUserFeignApi uacGroupBindUserFeignApi;
 
     @Override
     public int getCompanyById(CompanyDto companyDto) {
@@ -63,62 +51,6 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
     public List<SpcCompany> queryAllCompanys(SpcCompany spcCompany) {
         return spcCompanyMapper.select(spcCompany);
     }
-
-    @Override
-    public void register(CompanyRegisterDto company) {
-        // 校验注册信息
-        validateRegisterInfo(company);
-        // 构建UAC User注册Dto
-        UserRegisterDto userRegisterDto = new UserRegisterDto();
-        GroupSaveDto groupSaveDto = new GroupSaveDto();
-        try {
-            // 绑定用户注册信息
-            BeanUtils.copyProperties(userRegisterDto, company);
-            userRegisterDto.setLoginName(company.getGroupName());
-            userRegisterDto.setMobileNo(company.getContactPhone());
-
-            // 绑定组织注册信息
-            BeanUtils.copyProperties(groupSaveDto, company);
-        } catch (Exception e) {
-            logger.error("服务商Dto与用户Dto属性拷贝异常");
-            e.printStackTrace();
-        }
-        logger.info("注册用户. userRegisterDto={}", userRegisterDto);
-        Long uacUserId = uacUserFeignApi.userRegister(userRegisterDto).getResult();
-        logger.info("注册用户.【ok】uacUserId={}", uacUserId);
-
-        logger.info("注册组织. groupSaveDto={}", groupSaveDto);
-        Long uacGroupId = uacGroupFeignApi.groupSave(groupSaveDto).getResult();
-        logger.info("注册组织.【ok】uacGroupId={}", uacGroupId);
-
-        if (uacUserId != null && uacGroupId != null) {
-            GroupBindUserDto groupBindUserDto = new GroupBindUserDto();
-            groupBindUserDto.setGroupId(uacGroupId);
-            groupBindUserDto.setUserIdList(Arrays.asList(uacUserId));
-            logger.info("绑定用户到组织. groupBindUserDto={}", groupBindUserDto);
-            uacGroupBindUserFeignApi.bindUacUser4Group(groupBindUserDto);
-            logger.info("绑定用户到组织.【ok】");
-        }
-
-
-        if (!StringUtils.isEmpty(uacUserId) && !StringUtils.isEmpty(uacGroupId)) {
-            Date row = new Date();
-            // 封装注册信息
-            long id = generateId();
-            SpcCompany spcCompany = new SpcCompany();
-            spcCompany.setId(id);
-            spcCompany.setGroupId(uacGroupId);
-            spcCompany.setUserId(uacUserId);
-            spcCompany.setCreatorId(id);
-            spcCompany.setCreator(company.getGroupName());
-            spcCompany.setLastOperatorId(id);
-            spcCompany.setLastOperator(company.getGroupName());
-            logger.info("注册服务商. SpcCompany={}", spcCompany);
-            spcCompanyMapper.insertSelective(spcCompany);
-        }
-    }
-
-
 
     @Override
     public int modifyCompanyStatusById(ModifyCompanyStatusDto modifyCompanyStatusDto) {
@@ -250,24 +182,29 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
 
     }
 
-    /**
-     * 校验注册信息
-     *
-     * @param companyRegisterDto 注册的对象
-     */
-    private void validateRegisterInfo(CompanyRegisterDto companyRegisterDto) {
-        String mobileNo = companyRegisterDto.getContactPhone();
-
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getGroupName()), ErrorCodeEnum.UAC10011007.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getEmail()), ErrorCodeEnum.UAC10011018.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getGroupCode()), ErrorCodeEnum.SPC100850010.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(mobileNo), "手机号不能为空");
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getLoginPwd()), ErrorCodeEnum.UAC10011014.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getConfirmPwd()), ErrorCodeEnum.UAC10011009.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getPhoneSmsCode()), "短信验证码不能为空");
-        Preconditions.checkArgument(companyRegisterDto.getLoginPwd().equals(companyRegisterDto.getConfirmPwd()), "两次密码不一致");
+    @Override
+    public int registerNew(CompanyDto companyDto) {
+        Date row = new Date();
+        // 封装注册信息
+        long id = generateId();
+        SpcCompany spcCompany = new SpcCompany();
+        spcCompany.setId(id);
+        if (companyDto.getGroupId() != null) {
+            spcCompany.setGroupId(companyDto.getGroupId());
+        } else {
+            return 1;
+        }
+        if (companyDto.getUserId() != null)
+            spcCompany.setUserId(companyDto.getUserId());
+        spcCompany.setCreatorId(id);
+        spcCompany.setCreator(companyDto.getGroupName());
+        spcCompany.setLastOperatorId(id);
+        spcCompany.setLastOperator(companyDto.getGroupName());
+        spcCompany.setCreatedTime(row);
+        logger.info("注册服务商. SpcCompany={}", spcCompany);
+        spcCompanyMapper.insertSelective(spcCompany);
+        return 0;
     }
-
 
     /**
      * 校验保存信息

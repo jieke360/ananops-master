@@ -99,7 +99,7 @@ public interface UacGroupService extends IService<UacGroup> {
 	 *
 	 * @return the int
 	 */
-	int saveUacGroup(UacGroup group, LoginAuthDto loginAuthDto);
+	Long saveUacGroup(UacGroup group, LoginAuthDto loginAuthDto);
 
 	/**
 	 * Gets by id.

@@ -343,8 +343,8 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 	}
 
 	@Override
-	public int saveUacGroup(UacGroup group, LoginAuthDto loginAuthDto) {
-		int result;
+	public Long saveUacGroup(UacGroup group, LoginAuthDto loginAuthDto) {
+		Long result;
 		Preconditions.checkArgument(!StringUtils.isEmpty(group.getPid()), "上级节点不能为空");
 
 		UacGroup parenGroup = uacGroupMapper.selectByPrimaryKey(group.getPid());
@@ -358,9 +358,10 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 			Long groupId = super.generateId();
 			group.setId(groupId);
 			group.setLevel(parenGroup.getLevel() + 1);
-			result = this.addUacGroup(group);
+			this.addUacGroup(group);
+			result = groupId;
 		} else {
-			result = this.editUacGroup(group);
+			result = (long)this.editUacGroup(group);
 		}
 		return result;
 	}
