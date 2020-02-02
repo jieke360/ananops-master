@@ -22,18 +22,18 @@ public class AliyunOssConfiguration {
     @Resource
     private AnanopsProperties ananOpsProperties;
 
-    /**
-     * 实例化阿里云对象存储客户端
-     *
-     * @return 对象存储客户端
-     *
-     * @throws ClientException
-     */
-    @Bean
-    public OSS ossClient() throws ClientException {
-        log.info("OSS Bean OSSClient Start");
-        return new OSSClientBuilder().build(ananOpsProperties.getAliyun().getOss().getEndpoint(),
-                ananOpsProperties.getAliyun().getKey().getAccessKeyId(),
-                ananOpsProperties.getAliyun().getKey().getAccessKeySecret());
-    }
+//    /**
+//     * 实例化阿里云对象存储客户端
+//     *
+//     * @return 对象存储客户端
+//     *
+//     * @throws ClientException
+//     */
+//    @Bean
+//    public OSS ossClient() throws ClientException {
+//        log.info("OSS Bean OSSClient Start");
+//        return new OSSClientBuilder().build(ananOpsProperties.getAliyun().getOss().getEndPoint(),
+//                ananOpsProperties.getAliyun().getKey().getAccessKeyId(),
+//                ananOpsProperties.getAliyun().getKey().getAccessKeySecret());
+//    }
 }

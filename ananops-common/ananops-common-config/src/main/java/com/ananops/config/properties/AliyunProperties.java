@@ -77,16 +77,16 @@ public class AliyunProperties {
 		/**
 		 * 端点名称
 		 */
-		private String endpoint;
+		private String endPoint;
 
         /**
          * 文件主机
          */
-        private String filehost;
+        private String fileHost;
 
         /**
          * 桶名称
          */
-        private String bucketname;
+        private String bucketName;
 	}
 }
