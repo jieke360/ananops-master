@@ -6,20 +6,29 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.service.SpcCompanyService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 服务商模块对外提供操作Company(公司)的Restful接口
@@ -128,5 +137,37 @@ public class SpcCompanyController extends BaseController {
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         spcCompanyService.saveUacCompany(companyVo, loginAuthDto);
         return WrapMapper.ok();
+    }
+
+    /**
+     * 上传公司相关的图片
+     *
+     * @param request HTTP请求
+     *
+     * @param optUploadFileReqDto HTTP请求参数
+     *
+     * @return 返回
+     */
+    @PostMapping(consumes = "multipart/form-data", value = "/uploadCompanyPicture")
+    @ApiOperation(httpMethod = "POST", value = "上传文件")
+    public Map<String, Object> uploadCompanyPicture(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
+        logger.info("uploadCompanyPicture - 上传文件. optUploadFileReqDto={}", optUploadFileReqDto);
+
+        String fileType = optUploadFileReqDto.getFileType();
+        String bucketName = optUploadFileReqDto.getBucketName();
+        Preconditions.checkArgument(StringUtils.isNotEmpty(fileType), "文件类型为空");
+        Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        List<OptUploadFileRespDto> optUploadFileRespDtos = spcCompanyService.uploadCompanyFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
+
+        List<String> imgUrlList = Lists.newArrayList();
+        for (final OptUploadFileRespDto fileRespDto : optUploadFileRespDtos) {
+            imgUrlList.add(fileRespDto.getAttachmentUrl());
+        }
+
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("errno", 0);
+        map.put("data", imgUrlList.toArray());
+        return map;
     }
 }

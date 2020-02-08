@@ -6,7 +6,10 @@ import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.CompanyDto;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.CompanyVo;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 
@@ -88,4 +91,19 @@ public interface SpcCompanyService extends IService<SpcCompany> {
      * @return
      */
     int registerNew(CompanyDto companyDto);
+
+    /**
+     * 上传公司相关文件
+     *
+     * @param multipartRequest
+     *
+     * @param optUploadFileReqDto
+     *
+     * @param loginAuthDto
+     *
+     * @param b
+     *
+     * @return
+     */
+    List<OptUploadFileRespDto> uploadCompanyFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto);
 }

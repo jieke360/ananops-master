@@ -149,7 +149,7 @@ public class OptQiniuOssServiceImpl implements OpcOssService {
 			fileUrl = ananOpsProperties.getQiniu().getOss().getPublicHost() + "/" + filePath + newFileName;
 		} else {
 			String domainUrl = ananOpsProperties.getQiniu().getOss().getPrivateHost();
-			fileUrl = this.getFileUrl(domainUrl, fileName);
+			fileUrl = this.getFileUrl(domainUrl, filePath + newFileName);
 		}
 		OptUploadFileRespDto result = new OptUploadFileRespDto();
 		result.setAttachmentUrl(fileUrl);

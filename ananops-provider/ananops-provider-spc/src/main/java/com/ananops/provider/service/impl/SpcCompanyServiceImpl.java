@@ -1,5 +1,7 @@
 package com.ananops.provider.service.impl;
 
+import com.ananops.PublicUtil;
+import com.ananops.base.constant.GlobalConstant;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
@@ -8,20 +10,30 @@ import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.CompanyDto;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
+import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
+import com.ananops.provider.service.OpcOssFeignApi;
 import com.ananops.provider.service.SpcCompanyService;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.xiaoleilu.hutool.io.FileTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +53,9 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
 
     @Resource
     private UacGroupFeignApi uacGroupFeignApi;
+
+    @Resource
+    private OpcOssFeignApi opcOssFeignApi;
 
     @Override
     public int getCompanyById(CompanyDto companyDto) {
@@ -225,4 +240,47 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
         Preconditions.checkArgument(!StringUtils.isEmpty(companyVo.getBusinessLicensePhoto()), ErrorCodeEnum.SPC100850016.msg());
     }
 
+    @Override
+    public List<OptUploadFileRespDto> uploadCompanyFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto) {
+        // 这里的filePath来区分照片类型，有以下三种:
+        // 法人身份证照片：legalPersonIdPhoto
+        // 营业执照照片：businessLicensePhoto
+        // 账户开户许可证照片：accountOpeningLicense
+        String filePath = optUploadFileReqDto.getFilePath();
+        Long userId = loginAuthDto.getUserId();
+        String userName = loginAuthDto.getUserName();
+        List<OptUploadFileRespDto> result = Lists.newArrayList();
+        try {
+            List<MultipartFile> fileList = multipartRequest.getFiles("file");
+            if (fileList.isEmpty()) {
+                return result;
+            }
+
+            for (MultipartFile multipartFile : fileList) {
+                String fileName = multipartFile.getOriginalFilename();
+                if (PublicUtil.isEmpty(fileName)) {
+                    continue;
+                }
+                Preconditions.checkArgument(multipartFile.getSize() <= GlobalConstant.FILE_MAX_SIZE, "上传文件不能大于5M");
+                InputStream inputStream = multipartFile.getInputStream();
+
+                String inputStreamFileType = FileTypeUtil.getType(inputStream);
+                // 将上传文件的字节流封装到到Dto对象中
+                OptUploadFileByteInfoReqDto optUploadFileByteInfoReqDto = new OptUploadFileByteInfoReqDto();
+                optUploadFileByteInfoReqDto.setFileByteArray(multipartFile.getBytes());
+                optUploadFileByteInfoReqDto.setFileName(fileName);
+                optUploadFileByteInfoReqDto.setFileType(inputStreamFileType);
+                optUploadFileReqDto.setUploadFileByteInfoReqDto(optUploadFileByteInfoReqDto);
+                // 设置不同文件路径来区分图片
+                optUploadFileReqDto.setFilePath("ananops/spc/company/" + userId + "/" + filePath + "/");
+                optUploadFileReqDto.setUserId(userId);
+                optUploadFileReqDto.setUserName(userName);
+                OptUploadFileRespDto optUploadFileRespDto = opcOssFeignApi.uploadFile(optUploadFileReqDto).getResult();
+                result.add(optUploadFileRespDto);
+            }
+        } catch (IOException e) {
+            logger.error("上传文件失败={}", e.getMessage(), e);
+        }
+        return result;
+    }
 }
