@@ -414,20 +414,32 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                 optUploadFileReqDto.setUserName(userName);
                 OptUploadFileRespDto optUploadFileRespDto = opcOssFeignApi.uploadFile(optUploadFileReqDto).getResult();
                 Long attachmentId = optUploadFileRespDto.getAttachmentId();
-                //建立附件与巡检任务、任务子项、当前状态的关联关系
-                ImcFileTaskItemStatus imcFileTaskItemStatus = new ImcFileTaskItemStatus();
-                imcFileTaskItemStatus.setAttachmentid(attachmentId);
-                imcFileTaskItemStatus.setTaskid(taskId);
-                imcFileTaskItemStatus.setItemid(itemId);
-                imcFileTaskItemStatus.setTaskstatus(taskStatus);
-                imcFileTaskItemStatus.setItemstatus(itemStatus);
-                imcFileTaskItemStatusMapper.insert(imcFileTaskItemStatus);
-                //为附件添加工单号
-                OptAttachmentUpdateReqDto optAttachmentUpdateReqDto = new OptAttachmentUpdateReqDto();
-                optAttachmentUpdateReqDto.setId(attachmentId);
-                optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
-                optAttachmentUpdateReqDto.setRefNo(String.valueOf(taskId));
-                opcOssFeignApi.updateAttachmentInfo(optAttachmentUpdateReqDto);
+                if(null == attachmentId){
+                    throw new BusinessException(ErrorCodeEnum.IMC10090000);
+                }else if(null == taskId){
+                    throw new BusinessException(ErrorCodeEnum.IMC10090001);
+                }else if(null == itemId){
+                    throw new BusinessException(ErrorCodeEnum.IMC10090002);
+                }else if(null == taskStatus){
+                    throw new BusinessException(ErrorCodeEnum.IMC10090003);
+                }else if(null == itemStatus){
+                    throw new BusinessException(ErrorCodeEnum.IMC10090004);
+                }else{
+                    //建立附件与巡检任务、任务子项、当前状态的关联关系
+                    ImcFileTaskItemStatus imcFileTaskItemStatus = new ImcFileTaskItemStatus();
+                    imcFileTaskItemStatus.setAttachmentid(attachmentId);
+                    imcFileTaskItemStatus.setTaskid(taskId);
+                    imcFileTaskItemStatus.setItemid(itemId);
+                    imcFileTaskItemStatus.setTaskstatus(taskStatus);
+                    imcFileTaskItemStatus.setItemstatus(itemStatus);
+                    imcFileTaskItemStatusMapper.insert(imcFileTaskItemStatus);
+                    //为附件添加工单号
+                    OptAttachmentUpdateReqDto optAttachmentUpdateReqDto = new OptAttachmentUpdateReqDto();
+                    optAttachmentUpdateReqDto.setId(attachmentId);
+                    optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+                    optAttachmentUpdateReqDto.setRefNo(String.valueOf(taskId));
+                    opcOssFeignApi.updateAttachmentInfo(optAttachmentUpdateReqDto);
+                }
                 result.add(optUploadFileRespDto);
             }
         } catch (IOException e) {
