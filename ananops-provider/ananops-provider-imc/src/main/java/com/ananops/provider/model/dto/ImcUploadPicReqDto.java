@@ -28,10 +28,16 @@ public class ImcUploadPicReqDto implements Serializable {
     private Long itemId;
 
     /**
+     * 任务状态
+     */
+    @ApiModelProperty(value = "taskStatus")
+    private Integer taskStatus;
+
+    /**
      * 任务子项状态
      */
-    @ApiModelProperty(value = "status")
-    private Integer status;
+    @ApiModelProperty(value = "itemStatus")
+    private Integer itemStatus;
 
     /**
      * 文件上传Dto

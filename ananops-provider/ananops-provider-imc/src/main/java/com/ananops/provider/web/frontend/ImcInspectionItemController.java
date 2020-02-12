@@ -198,4 +198,10 @@ public class ImcInspectionItemController extends BaseController {
         map.put("data", imgUrlList.toArray());
         return map;
     }
+
+    @PostMapping(value = "/getImcPicByTaskAndItemAndStatus")
+    @ApiOperation(httpMethod = "POST", value = "巡检任务子项查询文件")
+    public Wrapper<String> getImcPicByTaskAndItemAndStatus(@RequestBody ImcPicQueryDto imcPicQueryDto){
+        return WrapMapper.ok(imcInspectionItemService.getImcItemFile(imcPicQueryDto));
+    }
 }

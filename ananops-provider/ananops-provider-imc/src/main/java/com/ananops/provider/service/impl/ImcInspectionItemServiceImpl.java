@@ -7,14 +7,18 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
+import com.ananops.provider.mapper.ImcFileTaskItemStatusMapper;
 import com.ananops.provider.mapper.ImcInspectionItemMapper;
 import com.ananops.provider.mapper.ImcInspectionTaskMapper;
 import com.ananops.provider.mapper.ImcUserItemMapper;
+import com.ananops.provider.model.domain.ImcFileTaskItemStatus;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.domain.ImcUserItem;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
+import com.ananops.provider.model.dto.oss.OptGetUrlRequest;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
@@ -61,6 +65,9 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
 
     @Resource
     private OpcOssFeignApi opcOssFeignApi;
+
+    @Resource
+    private ImcFileTaskItemStatusMapper imcFileTaskItemStatusMapper;
 
     /**
      *
@@ -370,14 +377,15 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
     @Override
     public List<OptUploadFileRespDto> uploadImcItemFile(MultipartHttpServletRequest multipartRequest, ImcUploadPicReqDto imcUploadPicReqDto, LoginAuthDto loginAuthDto){
         // 这里的filePath来区分照片类型:
-        // /ananops/imc/userId/taskId/itemId/status/filePath
+        // /ananops/imc/userId/taskId/itemId/taskStatus/itemStatus/filePath
         OptUploadFileReqDto optUploadFileReqDto = imcUploadPicReqDto.getOptUploadFileReqDto();
         String filePath = optUploadFileReqDto.getFilePath();
         Long userId = loginAuthDto.getUserId();
         String userName = loginAuthDto.getUserName();
         Long taskId = imcUploadPicReqDto.getTaskId();
         Long itemId = imcUploadPicReqDto.getItemId();
-        Integer status = imcUploadPicReqDto.getStatus();
+        Integer taskStatus = imcUploadPicReqDto.getTaskStatus();
+        Integer itemStatus = imcUploadPicReqDto.getItemStatus();
         List<OptUploadFileRespDto> result = Lists.newArrayList();
         try {
             List<MultipartFile> fileList = multipartRequest.getFiles("file");
@@ -401,16 +409,50 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                 optUploadFileByteInfoReqDto.setFileType(inputStreamFileType);
                 optUploadFileReqDto.setUploadFileByteInfoReqDto(optUploadFileByteInfoReqDto);
                 // 设置不同文件路径来区分图片
-                optUploadFileReqDto.setFilePath("ananops/imc/" + userId + "/" + taskId + "/"  + itemId + "/" + status + "/" );
+                optUploadFileReqDto.setFilePath("ananops/imc/" + userId + "/" + taskId + "/"  + itemId + "/" + taskStatus + "/" + itemStatus + "/");
                 optUploadFileReqDto.setUserId(userId);
                 optUploadFileReqDto.setUserName(userName);
                 OptUploadFileRespDto optUploadFileRespDto = opcOssFeignApi.uploadFile(optUploadFileReqDto).getResult();
+                Long attachmentId = optUploadFileRespDto.getAttachmentId();
+                //建立附件与巡检任务、任务子项、当前状态的关联关系
+                ImcFileTaskItemStatus imcFileTaskItemStatus = new ImcFileTaskItemStatus();
+                imcFileTaskItemStatus.setAttachmentid(attachmentId);
+                imcFileTaskItemStatus.setTaskid(taskId);
+                imcFileTaskItemStatus.setItemid(itemId);
+                imcFileTaskItemStatus.setTaskstatus(taskStatus);
+                imcFileTaskItemStatus.setItemstatus(itemStatus);
+                imcFileTaskItemStatusMapper.insert(imcFileTaskItemStatus);
+                //为附件添加工单号
+                OptAttachmentUpdateReqDto optAttachmentUpdateReqDto = new OptAttachmentUpdateReqDto();
+                optAttachmentUpdateReqDto.setId(attachmentId);
+                optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+                optAttachmentUpdateReqDto.setRefNo(String.valueOf(taskId));
+                opcOssFeignApi.updateAttachmentInfo(optAttachmentUpdateReqDto);
                 result.add(optUploadFileRespDto);
             }
         } catch (IOException e) {
             logger.error("上传文件失败={}", e.getMessage(), e);
         }
         return result;
+    }
+
+    @Override
+    public String getImcItemFile(ImcPicQueryDto imcPicQueryDto){
+        Long taskId = imcPicQueryDto.getTaskId();
+        Long itemId = imcPicQueryDto.getItemId();
+        int taskStatus = imcPicQueryDto.getTaskStatus();
+        int itemStatus = imcPicQueryDto.getItemStatus();
+        Example example = new Example(ImcFileTaskItemStatus.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",taskId);
+        criteria.andEqualTo("itemId",itemId);
+        criteria.andEqualTo("taskStatus",taskStatus);
+        criteria.andEqualTo("itemStatus",itemStatus);
+        ImcFileTaskItemStatus imcFileTaskItemStatus = imcFileTaskItemStatusMapper.selectByExample(example).get(0);
+        Long attachmentId = imcFileTaskItemStatus.getAttachmentid();
+        OptGetUrlRequest optGetUrlRequest = new OptGetUrlRequest();
+        optGetUrlRequest.setAttachmentId(attachmentId);
+        return opcOssFeignApi.getFileUrl(optGetUrlRequest).getResult();
     }
 
     public Integer setBasicInfoFromContract(){//将从合同中获取到的基本信息填写到巡检任务中

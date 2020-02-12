@@ -46,4 +46,6 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
     List<ImcInspectionItem> getAcceptedItemOfMaintainer(ItemQueryDto itemQueryDto);//获取工程下的全部已接单且未完成巡检任务子项
 
     List<OptUploadFileRespDto> uploadImcItemFile(MultipartHttpServletRequest multipartRequest, ImcUploadPicReqDto imcUploadPicReqDto, LoginAuthDto loginAuthDto);
+
+    String getImcItemFile(ImcPicQueryDto imcPicQueryDto);
 }
