@@ -41,6 +41,10 @@
             <groupId>com.ananops.provider.api</groupId>
             <artifactId>ananops-provider-sdk-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-opc-api</artifactId>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>com.ananops.provider.api</groupId>-->
             <!--<artifactId>ananops-provider-tpc-api</artifactId>-->

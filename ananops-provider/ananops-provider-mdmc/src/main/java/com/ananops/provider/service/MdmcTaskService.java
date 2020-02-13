@@ -6,6 +6,8 @@ import com.ananops.provider.model.domain.MdmcReview;
 import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.domain.MdmcTaskLog;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 
@@ -118,6 +120,27 @@ public interface MdmcTaskService extends IService<MdmcTask> {
      * @param target
      */
     void copyPropertiesWithIgnoreNullProperties(Object source, Object target);
+
+    /**
+     * 上传公司相关文件
+     *
+     * @param multipartRequest
+     *
+     * @param mdmcUploadFileReqDto
+     *
+     * @param loginAuthDto
+     *
+     *
+     * @return
+     */
+    List<OptUploadFileRespDto> uploadTaskFile(MultipartHttpServletRequest multipartRequest, MdmcUploadFileReqDto mdmcUploadFileReqDto, LoginAuthDto loginAuthDto);
+
+    /**
+     * 根据工单id和状态查看附件信息
+     * @param mdmcFileReqDto
+     * @return
+     */
+    String getFileByTaskIdAndStatus(MdmcFileReqDto mdmcFileReqDto);
 
     /**
      * =========================== 待优化 ============================
