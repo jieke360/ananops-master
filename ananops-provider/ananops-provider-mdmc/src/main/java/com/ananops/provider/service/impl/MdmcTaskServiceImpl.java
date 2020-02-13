@@ -1,6 +1,8 @@
 package com.ananops.provider.service.impl;
 
 
+import com.ananops.PublicUtil;
+import com.ananops.base.constant.GlobalConstant;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
@@ -9,19 +11,32 @@ import com.ananops.core.support.BaseService;
 import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
+import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
+import com.ananops.provider.model.dto.oss.OptGetUrlRequest;
+import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.enums.*;
 import com.ananops.provider.service.ImcItemFeignApi;
 import com.ananops.provider.service.MdmcTaskItemService;
 import com.ananops.provider.service.MdmcTaskService;
+import com.ananops.provider.service.OpcOssFeignApi;
 import com.github.pagehelper.PageHelper;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.xiaoleilu.hutool.io.FileTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @Slf4j
@@ -39,6 +54,11 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     @Resource
     ImcItemFeignApi imcItemFeignApi;
 
+    @Resource
+    OpcOssFeignApi opcOssFeignApi;
+
+    @Resource
+    MdmcFileTaskStatusMapper fileTaskStatusMapper;
 
     @Override
     public MdmcTask getTaskByTaskId(Long taskId) {
@@ -60,6 +80,17 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             task.setStatus(2);
             taskMapper.insert(task);
             logger.info("新创建一条维修任务记录成功[OK], 创建维修任务子项中...");
+            OptAttachmentUpdateReqDto optAttachmentUpdateReqDto=new OptAttachmentUpdateReqDto();
+            optAttachmentUpdateReqDto.setId(mdmcAddTaskDto.getAttachmentId());
+            optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+            optAttachmentUpdateReqDto.setRefNo(String.valueOf(taskId));
+            opcOssFeignApi.updateAttachmentInfo(optAttachmentUpdateReqDto);
+            MdmcFileTaskStatus fileTaskStatus = new MdmcFileTaskStatus();
+            copyPropertiesWithIgnoreNullProperties(mdmcAddTaskDto,fileTaskStatus);
+            fileTaskStatus.setStatus(2);
+            fileTaskStatus.setAttachmentId(mdmcAddTaskDto.getAttachmentId());
+            fileTaskStatus.setUpdateInfo(loginAuthDto);
+            fileTaskStatusMapper.insert(fileTaskStatus);
 
             //获取所有的巡检任务子项
             List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList = mdmcAddTaskDto.getMdmcAddTaskItemDtoList();
@@ -91,6 +122,18 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
             Integer status = task.getStatus();
             Integer objectType = task.getObjectType();
+
+            OptAttachmentUpdateReqDto attachmentUpdateReqDto=new OptAttachmentUpdateReqDto();
+            attachmentUpdateReqDto.setId(mdmcAddTaskDto.getAttachmentId());
+            attachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+            attachmentUpdateReqDto.setRefNo(String.valueOf(taskId));
+            opcOssFeignApi.updateAttachmentInfo(attachmentUpdateReqDto);
+            MdmcFileTaskStatus mdmcFileTaskStatus = new MdmcFileTaskStatus();
+            copyPropertiesWithIgnoreNullProperties(mdmcAddTaskDto,mdmcFileTaskStatus);
+            mdmcFileTaskStatus.setStatus(task.getStatus());
+            mdmcFileTaskStatus.setAttachmentId(mdmcAddTaskDto.getAttachmentId());
+            mdmcFileTaskStatus.setUpdateInfo(loginAuthDto);
+            fileTaskStatusMapper.insert(mdmcFileTaskStatus);
 
             // 维修工单完成(无需评价)时，如果是巡检发起的维修任务，更新巡检工单状态
             if(status == MdmcTaskStatusEnum.DaiPingJia.getStatusNum() && objectType == MdmcObjectTypeEnum.IMC.getCode()) {
@@ -464,4 +507,62 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         BeanUtils.copyProperties(source, target, ignore);
     }
 
+    @Override
+    public List<OptUploadFileRespDto> uploadTaskFile(MultipartHttpServletRequest multipartRequest, MdmcUploadFileReqDto mdmcUploadFileReqDto, LoginAuthDto loginAuthDto) {
+        String filePath = mdmcUploadFileReqDto.getOptUploadFileReqDto().getFilePath();
+        Long userId = loginAuthDto.getUserId();
+        String userName = loginAuthDto.getUserName();
+        List<OptUploadFileRespDto> result = Lists.newArrayList();
+        try {
+            List<MultipartFile> fileList = multipartRequest.getFiles("file");
+            if (fileList.isEmpty()) {
+                return result;
+            }
+
+            for (MultipartFile multipartFile : fileList) {
+                String fileName = multipartFile.getOriginalFilename();
+                if (PublicUtil.isEmpty(fileName)) {
+                    continue;
+                }
+                Preconditions.checkArgument(multipartFile.getSize() <= GlobalConstant.FILE_MAX_SIZE, "上传文件不能大于5M");
+                InputStream inputStream = multipartFile.getInputStream();
+
+                String inputStreamFileType = FileTypeUtil.getType(inputStream);
+                // 将上传文件的字节流封装到到Dto对象中
+                OptUploadFileByteInfoReqDto optUploadFileByteInfoReqDto = new OptUploadFileByteInfoReqDto();
+                optUploadFileByteInfoReqDto.setFileByteArray(multipartFile.getBytes());
+                optUploadFileByteInfoReqDto.setFileName(fileName);
+                optUploadFileByteInfoReqDto.setFileType(inputStreamFileType);
+                OptUploadFileReqDto optUploadFileReqDto=mdmcUploadFileReqDto.getOptUploadFileReqDto();
+                optUploadFileReqDto.setUploadFileByteInfoReqDto(optUploadFileByteInfoReqDto);
+                // 设置不同文件路径来区分图片
+                optUploadFileReqDto.setFilePath("ananops/mdmc/task/" + userId + "/" + filePath + "/");
+                optUploadFileReqDto.setUserId(userId);
+                optUploadFileReqDto.setUserName(userName);
+                OptUploadFileRespDto optUploadFileRespDto = opcOssFeignApi.uploadFile(optUploadFileReqDto).getResult();
+                result.add(optUploadFileRespDto);
+            }
+        } catch (IOException e) {
+            logger.error("上传文件失败={}", e.getMessage(), e);
+        }
+        return result;
+    }
+
+    @Override
+    public String getFileByTaskIdAndStatus(MdmcFileReqDto mdmcFileReqDto) {
+        Long id=mdmcFileReqDto.getTaskId();
+        Integer status=mdmcFileReqDto.getStatus();
+        Example example = new Example(MdmcTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",mdmcFileReqDto.getTaskId());
+        criteria.andEqualTo("status",mdmcFileReqDto.getStatus());
+        if(fileTaskStatusMapper.selectCountByExample(example) == 0){//如果当前查看的图片不存在
+            throw new BusinessException(ErrorCodeEnum.OPC10040008,id);
+        }
+        MdmcFileTaskStatus fileTaskStatus=fileTaskStatusMapper.selectByExample(example).get(0);
+        OptGetUrlRequest optGetUrlRequest=new OptGetUrlRequest();
+        optGetUrlRequest.setAttachmentId(fileTaskStatus.getAttachmentId());
+
+        return opcOssFeignApi.getFileUrl(optGetUrlRequest).getResult();
+    }
 }
