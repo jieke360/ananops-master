@@ -29,12 +29,6 @@ public class ImcPicQueryDto implements Serializable {
     private Long itemId;
 
     /**
-     * 巡检任务对应的状态
-     */
-    @ApiModelProperty(value = "巡检任务对应的状态")
-    private Integer taskStatus;
-
-    /**
      * 巡检任务子项对应的状态
      */
     @ApiModelProperty(value = "巡检任务子项对应的状态")

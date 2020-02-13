@@ -9,5 +9,6 @@
     <id column="itemId" property="itemid" jdbcType="BIGINT" />
     <result column="attachmentId" property="attachmentid" jdbcType="BIGINT" />
     <result column="itemStatus" property="itemstatus" jdbcType="INTEGER" />
+    <result column="refNo" property="refno" jdbcType="VARCHAR" />
   </resultMap>
 </mapper>

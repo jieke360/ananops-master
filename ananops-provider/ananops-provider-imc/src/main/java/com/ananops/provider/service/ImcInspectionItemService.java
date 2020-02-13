@@ -5,6 +5,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -45,7 +46,7 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
 
     List<ImcInspectionItem> getAcceptedItemOfMaintainer(ItemQueryDto itemQueryDto);//获取工程下的全部已接单且未完成巡检任务子项
 
-    List<OptUploadFileRespDto> uploadImcItemFile(MultipartHttpServletRequest multipartRequest, ImcUploadPicReqDto imcUploadPicReqDto, LoginAuthDto loginAuthDto);
+    List<OptUploadFileRespDto> uploadImcItemFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto);
 
-    String getImcItemFile(ImcPicQueryDto imcPicQueryDto);
+    List<ElementImgUrlDto> getImcItemFileList(ImcPicQueryDto imcPicQueryDto);
 }
