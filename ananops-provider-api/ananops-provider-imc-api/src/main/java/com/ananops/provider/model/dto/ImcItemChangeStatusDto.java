@@ -38,4 +38,10 @@ public class ImcItemChangeStatusDto implements Serializable {
      */
     @ApiModelProperty(value = "当前操作用户的LoginAuthDto")
     private LoginAuthDto loginAuthDto;
+
+    /**
+     * 附件id
+     */
+    @ApiModelProperty(value = "巡检任务子项对应的附件id")
+    private Long attachmentId;
 }

@@ -32,14 +32,9 @@ public class ImcFileTaskItemStatus implements Serializable {
     private Long attachmentid;
 
     /**
-     * 巡检任务的状态
-     */
-    @Column(name = "taskStatus")
-    private Integer taskstatus;
-
-    /**
      * 巡检任务子项的状态
      */
+    @Id
     @Column(name = "itemStatus")
     private Integer itemstatus;
 }

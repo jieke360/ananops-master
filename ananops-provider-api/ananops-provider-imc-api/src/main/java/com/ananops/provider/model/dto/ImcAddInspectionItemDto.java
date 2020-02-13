@@ -122,4 +122,10 @@ public class ImcAddInspectionItemDto implements Serializable {
      */
     @ApiModelProperty(value = "巡检任务子项所在的网点地址")
     private String location;
+
+    /**
+     * 附件id
+     */
+    @ApiModelProperty(value = "巡检任务子项对应的附件id")
+    private Long attachmentId;
 }
