@@ -96,6 +96,7 @@ public class OpcAttachmentFeignClient extends BaseController implements OpcOssFe
 	}
 
 	@Override
+	@ApiOperation(httpMethod = "POST", value = "基于refNo列表显示所有图片URL")
 	public Wrapper<List<ElementImgUrlDto>> listFileUrl(@RequestBody OptBatchGetUrlRequest urlRequest) {
 		logger.info("getFileUrl - 批量获取url链接. urlRequest={}", urlRequest);
 		List<ElementImgUrlDto> result = opcAttachmentService.listFileUrl(urlRequest);
