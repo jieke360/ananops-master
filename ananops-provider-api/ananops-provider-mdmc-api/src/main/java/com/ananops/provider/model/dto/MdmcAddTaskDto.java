@@ -96,6 +96,9 @@ public class MdmcAddTaskDto implements Serializable {
     @ApiModelProperty("维修类型不填，巡检类型填巡检工单编号")
     private Long objectId;
 
+    @ApiModelProperty("附件id")
+    private Long attachmentId;
+
     @ApiModelProperty("任务子项")
     private List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList;
 }
