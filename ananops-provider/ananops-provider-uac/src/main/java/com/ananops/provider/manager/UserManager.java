@@ -90,11 +90,11 @@ public class UserManager {
 		roleUser.setUserId(userId);
 		roleUser.setRoleId(roleId);
 		uacRoleUserMapper.insertSelective(roleUser);
-		// 绑定一个组织
-		UacGroupUser groupUser = new UacGroupUser();
-		groupUser.setUserId(userId);
-		groupUser.setGroupId(GlobalConstant.Sys.SUPER_MANAGER_GROUP_ID);
-		uacGroupUserMapper.insertSelective(groupUser);
+		// 绑定一个组织（这里注释掉了，绑定组织目前不在激活的逻辑里面实现，在注册的逻辑去绑定组织）
+//		UacGroupUser groupUser = new UacGroupUser();
+//		groupUser.setUserId(userId);
+//		groupUser.setGroupId(GlobalConstant.Sys.SUPER_MANAGER_GROUP_ID);
+//		uacGroupUserMapper.insertSelective(groupUser);
 		// 删除 activeUserToken
 		redisService.deleteKey(activeUserKey);
 	}
