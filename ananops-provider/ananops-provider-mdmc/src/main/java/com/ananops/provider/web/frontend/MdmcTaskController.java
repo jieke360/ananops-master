@@ -7,6 +7,8 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.domain.MdmcTaskLog;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.service.MdmcTaskLogService;
 import com.ananops.provider.service.MdmcTaskService;
@@ -196,9 +198,9 @@ public class MdmcTaskController extends BaseController {
      */
     @PostMapping(value = "/getPictureByTaskIdAndStatus")
     @ApiOperation(httpMethod = "POST",value = "根据任务的ID和状态，查看附件信息")
-    public Wrapper<String> getPictureByTaskIdAndStatus(@RequestBody MdmcFileReqDto mdmcFileReqDto){
-        String result = taskService.getFileByTaskIdAndStatus(mdmcFileReqDto);
-        return WrapMapper.ok(result);
+    public Wrapper<List<ElementImgUrlDto>> getPictureByTaskIdAndStatus(@RequestBody MdmcFileReqDto mdmcFileReqDto){
+
+        return WrapMapper.ok(taskService.getFileByTaskIdAndStatus(mdmcFileReqDto));
     }
 
     /**
@@ -206,30 +208,21 @@ public class MdmcTaskController extends BaseController {
      *
      * @param request HTTP请求
      *
-     * @param mdmcUploadFileReqDto HTTP请求参数
+     * @param optUploadFileReqDto HTTP请求参数
      *
      * @return 返回
      */
     @PostMapping(consumes = "multipart/form-data", value = "/uploadTaskPicture")
     @ApiOperation(httpMethod = "POST", value = "上传文件")
-    public Map<String, Object> uploadTaskPicture(HttpServletRequest request, MdmcUploadFileReqDto mdmcUploadFileReqDto) {
-        logger.info("uploadTaskPicture - 上传文件. mdmcUploadFileReqDto={}", mdmcUploadFileReqDto);
+    public Wrapper<List<OptUploadFileRespDto>> uploadTaskPicture(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
+        logger.info("uploadTaskPicture - 上传文件. optUploadFileReqDto={}", optUploadFileReqDto);
 
-        String fileType = mdmcUploadFileReqDto.getOptUploadFileReqDto().getFileType();
-        String bucketName = mdmcUploadFileReqDto.getOptUploadFileReqDto().getBucketName();
+        String fileType =optUploadFileReqDto.getFileType();
+        String bucketName =optUploadFileReqDto.getBucketName();
         Preconditions.checkArgument(StringUtils.isNotEmpty(fileType), "文件类型为空");
         Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        List<OptUploadFileRespDto> optUploadFileRespDtos = taskService.uploadTaskFile(multipartRequest, mdmcUploadFileReqDto, getLoginAuthDto());
 
-        List<String> imgUrlList = Lists.newArrayList();
-        for (final OptUploadFileRespDto fileRespDto : optUploadFileRespDtos) {
-            imgUrlList.add(fileRespDto.getAttachmentUrl());
-        }
-
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("errno", 0);
-        map.put("data", imgUrlList.toArray());
-        return map;
+        return WrapMapper.ok(taskService.uploadTaskFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto()));
     }
 }
