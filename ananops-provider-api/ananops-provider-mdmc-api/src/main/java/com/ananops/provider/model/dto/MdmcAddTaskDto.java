@@ -97,7 +97,7 @@ public class MdmcAddTaskDto implements Serializable {
     private Long objectId;
 
     @ApiModelProperty("附件id")
-    private Long attachmentId;
+    private List<Long> attachmentIdList;
 
     @ApiModelProperty("任务子项")
     private List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList;
