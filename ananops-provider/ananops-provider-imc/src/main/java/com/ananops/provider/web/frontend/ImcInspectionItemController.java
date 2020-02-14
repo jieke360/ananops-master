@@ -8,6 +8,7 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.ImcInspectionItem;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
@@ -178,30 +179,19 @@ public class ImcInspectionItemController extends BaseController {
 
     @PostMapping(consumes = "multipart/form-data", value = "/uploadImcItemPicture")
     @ApiOperation(httpMethod = "POST", value = "巡检任务子项上传文件")
-    public Map<String, Object> uploadImcItemPicture(HttpServletRequest request, ImcUploadPicReqDto imcUploadPicReqDto) {
-        OptUploadFileReqDto optUploadFileReqDto = imcUploadPicReqDto.getOptUploadFileReqDto();
+    public List<OptUploadFileRespDto> uploadImcItemPicture(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
         logger.info("uploadCompanyPicture - 上传文件. optUploadFileReqDto={}", optUploadFileReqDto);
         String fileType = optUploadFileReqDto.getFileType();
         String bucketName = optUploadFileReqDto.getBucketName();
         Preconditions.checkArgument(StringUtils.isNotEmpty(fileType), "文件类型为空");
         Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        List<OptUploadFileRespDto> optUploadFileRespDtos = imcInspectionItemService.uploadImcItemFile(multipartRequest, imcUploadPicReqDto, getLoginAuthDto());
-
-        List<String> imgUrlList = Lists.newArrayList();
-        for (final OptUploadFileRespDto fileRespDto : optUploadFileRespDtos) {
-            imgUrlList.add(fileRespDto.getAttachmentUrl());
-        }
-
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("errno", 0);
-        map.put("data", imgUrlList.toArray());
-        return map;
+        return imcInspectionItemService.uploadImcItemFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
     }
 
-    @PostMapping(value = "/getImcPicByTaskAndItemAndStatus")
+    @PostMapping(value = "/getImcPicListByTaskAndItemAndStatus")
     @ApiOperation(httpMethod = "POST", value = "巡检任务子项查询文件")
-    public Wrapper<String> getImcPicByTaskAndItemAndStatus(@RequestBody ImcPicQueryDto imcPicQueryDto){
-        return WrapMapper.ok(imcInspectionItemService.getImcItemFile(imcPicQueryDto));
+    public Wrapper<List<ElementImgUrlDto>> getImcPicListByTaskAndItemAndStatus(@RequestBody ImcPicQueryDto imcPicQueryDto){
+        return WrapMapper.ok(imcInspectionItemService.getImcItemFileList(imcPicQueryDto));
     }
 }

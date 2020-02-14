@@ -14,27 +14,31 @@ public class ImcFileTaskItemStatus implements Serializable {
     /**
      * 巡检任务Id
      */
-    @Id
     @Column(name = "taskId")
     private Long taskid;
 
     /**
      * 巡检任务子项Id
      */
-    @Id
     @Column(name = "itemId")
     private Long itemid;
 
     /**
      * 附件Id
      */
+    @Id
     @Column(name = "attachmentId")
     private Long attachmentid;
 
     /**
      * 巡检任务子项的状态
      */
-    @Id
     @Column(name = "itemStatus")
     private Integer itemstatus;
+
+    /**
+     * 工单的流水号
+     */
+    @Column(name = "refNo")
+    private String refNo;
 }
