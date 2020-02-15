@@ -63,6 +63,16 @@ public interface OpcOssFeignApi {
 	Wrapper<String> updateAttachmentInfo(@RequestBody OptAttachmentUpdateReqDto optAttachmentUpdateReqDto);
 
 	/**
+	 * 批量更新附件关联单号
+	 *
+	 * @param optAttachmentUpdateReqDto 更新附件信息
+	 *
+	 * @return 返回空
+	 */
+	@PostMapping(value = "/api/opc/oss/batchUpdateAttachment")
+	Wrapper<String> batchUpdateAttachment(@RequestBody OptAttachmentUpdateReqDto optAttachmentUpdateReqDto);
+
+	/**
 	 * List file url wrapper.
 	 *
 	 * @param urlRequest the url request

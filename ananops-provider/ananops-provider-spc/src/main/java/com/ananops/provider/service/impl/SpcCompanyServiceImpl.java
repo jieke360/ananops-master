@@ -10,6 +10,7 @@ import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.CompanyDto;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
+import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
@@ -195,6 +196,31 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
         spcCompany.setUpdateInfo(loginAuthDto);
         logger.info("更新服务商信息. SpcCompany={}", spcCompany);
         spcCompanyMapper.updateByPrimaryKeySelective(spcCompany);
+
+        // 更新附件信息
+        List<Long> attachmentIds = new ArrayList<>();
+        if (spcCompany.getLegalPersonidPhoto() != null) {
+            String legalPersonidPhotoIds = spcCompany.getLegalPersonidPhoto();
+            if (legalPersonidPhotoIds.contains(",")) {
+                String[] legalIds = legalPersonidPhotoIds.split(",");
+                for (String id : legalIds) {
+                    attachmentIds.add(Long.parseLong(id));
+                }
+            } else {
+                attachmentIds.add(Long.parseLong(legalPersonidPhotoIds));
+            }
+        }
+        if (spcCompany.getBusinessLicensePhoto() != null) {
+            attachmentIds.add(Long.parseLong(spcCompany.getBusinessLicensePhoto()));
+        }
+        if (spcCompany.getAccountOpeningLicense() != null) {
+            attachmentIds.add(Long.parseLong(spcCompany.getAccountOpeningLicense()));
+        }
+        OptAttachmentUpdateReqDto optAttachmentUpdateReqDto = new OptAttachmentUpdateReqDto();
+        optAttachmentUpdateReqDto.setAttachmentIds(attachmentIds);
+        optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+        optAttachmentUpdateReqDto.setRefNo(spcCompany.getId().toString());
+        opcOssFeignApi.batchUpdateAttachment(optAttachmentUpdateReqDto);
     }
 
     @Override

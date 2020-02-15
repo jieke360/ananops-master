@@ -50,6 +50,11 @@ public class OpcOssFeignApiHystrix implements OpcOssFeignApi {
 	}
 
 	@Override
+	public Wrapper<String> batchUpdateAttachment(OptAttachmentUpdateReqDto optAttachmentUpdateReqDto) {
+		return null;
+	}
+
+	@Override
 	public void deleteExpireFile() {
 
 	}
