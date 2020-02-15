@@ -7,6 +7,9 @@ import com.ananops.wrapper.Wrapper;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * 开放内部模块对UAC GroupBindUser的API
@@ -25,4 +28,14 @@ public interface UacGroupBindUserFeignApi {
      */
     @PostMapping(value = "/api/uac/group/bindUser")
     Wrapper bindUacUser4Group(@RequestBody GroupBindUserDto groupBindUserDto);
+
+    /**
+     * 根据User Id查询Group Id
+     *
+     * @param userId 参数
+     *
+     * @return Group Id
+     */
+    @PostMapping(value = "/api/uac/group/getGroupIdByUserId")
+    Wrapper<Long> getGroupIdByUserId(@RequestParam("userId")Long userId);
 }

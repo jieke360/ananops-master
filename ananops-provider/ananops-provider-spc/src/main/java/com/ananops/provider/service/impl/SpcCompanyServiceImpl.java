@@ -16,6 +16,7 @@ import com.ananops.provider.model.dto.group.GroupStatusDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
+import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.service.OpcOssFeignApi;
@@ -56,6 +57,9 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
 
     @Resource
     private OpcOssFeignApi opcOssFeignApi;
+
+    @Resource
+    private UacGroupBindUserFeignApi uacGroupBindUserFeignApi;
 
     @Override
     public int getCompanyById(CompanyDto companyDto) {
@@ -282,5 +286,15 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
             logger.error("上传文件失败={}", e.getMessage(), e);
         }
         return result;
+    }
+
+    @Override
+    public CompanyVo queryByUserId(Long userId) {
+        logger.info("queryByUserId - 根据用户Id(userId)查询公司信息接口. userId={}", userId);
+        Long groupId = uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();
+        if (groupId != null) {
+            return this.queryByCompanyId(groupId);
+        }
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import com.ananops.provider.model.dto.group.GroupBindUserDto;
 import com.ananops.provider.model.dto.group.GroupBindUserReqDto;
 import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
 import com.ananops.provider.service.UacGroupService;
+import com.ananops.provider.service.UacGroupUserService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -29,6 +31,9 @@ public class UacGroupBindUserFeignClient extends BaseController implements UacGr
     @Resource
     private UacGroupService uacGroupService;
 
+    @Resource
+    private UacGroupUserService uacGroupUserService;
+
     @Override
     @ApiOperation(httpMethod = "POST", value = "绑定用户到组织")
     public Wrapper bindUacUser4Group(@RequestBody GroupBindUserDto groupBindUserDto) {
@@ -43,5 +48,13 @@ public class UacGroupBindUserFeignClient extends BaseController implements UacGr
         }
         uacGroupService.bindUacUser4Group(groupBindUserReqDto, loginAuthDto);
         return WrapMapper.ok();
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "根据UserId查询GroupId")
+    public Wrapper<Long> getGroupIdByUserId(@RequestParam("userId") Long userId) {
+        logger.info("根据UserId查询GroupId...  userId={}", userId);
+        Long groupId = uacGroupUserService.queryByUserId(userId).getGroupId();
+        return WrapMapper.ok(groupId);
     }
 }

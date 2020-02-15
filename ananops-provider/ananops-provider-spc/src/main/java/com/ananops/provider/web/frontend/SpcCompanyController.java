@@ -106,6 +106,23 @@ public class SpcCompanyController extends BaseController {
     }
 
     /**
+     * 根据用户Id查询公司信息.
+     *
+     * @param userId the userId id
+     *
+     * @return the spc company by userId
+     */
+    @PostMapping(value = "/getSpcCompanyByUserId/{userId}")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据用户Id（userId）查询公司信息")
+    public Wrapper<CompanyVo> getSpcCompanyByUserId(@ApiParam(name = "userId", value = "用户ID") @PathVariable Long userId) {
+        logger.info("getSpcCompanyByUserId - 根据用户Id查询公司信息. userId={}", userId);
+        CompanyVo uacCompany = spcCompanyService.queryByUserId(userId);
+        logger.info("getUacUserById - 根据用户Id查询公司信息. [OK] uacCompany={}", uacCompany);
+        return WrapMapper.ok(uacCompany);
+    }
+
+    /**
      * 根据公司名称模糊查询公司信息.
      *
      * @param companyName the company name

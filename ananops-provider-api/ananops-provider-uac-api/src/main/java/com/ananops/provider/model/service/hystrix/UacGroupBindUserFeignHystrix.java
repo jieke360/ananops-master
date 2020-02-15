@@ -18,4 +18,9 @@ public class UacGroupBindUserFeignHystrix implements UacGroupBindUserFeignApi {
     public Wrapper bindUacUser4Group(@RequestBody GroupBindUserDto groupBindUserDto) {
         return null;
     }
+
+    @Override
+    public Wrapper<Long> getGroupIdByUserId(Long userId) {
+        return null;
+    }
 }

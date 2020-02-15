@@ -86,7 +86,7 @@ public class UacUserFeignClient extends BaseController implements UacUserFeignAp
 
     @Override
     @ApiOperation(httpMethod = "POST", value = "根据用户Id修改用户状态")
-    public Wrapper<Integer> modifyUserStatus(IdStatusDto idStatusDto) {
+    public Wrapper<Integer> modifyUserStatus(@RequestBody IdStatusDto idStatusDto) {
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         UacUser uacUser = new UacUser();
         uacUser.setId(idStatusDto.getId());
