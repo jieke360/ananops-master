@@ -124,10 +124,10 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
         if (companyId != null) {
             GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(companyId).getResult();
             try {
-                if (spcCompany != null)
-                    BeanUtils.copyProperties(companyVo, spcCompany);
                 if (groupSaveDto != null)
                     BeanUtils.copyProperties(companyVo, groupSaveDto);
+                if (spcCompany != null)
+                    BeanUtils.copyProperties(companyVo, spcCompany);
             } catch (Exception e) {
                 logger.error("queryByCompanyId 服务商Dto与用户组Dto属性拷贝异常");
                 e.printStackTrace();
@@ -166,6 +166,8 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
     @Override
     public void saveUacCompany(CompanyVo companyVo, LoginAuthDto loginAuthDto) {
         Long companyId = companyVo.getId();
+        if (companyId == null)
+            return;
         SpcCompany queryResult = spcCompanyMapper.selectByPrimaryKey(companyId);
         Long groupId = queryResult.getGroupId();
         // 校验保存信息
@@ -179,26 +181,20 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
             logger.error("服务商Dto与用户组Dto属性拷贝异常");
             e.printStackTrace();
         }
-        Long uacGroupId = uacGroupFeignApi.groupSave(groupSaveDto).getResult();
+        // 更新UAC中组织信息
+        uacGroupFeignApi.groupSave(groupSaveDto);
 
-        if (!StringUtils.isEmpty(companyId) && !StringUtils.isEmpty(uacGroupId)) {
-            Date row = new Date();
-            // 封装更新公司信息
-            SpcCompany spcCompany = new SpcCompany();
-            spcCompany.setId(companyId);
-            spcCompany.setGroupId(uacGroupId);
-            spcCompany.setLastOperatorId(loginAuthDto.getUserId());
-            spcCompany.setLastOperator(loginAuthDto.getLoginName());
-            try {
-                BeanUtils.copyProperties(spcCompany, companyVo);
-            } catch (Exception e) {
-                logger.error("服务商Dto与用户组Dto属性拷贝异常");
-                e.printStackTrace();
-            }
-            logger.info("注册服务商. SpcCompany={}", spcCompany);
-            spcCompanyMapper.insertSelective(spcCompany);
+        // 封装更新公司信息
+        SpcCompany spcCompany = new SpcCompany();
+        try {
+            BeanUtils.copyProperties(spcCompany, companyVo);
+        } catch (Exception e) {
+            logger.error("服务商Dto与用户组Dto属性拷贝异常");
+            e.printStackTrace();
         }
-
+        spcCompany.setUpdateInfo(loginAuthDto);
+        logger.info("更新服务商信息. SpcCompany={}", spcCompany);
+        spcCompanyMapper.updateByPrimaryKeySelective(spcCompany);
     }
 
     @Override
