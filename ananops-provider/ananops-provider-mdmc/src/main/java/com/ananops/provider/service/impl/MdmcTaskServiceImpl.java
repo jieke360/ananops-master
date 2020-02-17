@@ -79,7 +79,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             task.setStatus(2);
             taskMapper.insert(task);
             logger.info("新创建一条维修任务记录成功[OK], 创建维修任务子项中...");
-            if (!attachmentIdList.isEmpty()){
+            if (attachmentIdList != null && !attachmentIdList.isEmpty()){
                 Long refNo=super.generateId();
                 for(Long attachmentId:attachmentIdList){
                     OptAttachmentUpdateReqDto optAttachmentUpdateReqDto=new OptAttachmentUpdateReqDto();

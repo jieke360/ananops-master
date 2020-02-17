@@ -18,9 +18,9 @@ public interface MdmcTaskMapper extends MyMapper<MdmcTask> {
     @Select("select * from task where task.`user_id`=#{user_id}")
     List<MdmcTask> selectByUserId(@Param("user_id") Long user_id);
 
-    @Select("select * from task where `user_id`=#{id} or `facilitator_id`=#{id} or `maintainer_id`=#{id} or principal_id=#{id}")
+    @Select("select * from task where `user_id`=#{id} or `facilitator_id`=#{id} or `maintainer_id`=#{id} or principal_id=#{id} order by created_time desc")
     List<MdmcTask> selectBySomeoneId(@Param("id")Long id);
 
-    @Select("select * from task where `status`=#{status} and (`user_id`=#{id} or `facilitator_id`=#{id} or `maintainer_id`=#{id} or principal_id=#{id})")
+    @Select("select * from task where `status`=#{status} and (`user_id`=#{id} or `facilitator_id`=#{id} or `maintainer_id`=#{id} or principal_id=#{id}) order by created_time desc")
     List<MdmcTask> selectBySomeoneIdAndStatus(@Param("id")Long userId, @Param("status")Integer status);
 }
