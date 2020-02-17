@@ -66,6 +66,7 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
         Example example = new Example(AmcAlarm.class);
         for (int i = 0; i < wrapper.getResult().size(); i++) {
             example.or(example.createCriteria().andEqualTo("groupId",wrapper.getResult().get(i).getId()));
+            example.setOrderByClause("last_occur_time desc");
         }
         List<AmcAlarm> amcAlarmList = amcAlarmMapper.selectByExample(example);
         return new PageInfo<>(amcAlarmList);
