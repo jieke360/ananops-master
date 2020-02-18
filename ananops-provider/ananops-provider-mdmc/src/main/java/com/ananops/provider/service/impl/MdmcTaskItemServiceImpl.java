@@ -119,6 +119,7 @@ public class MdmcTaskItemServiceImpl extends BaseService<MdmcTaskItem> implement
             throw new BusinessException(ErrorCodeEnum.GL9999094);
         }
         PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
+        example.setOrderByClause("created_time desc");
         pageItemDto.setTaskItemList(mdmcTaskItemMapper.selectByExample(example));
         pageItemDto.setPageNum(statusDto.getPageNum());
         pageItemDto.setPageSize(statusDto.getPageSize());
