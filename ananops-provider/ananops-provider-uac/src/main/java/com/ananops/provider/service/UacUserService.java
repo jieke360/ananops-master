@@ -351,4 +351,13 @@ public interface UacUserService extends IService<UacUser> {
 	 * @return
 	 */
 	UserBindRoleVo getUserPermitBindRoleDto(Long userId, Long roleId);
+
+	/**
+	 * 普通用户修改个人密码
+	 *
+	 * @param userModifyPwdDto
+	 * @param loginAuthDto
+	 * @return
+	 */
+    int authUserModifyPwd(UserModifyPwdDto userModifyPwdDto, LoginAuthDto loginAuthDto);
 }
