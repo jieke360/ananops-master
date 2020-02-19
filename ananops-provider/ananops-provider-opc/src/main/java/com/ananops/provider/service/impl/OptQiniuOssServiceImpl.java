@@ -122,7 +122,7 @@ public class OptQiniuOssServiceImpl implements OpcOssService {
 	}
 
 	@Override
-	public OptUploadFileRespDto uploadFile(byte[] uploadBytes, String fileName, String filePath, String bucketName) throws IOException {
+	public OptUploadFileRespDto uploadFile(byte[] uploadBytes, String fileName, String fileType, String filePath, String bucketName) throws IOException {
 		log.info("uploadFile - 上传文件. fileName={}, bucketName={}", fileName, bucketName);
 
 		Preconditions.checkArgument(uploadBytes != null, "读取文件失败");
@@ -130,9 +130,10 @@ public class OptQiniuOssServiceImpl implements OpcOssService {
 		Preconditions.checkArgument(StringUtils.isNotEmpty(filePath), "文件路径不能为空");
 		Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储节点不能为空");
 
-		InputStream is = new ByteArrayInputStream(uploadBytes);
-		String inputStreamFileType = FileTypeUtil.getType(is);
-		String newFileName = UniqueIdGenerator.generateId() + "." + inputStreamFileType;
+//		InputStream is = new ByteArrayInputStream(uploadBytes);
+//		String inputStreamFileType = FileTypeUtil.getType(is);
+//		String newFileName = UniqueIdGenerator.generateId() + "." + inputStreamFileType;
+		String newFileName = UniqueIdGenerator.generateId() + "." + fileType;
 
 		// 检查数据大小
 		this.checkFileSize(uploadBytes);
