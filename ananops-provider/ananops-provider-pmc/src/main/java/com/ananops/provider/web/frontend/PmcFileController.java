@@ -17,7 +17,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -29,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -130,7 +130,7 @@ public class PmcFileController extends BaseController {
      */
     @PostMapping(consumes = "multipart/form-data", value = "/uploadContractAttachment")
     @ApiOperation(httpMethod = "POST", value = "上传文件")
-    public List<OptUploadFileRespDto> uploadContractAttachment(javax.servlet.http.HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
+    public List<OptUploadFileRespDto> uploadContractAttachment(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
         logger.info("uploadContractAttachment - 上传文件. optUploadFileReqDto={}", optUploadFileReqDto);
 
         String fileType = optUploadFileReqDto.getFileType();
