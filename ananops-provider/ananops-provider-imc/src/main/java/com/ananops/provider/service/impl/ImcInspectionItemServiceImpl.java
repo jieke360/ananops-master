@@ -473,6 +473,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                 String refNo = item.getRefNo();
                 OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
                 optBatchGetUrlRequest.setRefNo(refNo);
+                optBatchGetUrlRequest.setEncrypt(true);
                 List<ElementImgUrlDto> elementImgUrlDtoList = opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
                 ImcItemUrlDto imcItemUrlDto = new ImcItemUrlDto();
                 imcItemUrlDto.setItemId(itemId);
