@@ -13,9 +13,7 @@ import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
-import com.ananops.provider.model.dto.oss.OptGetUrlRequest;
-import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
-import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
+import com.ananops.provider.model.dto.oss.*;
 import com.ananops.provider.model.enums.*;
 import com.ananops.provider.service.ImcItemFeignApi;
 import com.ananops.provider.service.MdmcTaskItemService;
@@ -71,6 +69,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         MdmcTask task = new MdmcTask();
         copyPropertiesWithIgnoreNullProperties(mdmcAddTaskDto,task);
         task.setUpdateInfo(loginAuthDto);
+        List<Long> attachmentIdList=mdmcAddTaskDto.getAttachmentIdList();
 
         if(mdmcAddTaskDto.getId()==null){
             logger.info("创建一条维修工单记录... CrateTaskInfo = {}", mdmcAddTaskDto);
@@ -80,17 +79,24 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             task.setStatus(2);
             taskMapper.insert(task);
             logger.info("新创建一条维修任务记录成功[OK], 创建维修任务子项中...");
-            OptAttachmentUpdateReqDto optAttachmentUpdateReqDto=new OptAttachmentUpdateReqDto();
-            optAttachmentUpdateReqDto.setId(mdmcAddTaskDto.getAttachmentId());
-            optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
-            optAttachmentUpdateReqDto.setRefNo(String.valueOf(taskId));
-            opcOssFeignApi.updateAttachmentInfo(optAttachmentUpdateReqDto);
-            MdmcFileTaskStatus fileTaskStatus = new MdmcFileTaskStatus();
-            copyPropertiesWithIgnoreNullProperties(mdmcAddTaskDto,fileTaskStatus);
-            fileTaskStatus.setStatus(2);
-            fileTaskStatus.setAttachmentId(mdmcAddTaskDto.getAttachmentId());
-            fileTaskStatus.setUpdateInfo(loginAuthDto);
-            fileTaskStatusMapper.insert(fileTaskStatus);
+            if (attachmentIdList != null && !attachmentIdList.isEmpty()){
+                Long refNo=super.generateId();
+                for(Long attachmentId:attachmentIdList){
+                    OptAttachmentUpdateReqDto optAttachmentUpdateReqDto=new OptAttachmentUpdateReqDto();
+                    optAttachmentUpdateReqDto.setId(attachmentId);
+                    optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+                    optAttachmentUpdateReqDto.setRefNo(String.valueOf(refNo));
+                    opcOssFeignApi.updateAttachmentInfo(optAttachmentUpdateReqDto);
+                }
+
+                MdmcFileTaskStatus fileTaskStatus = new MdmcFileTaskStatus();
+                fileTaskStatus.setId(refNo);
+                fileTaskStatus.setStatus(2);
+                fileTaskStatus.setTaskId(taskId);
+                fileTaskStatus.setUpdateInfo(loginAuthDto);
+                fileTaskStatusMapper.insert(fileTaskStatus);
+
+            }
 
             //获取所有的巡检任务子项
             List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList = mdmcAddTaskDto.getMdmcAddTaskItemDtoList();
@@ -123,17 +129,24 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             Integer status = task.getStatus();
             Integer objectType = task.getObjectType();
 
-            OptAttachmentUpdateReqDto attachmentUpdateReqDto=new OptAttachmentUpdateReqDto();
-            attachmentUpdateReqDto.setId(mdmcAddTaskDto.getAttachmentId());
-            attachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
-            attachmentUpdateReqDto.setRefNo(String.valueOf(taskId));
-            opcOssFeignApi.updateAttachmentInfo(attachmentUpdateReqDto);
-            MdmcFileTaskStatus mdmcFileTaskStatus = new MdmcFileTaskStatus();
-            copyPropertiesWithIgnoreNullProperties(mdmcAddTaskDto,mdmcFileTaskStatus);
-            mdmcFileTaskStatus.setStatus(task.getStatus());
-            mdmcFileTaskStatus.setAttachmentId(mdmcAddTaskDto.getAttachmentId());
-            mdmcFileTaskStatus.setUpdateInfo(loginAuthDto);
-            fileTaskStatusMapper.insert(mdmcFileTaskStatus);
+            if (!attachmentIdList.isEmpty()){
+                Long refNo1=super.generateId();
+
+                for (Long attachmentId:attachmentIdList){
+                    OptAttachmentUpdateReqDto attachmentUpdateReqDto=new OptAttachmentUpdateReqDto();
+                    attachmentUpdateReqDto.setId(attachmentId);
+                    attachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+                    attachmentUpdateReqDto.setRefNo(String.valueOf(refNo1));
+                    opcOssFeignApi.updateAttachmentInfo(attachmentUpdateReqDto);
+                }
+
+                MdmcFileTaskStatus mdmcFileTaskStatus = new MdmcFileTaskStatus();
+                mdmcFileTaskStatus.setId(refNo1);
+                mdmcFileTaskStatus.setStatus(task.getStatus());
+                mdmcFileTaskStatus.setTaskId(taskId);
+                mdmcFileTaskStatus.setUpdateInfo(loginAuthDto);
+                fileTaskStatusMapper.insert(mdmcFileTaskStatus);
+            }
 
             // 维修工单完成(无需评价)时，如果是巡检发起的维修任务，更新巡检工单状态
             if(status == MdmcTaskStatusEnum.DaiPingJia.getStatusNum() && objectType == MdmcObjectTypeEnum.IMC.getCode()) {
@@ -508,8 +521,8 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     }
 
     @Override
-    public List<OptUploadFileRespDto> uploadTaskFile(MultipartHttpServletRequest multipartRequest, MdmcUploadFileReqDto mdmcUploadFileReqDto, LoginAuthDto loginAuthDto) {
-        String filePath = mdmcUploadFileReqDto.getOptUploadFileReqDto().getFilePath();
+    public List<OptUploadFileRespDto> uploadTaskFile(MultipartHttpServletRequest multipartRequest,OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto) {
+        String filePath = optUploadFileReqDto.getFilePath();
         Long userId = loginAuthDto.getUserId();
         String userName = loginAuthDto.getUserName();
         List<OptUploadFileRespDto> result = Lists.newArrayList();
@@ -533,10 +546,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
                 optUploadFileByteInfoReqDto.setFileByteArray(multipartFile.getBytes());
                 optUploadFileByteInfoReqDto.setFileName(fileName);
                 optUploadFileByteInfoReqDto.setFileType(inputStreamFileType);
-                OptUploadFileReqDto optUploadFileReqDto=mdmcUploadFileReqDto.getOptUploadFileReqDto();
                 optUploadFileReqDto.setUploadFileByteInfoReqDto(optUploadFileByteInfoReqDto);
                 // 设置不同文件路径来区分图片
-                optUploadFileReqDto.setFilePath("ananops/mdmc/task/" + userId + "/" + filePath + "/");
+                optUploadFileReqDto.setFilePath("ananops/mdmc/" + userId + "/" + filePath+ "/");
                 optUploadFileReqDto.setUserId(userId);
                 optUploadFileReqDto.setUserName(userName);
                 OptUploadFileRespDto optUploadFileRespDto = opcOssFeignApi.uploadFile(optUploadFileReqDto).getResult();
@@ -549,10 +561,10 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     }
 
     @Override
-    public String getFileByTaskIdAndStatus(MdmcFileReqDto mdmcFileReqDto) {
+    public List<ElementImgUrlDto> getFileByTaskIdAndStatus(MdmcFileReqDto mdmcFileReqDto) {
         Long id=mdmcFileReqDto.getTaskId();
         Integer status=mdmcFileReqDto.getStatus();
-        Example example = new Example(MdmcTask.class);
+        Example example = new Example(MdmcFileTaskStatus.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId",mdmcFileReqDto.getTaskId());
         criteria.andEqualTo("status",mdmcFileReqDto.getStatus());
@@ -560,9 +572,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             throw new BusinessException(ErrorCodeEnum.OPC10040008,id);
         }
         MdmcFileTaskStatus fileTaskStatus=fileTaskStatusMapper.selectByExample(example).get(0);
-        OptGetUrlRequest optGetUrlRequest=new OptGetUrlRequest();
-        optGetUrlRequest.setAttachmentId(fileTaskStatus.getAttachmentId());
+        OptBatchGetUrlRequest optBatchGetUrlRequest=new OptBatchGetUrlRequest();
+        optBatchGetUrlRequest.setRefNo(String.valueOf(fileTaskStatus.getId()));
 
-        return opcOssFeignApi.getFileUrl(optGetUrlRequest).getResult();
+        return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
     }
 }

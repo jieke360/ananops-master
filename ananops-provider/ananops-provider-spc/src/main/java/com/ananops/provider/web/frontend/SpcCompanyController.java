@@ -106,6 +106,23 @@ public class SpcCompanyController extends BaseController {
     }
 
     /**
+     * 根据用户Id查询公司信息.
+     *
+     * @param userId the userId id
+     *
+     * @return the spc company by userId
+     */
+    @PostMapping(value = "/getSpcCompanyByUserId/{userId}")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据用户Id（userId）查询公司信息")
+    public Wrapper<CompanyVo> getSpcCompanyByUserId(@ApiParam(name = "userId", value = "用户ID") @PathVariable Long userId) {
+        logger.info("getSpcCompanyByUserId - 根据用户Id查询公司信息. userId={}", userId);
+        CompanyVo uacCompany = spcCompanyService.queryByUserId(userId);
+        logger.info("getUacUserById - 根据用户Id查询公司信息. [OK] uacCompany={}", uacCompany);
+        return WrapMapper.ok(uacCompany);
+    }
+
+    /**
      * 根据公司名称模糊查询公司信息.
      *
      * @param companyName the company name
@@ -150,7 +167,7 @@ public class SpcCompanyController extends BaseController {
      */
     @PostMapping(consumes = "multipart/form-data", value = "/uploadCompanyPicture")
     @ApiOperation(httpMethod = "POST", value = "上传文件")
-    public Map<String, Object> uploadCompanyPicture(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
+    public List<OptUploadFileRespDto> uploadCompanyPicture(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
         logger.info("uploadCompanyPicture - 上传文件. optUploadFileReqDto={}", optUploadFileReqDto);
 
         String fileType = optUploadFileReqDto.getFileType();
@@ -158,16 +175,6 @@ public class SpcCompanyController extends BaseController {
         Preconditions.checkArgument(StringUtils.isNotEmpty(fileType), "文件类型为空");
         Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        List<OptUploadFileRespDto> optUploadFileRespDtos = spcCompanyService.uploadCompanyFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
-
-        List<String> imgUrlList = Lists.newArrayList();
-        for (final OptUploadFileRespDto fileRespDto : optUploadFileRespDtos) {
-            imgUrlList.add(fileRespDto.getAttachmentUrl());
-        }
-
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("errno", 0);
-        map.put("data", imgUrlList.toArray());
-        return map;
+        return spcCompanyService.uploadCompanyFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
     }
 }

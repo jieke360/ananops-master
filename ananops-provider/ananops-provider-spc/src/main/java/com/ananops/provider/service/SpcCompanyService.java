@@ -106,4 +106,13 @@ public interface SpcCompanyService extends IService<SpcCompany> {
      * @return
      */
     List<OptUploadFileRespDto> uploadCompanyFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto);
+
+    /**
+     * 根据用户Id查询公司详细信息
+     *
+     * @param userId 用户Id
+     *
+     * @return 返回公司详情
+     */
+    CompanyVo queryByUserId(Long userId);
 }

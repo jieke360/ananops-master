@@ -1146,4 +1146,14 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	}
 
 
+	@Override
+	public int authUserModifyPwd(UserModifyPwdDto userModifyPwdDto, LoginAuthDto loginAuthDto) {
+		String loginName = userModifyPwdDto.getLoginName();
+		UacUser user = uacUserMapper.findByLoginName(loginName);
+		if (PublicUtil.isEmpty(user)) {
+			throw new UacBizException(ErrorCodeEnum.UAC10011002, loginName);
+		}
+		Preconditions.checkArgument(!user.getId().equals(loginAuthDto.getUserId()), "越权操作，只能修改本人密码！");
+		return this.userModifyPwd(userModifyPwdDto, loginAuthDto);
+	}
 }

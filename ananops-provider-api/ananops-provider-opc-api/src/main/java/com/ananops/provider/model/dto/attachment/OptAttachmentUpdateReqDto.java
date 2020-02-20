@@ -4,6 +4,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 增加绑定关系
@@ -28,6 +29,11 @@ public class OptAttachmentUpdateReqDto implements Serializable {
      * 上传附件的相关业务流水号
      */
     private String refNo;
+
+    /**
+     * 附件Ids
+     */
+    private List<Long> attachmentIds;
 
     /**
      * 上传附件描述

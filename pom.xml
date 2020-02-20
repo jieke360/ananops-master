@@ -246,7 +246,8 @@
             <dependency>
                 <groupId>com.xiaoleilu</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>3.0.7</version>
+                <version>3.3.2</version>
+<!--            <version>3.0.7</version>-->
             </dependency>
             <dependency>
                 <groupId>com.ananops.provider.api</groupId>

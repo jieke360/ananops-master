@@ -94,7 +94,7 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
 
     @Override
     @ApiOperation(httpMethod = "POST", value = "通过Id查询Group信息")
-    public Wrapper<GroupSaveDto> getUacGroupById(Long groupId) {
+    public Wrapper<GroupSaveDto> getUacGroupById(@RequestParam("groupId") Long groupId) {
         logger.info("根据组织Id查询组织列表");
         GroupSaveDto groupSaveDto = new GroupSaveDto();
         UacGroup uacGroup = uacGroupService.queryById(groupId);
@@ -109,7 +109,7 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
 
     @Override
     @ApiOperation(httpMethod = "POST", value = "通过公司名称模糊查询Group信息")
-    public Wrapper<List<GroupSaveDto>> getUacGroupByLikeName(String groupName) {
+    public Wrapper<List<GroupSaveDto>> getUacGroupByLikeName(@RequestParam("groupName") String groupName) {
         logger.info("通过公司名称模糊查询Group信息");
         List<GroupSaveDto> groupSaveDtos = new ArrayList<>();
         List<UacGroup> uacGroups = uacGroupService.queryByLikeName(groupName);

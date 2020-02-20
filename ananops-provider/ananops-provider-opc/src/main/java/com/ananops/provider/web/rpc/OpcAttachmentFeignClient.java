@@ -96,6 +96,30 @@ public class OpcAttachmentFeignClient extends BaseController implements OpcOssFe
 	}
 
 	@Override
+	@ApiOperation(httpMethod = "POST", value = "批量更新附件信息")
+	public Wrapper<String> batchUpdateAttachment(@RequestBody OptAttachmentUpdateReqDto optAttachmentUpdateReqDto) {
+		try {
+			logger.info("batchUpdateAttachment - 批量更新附件信息. optAttachmentUpdateReqDto={}", optAttachmentUpdateReqDto);
+			String refNo = optAttachmentUpdateReqDto.getRefNo();
+			List<Long> attachmentIds = optAttachmentUpdateReqDto.getAttachmentIds();
+
+			OptAttachment optAttachment = new OptAttachment();
+			optAttachment.setRefNo(refNo);
+			for (Long attachmentId : attachmentIds) {
+				optAttachment.setId(attachmentId);
+				opcAttachmentService.saveAttachment(optAttachment, optAttachmentUpdateReqDto.getLoginAuthDto());
+			}
+		} catch (BusinessException ex) {
+			logger.error("RPC更新附件信息, 出现异常={}", ex.getMessage(), ex);
+			return WrapMapper.wrap(ex);
+		} catch (Exception e) {
+			logger.error("RPC更新附件信息, 出现异常={}", e.getMessage(), e);
+			return WrapMapper.error();
+		}
+		return WrapMapper.ok();
+	}
+
+	@Override
 	@ApiOperation(httpMethod = "POST", value = "基于refNo列表显示所有图片URL")
 	public Wrapper<List<ElementImgUrlDto>> listFileUrl(@RequestBody OptBatchGetUrlRequest urlRequest) {
 		logger.info("getFileUrl - 批量获取url链接. urlRequest={}", urlRequest);

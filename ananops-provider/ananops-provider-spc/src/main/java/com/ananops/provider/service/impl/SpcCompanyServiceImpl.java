@@ -10,12 +10,14 @@ import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.CompanyDto;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
+import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
+import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.service.OpcOssFeignApi;
@@ -56,6 +58,9 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
 
     @Resource
     private OpcOssFeignApi opcOssFeignApi;
+
+    @Resource
+    private UacGroupBindUserFeignApi uacGroupBindUserFeignApi;
 
     @Override
     public int getCompanyById(CompanyDto companyDto) {
@@ -120,10 +125,10 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
         if (companyId != null) {
             GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(companyId).getResult();
             try {
-                if (spcCompany != null)
-                    BeanUtils.copyProperties(companyVo, spcCompany);
                 if (groupSaveDto != null)
                     BeanUtils.copyProperties(companyVo, groupSaveDto);
+                if (spcCompany != null)
+                    BeanUtils.copyProperties(companyVo, spcCompany);
             } catch (Exception e) {
                 logger.error("queryByCompanyId 服务商Dto与用户组Dto属性拷贝异常");
                 e.printStackTrace();
@@ -162,6 +167,8 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
     @Override
     public void saveUacCompany(CompanyVo companyVo, LoginAuthDto loginAuthDto) {
         Long companyId = companyVo.getId();
+        if (companyId == null)
+            return;
         SpcCompany queryResult = spcCompanyMapper.selectByPrimaryKey(companyId);
         Long groupId = queryResult.getGroupId();
         // 校验保存信息
@@ -175,26 +182,45 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
             logger.error("服务商Dto与用户组Dto属性拷贝异常");
             e.printStackTrace();
         }
-        Long uacGroupId = uacGroupFeignApi.groupSave(groupSaveDto).getResult();
+        // 更新UAC中组织信息
+        uacGroupFeignApi.groupSave(groupSaveDto);
 
-        if (!StringUtils.isEmpty(companyId) && !StringUtils.isEmpty(uacGroupId)) {
-            Date row = new Date();
-            // 封装更新公司信息
-            SpcCompany spcCompany = new SpcCompany();
-            spcCompany.setId(companyId);
-            spcCompany.setGroupId(uacGroupId);
-            spcCompany.setLastOperatorId(loginAuthDto.getUserId());
-            spcCompany.setLastOperator(loginAuthDto.getLoginName());
-            try {
-                BeanUtils.copyProperties(spcCompany, companyVo);
-            } catch (Exception e) {
-                logger.error("服务商Dto与用户组Dto属性拷贝异常");
-                e.printStackTrace();
-            }
-            logger.info("注册服务商. SpcCompany={}", spcCompany);
-            spcCompanyMapper.insertSelective(spcCompany);
+        // 封装更新公司信息
+        SpcCompany spcCompany = new SpcCompany();
+        try {
+            BeanUtils.copyProperties(spcCompany, companyVo);
+        } catch (Exception e) {
+            logger.error("服务商Dto与用户组Dto属性拷贝异常");
+            e.printStackTrace();
         }
+        spcCompany.setUpdateInfo(loginAuthDto);
+        logger.info("更新服务商信息. SpcCompany={}", spcCompany);
+        spcCompanyMapper.updateByPrimaryKeySelective(spcCompany);
 
+        // 更新附件信息
+        List<Long> attachmentIds = new ArrayList<>();
+        if (spcCompany.getLegalPersonidPhoto() != null) {
+            String legalPersonidPhotoIds = spcCompany.getLegalPersonidPhoto();
+            if (legalPersonidPhotoIds.contains(",")) {
+                String[] legalIds = legalPersonidPhotoIds.split(",");
+                for (String id : legalIds) {
+                    attachmentIds.add(Long.parseLong(id));
+                }
+            } else {
+                attachmentIds.add(Long.parseLong(legalPersonidPhotoIds));
+            }
+        }
+        if (spcCompany.getBusinessLicensePhoto() != null) {
+            attachmentIds.add(Long.parseLong(spcCompany.getBusinessLicensePhoto()));
+        }
+        if (spcCompany.getAccountOpeningLicense() != null) {
+            attachmentIds.add(Long.parseLong(spcCompany.getAccountOpeningLicense()));
+        }
+        OptAttachmentUpdateReqDto optAttachmentUpdateReqDto = new OptAttachmentUpdateReqDto();
+        optAttachmentUpdateReqDto.setAttachmentIds(attachmentIds);
+        optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+        optAttachmentUpdateReqDto.setRefNo(spcCompany.getId().toString());
+        opcOssFeignApi.batchUpdateAttachment(optAttachmentUpdateReqDto);
     }
 
     @Override
@@ -282,5 +308,15 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
             logger.error("上传文件失败={}", e.getMessage(), e);
         }
         return result;
+    }
+
+    @Override
+    public CompanyVo queryByUserId(Long userId) {
+        logger.info("queryByUserId - 根据用户Id(userId)查询公司信息接口. userId={}", userId);
+        Long groupId = uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();
+        if (groupId != null) {
+            return this.queryByCompanyId(groupId);
+        }
+        return null;
     }
 }

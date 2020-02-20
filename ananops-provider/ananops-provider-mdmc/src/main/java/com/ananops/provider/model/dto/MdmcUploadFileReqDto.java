@@ -22,7 +22,7 @@ public class MdmcUploadFileReqDto implements Serializable {
      * 工单状态
      */
     @ApiModelProperty(value = "工单状态")
-    private Long status;
+    private Integer status;
 
     /**
      * OpcUploadFileReqDto

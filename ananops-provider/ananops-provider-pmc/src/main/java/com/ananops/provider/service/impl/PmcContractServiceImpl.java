@@ -7,6 +7,8 @@ import com.ananops.core.support.BaseService;
 import com.ananops.provider.exception.PmcBizException;
 import com.ananops.provider.mapper.PmcContractMapper;
 import com.ananops.provider.model.domain.PmcContract;
+import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
+import com.ananops.provider.service.OpcOssFeignApi;
 import com.ananops.provider.service.PmcContractService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +28,9 @@ import java.util.List;
 public class PmcContractServiceImpl extends BaseService<PmcContract> implements PmcContractService {
     @Resource
     PmcContractMapper pmcContractMapper;
+
+    @Resource
+    private OpcOssFeignApi opcOssFeignApi;
 
     @Override
     public void saveContract(PmcContract pmcContact, LoginAuthDto loginAuthDto) {
@@ -38,6 +44,24 @@ public class PmcContractServiceImpl extends BaseService<PmcContract> implements 
                 throw new PmcBizException(ErrorCodeEnum.PMC10081011,pmcContact.getId());
             }
         }
+        // 更新附件信息
+        List<Long> attachmentIds = new ArrayList<>();
+        if (pmcContact.getFilePath()!=null) {
+            String contractFileIds = pmcContact.getFilePath();
+            if (contractFileIds.contains(",")) {
+                String[] legalIds = contractFileIds.split(",");
+                for (String id : legalIds) {
+                    attachmentIds.add(Long.parseLong(id));
+                }
+            }else {
+                attachmentIds.add(Long.parseLong(contractFileIds));
+            }
+        }
+        OptAttachmentUpdateReqDto optAttachmentUpdateReqDto = new OptAttachmentUpdateReqDto();
+        optAttachmentUpdateReqDto.setAttachmentIds(attachmentIds);
+        optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+        optAttachmentUpdateReqDto.setRefNo(pmcContact.getId().toString());
+        opcOssFeignApi.batchUpdateAttachment(optAttachmentUpdateReqDto);
     }
 
     @Override
