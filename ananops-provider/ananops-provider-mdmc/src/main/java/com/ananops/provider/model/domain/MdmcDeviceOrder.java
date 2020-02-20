@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @Data
 @Table(name = "device_order")
 public class MdmcDeviceOrder extends BaseEntity {
+    private static final long serialVersionUID = 1908837679771820882L;
     /**
      * 对应的任务ID
      */
