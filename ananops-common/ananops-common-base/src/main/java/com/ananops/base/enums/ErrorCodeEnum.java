@@ -658,6 +658,14 @@ public enum ErrorCodeEnum {
 	 * Tpc 100500017 error code enum
 	 */
 	TPC100500017(10050017,"producer创建失败"),
+	/**
+	 * Tpc 100500018 error code enum
+	 */
+	TPC100500018(10050018,"topic创建失败"),
+	/**
+	 * Tpc 100500019 error code enum
+	 */
+	TPC100500019(10050019,"topic绑定tag失败"),
 
 	//1008 项目管理
 	/**
@@ -782,6 +790,8 @@ public enum ErrorCodeEnum {
 	IMC10090003(10090003,"未传入巡检任务的状态"),
 
 	IMC10090004(10090004,"未传入巡检任务子项的状态"),
+
+	IMC10090005(10090005,"查无此图"),
 	
 	RDC100000000(10000000, "新建备品备件订单失败，数据库操作异常"),
 	

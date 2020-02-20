@@ -194,4 +194,10 @@ public class ImcInspectionItemController extends BaseController {
     public Wrapper<List<ElementImgUrlDto>> getImcPicListByTaskAndItemAndStatus(@RequestBody ImcPicQueryDto imcPicQueryDto){
         return WrapMapper.ok(imcInspectionItemService.getImcItemFileList(imcPicQueryDto));
     }
+
+    @PostMapping(value = "/getAllImcItemPics")
+    @ApiOperation(httpMethod = "POST", value = "巡检任务子项查询全部子项状态下的文件")
+    public Wrapper<List<ImcItemUrlDto>> getAllImcItemPics(@RequestBody ImcPicQueryDto imcPicQueryDto){
+        return WrapMapper.ok(imcInspectionItemService.getAllImcItemPicList(imcPicQueryDto));
+    }
 }

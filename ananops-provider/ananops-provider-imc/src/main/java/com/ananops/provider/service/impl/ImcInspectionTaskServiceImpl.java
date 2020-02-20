@@ -186,13 +186,6 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         imcInspectionTask.setId(taskId);
         imcInspectionTask.setStatus(status);
         imcInspectionTask.setUpdateInfo(loginAuthDto);
-//        String body = JSON.toJSONString(imcTaskChangeStatusDto);
-//        String topic = AliyunMqTopicConstants.MqTagEnum.MODIFY_INSPECTION_TASK_STATUS.getTopic();
-//        String tag = AliyunMqTopicConstants.MqTagEnum.MODIFY_INSPECTION_TASK_STATUS.getTag();
-//        String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(imcInspectionTask.getId()),body);
-//        mqMessageData = new MqMessageData(body, topic, tag, key);
-//        imcTaskManager.modifyTaskStatus(mqMessageData,imcInspectionTask);
-        //imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
         String body = JSON.toJSONString(imcTaskChangeStatusDto);
         String topic = AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTopic();
         String tag = AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTag();

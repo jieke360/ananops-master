@@ -49,4 +49,6 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
     List<OptUploadFileRespDto> uploadImcItemFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto);
 
     List<ElementImgUrlDto> getImcItemFileList(ImcPicQueryDto imcPicQueryDto);
+
+    List<ImcItemUrlDto> getAllImcItemPicList(ImcPicQueryDto imcPicQueryDto);
 }

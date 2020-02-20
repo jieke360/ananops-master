@@ -25,6 +25,7 @@ import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.provider.service.OpcOssFeignApi;
+import com.ananops.wrapper.WrapMapper;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -39,9 +40,7 @@ import tk.mybatis.mapper.entity.Example;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by rongshuai on 2019/11/28 10:14
@@ -445,10 +444,45 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         criteria.andEqualTo("itemId",itemId);
         criteria.andEqualTo("itemStatus",itemStatus);
         ImcFileTaskItemStatus imcFileTaskItemStatus = imcFileTaskItemStatusMapper.selectByExample(example).get(0);
-        String refNo = imcFileTaskItemStatus.getRefNo();
-        OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
-        optBatchGetUrlRequest.setRefNo(refNo);
-        return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+        if(imcFileTaskItemStatus!=null){
+            String refNo = imcFileTaskItemStatus.getRefNo();
+            OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
+            optBatchGetUrlRequest.setRefNo(refNo);
+            return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+        }else{
+            throw new BusinessException(ErrorCodeEnum.IMC10090005);
+        }
+    }
+
+    @Override
+    public List<ImcItemUrlDto> getAllImcItemPicList(ImcPicQueryDto imcPicQueryDto)
+    {
+        Long taskId = imcPicQueryDto.getTaskId();
+        Long itemId = imcPicQueryDto.getItemId();
+        Example example = new Example(ImcFileTaskItemStatus.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",taskId);
+        criteria.andEqualTo("itemId",itemId);
+        List<ImcFileTaskItemStatus> imcFileTaskItemStatusList = imcFileTaskItemStatusMapper.selectByExample(example);
+        HashSet<Integer> set = new HashSet<>();
+        List<ImcItemUrlDto> imcItemUrlDtoList = new ArrayList<>();
+        imcFileTaskItemStatusList.forEach(item->{
+            int itemStatus = item.getItemStatus();
+            if(!set.contains(itemStatus)){
+                set.add(itemStatus);
+                String refNo = item.getRefNo();
+                OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
+                optBatchGetUrlRequest.setRefNo(refNo);
+                List<ElementImgUrlDto> elementImgUrlDtoList = opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+                ImcItemUrlDto imcItemUrlDto = new ImcItemUrlDto();
+                imcItemUrlDto.setItemId(itemId);
+                imcItemUrlDto.setTaskId(taskId);
+                imcItemUrlDto.setItemStatus(itemStatus);
+                imcItemUrlDto.setElementImgUrlDtos(elementImgUrlDtoList);
+                imcItemUrlDtoList.add(imcItemUrlDto);
+            }
+        });
+        return imcItemUrlDtoList;
     }
 
     /**
@@ -463,12 +497,12 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
     public void bindImcItemAndFiles(Long attachmentId,Long taskId,Long itemId,String refNo,int[] statusList,LoginAuthDto loginAuthDto){
         //建立附件与巡检任务、任务子项、当前状态的关联关系
         ImcFileTaskItemStatus imcFileTaskItemStatus = new ImcFileTaskItemStatus();
-        imcFileTaskItemStatus.setAttachmentid(attachmentId);
-        imcFileTaskItemStatus.setTaskid(taskId);
-        imcFileTaskItemStatus.setItemid(itemId);
+        imcFileTaskItemStatus.setAttachmentId(attachmentId);
+        imcFileTaskItemStatus.setTaskId(taskId);
+        imcFileTaskItemStatus.setItemId(itemId);
         imcFileTaskItemStatus.setRefNo(refNo);
         for(Integer status:statusList){
-            imcFileTaskItemStatus.setItemstatus(status);
+            imcFileTaskItemStatus.setItemStatus(status);
             imcFileTaskItemStatusMapper.insert(imcFileTaskItemStatus);
         }
         //为附件添加工单号
