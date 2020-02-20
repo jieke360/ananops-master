@@ -161,7 +161,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             Long taskId = mdmcAddTaskDto.getId();
             MdmcTask t =taskMapper.selectByPrimaryKey(taskId);
             if (t == null) {//如果没有此任务
-                throw new BusinessException(ErrorCodeEnum.MDMC9999098,taskId);
+                throw new BusinessException(ErrorCodeEnum.MDMC9998098,taskId);
             }
 
             // 更新工单信息和状态
@@ -235,8 +235,10 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         List<String> troubleTypeList=addTroubleInfoDto.getTroubleTypeList();
         List<MdmcTroubleAddressDto> troubleAddrssList=addTroubleInfoDto.getTroubleAddressList();
         if (troubleAddrssList.isEmpty() && troubleTypeList.isEmpty()){
-            throw  new BusinessException(ErrorCodeEnum.MDMC99990005);
+            throw  new BusinessException(ErrorCodeEnum.MDMC99980005);
         }
+
+
         if (!troubleTypeList.isEmpty()){
             for (String troubleType:troubleTypeList){
                 MdmcTroubleType mdmcTroubleType=new MdmcTroubleType();
@@ -305,14 +307,14 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         copyPropertiesWithIgnoreNullProperties(mdmcTaskDto,task);
         Long taskId = mdmcTaskDto.getId();
         if (taskId==null){
-            throw new BusinessException(ErrorCodeEnum.MDMC9999098,taskId);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098,taskId);
         }
         Example example = new Example(MdmcTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
         List<MdmcTask> taskList =taskMapper.selectByExample(example);
         if(taskList.size()==0){//如果没有此任务
-            throw new BusinessException(ErrorCodeEnum.MDMC9999098,taskId);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098,taskId);
         }
         //如果当前是更新一条记录
 //            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(task.getId()),body);
@@ -338,7 +340,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Long taskId = changeStatusDto.getTaskId();
         MdmcTask task = getTaskByTaskId(taskId);
         if(task == null){//如果当前任务不存在
-            throw new BusinessException(ErrorCodeEnum.MDMC9999098,taskId);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098,taskId);
         }
 
         Integer status = changeStatusDto.getStatus();
@@ -397,7 +399,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("status",statusDto.getStatus());
         if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.MDMC9999098);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
         }
         PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
         return taskMapper.selectByExample(example);
@@ -431,7 +433,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
 //        }
 //        if(taskMapper.selectCountByExample(example)==0){
-//            throw new BusinessException(ErrorCodeEnum.MDMC9999098);
+//            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
 //        }
 //        PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
 
@@ -506,7 +508,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
 //        }
 //        if(taskMapper.selectCountByExample(example)==0){
-//            throw new BusinessException(ErrorCodeEnum.MDMC9999098);
+//            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
 //        }
         PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
         MdmcPageDto pageDto=new MdmcPageDto();
@@ -537,7 +539,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
         if(taskMapper.selectCountByExample(example) == 0){//如果当前任务不存在
-            throw new BusinessException(ErrorCodeEnum.MDMC9999098);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
         }
         MdmcTask mdmcTask = taskMapper.selectByExample(example).get(0);
         mdmcTask.setMaintainerId(maintainerId);
@@ -556,7 +558,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
         if(taskMapper.selectCountByExample(example) == 0){//如果当前任务不存在
-            throw new BusinessException(ErrorCodeEnum.MDMC9999098);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
         }
         MdmcTask mdmcTask = taskMapper.selectByExample(example).get(0);
         if(mdmcTask.getStatus()==MdmcTaskStatusEnum.JieDan3.getStatusNum()){
@@ -567,7 +569,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             this.modifyTaskStatus(mdmcChangeStatusDto,loginAuthDto);
 
         }else{
-            throw new BusinessException(ErrorCodeEnum.MDMC9999087);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998087);
         }
         return mdmcChangeStatusDto;
     }
@@ -582,7 +584,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
         if(taskMapper.selectCountByExample(example) == 0){//如果当前任务不存在
-            throw new BusinessException(ErrorCodeEnum.MDMC9999098);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
         }
         MdmcTask mdmcTask = taskMapper.selectByExample(example).get(0);
         if(mdmcTask.getStatus()==MdmcTaskStatusEnum.JieDan1.getStatusNum()){
@@ -593,7 +595,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             this.modifyTaskStatus(mdmcChangeStatusDto,loginAuthDto);
 
         }else{
-            throw new BusinessException(ErrorCodeEnum.MDMC9999087);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998087);
         }
         return mdmcChangeStatusDto;
     }
