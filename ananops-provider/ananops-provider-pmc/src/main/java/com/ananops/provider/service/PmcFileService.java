@@ -4,6 +4,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.PmcContract;
 import com.ananops.provider.model.dto.PmcUploadContractReqDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import org.springframework.stereotype.Service;
@@ -36,4 +37,11 @@ public interface PmcFileService extends IService<PmcContract> {
      * @return
      */
     List<OptUploadFileRespDto> uploadContractAttachment(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto);
+
+    /**
+     * 下载合同附件
+     * @param id
+     * @return
+     */
+    List<ElementImgUrlDto> getContractAttachment(Long id);
 }
