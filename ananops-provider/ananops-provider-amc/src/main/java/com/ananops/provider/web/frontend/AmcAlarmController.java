@@ -6,20 +6,27 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.AmcAlarm;
 import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.service.AmcAlarmService;
 import com.ananops.provider.service.MdmcTaskFeignApi;
 import com.ananops.provider.service.PmcProjectFeignApi;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -142,6 +149,40 @@ public class AmcAlarmController extends BaseController {
         //3.发起工单
         mdmcFeignTaskDtoFeignApi.saveTask(mdmcFeignTaskDto);
         return WrapMapper.ok();
+    }
+
+    /**
+     * 上传报警图片
+     *
+     * @param request
+     * @param optUploadFileReqDto
+     * @return
+     */
+    @PostMapping(consumes = "multipart/form-data", value = "/uploadAlarmPhoto")
+    @ApiOperation(httpMethod = "POST", value = "上传图片")
+    public List<OptUploadFileRespDto> uploadAlarmPhoto(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
+        logger.info("uploadContractAttachment - 上传文件. optUploadFileReqDto={}", optUploadFileReqDto);
+
+        String fileType = optUploadFileReqDto.getFileType();
+        String bucketName = optUploadFileReqDto.getBucketName();
+        Preconditions.checkArgument(StringUtils.isNotEmpty(fileType), "文件类型为空");
+        Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        return amcAlarmService.uploadAlarmPhoto(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
+    }
+
+    /**
+     * 根据告警id下载图片附件
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/getAlarmAttachment/{id}")
+    @ApiOperation(httpMethod = "POST", value = "合同附件下载")
+    public Wrapper<List<ElementImgUrlDto>> getAlarmAttachment(@PathVariable Long id) {
+        List<ElementImgUrlDto> elementImgUrlDtoList = amcAlarmService.getAlarmAttachment(id);
+        logger.info("elementImgUrlDtoList：" + elementImgUrlDtoList);
+        return WrapMapper.ok(elementImgUrlDtoList);
     }
 
 }
