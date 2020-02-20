@@ -173,7 +173,9 @@ public class OptAttachmentServiceImpl extends BaseService<OptAttachment> impleme
 			String fileName = uploadFileByteInfoReqDto.getFileName();
 //			is = new ByteArrayInputStream(fileByteArray);
 //			String type = FileTypeUtil.getType(is);
-//			Preconditions.checkArgument(type.equals(fileType), "文件类型不符");
+			String type = fileName.substring(fileName.lastIndexOf(".") + 1);
+			logger.error("获取的源文件后缀格式={}", type);
+			Preconditions.checkArgument(type.equals(fileType), "文件类型不符");
 			fileName = filePath + fileName;
 			OptUploadFileRespDto optUploadFileRespDto = this.uploadFile(fileByteArray, fileName, fileType, filePath, bucketName, authResDto);
 			optUploadFileRespDto.setFileType(fileType);
