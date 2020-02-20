@@ -8,7 +8,9 @@
 
 package com.ananops.provider.service.impl;
 
+import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
+import com.ananops.provider.exceptions.TpcBizException;
 import com.ananops.provider.mapper.TpcMqProducerMapper;
 import com.ananops.provider.model.domain.TpcMqProducer;
 import com.ananops.provider.model.vo.TpcMqProducerVo;
@@ -31,6 +33,16 @@ public class TpcMqProducerServiceImpl extends BaseService<TpcMqProducer> impleme
 
 	@Resource
 	private TpcMqProducerMapper mdcMqProducerMapper;
+
+	@Override
+	public TpcMqProducer addProducer(TpcMqProducer tpcMqProducer){
+		int result = mdcMqProducerMapper.insert(tpcMqProducer);
+		if(result==1){
+			return tpcMqProducer;
+		}else{
+			throw new TpcBizException(ErrorCodeEnum.TPC100500017);
+		}
+	}
 
 	@Override
 	public List<TpcMqProducerVo> listProducerVoWithPage(TpcMqProducer mdcMqProducer) {

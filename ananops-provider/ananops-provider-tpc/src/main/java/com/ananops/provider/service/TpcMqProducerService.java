@@ -22,6 +22,12 @@ import java.util.List;
  */
 public interface TpcMqProducerService extends IService<TpcMqProducer> {
 	/**
+	 * 创建一个Mq生产者
+	 * @param tpcMqProducer
+	 * @return
+	 */
+	TpcMqProducer addProducer(TpcMqProducer tpcMqProducer);
+	/**
 	 * List producer vo with page list.
 	 *
 	 * @param mdcMqProducer the mdc mq producer

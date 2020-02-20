@@ -9,7 +9,9 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.PublicUtil;
+import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
+import com.ananops.provider.exceptions.TpcBizException;
 import com.ananops.provider.mapper.TpcMqConsumerMapper;
 import com.ananops.provider.model.domain.TpcMqConsumer;
 import com.ananops.provider.model.vo.TpcMqConsumerVo;
@@ -31,6 +33,16 @@ import java.util.List;
 public class TpcMqConsumerServiceImpl extends BaseService<TpcMqConsumer> implements TpcMqConsumerService {
 	@Resource
 	private TpcMqConsumerMapper tpcMqConsumerMapper;
+
+	@Override
+	public TpcMqConsumer addConsumer(TpcMqConsumer tpcMqConsumer){
+		int result = tpcMqConsumerMapper.insert(tpcMqConsumer);
+		if(result==1){
+			return tpcMqConsumer;
+		}else{
+			throw new TpcBizException(ErrorCodeEnum.TPC100500016);
+		}
+	}
 
 	@Override
 	public List<TpcMqConsumerVo> listConsumerVoWithPage(TpcMqConsumer tpcMqConsumer) {

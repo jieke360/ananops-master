@@ -650,6 +650,14 @@ public enum ErrorCodeEnum {
 	 * Tpc 100500015 error code enum.
 	 */
 	TPC100500015(10050015, "消息PID不能为空, messageKey=%s"),
+	/**
+	 * Tpc 100500016 error code enum
+	 */
+	TPC100500016(10050016,"consumer创建失败"),
+	/**
+	 * Tpc 100500017 error code enum
+	 */
+	TPC100500017(10050017,"producer创建失败"),
 
 	//1008 项目管理
 	/**
