@@ -227,8 +227,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     @Override
     public MdmcAddTroubleInfoDto saveTroubleList(MdmcAddTroubleInfoDto addTroubleInfoDto, LoginAuthDto loginAuthDto) {
+        Long userId=addTroubleInfoDto.getUserId();
+        Long groupId=uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();
 
-        Long groupId=addTroubleInfoDto.getGroupId();
         if (groupId==null){
             throw new BusinessException(ErrorCodeEnum.UAC10015010,groupId);
         }
@@ -267,7 +268,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     public MdmcAddTroubleInfoDto getTroubleList(Long userId) {
         Long groupId=uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();
         MdmcAddTroubleInfoDto mdmcAddTroubleInfoDto=new MdmcAddTroubleInfoDto();
-        mdmcAddTroubleInfoDto.setGroupId(groupId);
+        mdmcAddTroubleInfoDto.setUserId(userId);
         Example example=new Example(MdmcTroubleAddress.class);
         Example.Criteria criteria=example.createCriteria();
         criteria.andEqualTo("groupId",groupId);
@@ -276,7 +277,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         if (!troubleAddressList.isEmpty()){
         for (MdmcTroubleAddress troubleAddress:troubleAddressList){
             MdmcTroubleAddressDto troubleAddressDto=new MdmcTroubleAddressDto();
-            copyPropertiesWithIgnoreNullProperties(troubleAddress,troubleAddressDto);
+            BeanUtils.copyProperties(troubleAddress,troubleAddressDto);
             troubleAddressDtoList.add(troubleAddressDto);
         }
         }

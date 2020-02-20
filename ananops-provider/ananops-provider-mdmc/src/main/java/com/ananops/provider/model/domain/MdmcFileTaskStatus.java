@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Data
 @Table(name = "an_mdmc_file_task_status")
 public class MdmcFileTaskStatus extends BaseEntity {
+    private static final long serialVersionUID = -6600369120374658539L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
