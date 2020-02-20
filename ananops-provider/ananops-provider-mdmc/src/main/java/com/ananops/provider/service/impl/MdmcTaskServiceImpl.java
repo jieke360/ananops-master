@@ -237,6 +237,8 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         if (troubleAddrssList.isEmpty() && troubleTypeList.isEmpty()){
             throw  new BusinessException(ErrorCodeEnum.MDMC99980005);
         }
+
+
         if (!troubleTypeList.isEmpty()){
             for (String troubleType:troubleTypeList){
                 MdmcTroubleType mdmcTroubleType=new MdmcTroubleType();
