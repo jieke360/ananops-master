@@ -17,6 +17,7 @@
         <module>ananops-monitor</module>
         <module>ananops-zipkin</module>
         <module>elastic-job-lite-starter-parent</module>
+        <module>ananops-websocket</module>
     </modules>
 
     <packaging>pom</packaging>

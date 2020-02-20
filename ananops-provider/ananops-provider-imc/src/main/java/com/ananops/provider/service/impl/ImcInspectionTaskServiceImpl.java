@@ -1,6 +1,9 @@
 package com.ananops.provider.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
+import com.ananops.RedisKeyUtil;
+import com.ananops.base.constant.AliyunMqTopicConstants;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
@@ -154,7 +157,6 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
      * @return
      */
     public ImcInspectionTask modifyTaskStatus(ImcTaskChangeStatusDto imcTaskChangeStatusDto, LoginAuthDto loginAuthDto){
-//        MqMessageData mqMessageData;
         Long taskId = imcTaskChangeStatusDto.getTaskId();
         Integer status = imcTaskChangeStatusDto.getStatus();
         ImcInspectionTask imcInspectionTask = new ImcInspectionTask();
@@ -190,7 +192,13 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
 //        String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(imcInspectionTask.getId()),body);
 //        mqMessageData = new MqMessageData(body, topic, tag, key);
 //        imcTaskManager.modifyTaskStatus(mqMessageData,imcInspectionTask);
-        imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
+        //imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
+        String body = JSON.toJSONString(imcTaskChangeStatusDto);
+        String topic = AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTopic();
+        String tag = AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTag();
+        String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(taskId),body);
+        MqMessageData mqMessageData = new MqMessageData(body,topic,tag,key);
+        imcTaskManager.modifyTaskStatus(mqMessageData,imcInspectionTask);
         return imcInspectionTask;
     }
 

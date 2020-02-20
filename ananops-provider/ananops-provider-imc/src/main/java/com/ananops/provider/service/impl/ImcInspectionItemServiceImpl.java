@@ -102,14 +102,16 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             imcUserItem.setUserId(userId);
             imcUserItemMapper.insert(imcUserItem);
             List<Long> attachmentIds = imcAddInspectionItemDto.getAttachmentIds();
-            String refNo = String.valueOf(super.generateId());
-            int[] statusList = {
-                    ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum(),
-                    ItemStatusEnum.WAITING_FOR_ACCEPT.getStatusNum(),
-                    ItemStatusEnum.IN_THE_INSPECTION.getStatusNum()};
-            for(Long attachmentId:attachmentIds){
-                //建立附件与巡检任务、任务子项、当前状态的关联关系
-                this.bindImcItemAndFiles(attachmentId,taskId,itemId,refNo,statusList,loginAuthDto);
+            if(attachmentIds != null){
+                String refNo = String.valueOf(super.generateId());
+                int[] statusList = {
+                        ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum(),
+                        ItemStatusEnum.WAITING_FOR_ACCEPT.getStatusNum(),
+                        ItemStatusEnum.IN_THE_INSPECTION.getStatusNum()};
+                for(Long attachmentId:attachmentIds){
+                    //建立附件与巡检任务、任务子项、当前状态的关联关系
+                    this.bindImcItemAndFiles(attachmentId,taskId,itemId,refNo,statusList,loginAuthDto);
+                }
             }
 
         }else{//如果是更新已经存在的巡检任务子项
