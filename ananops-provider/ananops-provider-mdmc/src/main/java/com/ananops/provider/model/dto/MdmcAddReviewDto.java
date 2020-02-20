@@ -10,6 +10,7 @@ import java.io.Serializable;
 @ApiModel
 public class MdmcAddReviewDto implements Serializable {
 
+    private static final long serialVersionUID = 5554915147523922441L;
     /**
      * 对应的任务ID
      */

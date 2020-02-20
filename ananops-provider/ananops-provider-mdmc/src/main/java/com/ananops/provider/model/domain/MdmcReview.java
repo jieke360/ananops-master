@@ -12,7 +12,6 @@ import javax.persistence.Table;
 @Data
 @Table(name = "review")
 public class MdmcReview extends BaseEntity {
-    private static final long serialVersionUID = -450561133491555572L;
     /**
      * 任务ID
      */

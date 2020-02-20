@@ -14,11 +14,12 @@ import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.oss.*;
+import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.enums.*;
-import com.ananops.provider.service.ImcItemFeignApi;
-import com.ananops.provider.service.MdmcTaskItemService;
-import com.ananops.provider.service.MdmcTaskService;
-import com.ananops.provider.service.OpcOssFeignApi;
+import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
+import com.ananops.provider.model.service.UacUserFeignApi;
+import com.ananops.provider.model.vo.CompanyVo;
+import com.ananops.provider.service.*;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -56,11 +57,51 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     OpcOssFeignApi opcOssFeignApi;
 
     @Resource
+    UacGroupBindUserFeignApi uacGroupBindUserFeignApi;
+
+    @Resource
     MdmcFileTaskStatusMapper fileTaskStatusMapper;
+
+    @Resource
+    MdmcTroubleTypeMapper troubleTypeMapper;
+
+    @Resource
+    MdmcTroubleAddressMapper troubleAddressMapper;
+
+    @Resource
+    UacUserFeignApi uacUserFeignApi;
+
+    @Resource
+    SpcCompanyFeignApi spcCompanyFeignApi;
+
+    @Resource
+    SpcEngineerFeignApi spcEngineerFeignApi;
+
+    @Resource
+    PmcProjectFeignApi pmcProjectFeignApi;
 
     @Override
     public MdmcTask getTaskByTaskId(Long taskId) {
         return taskMapper.selectByPrimaryKey(taskId);
+    }
+
+    @Override
+    public MdmcTaskDetailDto getTaskDetail(Long taskId) {
+        MdmcTaskDetailDto taskDetailDto=new MdmcTaskDetailDto();
+        MdmcTask mdmcTask=taskMapper.selectByPrimaryKey(taskId);
+        taskDetailDto.setMdmcTask(mdmcTask);
+        UserInfoDto userInfoDto=uacUserFeignApi.getUacUserById(mdmcTask.getUserId()).getResult();
+        UserInfoDto principalInfoDto=uacUserFeignApi.getUacUserById(mdmcTask.getPrincipalId()).getResult();
+        CompanyVo companyVo=spcCompanyFeignApi.getCompanyDetailsById(mdmcTask.getFacilitatorId()).getResult();
+        EngineerDto engineerDto=spcEngineerFeignApi.getEngineerById(mdmcTask.getMaintainerId()).getResult();
+        PmcProjectDto pmcProjectDto=pmcProjectFeignApi.getProjectByProjectId(mdmcTask.getProjectId()).getResult();
+        taskDetailDto.setCompanyVo(companyVo);
+        taskDetailDto.setEngineerDto(engineerDto);
+        taskDetailDto.setPmcProjectDto(pmcProjectDto);
+        taskDetailDto.setPrincipalInfoDto(principalInfoDto);
+        taskDetailDto.setUserInfoDto(userInfoDto);
+
+        return taskDetailDto;
     }
 
     @Override
@@ -120,7 +161,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             Long taskId = mdmcAddTaskDto.getId();
             MdmcTask t =taskMapper.selectByPrimaryKey(taskId);
             if (t == null) {//如果没有此任务
-                throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+                throw new BusinessException(ErrorCodeEnum.MDMC9998098,taskId);
             }
 
             // 更新工单信息和状态
@@ -185,6 +226,80 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     }
 
     @Override
+    public MdmcAddTroubleInfoDto saveTroubleList(MdmcAddTroubleInfoDto addTroubleInfoDto, LoginAuthDto loginAuthDto) {
+
+        Long groupId=addTroubleInfoDto.getGroupId();
+        if (groupId==null){
+            throw new BusinessException(ErrorCodeEnum.UAC10015010,groupId);
+        }
+        List<String> troubleTypeList=addTroubleInfoDto.getTroubleTypeList();
+        List<MdmcTroubleAddressDto> troubleAddrssList=addTroubleInfoDto.getTroubleAddressList();
+        if (troubleAddrssList.isEmpty() && troubleTypeList.isEmpty()){
+            throw  new BusinessException(ErrorCodeEnum.MDMC99980005);
+        }
+
+
+        if (!troubleTypeList.isEmpty()){
+            for (String troubleType:troubleTypeList){
+                MdmcTroubleType mdmcTroubleType=new MdmcTroubleType();
+                Long typeId=super.generateId();
+                mdmcTroubleType.setId(typeId);
+                mdmcTroubleType.setGroupId(groupId);
+                mdmcTroubleType.setTroubleType(troubleType);
+                troubleTypeMapper.insert(mdmcTroubleType);
+            }
+        }
+        if (!troubleAddrssList.isEmpty()){
+            for (MdmcTroubleAddressDto troubleAddressDto:troubleAddrssList){
+                MdmcTroubleAddress mdmcTroubleAddress=new MdmcTroubleAddress();
+                Long addressId=super.generateId();
+                mdmcTroubleAddress.setId(addressId);
+                mdmcTroubleAddress.setGroupId(groupId);
+                copyPropertiesWithIgnoreNullProperties(troubleAddressDto,mdmcTroubleAddress);
+                troubleAddressMapper.insert(mdmcTroubleAddress);
+            }
+        }
+
+        return addTroubleInfoDto;
+    }
+
+    @Override
+    public MdmcAddTroubleInfoDto getTroubleList(Long userId) {
+        Long groupId=uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();
+        MdmcAddTroubleInfoDto mdmcAddTroubleInfoDto=new MdmcAddTroubleInfoDto();
+        mdmcAddTroubleInfoDto.setGroupId(groupId);
+        Example example=new Example(MdmcTroubleAddress.class);
+        Example.Criteria criteria=example.createCriteria();
+        criteria.andEqualTo("groupId",groupId);
+        List<MdmcTroubleAddressDto> troubleAddressDtoList=new ArrayList<>();
+        List<MdmcTroubleAddress> troubleAddressList=troubleAddressMapper.selectByExample(example);
+        if (!troubleAddressList.isEmpty()){
+        for (MdmcTroubleAddress troubleAddress:troubleAddressList){
+            MdmcTroubleAddressDto troubleAddressDto=new MdmcTroubleAddressDto();
+            copyPropertiesWithIgnoreNullProperties(troubleAddress,troubleAddressDto);
+            troubleAddressDtoList.add(troubleAddressDto);
+        }
+        }
+      //else{添加默认列表}
+
+        mdmcAddTroubleInfoDto.setTroubleAddressList(troubleAddressDtoList);
+        Example example1=new Example(MdmcTroubleType.class);
+        Example.Criteria criteria1=example1.createCriteria();
+        criteria1.andEqualTo("groupId",groupId);
+        List<String> troubleTypeList=new ArrayList<>();
+        List<MdmcTroubleType> mdmcTroubleTypeList=troubleTypeMapper.selectByExample(example1);
+        if (!mdmcTroubleTypeList.isEmpty()){
+            for (MdmcTroubleType troubleType:mdmcTroubleTypeList){
+                troubleTypeList.add(troubleType.getTroubleType());
+            }
+        }
+        //else{添加默认列表}
+        mdmcAddTroubleInfoDto.setTroubleTypeList(troubleTypeList);
+        return mdmcAddTroubleInfoDto;
+
+    }
+
+    @Override
     public MdmcTaskDto modifyTask(MdmcTaskDto mdmcTaskDto) {
         logger.info("修改维修工单详情... UpdateInfo = {}", mdmcTaskDto);
 
@@ -192,14 +307,14 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         copyPropertiesWithIgnoreNullProperties(mdmcTaskDto,task);
         Long taskId = mdmcTaskDto.getId();
         if (taskId==null){
-            throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098,taskId);
         }
         Example example = new Example(MdmcTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
         List<MdmcTask> taskList =taskMapper.selectByExample(example);
         if(taskList.size()==0){//如果没有此任务
-            throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098,taskId);
         }
         //如果当前是更新一条记录
 //            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(task.getId()),body);
@@ -225,19 +340,13 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Long taskId = changeStatusDto.getTaskId();
         MdmcTask task = getTaskByTaskId(taskId);
         if(task == null){//如果当前任务不存在
-            throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098,taskId);
         }
 
         Integer status = changeStatusDto.getStatus();
         if (status == MdmcTaskStatusEnum.QuXiao.getStatusNum()){          // 工单终止
             logger.info("当前维修工单已被终止[Terminal] Task = {}", task);
             taskMapper.deleteByPrimaryKey(taskId);
-        } else if (status == MdmcTaskStatusEnum.Reject1.getStatusNum()){  // 服务商拒单
-            logger.info("当前工单被服务商拒绝[Reject] Task = {}", task);
-            FacilitatorTransfer();
-        } else if (status == MdmcTaskStatusEnum.Reject2.getStatusNum()){  // 工程师拒单
-            logger.info("当前工单被工程师拒绝[Reject] Task = {}", task);
-            MaintainerTransfer();
         } else {
             task.setStatus(status);
             task.setUpdateInfo(loginAuthDto);
@@ -285,22 +394,12 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     }
 
     @Override
-    public Void FacilitatorTransfer() {
-        return null;
-    }
-
-    @Override
-    public Void MaintainerTransfer() {
-        return null;
-    }
-
-    @Override
     public List<MdmcTask> getTaskListByStatus(MdmcStatusDto statusDto) {
         Example example = new Example(MdmcTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("status",statusDto.getStatus());
         if(taskMapper.selectCountByExample(example)==0){
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
         }
         PageHelper.startPage(statusDto.getPageNum(),statusDto.getPageSize());
         return taskMapper.selectByExample(example);
@@ -334,7 +433,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
 //        }
 //        if(taskMapper.selectCountByExample(example)==0){
-//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
 //        }
 //        PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
 
@@ -409,7 +508,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //            default: throw new BusinessException(ErrorCodeEnum.UAC10012008,roleCode);
 //        }
 //        if(taskMapper.selectCountByExample(example)==0){
-//            throw new BusinessException(ErrorCodeEnum.GL9999098);
+//            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
 //        }
         PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
         MdmcPageDto pageDto=new MdmcPageDto();
@@ -440,7 +539,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
         if(taskMapper.selectCountByExample(example) == 0){//如果当前任务不存在
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
         }
         MdmcTask mdmcTask = taskMapper.selectByExample(example).get(0);
         mdmcTask.setMaintainerId(maintainerId);
@@ -459,18 +558,18 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
         if(taskMapper.selectCountByExample(example) == 0){//如果当前任务不存在
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
         }
         MdmcTask mdmcTask = taskMapper.selectByExample(example).get(0);
         if(mdmcTask.getStatus()==MdmcTaskStatusEnum.JieDan3.getStatusNum()){
             //如果当前任务的状态处于“已分配维修工，待维修工接单”，工程师才能拒单
             mdmcChangeStatusDto.setLoginAuthDto(loginAuthDto);
-            mdmcChangeStatusDto.setStatus(MdmcTaskStatusEnum.JieDan2.getStatusNum());
-            mdmcChangeStatusDto.setStatusMsg(MdmcTaskStatusEnum.JieDan2.getStatusMsg());
+            mdmcChangeStatusDto.setStatus(MdmcTaskStatusEnum.Reject2.getStatusNum());
+            mdmcChangeStatusDto.setStatusMsg(MdmcTaskStatusEnum.Reject2.getStatusMsg());
             this.modifyTaskStatus(mdmcChangeStatusDto,loginAuthDto);
 
         }else{
-            throw new BusinessException(ErrorCodeEnum.GL9999087);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998087);
         }
         return mdmcChangeStatusDto;
     }
@@ -485,18 +584,18 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("id",taskId);
         if(taskMapper.selectCountByExample(example) == 0){//如果当前任务不存在
-            throw new BusinessException(ErrorCodeEnum.GL9999098);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
         }
         MdmcTask mdmcTask = taskMapper.selectByExample(example).get(0);
         if(mdmcTask.getStatus()==MdmcTaskStatusEnum.JieDan1.getStatusNum()){
             //如果当前任务的状态处于“审核通过，待服务商接单”，服务商才能拒单
             mdmcChangeStatusDto.setLoginAuthDto(loginAuthDto);
-            mdmcChangeStatusDto.setStatus(MdmcTaskStatusEnum.ShenHeZhong1.getStatusNum());
-            mdmcChangeStatusDto.setStatusMsg(MdmcTaskStatusEnum.ShenHeZhong1.getStatusMsg());
+            mdmcChangeStatusDto.setStatus(MdmcTaskStatusEnum.Reject1.getStatusNum());
+            mdmcChangeStatusDto.setStatusMsg(MdmcTaskStatusEnum.Reject1.getStatusMsg());
             this.modifyTaskStatus(mdmcChangeStatusDto,loginAuthDto);
 
         }else{
-            throw new BusinessException(ErrorCodeEnum.GL9999087);
+            throw new BusinessException(ErrorCodeEnum.MDMC9998087);
         }
         return mdmcChangeStatusDto;
     }

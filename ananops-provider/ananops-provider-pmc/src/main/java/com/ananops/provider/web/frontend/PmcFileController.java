@@ -5,6 +5,7 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.PmcContract;
 import com.ananops.provider.model.dto.PmcUploadContractReqDto;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.service.OpcOssFeignApi;
@@ -20,10 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -124,6 +122,7 @@ public class PmcFileController extends BaseController {
 
     /**
      * 上传合同附件
+     *
      * @param request
      * @param optUploadFileReqDto
      * @return
@@ -139,5 +138,18 @@ public class PmcFileController extends BaseController {
         Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         return pmcFileService.uploadContractAttachment(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
+    }
+
+    /**
+     * 根据合同id下载合同附件
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/getContractAttachment/{id}")
+    @ApiOperation(httpMethod = "POST", value = "合同附件下载")
+    public Wrapper<List<ElementImgUrlDto>> getContractAttachment(@PathVariable Long id) {
+        List<ElementImgUrlDto> elementImgUrlDtoList = pmcFileService.getContractAttachment(id);
+        logger.info("elementImgUrlDtoList："+elementImgUrlDtoList);
+        return WrapMapper.ok(elementImgUrlDtoList);
     }
 }

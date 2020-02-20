@@ -16,13 +16,19 @@ import java.util.List;
 
 public interface MdmcTaskService extends IService<MdmcTask> {
 
-    /**
+    /**   旧版本
      * 根据维修工单ID获取工单详情
      * @param taskId
      * @return
      */
     MdmcTask getTaskByTaskId(Long taskId);
 
+    /**
+     * 根据维修工单ID获取工单详情
+     * @param taskId
+     * @return
+     */
+    MdmcTaskDetailDto getTaskDetail(Long taskId);
     /**
      * 创建/编辑/处理维修工单
      * @param mdmcAddTaskDto
@@ -31,6 +37,20 @@ public interface MdmcTaskService extends IService<MdmcTask> {
      */
     MdmcAddTaskDto saveTask(MdmcAddTaskDto mdmcAddTaskDto, LoginAuthDto loginAuthDto);
 
+    /**
+     * 录入故障类型和故障位置列表
+     * @param addTroubleInfoDto
+     * @param loginAuthDto
+     * @return
+     */
+    MdmcAddTroubleInfoDto saveTroubleList(MdmcAddTroubleInfoDto addTroubleInfoDto,LoginAuthDto loginAuthDto);
+
+    /**
+     * 根据用户id获取故障类型列表和故障位置列表
+     * @param userId
+     * @return
+     */
+    MdmcAddTroubleInfoDto getTroubleList(Long userId);
     /**
      * 工程师提交维修信息
      * @param mdmcTaskDto
@@ -47,11 +67,6 @@ public interface MdmcTaskService extends IService<MdmcTask> {
      */
     MdmcTask modifyTaskStatus(MdmcChangeStatusDto changeStatusDto, LoginAuthDto loginAuthDto);
 
-    @Deprecated
-    Void FacilitatorTransfer();
-
-    @Deprecated
-    Void MaintainerTransfer();
 
     /**
      * 根据状态查询维修工单列表

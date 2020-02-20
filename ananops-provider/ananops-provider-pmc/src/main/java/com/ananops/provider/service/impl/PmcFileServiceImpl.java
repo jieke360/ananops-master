@@ -8,6 +8,8 @@ import com.ananops.provider.mapper.PmcContractMapper;
 import com.ananops.provider.model.domain.PmcContract;
 import com.ananops.provider.model.dto.PmcUploadContractReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
+import com.ananops.provider.model.dto.oss.OptBatchGetUrlRequest;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.service.OpcOssFeignApi;
@@ -112,5 +114,14 @@ public class PmcFileServiceImpl extends BaseService<PmcContract> implements PmcF
             logger.error("上传文件失败={}", e.getMessage(), e);
         }
         return result;
+    }
+
+    @Override
+    public List<ElementImgUrlDto> getContractAttachment(Long id) {
+        OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
+        optBatchGetUrlRequest.setRefNo(id.toString());
+        optBatchGetUrlRequest.setEncrypt(true);
+        optBatchGetUrlRequest.setExpires(null);
+        return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
     }
 }
