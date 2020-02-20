@@ -8,107 +8,116 @@ package com.ananops.base.enums;
  * @author ananops.net @gmail.com
  */
 public enum ErrorCodeEnum {
+
+	//9999 维修维护数据中心
 	/**
-	 * Gl 9999084 error code enum.
+	 * MDMC 9999084 error code enum.
 	 */
-	GL9999084(9999084,"当前状态不允许服务商审批"),
+	
+	MDMC9999084(9999084,"当前状态不允许服务商审批"),
 	/**
-	 * Gl 9999085 error code enum.
+	 * MDMC 9999085 error code enum.
 	 */
-	GL9999085(9999085,"当前状态不允许服务商接单"),
+	MDMC9999085(9999085,"当前状态不允许服务商接单"),
 	/**
-	 * Gl 9999086 error code enum.
+	 * MDMC 9999086 error code enum.
 	 */
-	GL9999086(9999086,"当前状态不允许服务商拒单"),
+	MDMC9999086(9999086,"当前状态不允许服务商拒单"),
 	/**
-	 * Gl 9999087 error code enum.
+	 * MDMC 9999087 error code enum.
 	 */
-	GL9999087(9999087,"当前状态不允许工程师拒单"),
+	MDMC9999087(9999087,"当前状态不允许工程师拒单"),
 	/**
-	 * Gl 9999088 error code enum.
+	 * MDMC 9999088 error code enum.
 	 */
-	GL9999088(9999088,"更新巡检任务子项失败"),
+	MDMC9999088(9999088,"更新巡检任务子项失败"),
 	/**
-	 * Gl 9999089 error code enum.
+	 * MDMC 9999089 error code enum.
 	 */
-	GL9999089(9999089,"没有此角色"),
+	MDMC9999089(9999089,"没有此角色"),
 	/**
-	 * Gl 9999090 error code enum.
+	 * MDMC 9999090 error code enum.
 	 */
-	GL9999090(9999090,"没有处于此状态的任务子项"),
+	MDMC9999090(9999090,"没有处于此状态的任务子项"),
 	/**
-	 * Gl 9999091 error code enum.
+	 * MDMC 9999091 error code enum.
 	 */
-	GL9999091(9999091,"没有处于此状态的任务"),
+	MDMC9999091(9999091,"没有处于此状态的任务"),
 	/**
-	 * Gl 9999092 error code enum.
+	 * MDMC 9999092 error code enum.
 	 */
-	GL9999092(9999092,"修改巡检任务状态失败"),
+	MDMC9999092(9999092,"修改巡检任务状态失败"),
 	/**
-	 * Gl 9999093 error code enum.
+	 * MDMC 9999093 error code enum.
 	 */
-	GL9999093(9999093,"更新巡检任务失败"),
+	MDMC9999093(9999093,"更新巡检任务失败"),
 	/**
-	 * Gl 9999094 error code enum.
+	 * MDMC 9999094 error code enum.
 	 */
-	GL9999094(9999094,"任务子项不存在此状态"),
+	MDMC9999094(9999094,"任务子项不存在此状态"),
 	/**
-	 * Gl 9999095 error code enum.
+	 * MDMC 9999095 error code enum.
 	 */
-	GL9999095(9999095,"任务不存在此状态"),
+	MDMC9999095(9999095,"任务不存在此状态"),
 	/**
-	 * Gl 9999096 error code enum.
+	 * MDMC 9999096 error code enum.
 	 */
-	GL9999096(9999096,"当前备品备件订单不存在"),
+	MDMC9999096(9999096,"当前备品备件订单不存在"),
 	/**
-	 * Gl 9999097 error code enum.
+	 * MDMC 9999097 error code enum.
 	 */
-	GL9999097(9999097,"当前任务子项不存在"),
+	MDMC9999097(9999097,"当前任务子项不存在"),
 	/**
-	 * Gl 9999098 error code enum.
+	 * MDMC 9999098 error code enum.
 	 */
-	GL9999098(9999098,"当前任务不存在"),
+	MDMC9999098(9999098,"当前任务不存在"),
 	/**
-	 * Gl 9999099 error code enum.
+	 * MDMC 9999099 error code enum.
 	 */
-	GL9999099(9999099,"不能重复评论"),
+	MDMC9999099(9999099,"不能重复评论"),
 	/**
-	 * Gl 99990100 error code enum.
+	 * MDMC 99990100 error code enum.
 	 */
-	GL99990100(9999100, "参数异常"),
+	MDMC99990100(9999100, "参数异常"),
 	/**
-	 * Gl 99990401 error code enum.
+	 * MDMC 99990401 error code enum.
 	 */
-	GL99990401(99990401, "无访问权限"),
+	MDMC99990401(99990401, "无访问权限"),
 	/**
-	 * Gl 000500 error code enum.
+	 * MDMC 000500 error code enum.
 	 */
-	GL99990500(500, "未知异常"),
+	MDMC99990500(500, "未知异常"),
 	/**
-	 * Gl 000403 error code enum.
+	 * MDMC 000403 error code enum.
 	 */
-	GL99990403(9999403, "无权访问"),
+	MDMC99990403(9999403, "无权访问"),
 	/**
-	 * Gl 000404 error code enum.
+	 * MDMC 000404 error code enum.
 	 */
-	GL9999404(9999404, "找不到指定资源"),
+	MDMC9999404(9999404, "找不到指定资源"),
 	/**
-	 * Gl 99990001 error code enum.
+	 * MDMC 99990001 error code enum.
 	 */
-	GL99990001(99990001, "注解使用错误"),
+	MDMC99990001(99990001, "注解使用错误"),
 	/**
-	 * Gl 99990002 error code enum.
+	 * MDMC 99990002 error code enum.
 	 */
-	GL99990002(99990002, "微服务不在线,或者网络超时"),
+	MDMC99990002(99990002, "微服务不在线,或者网络超时"),
 	/**
 	 * MDMC 99990003 error code enum.
 	 */
-	GL99990003(99990003,"用户id不能为空"),
+	MDMC99990003(99990003,"用户id不能为空"),
 
 	/**
 	 * MDMC 99990004 error code enum.
 	 */
-	GL99990004(99990004,"任务id不能为空"),
+	MDMC99990004(99990004,"任务id不能为空"),
+
+
+	/**
+	 * MDMC 99990004 error code enum.
+	 */
+	MDMC99990005(99990005,"故障类型和故障位置内容不能为空"),
 
 	/**
 	 * Uac 10010001 error code enum.

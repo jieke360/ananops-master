@@ -115,8 +115,6 @@ public class MdmcTask extends BaseEntity {
     /**
      * 请求维修的地点，经度
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "request_longitude")
     private BigDecimal requestLongitude;
 

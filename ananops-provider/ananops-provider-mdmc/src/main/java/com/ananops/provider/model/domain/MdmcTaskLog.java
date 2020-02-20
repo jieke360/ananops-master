@@ -13,7 +13,6 @@ import java.util.Date;
 @Data
 @Table(name = "task_log")
 public class MdmcTaskLog extends BaseEntity {
-    private static final long serialVersionUID = 4261430249471456829L;
     /**
      * 任务ID
      */

@@ -13,7 +13,6 @@ import java.util.Date;
 @Data
 @Table(name = "device")
 public class MdmcDevice extends BaseEntity {
-    private static final long serialVersionUID = 8604444743573834036L;
     /**
      * 设备型号
      */
