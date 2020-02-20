@@ -87,7 +87,7 @@ public class OptAttachmentServiceImpl extends BaseService<OptAttachment> impleme
 				if (storeDbFlag) {
 					fileInfo = this.uploadFile(multipartFile.getBytes(), fileName, fileType, filePath, bucketName, loginAuthDto);
 				} else {
-					fileInfo = optOssService.uploadFile(multipartFile.getBytes(), fileName, filePath, bucketName);
+					fileInfo = optOssService.uploadFile(multipartFile.getBytes(), fileName, fileType, filePath, bucketName);
 				}
 				result.add(fileInfo);
 			}
@@ -164,15 +164,17 @@ public class OptAttachmentServiceImpl extends BaseService<OptAttachment> impleme
 		if (PublicUtil.isEmpty(filePath)) {
 			filePath = GlobalConstant.Oss.DEFAULT_FILE_PATH;
 		}
-		InputStream is = null;
+//		InputStream is = null;
 		try {
 			Preconditions.checkArgument(uploadFileByteInfoReqDto != null, "上传数据不能为空");
 			byte[] fileByteArray = uploadFileByteInfoReqDto.getFileByteArray();
 			Preconditions.checkArgument(fileByteArray.length / GlobalConstant.M_SIZE <= GlobalConstant.FILE_MAX_SIZE, "上传文件不能大于5M");
 
 			String fileName = uploadFileByteInfoReqDto.getFileName();
-			is = new ByteArrayInputStream(fileByteArray);
-			String type = FileTypeUtil.getType(is);
+//			is = new ByteArrayInputStream(fileByteArray);
+//			String type = FileTypeUtil.getType(is);
+			String type = fileName.substring(fileName.lastIndexOf(".") + 1);
+			logger.error("获取的源文件后缀格式={}", type);
 			Preconditions.checkArgument(type.equals(fileType), "文件类型不符");
 			fileName = filePath + fileName;
 			OptUploadFileRespDto optUploadFileRespDto = this.uploadFile(fileByteArray, fileName, fileType, filePath, bucketName, authResDto);
@@ -180,11 +182,12 @@ public class OptAttachmentServiceImpl extends BaseService<OptAttachment> impleme
 			return optUploadFileRespDto;
 		} catch (IOException e) {
 			logger.error("上传文件失败={}", e.getMessage(), e);
-		} finally {
-			if (null != is) {
-				is.close();
-			}
 		}
+//		finally {
+//			if (null != is) {
+//				is.close();
+//			}
+//		}
 		return null;
 	}
 
@@ -233,7 +236,7 @@ public class OptAttachmentServiceImpl extends BaseService<OptAttachment> impleme
 
 	@Override
 	public OptUploadFileRespDto uploadFile(byte[] uploadBytes, String fileName, String fileType, String filePath, String bucketName, LoginAuthDto loginAuthDto) throws IOException {
-		OptUploadFileRespDto fileInfo = optOssService.uploadFile(uploadBytes, fileName, filePath, bucketName);
+		OptUploadFileRespDto fileInfo = optOssService.uploadFile(uploadBytes, fileName, fileType, filePath, bucketName);
 		insertAttachment(fileType, bucketName, loginAuthDto, fileInfo);
 		return fileInfo;
 	}

@@ -43,6 +43,15 @@ public class TpcMqProducerController extends BaseController {
 	@Resource
 	private TpcMqProducerService tpcMqProducerService;
 
+	@PostMapping(value = "/addProducer")
+	@ApiOperation(httpMethod = "POST", value = "创建一个生产者")
+	public Wrapper<TpcMqProducer> addProducer(@ApiParam(name = "producer", value = "Mq生产者") @RequestBody TpcMqProducer tpcMqProducer){
+		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
+		tpcMqProducer.setUpdateInfo(loginAuthDto);
+		logger.info("创建生产者tpcMqProducer={}",tpcMqProducer);
+		return WrapMapper.ok(tpcMqProducerService.addProducer(tpcMqProducer));
+	}
+
 	/**
 	 * 查询生产者列表.
 	 *

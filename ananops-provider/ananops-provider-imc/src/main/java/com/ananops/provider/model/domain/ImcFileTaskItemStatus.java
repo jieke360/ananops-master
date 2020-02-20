@@ -26,7 +26,6 @@ public class ImcFileTaskItemStatus implements Serializable {
     /**
      * 附件Id
      */
-    @Id
     @Column(name = "attachmentId")
     private Long attachmentid;
 

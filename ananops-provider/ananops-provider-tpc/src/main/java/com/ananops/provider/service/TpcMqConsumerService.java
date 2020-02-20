@@ -22,6 +22,12 @@ import java.util.List;
  */
 public interface TpcMqConsumerService extends IService<TpcMqConsumer> {
 	/**
+	 * 创建一个消费者
+	 * @param tpcMqConsumer
+	 * @return
+	 */
+	TpcMqConsumer addConsumer(TpcMqConsumer tpcMqConsumer);
+	/**
 	 * 查询Mq消费者列表.
 	 *
 	 * @param tpcMqConsumer the tpc mq consumer

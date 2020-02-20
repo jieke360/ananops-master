@@ -73,4 +73,44 @@ public class PmcFileServiceImpl extends BaseService<PmcContract> implements PmcF
         }
         return result;
     }
+
+    @Override
+    public List<OptUploadFileRespDto> uploadContractAttachment(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto) {
+        String filePath = optUploadFileReqDto.getFilePath();
+        Long userId = loginAuthDto.getUserId();
+        String userName = loginAuthDto.getUserName();
+        List<OptUploadFileRespDto> result = Lists.newArrayList();
+        try {
+            List<MultipartFile> fileList = multipartRequest.getFiles("file");
+            if (fileList.isEmpty()) {
+                return result;
+            }
+
+            for (MultipartFile multipartFile : fileList) {
+                String fileName = multipartFile.getOriginalFilename();
+                if (PublicUtil.isEmpty(fileName)) {
+                    continue;
+                }
+                Preconditions.checkArgument(multipartFile.getSize() <= GlobalConstant.FILE_MAX_SIZE, "上传文件不能大于5M");
+                InputStream inputStream = multipartFile.getInputStream();
+
+                String inputStreamFileType = FileTypeUtil.getType(inputStream);
+                // 将上传文件的字节流封装到到Dto对象中
+                OptUploadFileByteInfoReqDto optUploadFileByteInfoReqDto = new OptUploadFileByteInfoReqDto();
+                optUploadFileByteInfoReqDto.setFileByteArray(multipartFile.getBytes());
+                optUploadFileByteInfoReqDto.setFileName(fileName);
+                optUploadFileByteInfoReqDto.setFileType(inputStreamFileType);
+                optUploadFileReqDto.setUploadFileByteInfoReqDto(optUploadFileByteInfoReqDto);
+                // 设置不同文件路径来区分图片
+                optUploadFileReqDto.setFilePath("ananops/pmc/contract/" + userId + "/" + filePath + "/");
+                optUploadFileReqDto.setUserId(userId);
+                optUploadFileReqDto.setUserName(userName);
+                OptUploadFileRespDto optUploadFileRespDto = opcOssFeignApi.uploadFile(optUploadFileReqDto).getResult();
+                result.add(optUploadFileRespDto);
+            }
+        } catch (IOException e) {
+            logger.error("上传文件失败={}", e.getMessage(), e);
+        }
+        return result;
+    }
 }
