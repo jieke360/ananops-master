@@ -81,6 +81,12 @@ public class MdmcTaskController extends BaseController {
         MdmcTask task = taskService.getTaskByTaskId(taskId);
         return WrapMapper.ok(task);
     }
+
+    @GetMapping(value = "/getTaskDetailByTaskId/{taskId}")
+    @ApiOperation(httpMethod = "GET",value = "根据工单ID，获取工单详情")
+    public Wrapper<MdmcTaskDetailDto> getTaskDetailByTaskId(@RequestParam("taskId")Long taskId){
+        return WrapMapper.ok(taskService.getTaskDetail(taskId));
+    }
     
     @GetMapping(value = "/getTaskByTaskId")
     @ApiOperation(httpMethod = "GET",value = "根据任务的ID，获取当前的任务详情(param)")
@@ -224,5 +230,33 @@ public class MdmcTaskController extends BaseController {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
         return WrapMapper.ok(taskService.uploadTaskFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto()));
+    }
+
+    /**
+     * 组织录入故障类型和故障位置
+     *
+     * @param addTroubleInfoDto HTTP请求参数
+     *
+     * @return 返回
+     */
+    @PostMapping(value = "/saveTroubleTypeAndAddress")
+    @ApiOperation(httpMethod = "POST",value = "组织录入故障类型和故障位置")
+    public Wrapper<MdmcAddTroubleInfoDto> saveTroubleTypeAndAddress(@ApiParam(name = "saveTroubleTypeAndAddress",value = "组织录入故障类型列表和故障位置列表")@RequestBody MdmcAddTroubleInfoDto addTroubleInfoDto) {
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        return WrapMapper.ok(taskService.saveTroubleList(addTroubleInfoDto, loginAuthDto));
+    }
+
+    /**
+     * 填写工单时根据不同客户返回故障类型列表和故障位置列表
+     *
+     * @param userId HTTP请求参数
+     *
+     * @return 返回
+     */
+    @PostMapping(value = "/getTroubleTypeListAndAddressList")
+    @ApiOperation(httpMethod = "GET",value = "填写工单时根据不同客户返回故障类型列表和故障位置列表")
+    public Wrapper<MdmcAddTroubleInfoDto> getTroubleTypeListAndAddressList(@ApiParam(name = "userId",value = "用户id")@RequestParam("userId") Long userId) {
+
+        return WrapMapper.ok(taskService.getTroubleList(userId));
     }
 }
