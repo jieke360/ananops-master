@@ -44,11 +44,6 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 					final String jwtToken = StringUtils.substringAfter(accessor.getFirstNativeHeader("Authorization"),"Bearer ");
 					LoginAuthDto loginUser = (UserTokenDto) redisTemplate.opsForValue().get(RedisKeyUtil.getAccessTokenKey(jwtToken));
 					System.out.println(loginUser.toString());
-					String body = loginUser.toString();
-					String topic = AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTopic();
-					String tag = AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTag();
-					String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(loginUser.getUserId()),body);
-					MqMessageData mqMessageData = new MqMessageData(body,topic,tag,key);
 					if(loginUser!=null){//将userId和socket连接进行绑定
 						String userId = String.valueOf(loginUser.getUserId());
 						if(StringUtils.isNotEmpty(userId)){

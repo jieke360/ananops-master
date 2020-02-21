@@ -919,7 +919,15 @@ public enum ErrorCodeEnum {
 
 	RDC100000003(10000003, "该备品备件订单申请正在审核中，请勿重复提交"),
 
-	RDC100000004(10000004, "备品备件订单处理异常，请稍后重试")
+	RDC100000004(10000004, "备品备件订单处理异常，请稍后重试"),
+
+	/**
+	 * WebSocket error code enum
+	 */
+	WEBSOCKET10100000(10100000,"消息体为空"),
+
+	WEBSOCKET10100001(10100001,"消息推送失败"),
+
 	;
 	private int code;
 	private String msg;

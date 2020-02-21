@@ -1,11 +1,8 @@
 package com.ananops.provider.service;
 
 import com.ananops.provider.model.Chat;
-import com.ananops.provider.model.Greeting;
-import com.ananops.provider.model.HelloMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,13 +17,13 @@ public class GreetingController {
 	@Autowired
 	SimpMessagingTemplate messagingTemplate;
 
-	@MessageMapping("/hello")
-	@SendTo("/topic/greetings")
-	public Greeting greeting(HelloMessage message) throws Exception {
-		Thread.sleep(1000 * 24); // simulated delay
-		Greeting greeting = new Greeting("Hello, " + message.getName() + "!");
-		return greeting;
-	}
+//	@MessageMapping("/hello")
+//	@SendTo("/topic/greetings")
+//	public Greeting greeting(HelloMessage message) throws Exception {
+//		Thread.sleep(1000 * 24); // simulated delay
+//		Greeting greeting = new Greeting("Hello, " + message.getName() + "!");
+//		return greeting;
+//	}
 
 	@MessageMapping("/chat")
 	public void greetToOne(Principal principal, Chat chat) throws Exception {

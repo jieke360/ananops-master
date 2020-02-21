@@ -183,6 +183,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             imcInspectionTask.setActualFinishTime(new Date(System.currentTimeMillis()));
         }
         imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(status));
+        imcTaskChangeStatusDto.setLoginAuthDto(loginAuthDto);
         imcInspectionTask.setId(taskId);
         imcInspectionTask.setStatus(status);
         imcInspectionTask.setUpdateInfo(loginAuthDto);
