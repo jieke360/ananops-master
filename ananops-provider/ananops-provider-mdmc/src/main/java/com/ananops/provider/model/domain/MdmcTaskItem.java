@@ -103,4 +103,10 @@ public class MdmcTaskItem extends BaseEntity {
     @Column(name = "trouble_type")
     private Integer troubleType;
 
+    /**
+     * 故障位置
+     */
+    @Column(name = "trouble_address")
+    private Integer troubleAddress;
+
 }

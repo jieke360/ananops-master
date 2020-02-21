@@ -45,4 +45,7 @@ public class MdmcAddTaskItemDto implements Serializable {
 
     @ApiModelProperty("故障类型")
     private Integer troubleType;
+
+    @ApiModelProperty("故障位置")
+    private String troubleAddress;
 }
