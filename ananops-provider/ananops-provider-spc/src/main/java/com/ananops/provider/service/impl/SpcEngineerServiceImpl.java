@@ -256,21 +256,50 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
                     engineerRegisterDto = new EngineerRegisterDto();
                     //HSSFCell name = hssfRow.getCell(0);
                     //HSSFCell pwd = hssfRow.getCell(1);
-                    Cell loginName = hssfRow.getCell(0);
-                    Cell userName = hssfRow.getCell(1);
-                    Cell mobileNum = hssfRow.getCell(2);
-                    Cell email = hssfRow.getCell(3);
-                    Cell identityNumber = hssfRow.getCell(4);
-                    Cell userCode = hssfRow.getCell(5);
-                    Cell titleCeNumber = hssfRow.getCell(6);
-                    //这里是自己的逻辑
-                    engineerRegisterDto.setLoginName(loginName.getStringCellValue());
-                    engineerRegisterDto.setUserName(userName.getStringCellValue());
-                    engineerRegisterDto.setMobileNo(mobileNum.getStringCellValue());
-                    engineerRegisterDto.setEmail(email.getStringCellValue());
-                    engineerRegisterDto.setIdentityNumber(identityNumber.getStringCellValue());
-                    engineerRegisterDto.setUserCode(userCode.getStringCellValue());
-                    engineerRegisterDto.setTitleCeNumber(titleCeNumber.getStringCellValue());
+//                    Cell loginName = hssfRow.getCell(0);
+////                    Cell userName = hssfRow.getCell(1);
+////                    Cell mobileNum = hssfRow.getCell(2);
+////                    Cell email = hssfRow.getCell(3);
+////                    Cell identityNumber = hssfRow.getCell(4);
+////                    Cell userCode = hssfRow.getCell(5);
+////                    Cell titleCeNumber = hssfRow.getCell(6);
+////                    //这里是自己的逻辑
+////                    engineerRegisterDto.setLoginName(loginName.getStringCellValue());
+////                    engineerRegisterDto.setUserName(userName.getStringCellValue());
+////                    engineerRegisterDto.setMobileNo(mobileNum.getStringCellValue());
+////                    engineerRegisterDto.setEmail(email.getStringCellValue());
+////                    engineerRegisterDto.setIdentityNumber(identityNumber.getStringCellValue());
+////                    engineerRegisterDto.setUserCode(userCode.getStringCellValue());
+////                    engineerRegisterDto.setTitleCeNumber(titleCeNumber.getStringCellValue());
+////                    list0.add(engineerRegisterDto);
+                    if (hssfRow.getCell(0) != null) {
+                        hssfRow.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+                        engineerRegisterDto.setLoginName(hssfRow.getCell(0).getStringCellValue());
+                    }
+                    if (hssfRow.getCell(1) != null) {
+                        hssfRow.getCell(1).setCellType(Cell.CELL_TYPE_STRING);
+                        engineerRegisterDto.setUserName(hssfRow.getCell(1).getStringCellValue());
+                    }
+                    if (hssfRow.getCell(2) != null) {
+                        hssfRow.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
+                        engineerRegisterDto.setMobileNo(hssfRow.getCell(2).getStringCellValue());
+                    }
+                    if (hssfRow.getCell(3) != null) {
+                        hssfRow.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
+                        engineerRegisterDto.setEmail(hssfRow.getCell(3).getStringCellValue());
+                    }
+                    if (hssfRow.getCell(4) != null) {
+                        hssfRow.getCell(4).setCellType(Cell.CELL_TYPE_STRING);
+                        engineerRegisterDto.setIdentityNumber(hssfRow.getCell(4).getStringCellValue());
+                    }
+                    if (hssfRow.getCell(5) != null) {
+                        hssfRow.getCell(5).setCellType(Cell.CELL_TYPE_STRING);
+                        engineerRegisterDto.setUserCode(hssfRow.getCell(5).getStringCellValue());
+                    }
+                    if (hssfRow.getCell(6) != null) {
+                        hssfRow.getCell(6).setCellType(Cell.CELL_TYPE_STRING);
+                        engineerRegisterDto.setTitleCeNumber(hssfRow.getCell(6).getStringCellValue());
+                    }
                     list0.add(engineerRegisterDto);
                 }
             }
