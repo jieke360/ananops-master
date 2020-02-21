@@ -8,8 +8,10 @@
 
 package com.ananops.provider.service;
 
+import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.TpcMqConsumer;
+import com.ananops.provider.model.dto.AddMqConsumerDto;
 import com.ananops.provider.model.vo.TpcMqConsumerVo;
 import com.ananops.provider.model.vo.TpcMqSubscribeVo;
 
@@ -23,10 +25,12 @@ import java.util.List;
 public interface TpcMqConsumerService extends IService<TpcMqConsumer> {
 	/**
 	 * 创建一个消费者
-	 * @param tpcMqConsumer
+	 * @param addMqConsumerDto
 	 * @return
 	 */
-	TpcMqConsumer addConsumer(TpcMqConsumer tpcMqConsumer);
+	TpcMqConsumer addConsumer(AddMqConsumerDto addMqConsumerDto, LoginAuthDto loginAuthDto);
+
+
 	/**
 	 * 查询Mq消费者列表.
 	 *

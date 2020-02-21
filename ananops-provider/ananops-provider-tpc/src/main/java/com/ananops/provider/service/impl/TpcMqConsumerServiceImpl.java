@@ -9,18 +9,22 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.PublicUtil;
+import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
 import com.ananops.provider.exceptions.TpcBizException;
 import com.ananops.provider.mapper.TpcMqConsumerMapper;
 import com.ananops.provider.model.domain.TpcMqConsumer;
+import com.ananops.provider.model.dto.AddMqConsumerDto;
 import com.ananops.provider.model.vo.TpcMqConsumerVo;
 import com.ananops.provider.model.vo.TpcMqSubscribeVo;
 import com.ananops.provider.service.TpcMqConsumerService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -35,7 +39,16 @@ public class TpcMqConsumerServiceImpl extends BaseService<TpcMqConsumer> impleme
 	private TpcMqConsumerMapper tpcMqConsumerMapper;
 
 	@Override
-	public TpcMqConsumer addConsumer(TpcMqConsumer tpcMqConsumer){
+	public TpcMqConsumer addConsumer(AddMqConsumerDto addMqConsumerDto, LoginAuthDto loginAuthDto){
+		TpcMqConsumer tpcMqConsumer = new TpcMqConsumer();
+		try {
+			BeanUtils.copyProperties(tpcMqConsumer,addMqConsumerDto);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		tpcMqConsumer.setUpdateInfo(loginAuthDto);
 		int result = tpcMqConsumerMapper.insert(tpcMqConsumer);
 		if(result==1){
 			return tpcMqConsumer;

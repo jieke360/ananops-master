@@ -8,6 +8,7 @@
 
 package com.ananops.provider.web.frontend;
 
+import com.ananops.provider.model.dto.AddMqConsumerDto;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ananops.PublicUtil;
@@ -49,16 +50,15 @@ public class TpcMqConsumerController extends BaseController {
 
 	/**
 	 * 创建生产者
-	 * @param tpcMqConsumer
+	 * @param addMqConsumerDto
 	 * @return
 	 */
 	@PostMapping(value = "/addConsumer")
 	@ApiOperation(httpMethod = "POST", value = "创建Mq消费者")
-	public Wrapper<TpcMqConsumer> addConsumer(@ApiParam(name = "consumer", value = "Mq消费者") @RequestBody TpcMqConsumer tpcMqConsumer){
+	public Wrapper<TpcMqConsumer> addConsumer(@ApiParam(name = "consumer", value = "Mq消费者") @RequestBody AddMqConsumerDto addMqConsumerDto){
 		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
-		tpcMqConsumer.setUpdateInfo(loginAuthDto);
-		logger.info("创建消费者tpcMqConsumer={}",tpcMqConsumer);
-		return WrapMapper.ok(tpcMqConsumerService.addConsumer(tpcMqConsumer));
+		logger.info("创建消费者addMqConsumer={}",addMqConsumerDto);
+		return WrapMapper.ok(tpcMqConsumerService.addConsumer(addMqConsumerDto,loginAuthDto));
 	}
 	/**
 	 * 查询Mq消费者列表.
