@@ -218,6 +218,8 @@ public class AliyunMqTopicConstants {
 		 */
 		public static final String UAC = buildUacConsumerTopics();
 
+		public static final String WEBSOCKET = buildWebSocketConsumerTopics();
+
 	}
 
 	private static String buildOpcConsumerTopics() {
@@ -262,6 +264,18 @@ public class AliyunMqTopicConstants {
 
 		return buildOpcConsumerTopics(topicObjList);
 
+	}
+
+	private static String buildWebSocketConsumerTopics(){
+		List<TopicObj> topicObjList = new ArrayList<>();
+
+		Set<String> imcTagList = new HashSet<>();
+		imcTagList.add(MqTagEnum.IMC_TASK_STATUS_CHANGED.getTag());
+		imcTagList.add(MqTagEnum.IMC_ITEM_STATUS_CHANGED.getTag());
+
+		topicObjList.add(new TopicObj(MqTopicEnum.IMC_TOPIC.getTopic(),imcTagList));
+
+		return buildOpcConsumerTopics(topicObjList);
 	}
 
 	private static String buildOpcConsumerTopics(List<TopicObj> topicList) {

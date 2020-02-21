@@ -8,8 +8,10 @@
 
 package com.ananops.provider.service;
 
+import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.TpcMqProducer;
+import com.ananops.provider.model.dto.AddMqProducerDto;
 import com.ananops.provider.model.vo.TpcMqProducerVo;
 import com.ananops.provider.model.vo.TpcMqPublishVo;
 
@@ -23,10 +25,11 @@ import java.util.List;
 public interface TpcMqProducerService extends IService<TpcMqProducer> {
 	/**
 	 * 创建一个Mq生产者
-	 * @param tpcMqProducer
+	 * @param addMqProducerDto
+	 * @param loginAuthDto
 	 * @return
 	 */
-	TpcMqProducer addProducer(TpcMqProducer tpcMqProducer);
+	TpcMqProducer addProducer(AddMqProducerDto addMqProducerDto, LoginAuthDto loginAuthDto);
 	/**
 	 * List producer vo with page list.
 	 *

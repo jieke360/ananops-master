@@ -24,7 +24,9 @@ public class ImcTopicConsumer {
     public void handlerSendImcTopic(String body, String topicName, String tags, String keys){
         MqMessage.checkMessage(body, keys, topicName);
         if (StringUtils.equals(tags, AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTag())) {
-            System.out.println(body);
+            System.out.println("IMC_TASK_TOPIC:" + body);
+        }else if(StringUtils.equals(tags, AliyunMqTopicConstants.MqTagEnum.IMC_ITEM_STATUS_CHANGED.getTag())){
+            System.out.println("IMC_ITEM_TOPIC:" + body);
         } else {
             UpdateAttachmentDto attachmentDto;
             try {

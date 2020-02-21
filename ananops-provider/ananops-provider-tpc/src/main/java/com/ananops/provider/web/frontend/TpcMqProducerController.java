@@ -8,6 +8,7 @@
 
 package com.ananops.provider.web.frontend;
 
+import com.ananops.provider.model.dto.AddMqProducerDto;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ananops.base.dto.LoginAuthDto;
@@ -45,11 +46,10 @@ public class TpcMqProducerController extends BaseController {
 
 	@PostMapping(value = "/addProducer")
 	@ApiOperation(httpMethod = "POST", value = "创建一个生产者")
-	public Wrapper<TpcMqProducer> addProducer(@ApiParam(name = "producer", value = "Mq生产者") @RequestBody TpcMqProducer tpcMqProducer){
+	public Wrapper<TpcMqProducer> addProducer(@ApiParam(name = "producer", value = "Mq生产者") @RequestBody AddMqProducerDto addMqProducerDto){
 		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
-		tpcMqProducer.setUpdateInfo(loginAuthDto);
-		logger.info("创建生产者tpcMqProducer={}",tpcMqProducer);
-		return WrapMapper.ok(tpcMqProducerService.addProducer(tpcMqProducer));
+		logger.info("创建生产者addMqProducerDto={}",addMqProducerDto);
+		return WrapMapper.ok(tpcMqProducerService.addProducer(addMqProducerDto,loginAuthDto));
 	}
 
 	/**
