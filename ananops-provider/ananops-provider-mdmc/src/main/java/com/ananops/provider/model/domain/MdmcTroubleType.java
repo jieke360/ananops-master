@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Data
 @Table(name = "an_mdmc_troubletype_group")
 public class MdmcTroubleType extends BaseEntity {
+    private static final long serialVersionUID = -4338279757873928988L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

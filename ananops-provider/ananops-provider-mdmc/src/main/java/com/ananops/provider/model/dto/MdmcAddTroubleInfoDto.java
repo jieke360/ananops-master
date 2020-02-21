@@ -14,10 +14,10 @@ public class MdmcAddTroubleInfoDto implements Serializable {
 
     private static final long serialVersionUID = -3496178962314962666L;
     /**
-     * 组织ID
+     * 用户ID
      */
-    @ApiModelProperty(value = "组织ID")
-    private Long groupId;
+    @ApiModelProperty(value = "用户ID")
+    private Long userId;
 
     /**
      * 故障类型列表

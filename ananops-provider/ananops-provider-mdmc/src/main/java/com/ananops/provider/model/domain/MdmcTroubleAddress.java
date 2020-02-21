@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Data
 @Table(name = "an_mdmc_troubleaddress_group")
 public class MdmcTroubleAddress extends BaseEntity {
+    private static final long serialVersionUID = -4975430143895699985L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
