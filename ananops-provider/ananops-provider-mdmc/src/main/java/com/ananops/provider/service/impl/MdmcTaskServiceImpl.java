@@ -89,17 +89,32 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     public MdmcTaskDetailDto getTaskDetail(Long taskId) {
         MdmcTaskDetailDto taskDetailDto=new MdmcTaskDetailDto();
         MdmcTask mdmcTask=taskMapper.selectByPrimaryKey(taskId);
+        if (mdmcTask!=null){
         taskDetailDto.setMdmcTask(mdmcTask);
-        UserInfoDto userInfoDto=uacUserFeignApi.getUacUserById(mdmcTask.getUserId()).getResult();
-        UserInfoDto principalInfoDto=uacUserFeignApi.getUacUserById(mdmcTask.getPrincipalId()).getResult();
-        CompanyVo companyVo=spcCompanyFeignApi.getCompanyDetailsById(mdmcTask.getFacilitatorId()).getResult();
-        EngineerDto engineerDto=spcEngineerFeignApi.getEngineerById(mdmcTask.getMaintainerId()).getResult();
-        PmcProjectDto pmcProjectDto=pmcProjectFeignApi.getProjectByProjectId(mdmcTask.getProjectId()).getResult();
-        taskDetailDto.setCompanyVo(companyVo);
-        taskDetailDto.setEngineerDto(engineerDto);
-        taskDetailDto.setPmcProjectDto(pmcProjectDto);
-        taskDetailDto.setPrincipalInfoDto(principalInfoDto);
-        taskDetailDto.setUserInfoDto(userInfoDto);
+        if (mdmcTask.getUserId()!=null){
+            UserInfoDto userInfoDto=uacUserFeignApi.getUacUserById(mdmcTask.getUserId()).getResult();
+            taskDetailDto.setUserInfoDto(userInfoDto);
+        }
+        if (mdmcTask.getPrincipalId()!=null){
+            UserInfoDto principalInfoDto=uacUserFeignApi.getUacUserById(mdmcTask.getPrincipalId()).getResult();
+            taskDetailDto.setPrincipalInfoDto(principalInfoDto);
+        }
+        if (mdmcTask.getFacilitatorId()!=null){
+            CompanyVo companyVo=spcCompanyFeignApi.getCompanyDetailsById(mdmcTask.getFacilitatorId()).getResult();
+            taskDetailDto.setCompanyVo(companyVo);
+        }
+        if (mdmcTask.getMaintainerId()!=null){
+            EngineerDto engineerDto=spcEngineerFeignApi.getEngineerById(mdmcTask.getMaintainerId()).getResult();
+            taskDetailDto.setEngineerDto(engineerDto);
+        }
+        if (mdmcTask.getProjectId()!=null){
+            PmcProjectDto pmcProjectDto=pmcProjectFeignApi.getProjectByProjectId(mdmcTask.getProjectId()).getResult();
+            taskDetailDto.setPmcProjectDto(pmcProjectDto);
+        }
+        }
+        else {
+            throw new BusinessException(ErrorCodeEnum.MDMC9998098,taskId);
+        }
 
         return taskDetailDto;
     }
@@ -447,10 +462,12 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     public List<MdmcListDto> getTaskListByIdAndStatusArrary(MdmcStatusArrayDto statusArrayDto) {
 //        String roleCode=statusArrayDto.getRoleCode();
         Long id=statusArrayDto.getId();
+
         Integer[] status=statusArrayDto.getStatus();
 //        Example example = new Example(MdmcTask.class);
 //        Example.Criteria criteria = example.createCriteria();
         List<MdmcListDto> listDtoList=new ArrayList<>();
+
 //        switch (roleCode){
 //            case "user_watcher":criteria.andEqualTo("userId",id);break;
 //            case "user_manager":criteria.andEqualTo("principalId",id);break;
@@ -475,14 +492,44 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
                 MdmcListDto listDto=new MdmcListDto();
                 listDto.setStatus(i);
 //                listDto.setTaskList(taskMapper.selectByExample(example1));
-                listDto.setTaskList(getTaskListByUserIdAndStatusOptional(id, i));
+                List<MdmcTask> taskList=getTaskListByUserIdAndStatusOptional(id, i);
+                List<MdmcTaskListDto> taskListDtoList=new ArrayList<>();
+                if(taskList!=null){
+                    for (MdmcTask task:taskList){
+                        MdmcTaskListDto mdmcTaskListDto=new MdmcTaskListDto();
+                        mdmcTaskListDto.setMdmcTask(task);
+                        if (id!=null){
+                            mdmcTaskListDto.setUserInfoDto(uacUserFeignApi.getUacUserById(id).getResult());
+                        }
+                        if (task.getProjectId()!=null){
+                            mdmcTaskListDto.setPmcProjectDto(pmcProjectFeignApi.getProjectByProjectId(task.getProjectId()).getResult());
+                        }
+                       taskListDtoList.add(mdmcTaskListDto);
+                    }
+                }
+                listDto.setTaskList(taskListDtoList);
                 listDtoList.add(listDto);
             }
 
         } else{
             MdmcListDto listDto1=new MdmcListDto();
 //            listDto1.setTaskList(taskMapper.selectByExample(example));
-            listDto1.setTaskList(getTaskListByUserIdAndStatusOptional(id, null));
+            List<MdmcTask> taskList1=getTaskListByUserIdAndStatusOptional(id, null);
+            List<MdmcTaskListDto> taskListDtoList1=new ArrayList<>();
+            if(taskList1!=null){
+                for (MdmcTask task:taskList1){
+                    MdmcTaskListDto mdmcTaskListDto1=new MdmcTaskListDto();
+                    mdmcTaskListDto1.setMdmcTask(task);
+                    if (id!=null){
+                        mdmcTaskListDto1.setUserInfoDto(uacUserFeignApi.getUacUserById(id).getResult());
+                    }
+                    if (task.getProjectId()!=null){
+                        mdmcTaskListDto1.setPmcProjectDto(pmcProjectFeignApi.getProjectByProjectId(task.getProjectId()).getResult());
+                    }
+                    taskListDtoList1.add(mdmcTaskListDto1);
+                }
+            }
+            listDto1.setTaskList(taskListDtoList1);
             listDtoList.add(listDto1);
         }
 
@@ -674,6 +721,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         } catch (IOException e) {
             logger.error("上传文件失败={}", e.getMessage(), e);
         }
+        System.out.print(result);
         return result;
     }
 
