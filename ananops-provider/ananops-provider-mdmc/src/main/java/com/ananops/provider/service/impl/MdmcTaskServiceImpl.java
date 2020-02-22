@@ -526,17 +526,20 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         String roleCode=uacUserFeignApi.getUacUserById(userId).getResult().getRoleCode();
         if(status == null) {
             List<MdmcTask> taskList=taskMapper.selectBySomeoneId(userId);
-            if (roleCode.equals("fac_service")||roleCode.equals("fac_manager")){
+            List<MdmcTask> taskList1=new ArrayList<>();
+            if (roleCode.equals("fac_service")||roleCode.equals("fac_manager")||roleCode.equals("fac_leader")){
                 for (MdmcTask task:taskList){
-                    if (task.getStatus()<3)
-                        taskList.remove(task);
+                    if (task.getStatus()>2)
+                        taskList1.add(task);
                 }
+                return taskList1;
             }
             else if(roleCode.equals("engineer")){
                 for (MdmcTask task:taskList){
-                    if (task.getStatus()<5 ||task.getStatus()==14)
-                        taskList.remove(task);
+                    if (task.getStatus()>4 && task.getStatus()!=14)
+                        taskList1.add(task);
                 }
+                return  taskList1;
             }
             return taskList;
         } else {
