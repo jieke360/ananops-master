@@ -4,23 +4,42 @@ import com.alibaba.fastjson.JSONObject;
 import com.ananops.provider.mapper.BasebillMapper;
 import com.ananops.provider.model.domain.Basebill;
 import com.ananops.provider.model.dto.BillCreateDto;
+import com.ananops.provider.model.dto.BillDisplayDto;
 import com.ananops.provider.model.dto.PmcPayDto;
+import com.ananops.provider.model.dto.TaskDto;
+import com.ananops.provider.model.dto.user.UserInfoDto;
+import com.ananops.provider.model.service.UacUserFeignApi;
+import com.ananops.provider.model.vo.CompanyVo;
+import com.ananops.provider.model.vo.EngineerSimpleVo;
 import com.ananops.provider.service.BaseService;
+import com.ananops.provider.service.SpcCompanyFeignApi;
+import com.ananops.wrapper.Wrapper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
+@Slf4j
 @Service
 public class BaseServiceImpl implements BaseService {
 
     @Autowired
     BasebillMapper basebillMapper;
+
+    @Resource
+    private UacUserFeignApi uacUserFeignApi;
+
+    @Resource
+    private SpcCompanyFeignApi spcCompanyFeignApi;
 
     @Override
     public void insert(BillCreateDto billCreateDto, Float devicePrice, Float servicePrice, String transactionMethod) {
@@ -53,11 +72,42 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public List<Basebill> getAllBillByUserId(String userid) {
+    public List<BillDisplayDto> getAllBillByUserId(String userid) {
+        //使用模板example获取BaseBill类
         Example example = new Example(Basebill.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo(userid);
-        return basebillMapper.selectByExample(example);
+
+        //将获取到的BaseBill类添加到basebills列表中去
+//        List<TaskDto> imcTaskDtos = imcTaskFeignApi.getByFacilitatorId(taskQueryDto).getResult();
+        List<Basebill> basebills = basebillMapper.selectByExample(example);
+
+        //创建待返回的账单展示传输对象
+        List<BillDisplayDto> billDisplayDtoList = new ArrayList<>();
+        if(basebills != null){
+            for(Basebill OneBaseBill : basebills){
+                BillDisplayDto billDisplayDto = new BillDisplayDto();
+                UserInfoDto uacUserInfo = uacUserFeignApi.getUacUserById(Long.valueOf(OneBaseBill.getUserid())).getResult();
+                if(uacUserInfo != null){
+                    billDisplayDto.setUserName(uacUserInfo.getUserName());
+                }
+                CompanyVo companyVo = spcCompanyFeignApi.getCompanyDetailsById(Long.valueOf(OneBaseBill.getSupplier())).getResult();
+                if(companyVo != null){
+                    billDisplayDto.setSupplierName(companyVo.getGroupName());
+                }
+                try{
+                    BeanUtils.copyProperties(OneBaseBill,billDisplayDto);
+                }catch (Exception e){
+                    log.error("账单BaseBill与账单展示billDisplayDto属性拷贝异常");
+                    e.printStackTrace();
+                }
+
+                //没问题就添加到待返回列表中
+                billDisplayDtoList.add(billDisplayDto);
+
+            }
+        }
+        return billDisplayDtoList;
     }
 
     @Override
