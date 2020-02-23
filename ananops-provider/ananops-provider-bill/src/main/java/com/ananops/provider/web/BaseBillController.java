@@ -100,7 +100,7 @@ public class BaseBillController {
 
     @GetMapping(value = "/getallbyuser/{userid}")
     @ApiOperation(httpMethod = "GET",value = "根据用户id获取所有账单")
-    public  Wrapper<List<Basebill>> getAllBillByUserId(@ApiParam(name = "userid",value = "用户id") @RequestParam Long userid){
+    public  Wrapper<List<BillDisplayDto>> getAllBillByUserId(@ApiParam(name = "userid",value = "用户id") @RequestParam Long userid){
         return WrapMapper.ok(baseServiceImpl.getAllBillByUserId(userid.toString()));
     }
 

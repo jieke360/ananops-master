@@ -15,8 +15,6 @@ import com.ananops.provider.service.MdmcTaskService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,7 +26,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/mdmcTask",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -82,7 +79,7 @@ public class MdmcTaskController extends BaseController {
         return WrapMapper.ok(task);
     }
 
-    @GetMapping(value = "/getTaskDetailByTaskId/{taskId}")
+    @GetMapping(value = "/getTaskDetailByTaskId")
     @ApiOperation(httpMethod = "GET",value = "根据工单ID，获取工单详情")
     public Wrapper<MdmcTaskDetailDto> getTaskDetailByTaskId(@RequestParam("taskId")Long taskId){
         return WrapMapper.ok(taskService.getTaskDetail(taskId));
@@ -220,7 +217,7 @@ public class MdmcTaskController extends BaseController {
      */
     @PostMapping(consumes = "multipart/form-data", value = "/uploadTaskPicture")
     @ApiOperation(httpMethod = "POST", value = "上传文件")
-    public Wrapper<List<OptUploadFileRespDto>> uploadTaskPicture(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
+    public List<OptUploadFileRespDto> uploadTaskPicture(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
         logger.info("uploadTaskPicture - 上传文件. optUploadFileReqDto={}", optUploadFileReqDto);
 
         String fileType =optUploadFileReqDto.getFileType();
@@ -229,7 +226,7 @@ public class MdmcTaskController extends BaseController {
         Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
-        return WrapMapper.ok(taskService.uploadTaskFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto()));
+        return taskService.uploadTaskFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
     }
 
     /**
