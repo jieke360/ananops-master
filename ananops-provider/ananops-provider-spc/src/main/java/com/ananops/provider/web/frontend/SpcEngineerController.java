@@ -8,6 +8,8 @@ import com.ananops.provider.model.dto.EngineerDto;
 import com.ananops.provider.model.dto.EngineerRegisterDto;
 import com.ananops.provider.model.dto.EngineerStatusDto;
 import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.EngineerSimpleVo;
 import com.ananops.provider.model.vo.EngineerVo;
 import com.ananops.provider.service.PmcProjectEngineerFeignApi;
@@ -16,9 +18,11 @@ import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -196,6 +200,28 @@ public class SpcEngineerController extends BaseController {
     public Wrapper<List<EngineerSimpleVo>> getEngineerIdListByProjectId(@ApiParam(name = "projectId",value = "项目Id") @PathVariable Long projectId){
         logger.info(" 根据项目ID查询项目对应的工程师ID的列表 projectId={}", projectId);
         return WrapMapper.ok(spcEngineerService.getEngineersListByProjectId(projectId));
+    }
+
+    /**
+     * 上传工程师相关的图片
+     *
+     * @param request HTTP请求
+     *
+     * @param optUploadFileReqDto HTTP请求参数
+     *
+     * @return 返回
+     */
+    @PostMapping(consumes = "multipart/form-data", value = "/uploadEngineerPicture")
+    @ApiOperation(httpMethod = "POST", value = "上传文件")
+    public List<OptUploadFileRespDto> uploadEngineerPicture(HttpServletRequest request, OptUploadFileReqDto optUploadFileReqDto) {
+        logger.info("uploadEngineerPicture - 上传文件. optUploadFileReqDto={}", optUploadFileReqDto);
+
+        String fileType = optUploadFileReqDto.getFileType();
+        String bucketName = optUploadFileReqDto.getBucketName();
+        Preconditions.checkArgument(StringUtils.isNotEmpty(fileType), "文件类型为空");
+        Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        return spcEngineerService.uploadEngineerFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
     }
 
 }

@@ -14,15 +14,25 @@ import com.ananops.provider.model.dto.EngineerDto;
 import com.ananops.provider.model.dto.EngineerRegisterDto;
 import com.ananops.provider.model.dto.EngineerStatusDto;
 import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
+import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
+import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
+import com.ananops.provider.model.dto.group.GroupBindUserApiDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
+import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.EngineerSimpleVo;
 import com.ananops.provider.model.vo.EngineerVo;
+import com.ananops.provider.service.OpcOssFeignApi;
 import com.ananops.provider.service.PmcProjectEngineerFeignApi;
 import com.ananops.provider.service.SpcEngineerService;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.xiaoleilu.hutool.io.FileTypeUtil;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -35,11 +45,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -74,6 +86,12 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
 
     @Resource
     private UacGroupFeignApi uacGroupFeignApi;
+
+    @Resource
+    private OpcOssFeignApi opcOssFeignApi;
+
+    @Resource
+    private UacGroupBindUserFeignApi uacGroupBindUserFeignApi;
 
 
     @Override
@@ -136,7 +154,7 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         SpcCompany query = new SpcCompany();
         query.setUserId(loginAuthDto.getUserId());
         SpcCompany spcCompany = spcCompanyMapper.selectOne(query);
-        if (PublicUtil.isEmpty(spcCompany)) {
+        if (PublicUtil.isEmpty(spcCompany)||(spcCompany.getGroupId())==null) {
             return result;
         }
         List<Long> engineerIdList = uacGroupFeignApi.getUacUserIdListByGroupId(spcCompany.getGroupId()).getResult();
@@ -190,11 +208,12 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         return result;
     }
 
+
     @Override
     public void addSpcEngineer(EngineerRegisterDto engineerRegisterDto, LoginAuthDto loginAuthDto) {
         Long loginAuthDtoUserId = loginAuthDto.getUserId();
-        SpcCompany spcCompany = new SpcCompany();
-        spcCompany.setUserId(loginAuthDtoUserId);
+//        SpcCompany spcCompany = new SpcCompany();
+//        spcCompany.setUserId(loginAuthDtoUserId);
 //        Long companyId = spcCompanyMapper.selectOne(spcCompany).getId();
         // 校验注册信息
         validateRegisterInfo(engineerRegisterDto);
@@ -208,10 +227,37 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
             logger.error("addSpcEngineer 工程师Dto与用户Dto属性拷贝异常");
             e.printStackTrace();
         }
+        //新建的工程师和创建人属于同一个group
+       // userInfoDto.setGroupId(loginAuthDto.getGroupId());
+        // userInfoDto.setGroupName(loginAuthDto.getGroupName());
         Long newUserId = uacUserFeignApi.addUser(userInfoDto).getResult();
+
+        Long groupId = uacGroupBindUserFeignApi.getGroupIdByUserId(loginAuthDtoUserId).getResult();
+        //用UAC里面的group_user表来维护关系
+        if (loginAuthDto.getGroupId() != null) {
+            GroupBindUserApiDto groupBindUserDto=new GroupBindUserApiDto();
+            groupBindUserDto.setGroupId(loginAuthDto.getGroupId());
+            List<Long> list =new ArrayList<>();
+
+            //<Long> list = uacGroupFeignApi.getUacUserIdListByGroupId(groupId).getResult();
+
+            list.add(newUserId);
+            groupBindUserDto.setUserIdList(list);
+
+            System.out.println("////////////////");
+            System.out.println("loginAuthDtoUserId"+loginAuthDtoUserId);
+            System.out.println("loginAuthDto.getGroupId():"+groupBindUserDto);
+            System.out.println("////////////////");
+            log.info("绑定用户到组织. groupBindUserReqDto={}", groupBindUserDto);
+            uacGroupBindUserFeignApi.bindUacUser4Group(groupBindUserDto);
+            log.info("绑定用户到组织.【ok】");
+        }
+
         Long engineerId = super.generateId();
         spcEngineer.setId(engineerId);
         spcEngineer.setUserId(newUserId);
+        spcEngineer.setCreatorId(loginAuthDtoUserId);
+        spcEngineer.setCreator(loginAuthDto.getUserName());
         spcEngineerMapper.insertSelective(spcEngineer);
 //        SpcCompanyEngineer spcCompanyEngineer = new SpcCompanyEngineer();
 //        spcCompanyEngineer.setCompanyId(companyId);
@@ -329,6 +375,49 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
     }
 
     @Override
+    public List<OptUploadFileRespDto> uploadEngineerFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto) {
+        // 这里的filePath来区分照片类型，有以下两种:
+        // 工程师身份证照片：identityPhoto
+        // 职称证书照片：titleCePhoto
+
+        String filePath = optUploadFileReqDto.getFilePath();
+        Long userId = loginAuthDto.getUserId();
+        String userName = loginAuthDto.getUserName();
+        List<OptUploadFileRespDto> result = Lists.newArrayList();
+        try {
+            List<MultipartFile> fileList = multipartRequest.getFiles("file");
+            if (fileList.isEmpty()) {
+                return result;
+            }
+
+            for (MultipartFile multipartFile : fileList) {
+                String fileName = multipartFile.getOriginalFilename();
+                if (PublicUtil.isEmpty(fileName)) {
+                    continue;
+                }
+                Preconditions.checkArgument(multipartFile.getSize() <= GlobalConstant.FILE_MAX_SIZE, "上传文件不能大于5M");
+                InputStream inputStream = multipartFile.getInputStream();
+
+                String inputStreamFileType = FileTypeUtil.getType(inputStream);
+                // 将上传文件的字节流封装到到Dto对象中
+                OptUploadFileByteInfoReqDto optUploadFileByteInfoReqDto = new OptUploadFileByteInfoReqDto();
+                optUploadFileByteInfoReqDto.setFileByteArray(multipartFile.getBytes());
+                optUploadFileByteInfoReqDto.setFileName(fileName);
+                optUploadFileByteInfoReqDto.setFileType(inputStreamFileType);
+                optUploadFileReqDto.setUploadFileByteInfoReqDto(optUploadFileByteInfoReqDto);
+                // 设置不同文件路径来区分图片
+                optUploadFileReqDto.setFilePath("ananops/spc/engineer/" + userId + "/" + filePath + "/");
+                optUploadFileReqDto.setUserId(userId);
+                optUploadFileReqDto.setUserName(userName);
+                OptUploadFileRespDto optUploadFileRespDto = opcOssFeignApi.uploadFile(optUploadFileReqDto).getResult();
+                result.add(optUploadFileRespDto);
+            }
+        } catch (IOException e) {
+            logger.error("上传文件失败={}", e.getMessage(), e);
+        }
+        return result;
+    }
+    @Override
     public int modifyEngineerStatusById(ModifyEngineerStatusDto modifyEngineerStatusDto) {
         Long engineerId = modifyEngineerStatusDto.getEngineerId();
         String status = modifyEngineerStatusDto.getStatus();
@@ -345,6 +434,9 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
     @Override
     public void saveSpcEngineer(EngineerVo engineerVo, LoginAuthDto loginAuthDto) {
         Long engineerId = engineerVo.getId();
+        if (engineerId == null) {
+            return;
+        }
         SpcEngineer queryResutl = spcEngineerMapper.selectByPrimaryKey(engineerId);
         Long userId = queryResutl.getUserId();
         // 校验保存信息
@@ -360,12 +452,13 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         }
         Long uacUserId = uacUserFeignApi.userSave(userInfoDto).getResult();
 
+        SpcEngineer spcEngineer = new SpcEngineer();
         if (!StringUtils.isEmpty(engineerId) && !StringUtils.isEmpty(uacUserId)) {
             Date row = new Date();
-            // 封装更新公司信息
-            SpcEngineer spcEngineer = new SpcEngineer();
+            // 封装更新工程师的信息
             spcEngineer.setId(engineerId);
             spcEngineer.setUserId(userId);
+            spcEngineer.setUpdateTime(row);
             spcEngineer.setLastOperatorId(loginAuthDto.getUserId());
             spcEngineer.setLastOperator(loginAuthDto.getLoginName());
             try {
@@ -374,8 +467,35 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
                 logger.error("工程师Dto与用户Dto属性拷贝异常");
                 e.printStackTrace();
             }
-            logger.info("注册工程师. spcEngineer={}", spcEngineer);
-            spcEngineerMapper.insertSelective(spcEngineer);
+              //这个地方应该是完善工程师的信息，而不是注册
+//            logger.info("注册工程师. spcEngineer={}", spcEngineer);
+//            spcEngineerMapper.insertSelective(spcEngineer);
+            logger.info("完善工程师信息. spcEngineer={}", spcEngineer);
+            spcEngineerMapper.updateByPrimaryKeySelective(spcEngineer);
+        }
+
+        // 更新附件信息
+        List<Long> attachmentIds = new ArrayList<>();
+        if (spcEngineer.getIdentityPhoto() != null) {
+            String legalPersonidPhotoIds = spcEngineer.getIdentityPhoto();
+            if (legalPersonidPhotoIds.contains(",")) {
+                String[] legalIds = legalPersonidPhotoIds.split(",");
+                for (String id : legalIds) {
+                    attachmentIds.add(Long.parseLong(id));
+                }
+            } else {
+                attachmentIds.add(Long.parseLong(legalPersonidPhotoIds));
+            }
+        }
+        if (spcEngineer.getTitleCePhoto() != null) {
+            attachmentIds.add(Long.parseLong(spcEngineer.getTitleCePhoto()));
+        }
+        if(attachmentIds!=null) {
+            OptAttachmentUpdateReqDto optAttachmentUpdateReqDto = new OptAttachmentUpdateReqDto();
+            optAttachmentUpdateReqDto.setAttachmentIds(attachmentIds);
+            optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+            optAttachmentUpdateReqDto.setRefNo(spcEngineer.getId().toString());
+            opcOssFeignApi.batchUpdateAttachment(optAttachmentUpdateReqDto);
         }
     }
 

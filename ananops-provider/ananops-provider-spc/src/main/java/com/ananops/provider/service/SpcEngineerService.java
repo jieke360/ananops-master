@@ -7,6 +7,8 @@ import com.ananops.provider.model.dto.EngineerDto;
 import com.ananops.provider.model.dto.EngineerRegisterDto;
 import com.ananops.provider.model.dto.EngineerStatusDto;
 import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.EngineerSimpleVo;
 import com.ananops.provider.model.vo.EngineerVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -113,4 +115,18 @@ public interface SpcEngineerService extends IService<SpcEngineer> {
      * @return 返回工程师简单信息集合
      */
     List<EngineerSimpleVo> getEngineersListByProjectId(Long projectId);
+    /**
+     * 上传工程师相关文件
+     *
+     * @param multipartRequest
+     *
+     * @param optUploadFileReqDto
+     *
+     * @param loginAuthDto
+     *
+     * @param b
+     *
+     * @return
+     */
+    List<OptUploadFileRespDto> uploadEngineerFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto);
 }
