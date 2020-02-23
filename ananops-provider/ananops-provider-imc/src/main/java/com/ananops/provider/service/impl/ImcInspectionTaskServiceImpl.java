@@ -14,6 +14,7 @@ import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
+import com.ananops.provider.mq.producer.TaskMsgProducer;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.github.pagehelper.PageHelper;
@@ -54,6 +55,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     @Resource
     ImcFacilitatorGroupTaskMapper imcFacilitatorGroupTaskMapper;
 
+    @Resource
+    TaskMsgProducer taskMsgProducer;
+
 
 
     /**
@@ -65,10 +69,6 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         ImcInspectionTask imcInspectionTask = new ImcInspectionTask();
         BeanUtils.copyProperties(imcAddInspectionTaskDto,imcInspectionTask);
         imcInspectionTask.setUpdateInfo(loginAuthDto);
-//        MqMessageData mqMessageData;
-//        String body = JSON.toJSONString(imcAddInspectionTaskDto);
-//        String topic = AliyunMqTopicConstants.MqTagEnum.UPDATE_INSPECTION_TASK.getTopic();
-//        String tag = AliyunMqTopicConstants.MqTagEnum.UPDATE_INSPECTION_TASK.getTag();
         if(imcInspectionTask.isNew()){
             //如果当前是新建一条任务
             //获取所有的巡检任务子项
@@ -77,36 +77,35 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             Long userId = imcAddInspectionTaskDto.getUserId();
             Long facilitatorManagerId = imcAddInspectionTaskDto.getFacilitatorManagerId();
             Long facilitatorGroupId = imcAddInspectionTaskDto.getFacilitatorGroupId();
-//            Long facilitatorId = imcAddInspectionTaskDto.getFacilitatorId();
             imcInspectionTask.setId(taskId);
             //将巡检任务的装填设置为等待甲方负责人审核
             imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_PRINCIPAL.getStatusNum());
-//            //将巡检任务状态设置为等待服务商接单
-//            if(facilitatorId ==null){//如果当前巡检任务不存在服务商
-//                imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
-//            }else{//如果存在服务商
-//                imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_ACCEPT.getStatusNum());
-//            }
-//            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(taskId),body);
-//            mqMessageData = new MqMessageData(body, topic, tag, key);
-//            imcTaskManager.saveInspectionTask(mqMessageData,imcInspectionTask,true);
+            //将巡检任务状态设置为等待服务商接单
             imcInspectionTaskMapper.insert(imcInspectionTask);
             logger.info("新创建一条巡检记录：" + imcInspectionTask.toString());
+
+            //推送消息
+            MqMessageData mqMessageData = taskMsgProducer.sendTaskStatusMsgMq(imcInspectionTask);
+            imcTaskManager.modifyTaskStatus(mqMessageData);
+
             //增加一条甲方用户和巡检任务的关系记录
             ImcUserTask imcUserTask = new ImcUserTask();
             imcUserTask.setTaskId(taskId);
             imcUserTask.setUserId(userId);
             imcUserTaskMapper.insert(imcUserTask);
+
             //增加一条服务商管理员和巡检任务的关系记录
             ImcFacilitatorManagerTask imcFacilitatorManagerTask = new ImcFacilitatorManagerTask();
             imcFacilitatorManagerTask.setFacilitatorManagerId(facilitatorManagerId);
             imcFacilitatorManagerTask.setTaskId(taskId);
             imcFacilitatorManagerTaskMapper.insert(imcFacilitatorManagerTask);
+
             //增加一条服务商组织和巡检任务的关系记录
             ImcFacilitatorGroupTask imcFacilitatorGroupTask = new ImcFacilitatorGroupTask();
             imcFacilitatorGroupTask.setFacilitatorGroupId(facilitatorGroupId);
             imcFacilitatorGroupTask.setTaskId(taskId);
             imcFacilitatorGroupTaskMapper.insert(imcFacilitatorGroupTask);
+
             //保存新创建的巡检任务子项
             imcAddInspectionItemDtoList.forEach(item->{//保存所有巡检任务子项
                 item.setInspectionTaskId(taskId);//设置巡检任务子项对应的任务id
@@ -129,9 +128,6 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             BeanUtils.copyProperties(imcAddInspectionItemDtoList,imcAddInspectionTaskDto);
         }else{
             //如果当前是更新一条记录
-//            String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(imcInspectionTask.getId()),body);
-//            mqMessageData = new MqMessageData(body, topic, tag, key);
-//            imcTaskManager.saveInspectionTask(mqMessageData,imcInspectionTask,false);
             imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
             //更新返回结果
             BeanUtils.copyProperties(imcInspectionTask,imcAddInspectionTaskDto);
@@ -167,6 +163,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
         }
         //如果当前任务存在
+        imcInspectionTask = imcInspectionTaskMapper.selectByPrimaryKey(taskId);
         if(status.equals(TaskStatusEnum.WAITING_FOR_PAY.getStatusNum())){//如果当前任务状态修改为等待支付，意味着任务已经被确认
             Example example2 = new Example(ImcInspectionItem.class);
             Example.Criteria criteria2 = example2.createCriteria();
@@ -182,17 +179,14 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             //更新巡检完成的实际时间
             imcInspectionTask.setActualFinishTime(new Date(System.currentTimeMillis()));
         }
-        imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(status));
-        imcTaskChangeStatusDto.setLoginAuthDto(loginAuthDto);
-        imcInspectionTask.setId(taskId);
         imcInspectionTask.setStatus(status);
         imcInspectionTask.setUpdateInfo(loginAuthDto);
-        String body = JSON.toJSONString(imcTaskChangeStatusDto);
-        String topic = AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTopic();
-        String tag = AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTag();
-        String key = RedisKeyUtil.createMqKey(topic,tag,String.valueOf(taskId),body);
-        MqMessageData mqMessageData = new MqMessageData(body,topic,tag,key);
-        imcTaskManager.modifyTaskStatus(mqMessageData,imcInspectionTask);
+        int result = imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
+        if(result < 1){
+            throw new BusinessException(ErrorCodeEnum.GL9999092);
+        }
+        MqMessageData mqMessageData = taskMsgProducer.sendTaskStatusMsgMq(imcInspectionTask);
+        imcTaskManager.modifyTaskStatus(mqMessageData);
         return imcInspectionTask;
     }
 
@@ -450,6 +444,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         imcInspectionTask.setUpdateInfo(loginAuthDto);
         this.update(imcInspectionTask);
         int status = imcInspectionTask.getStatus();
+        //推送消息
+        MqMessageData mqMessageData = taskMsgProducer.sendTaskStatusMsgMq(imcInspectionTask);
+        imcTaskManager.modifyTaskStatus(mqMessageData);
         imcTaskChangeStatusDto.setStatus(status);
         imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(status));
         return imcTaskChangeStatusDto;
@@ -469,6 +466,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         imcInspectionTask.setUpdateInfo(loginAuthDto);
         this.update(imcInspectionTask);
         int status = imcInspectionTask.getStatus();
+        //推送消息
+        MqMessageData mqMessageData = taskMsgProducer.sendTaskStatusMsgMq(imcInspectionTask);
+        imcTaskManager.modifyTaskStatus(mqMessageData);
         imcTaskChangeStatusDto.setStatus(status);
         imcTaskChangeStatusDto.setStatusMsg(TaskStatusEnum.getStatusMsg(status));
         return imcTaskChangeStatusDto;
@@ -523,6 +523,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_FACILITATOR.getStatusNum());
             imcInspectionTask.setUpdateInfo(loginAuthDto);
             imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
+            //推送消息
+            MqMessageData mqMessageData = taskMsgProducer.sendTaskStatusMsgMq(imcInspectionTask);
+            imcTaskManager.modifyTaskStatus(mqMessageData);
         }else{
             throw new BusinessException(ErrorCodeEnum.GL9999086);
         }
@@ -556,6 +559,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             imcInspectionTask.setStatus(TaskStatusEnum.EXECUTING.getStatusNum());
             imcInspectionTask.setUpdateInfo(loginAuthDto);
             imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
+            //推送消息
+            MqMessageData mqMessageData = taskMsgProducer.sendTaskStatusMsgMq(imcInspectionTask);
+            imcTaskManager.modifyTaskStatus(mqMessageData);
         }else{
             throw new BusinessException(ErrorCodeEnum.GL9999085);
         }

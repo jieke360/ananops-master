@@ -41,11 +41,11 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 			public Message<?> preSend(Message<?> message, MessageChannel channel) {
 				StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 				if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-					final String jwtToken = StringUtils.substringAfter(accessor.getFirstNativeHeader("Authorization"),"Bearer ");
-					LoginAuthDto loginUser = (UserTokenDto) redisTemplate.opsForValue().get(RedisKeyUtil.getAccessTokenKey(jwtToken));
-					if(loginUser!=null){//将userId和socket连接进行绑定
-						System.out.println(loginUser.toString());
-						String userId = String.valueOf(loginUser.getUserId());
+					final String userId = accessor.getFirstNativeHeader("userId");
+//					LoginAuthDto loginUser = (UserTokenDto) redisTemplate.opsForValue().get(RedisKeyUtil.getAccessTokenKey(jwtToken));
+					if(userId!=null){//将userId和socket连接进行绑定
+						System.out.println(userId);
+//						String userId = String.valueOf(loginUser.getUserId());
 						if(StringUtils.isNotEmpty(userId)){
 							System.out.println(userId);
 							Principal principal = () -> userId;

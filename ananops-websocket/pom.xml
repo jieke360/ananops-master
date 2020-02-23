@@ -87,6 +87,11 @@
             <artifactId>ananops-provider-tpc-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-imc-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
         </dependency>

@@ -5,7 +5,6 @@ import com.ananops.base.constant.AliyunMqTopicConstants;
 import com.ananops.core.mq.MqMessage;
 import com.ananops.provider.annotation.MqConsumerStore;
 import com.ananops.provider.consumer.ImcTopicConsumer;
-import com.ananops.provider.consumer.MdmcTopicConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -29,8 +28,6 @@ public class WebSocketPushMessageListener implements MessageListenerConcurrently
     @Resource
     ImcTopicConsumer imcTopicConsumer;
 
-    @Resource
-    MdmcTopicConsumer mdmcTopicConsumer;
 
     @Resource
     private StringRedisTemplate srt;
