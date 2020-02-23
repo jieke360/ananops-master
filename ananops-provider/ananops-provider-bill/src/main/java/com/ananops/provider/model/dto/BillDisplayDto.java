@@ -45,6 +45,6 @@ public class BillDisplayDto {
     @ApiModelProperty(value = "设备数量")
     private Float deviceAmount;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "服务数量")
     private Float serviceAmount;
 }

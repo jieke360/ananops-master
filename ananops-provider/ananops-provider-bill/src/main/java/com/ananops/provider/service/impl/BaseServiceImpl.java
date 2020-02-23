@@ -102,6 +102,29 @@ public class BaseServiceImpl implements BaseService {
         return billDisplayDtoList;
     }
 
+    public BillDisplayDto getOneBillById(String id) {
+        Basebill baseBill = getBillById(id);
+
+        //创建待返回的账单展示传输对象
+        BillDisplayDto billDisplayDto = new BillDisplayDto();
+        UserInfoDto uacUserInfo = uacUserFeignApi.getUacUserById(Long.valueOf(baseBill.getUserid())).getResult();
+        if(uacUserInfo != null){
+            billDisplayDto.setUserName(uacUserInfo.getUserName());
+        }
+        CompanyVo companyVo = spcCompanyFeignApi.getCompanyDetailsById(Long.valueOf(baseBill.getSupplier())).getResult();
+        if(companyVo != null){
+            billDisplayDto.setSupplierName(companyVo.getGroupName());
+        }
+        try{
+            BeanUtils.copyProperties(baseBill,billDisplayDto);
+        }catch (Exception e){
+            log.error("账单BaseBill与账单展示billDisplayDto属性拷贝异常");
+            e.printStackTrace();
+        }
+
+        return billDisplayDto;
+    }
+
     @Override
     public Float getAmountByworkorderid(String workorderid) {
         Example example = new Example(Basebill.class);

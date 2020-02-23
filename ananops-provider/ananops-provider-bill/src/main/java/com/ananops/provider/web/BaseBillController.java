@@ -104,6 +104,12 @@ public class BaseBillController {
         return WrapMapper.ok(baseServiceImpl.getAllBillByUserId(userid.toString()));
     }
 
+    @PostMapping(value = "/getBillById/{id}")
+    @ApiOperation(httpMethod = "POST",value = "根据账单id获取所有账单")
+    public  Wrapper<BillDisplayDto> getBillById(@PathVariable String id){
+        return WrapMapper.ok(baseServiceImpl.getOneBillById(id));
+    }
+
     @GetMapping(value = "/getamountbyworkorder/{workorderid}")
     @ApiOperation(httpMethod = "GET",value = "根据工单id获取金额")
     public Wrapper<Float> getAmountByworkorderid(@ApiParam(name = "workorderid",value = "工单id") @RequestParam Long workorderid){
