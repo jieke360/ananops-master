@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(value = "用户组织绑定用户Dto")
-public class GroupBindUserDto implements Serializable {
+public class GroupBindUserApiDto implements Serializable {
 
     private static final long serialVersionUID = 3857784499077440327L;
 

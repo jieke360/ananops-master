@@ -1,6 +1,6 @@
 package com.ananops.provider.model.service;
 
-import com.ananops.provider.model.dto.group.GroupBindUserDto;
+import com.ananops.provider.model.dto.group.GroupBindUserApiDto;
 import com.ananops.provider.model.service.hystrix.UacGroupBindUserFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
@@ -8,8 +8,6 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 /**
  * 开放内部模块对UAC GroupBindUser的API
@@ -27,7 +25,7 @@ public interface UacGroupBindUserFeignApi {
      * @return
      */
     @PostMapping(value = "/api/uac/group/bindUser")
-    Wrapper bindUacUser4Group(@RequestBody GroupBindUserDto groupBindUserDto);
+    Wrapper bindUacUser4Group(@RequestBody GroupBindUserApiDto groupBindUserDto);
 
     /**
      * 根据User Id查询Group Id
