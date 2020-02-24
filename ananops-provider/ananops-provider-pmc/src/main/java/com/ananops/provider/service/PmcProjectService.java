@@ -79,4 +79,11 @@ public interface PmcProjectService extends IService<PmcProject> {
      * @return
      */
     List<Long> getEngineersIdByProjectId(Long projectId);
+
+    /**
+     * 获取项目总数
+     * @param groupId
+     * @return
+     */
+    int getProjectCount(Long groupId);
 }

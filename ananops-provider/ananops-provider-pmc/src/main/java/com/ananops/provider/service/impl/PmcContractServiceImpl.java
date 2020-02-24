@@ -127,4 +127,17 @@ public class PmcContractServiceImpl extends BaseService<PmcContract> implements 
         criteria.andEqualTo("partyBId",partyBId);
         return pmcContractMapper.selectByExample(example);
     }
+
+    @Override
+    public int getContractCount(Long groupId) {
+        Example example = new Example(PmcContract.class);
+        Example.Criteria criteria= example.createCriteria();
+        criteria.andEqualTo("partyAId",groupId);
+        Example.Criteria criteria2= example.createCriteria();
+        criteria2.andEqualTo("partyBId",groupId);
+        example.or(criteria2);
+        return pmcContractMapper.selectCountByExample(example);
+    }
+
+
 }

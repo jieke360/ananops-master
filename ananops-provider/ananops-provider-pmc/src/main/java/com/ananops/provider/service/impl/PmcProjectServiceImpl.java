@@ -85,6 +85,7 @@ public class PmcProjectServiceImpl extends BaseService<PmcProject> implements Pm
         Example.Criteria criteria2 = example.createCriteria();
         criteria2.andEqualTo("partyBId", groupId);
         example.or(criteria2);
+        example.setOrderByClause("created_time desc");
         List<PmcProject> pmcProjectList = pmcProjectMapper.selectByExample(example);
         return pmcProjectList;
     }
@@ -167,6 +168,17 @@ public class PmcProjectServiceImpl extends BaseService<PmcProject> implements Pm
             engineersId.add(pmcProjectUser.getUserId());
         }
         return  engineersId;
+    }
+
+    @Override
+    public int getProjectCount(Long groupId) {
+        Example example = new Example(PmcProject.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("partyAId", groupId);
+        Example.Criteria criteria2 = example.createCriteria();
+        criteria2.andEqualTo("partyBId", groupId);
+        example.or(criteria2);
+        return pmcProjectMapper.selectCountByExample(example);
     }
 
 
