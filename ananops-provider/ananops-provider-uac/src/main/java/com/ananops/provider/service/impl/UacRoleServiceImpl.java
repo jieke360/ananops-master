@@ -1,5 +1,7 @@
 package com.ananops.provider.service.impl;
 
+import com.ananops.provider.model.service.UacUserFeignApi;
+import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -38,22 +40,36 @@ import java.util.*;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleService {
+
 	@Resource
 	private UacRoleMapper uacRoleMapper;
+
 	@Resource
 	private UacRoleUserService uacRoleUserService;
+
 	@Resource
 	private UacRoleMenuMapper uacRoleMenuMapper;
+
 	@Resource
 	private UacUserService uacUserService;
+
 	@Resource
 	private UacRoleMenuService uacRoleMenuService;
+
 	@Resource
 	private UacMenuService uacMenuService;
+
 	@Resource
 	private UacActionService uacActionService;
+
 	@Resource
 	private UacRoleActionService uacRoleActionService;
+
+	@Resource
+	private UacGroupService uacGroupService;
+
+	@Resource
+	private UacRoleGroupService uacRoleGroupService;
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -63,8 +79,24 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
-	public List<RoleVo> queryRoleListWithPage(UacRole role) {
-		return uacRoleMapper.queryRoleListWithPage(role);
+	public List<RoleVo> queryRoleListWithPage(UacRole role, LoginAuthDto loginAuthDto) {
+		// 登录用户的组织Id
+		Long groupId = loginAuthDto.getGroupId();
+		// 获取公司组织Id
+		Long rootGroupId = 1L;
+		// 获取登录用户的组织树
+		List<GroupZtreeVo> groupTree = uacGroupService.getGroupTree(groupId);
+		if (groupTree != null) {
+			if (groupId != 1L) {
+				logger.info("groupTree.get(0) = {}", groupTree.get(0));
+				rootGroupId = groupTree.get(0).getId();
+			}
+		}
+		// 获取该Group下的所有角色；
+		List<Long> roleIds = uacRoleGroupService.listByRoleId(rootGroupId);
+		if (roleIds != null && roleIds.size() > 0)
+			return uacRoleMapper.queryRoleListWithBatchRoleId(roleIds);
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -86,6 +118,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		}
 
 		uacRoleActionService.deleteByRoleId(roleId);
+		uacRoleGroupService.deleteByRoleId(roleId);
 		uacRoleMenuService.deleteByRoleId(roleId);
 		return uacRoleMapper.deleteByPrimaryKey(roleId);
 	}
@@ -95,8 +128,25 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		int result = 0;
 		role.setUpdateInfo(loginAuthDto);
 		if (role.isNew()) {
-			role.setId(super.generateId());
+			Long roleId = super.generateId();
+			List<UacRoleUser> roles = uacRoleUserService.queryByUserId(loginAuthDto.getUserId());
+			if (roles != null) {
+				Iterator<UacRoleUser> iterator = roles.iterator();
+				if (iterator.hasNext()) {
+					UacRoleUser uacRoleUser = iterator.next();
+					UacRole uacRoleQuery = new UacRole();
+					uacRoleQuery.setId(uacRoleUser.getRoleId());
+					UacRole uacRole = uacRoleMapper.selectOne(uacRoleQuery);
+					role.setVersion(uacRole.getVersion()+1);
+				}
+			}
+			role.setId(roleId);
 			uacRoleMapper.insertSelective(role);
+			// 插入组织和角色的关系
+			UacRoleGroup uacRoleGroup = new UacRoleGroup();
+			uacRoleGroup.setRoleId(roleId);
+			uacRoleGroup.setGroupId(loginAuthDto.getGroupId());
+			uacRoleGroupService.save(uacRoleGroup);
 		} else {
 			result = uacRoleMapper.updateByPrimaryKeySelective(role);
 		}
@@ -322,6 +372,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		}
 
 		uacRoleMenuService.deleteByRoleIdList(roleIdList);
+		uacRoleGroupService.deleteByRoleIdList(roleIdList);
 		uacRoleActionService.deleteByRoleIdList(roleIdList);
 
 		int result = uacRoleMapper.batchDeleteByIdList(roleIdList);

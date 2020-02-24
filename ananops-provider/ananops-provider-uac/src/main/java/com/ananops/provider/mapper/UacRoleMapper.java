@@ -45,6 +45,15 @@ public interface UacRoleMapper extends MyMapper<UacRole> {
 	List<RoleVo> queryRoleListWithPage(UacRole role);
 
 	/**
+	 * 基于角色Id批量查询角色List
+	 *
+	 * @param role the role
+	 *
+	 * @return the list
+	 */
+	List<RoleVo> queryRoleListWithBatchRoleId(List<Long> roleIds);
+
+	/**
 	 * Select all role info by user id list.
 	 *
 	 * @param userId the user id

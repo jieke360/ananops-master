@@ -51,16 +51,7 @@
         <!--</dependency>-->
         <dependency>
             <groupId>com.ananops.provider.api</groupId>
-            <artifactId>ananops-provider-mdmc-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ananops.provider.api</groupId>
             <artifactId>ananops-provider-pmc-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ananops.provider.api</groupId>
-            <artifactId>ananops-provider-imc-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.ananops.provider.api</groupId>

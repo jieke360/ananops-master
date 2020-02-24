@@ -98,8 +98,10 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
     public PageInfo getAlarmListByGroupId(BaseQuery baseQuery) {
         PageHelper.startPage(baseQuery.getPageNum(), baseQuery.getPageSize());
         LoginAuthDto loginAuthDto = RequestUtil.getLoginUser();
+        //通过组织ID查询组织列表
         Wrapper<List<GroupZtreeVo>> wrapper = uacGroupFeignApi.getGroupTreeById(loginAuthDto.getGroupId());
         Example example = new Example(AmcAlarm.class);
+        //获取登录用户组织及其下属部分下的所有报警信息
         for (int i = 0; i < wrapper.getResult().size(); i++) {
             example.or(example.createCriteria().andEqualTo("groupId", wrapper.getResult().get(i).getId()));
             example.setOrderByClause("last_occur_time desc");

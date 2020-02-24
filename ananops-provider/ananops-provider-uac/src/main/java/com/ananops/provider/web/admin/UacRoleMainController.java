@@ -72,7 +72,8 @@ public class UacRoleMainController extends BaseController {
 		logger.info("查询角色列表roleQuery={}", role);
 		PageHelper.startPage(role.getPageNum(), role.getPageSize());
 		role.setOrderBy("created_time desc");
-		List<RoleVo> roleVoList = uacRoleService.queryRoleListWithPage(role);
+		LoginAuthDto loginAuthDto = super.getLoginAuthDto();
+		List<RoleVo> roleVoList = uacRoleService.queryRoleListWithPage(role, loginAuthDto);
 		return WrapMapper.ok(new PageInfo<>(roleVoList));
 	}
 

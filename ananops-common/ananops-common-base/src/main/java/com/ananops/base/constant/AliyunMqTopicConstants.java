@@ -59,7 +59,12 @@ public class AliyunMqTopicConstants {
 		/**
 		 * Imc topic mq topic enum.
 		 */
-		IMC_TOPIC("IMC_TOPIC","IMC_TOPIC"),;
+		IMC_TOPIC("IMC_TOPIC","IMC_TOPIC"),
+		/**
+		 * Mdmc topic mq topic enum.
+		 */
+		MDMC_TOPIC("MDMC_TOPIC","MDMC_TOPIC"),;
+
 		MqTopicEnum(String topic, String topicName) {
 			this.topic = topic;
 			this.topicName = topicName;
@@ -162,7 +167,11 @@ public class AliyunMqTopicConstants {
 		/**
 		 * 巡检任务子项状态改变
 		 */
-		IMC_ITEM_STATUS_CHANGED("IMC_ITEM_STATUS_CHANGED",MqTopicEnum.IMC_TOPIC.getTopic(),"巡检任务子项状态改变"),;
+		IMC_ITEM_STATUS_CHANGED("IMC_ITEM_STATUS_CHANGED",MqTopicEnum.IMC_TOPIC.getTopic(),"巡检任务子项状态改变"),
+		/**
+		 * 维修工单状态改变
+		 */
+		MDMC_TASK_STATUS_CHANGED("MDMC_TASK_STATUS_CHANGED",MqTopicEnum.MDMC_TOPIC.getTopic(),"维修工单状态改变"),;
 		/**
 		 * The Tag.
 		 */
@@ -272,6 +281,11 @@ public class AliyunMqTopicConstants {
 		Set<String> imcTagList = new HashSet<>();
 		imcTagList.add(MqTagEnum.IMC_TASK_STATUS_CHANGED.getTag());
 		imcTagList.add(MqTagEnum.IMC_ITEM_STATUS_CHANGED.getTag());
+
+		Set<String> mdmcTagList=new HashSet<>();
+		mdmcTagList.add(MqTagEnum.MDMC_TASK_STATUS_CHANGED.getTag());
+
+		topicObjList.add(new TopicObj(MqTopicEnum.MDMC_TOPIC.getTopic(),mdmcTagList));
 
 		topicObjList.add(new TopicObj(MqTopicEnum.IMC_TOPIC.getTopic(),imcTagList));
 
