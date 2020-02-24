@@ -109,6 +109,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                         ItemStatusEnum.IN_THE_INSPECTION.getStatusNum()};
                 for(Long attachmentId:attachmentIds){
                     //建立附件与巡检任务、任务子项、当前状态的关联关系
+                    logger.info("attachementId={}",attachmentId);
                     this.bindImcItemAndFiles(attachmentId,taskId,itemId,refNo,statusList,loginAuthDto);
                 }
             }

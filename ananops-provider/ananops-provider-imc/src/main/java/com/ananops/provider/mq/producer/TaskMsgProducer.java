@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by rongshuai on 2020/2/22 16:19
@@ -40,8 +41,11 @@ public class TaskMsgProducer {
         Example example = new Example(ImcUserTask.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("taskId",taskId);
-        Long userId = imcUserTaskMapper.selectByExample(example).get(0).getUserId();
-
+        List<ImcUserTask> imcUserTaskList = imcUserTaskMapper.selectByExample(example);
+        Long userId = null;
+        if(imcUserTaskList.size()>0){
+            userId = imcUserTaskList.get(0).getUserId();
+        }
         String msgBody;
         ImcSendTaskStatusDto imcSendTaskStatusDto = new ImcSendTaskStatusDto();
         if(userId!=null){
