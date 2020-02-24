@@ -115,9 +115,14 @@ public enum ErrorCodeEnum {
 
 
 	/**
-	 * MDMC 99980004 error code enum.
+	 * MDMC 99980005 error code enum.
 	 */
 	MDMC99980005(99980005,"故障类型和故障位置内容不能为空"),
+
+	/**
+	 * MDMC 99980006 error code enum.
+	 */
+	MDMC99980006(99980006,"找不到发送消息的对象"),
 
 	/**
 	 * gl 9999084 error code enum.

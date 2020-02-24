@@ -5,6 +5,7 @@ import com.ananops.base.constant.AliyunMqTopicConstants;
 import com.ananops.core.mq.MqMessage;
 import com.ananops.provider.annotation.MqConsumerStore;
 import com.ananops.provider.consumer.ImcTopicConsumer;
+import com.ananops.provider.consumer.MdmcTopicConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -28,7 +29,8 @@ public class WebSocketPushMessageListener implements MessageListenerConcurrently
     @Resource
     ImcTopicConsumer imcTopicConsumer;
 
-
+    @Resource
+    MdmcTopicConsumer mdmcTopicConsumer;
     @Resource
     private StringRedisTemplate srt;
 
@@ -55,6 +57,9 @@ public class WebSocketPushMessageListener implements MessageListenerConcurrently
             }
             if (AliyunMqTopicConstants.MqTopicEnum.IMC_TOPIC.getTopic().equals(topicName)) {
                 imcTopicConsumer.handlerSendImcTopic(body, topicName, tags, keys);
+            }
+            if (AliyunMqTopicConstants.MqTopicEnum.MDMC_TOPIC.getTopic().equals(topicName)){
+                mdmcTopicConsumer.handlerSendImcTopic(body,topicName,tags,keys);
             }
         } catch (IllegalArgumentException ex) {
             log.error("校验MQ message 失败 ex={}", ex.getMessage(), ex);

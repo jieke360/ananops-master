@@ -8,6 +8,7 @@ import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
 
+import com.ananops.provider.manager.MdmcTaskManager;
 import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
@@ -19,6 +20,7 @@ import com.ananops.provider.model.enums.*;
 import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
+import com.ananops.provider.mq.producer.TaskMsgProducer;
 import com.ananops.provider.service.*;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
@@ -79,6 +81,12 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     @Resource
     PmcProjectFeignApi pmcProjectFeignApi;
+
+    @Resource
+    TaskMsgProducer taskMsgProducer;
+
+    @Resource
+    MdmcTaskManager taskManager;
 
     @Override
     public MdmcTask getTaskByTaskId(Long taskId) {
@@ -154,19 +162,21 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
             }
 
-            //获取所有的巡检任务子项
+            //获取所有的任务子项
             List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList = mdmcAddTaskDto.getMdmcAddTaskItemDtoList();
-            mdmcAddTaskItemDtoList.forEach(taskItem->{
-                //设置任务子项对应的任务id
-                taskItem.setTaskId(taskId);
-                //创建新的任务子项，并更新返回结果
-                MdmcTaskItem item = taskItemService.saveItem(taskItem,loginAuthDto);
-                BeanUtils.copyProperties(item ,taskItem);
-            });
+            if (mdmcAddTaskItemDtoList!=null){
+                mdmcAddTaskItemDtoList.forEach(taskItem->{
+                    //设置任务子项对应的任务id
+                    taskItem.setTaskId(taskId);
+                    //创建新的任务子项，并更新返回结果
+                    MdmcTaskItem item = taskItemService.saveItem(taskItem,loginAuthDto);
+                    BeanUtils.copyProperties(item ,taskItem);
+                });
+                BeanUtils.copyProperties(mdmcAddTaskItemDtoList,mdmcAddTaskDto);
+            }
 
             //更新返回结果
             BeanUtils.copyProperties(task,mdmcAddTaskDto);
-            BeanUtils.copyProperties(mdmcAddTaskItemDtoList,mdmcAddTaskDto);
 
             logger.info("创建维修工单成功[OK] TaskDetail = {}", mdmcAddTaskDto);
 
@@ -185,7 +195,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             Integer status = task.getStatus();
             Integer objectType = task.getObjectType();
 
-            if (!attachmentIdList.isEmpty()){
+            if (attachmentIdList!=null && !attachmentIdList.isEmpty()){
                 Long refNo1=super.generateId();
 
                 for (Long attachmentId:attachmentIdList){
@@ -236,6 +246,10 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         taskLogMapper.insert(taskLog);
 
         logger.info("记录维修工单操作日志[OK] TaskLog = {}", taskLog);
+       if (task.getStatus()!=null&&task.getStatus()!=4 &&task.getStatus()!=14&&task.getStatus()!=15){
+           MqMessageData mqMessageData = taskMsgProducer.sendTaskStatusMsgMq(task);
+           taskManager.modifyTaskStatus(mqMessageData);
+       }
 
         return mdmcAddTaskDto;
     }
@@ -255,7 +269,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         }
 
 
-        if (!troubleTypeList.isEmpty()){
+        if (troubleTypeList!=null){
             for (String troubleType:troubleTypeList){
                 MdmcTroubleType mdmcTroubleType=new MdmcTroubleType();
                 Long typeId=super.generateId();
@@ -289,14 +303,24 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         criteria.andEqualTo("groupId",groupId);
         List<MdmcTroubleAddressDto> troubleAddressDtoList=new ArrayList<>();
         List<MdmcTroubleAddress> troubleAddressList=troubleAddressMapper.selectByExample(example);
-        if (!troubleAddressList.isEmpty()){
+        if (troubleAddressList!=null){
         for (MdmcTroubleAddress troubleAddress:troubleAddressList){
             MdmcTroubleAddressDto troubleAddressDto=new MdmcTroubleAddressDto();
             BeanUtils.copyProperties(troubleAddress,troubleAddressDto);
             troubleAddressDtoList.add(troubleAddressDto);
         }
         }
-      //else{添加默认列表}
+        else {
+            List<MdmcTroubleAddress> troubleAddressList1=troubleAddressMapper.selectAll();
+            for (int i=0;i<5;i++){
+                MdmcTroubleAddressDto troubleAddressDto1=new MdmcTroubleAddressDto();
+                if(troubleAddressList1!=null){
+                    MdmcTroubleAddress troubleAddress1=troubleAddressList1.get(i);
+                    BeanUtils.copyProperties(troubleAddress1,troubleAddressDto1);
+                    troubleAddressDtoList.add(troubleAddressDto1);
+                }
+            }
+        }
 
         mdmcAddTroubleInfoDto.setTroubleAddressList(troubleAddressDtoList);
         Example example1=new Example(MdmcTroubleType.class);
@@ -304,12 +328,19 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         criteria1.andEqualTo("groupId",groupId);
         List<String> troubleTypeList=new ArrayList<>();
         List<MdmcTroubleType> mdmcTroubleTypeList=troubleTypeMapper.selectByExample(example1);
-        if (!mdmcTroubleTypeList.isEmpty()){
+        if (mdmcTroubleTypeList!=null){
             for (MdmcTroubleType troubleType:mdmcTroubleTypeList){
                 troubleTypeList.add(troubleType.getTroubleType());
             }
         }
-        //else{添加默认列表}
+        else{
+            List<MdmcTroubleType> troubleTypes=troubleTypeMapper.selectAll();
+            for (int i=0;i<3;i++){
+                if (troubleTypes!=null){
+                    troubleTypeList.add(troubleTypes.get(i).getTroubleType());
+                }
+            }
+        }
         mdmcAddTroubleInfoDto.setTroubleTypeList(troubleTypeList);
         return mdmcAddTroubleInfoDto;
 
@@ -341,6 +372,10 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         BeanUtils.copyProperties(task,mdmcTaskDto);
 
         logger.info("修改维修工单详情成功[OK] Task = {}", task);
+        if (task.getStatus()!=null&&task.getStatus()!=4 &&task.getStatus()!=14&&task.getStatus()!=15) {
+            MqMessageData mqMessageData = taskMsgProducer.sendTaskStatusMsgMq(task);
+            taskManager.modifyTaskStatus(mqMessageData);
+        }
         return mdmcTaskDto;
     }
 
@@ -391,6 +426,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
                 }
             }
+
             logger.info("更新维修工单状态成功[OK] Task = {}", task);
         }
 
@@ -405,7 +441,10 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         taskLogMapper.insert(taskLog);
 
         logger.info("记录维修工单操作日志[OK] TaskLog = {}", taskLog);
-
+        if (task.getStatus()!=null&&task.getStatus()!=4 &&task.getStatus()!=14&&task.getStatus()!=15){
+            MqMessageData mqMessageData = taskMsgProducer.sendTaskStatusMsgMq(task);
+            taskManager.modifyTaskStatus(mqMessageData);
+        }
         return task;
     }
 
@@ -569,29 +608,41 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     }
 
-    public List<MdmcTask> getTaskListByUserIdAndStatusOptional(Long userId, Integer status) {
-        String roleCode=uacUserFeignApi.getUacUserById(userId).getResult().getRoleCode();
+    private List<MdmcTask> getTaskListByUserIdAndStatusOptional(Long userId, Integer status) {
+        String roleCode="";
+        if (userId!=null)roleCode=uacUserFeignApi.getUacUserById(userId).getResult().getRoleCode();
         if(status == null) {
+
             List<MdmcTask> taskList=taskMapper.selectBySomeoneId(userId);
             List<MdmcTask> taskList1=new ArrayList<>();
-            if (roleCode.equals("fac_service")||roleCode.equals("fac_manager")||roleCode.equals("fac_leader")){
-                for (MdmcTask task:taskList){
-                    if (task.getStatus()>2)
-                        taskList1.add(task);
+            if (roleCode!=null){
+                if (roleCode.equals("fac_service")||roleCode.equals("fac_manager")||roleCode.equals("fac_leader")){
+                    for (MdmcTask task:taskList){
+                        if (task.getStatus()>2)
+                            taskList1.add(task);
+                    }
+                    return taskList1;
                 }
-                return taskList1;
-            }
-            else if(roleCode.equals("engineer")){
-                for (MdmcTask task:taskList){
-                    if (task.getStatus()>4 && task.getStatus()!=14)
-                        taskList1.add(task);
+                if(roleCode.equals("engineer")){
+                    for (MdmcTask task:taskList){
+                        if (task.getStatus()>4 && task.getStatus()!=14)
+                            taskList1.add(task);
+                    }
+                    return  taskList1;
                 }
-                return  taskList1;
+                if(roleCode.equals("user_watcher") || roleCode.equals("user")||roleCode.equals("user_leader")){
+                    taskList1.addAll(taskList);
+                    return  taskList1;
+                }
             }
-            return taskList;
-        } else {
+            else return taskList;
+
+
+
+        } else
             return taskMapper.selectBySomeoneIdAndStatus(userId, status);
-        }
+        return taskMapper.selectBySomeoneIdAndStatus(userId, status);
+
     }
 
 
@@ -739,6 +790,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         MdmcFileTaskStatus fileTaskStatus=fileTaskStatusMapper.selectByExample(example).get(0);
         OptBatchGetUrlRequest optBatchGetUrlRequest=new OptBatchGetUrlRequest();
         optBatchGetUrlRequest.setRefNo(String.valueOf(fileTaskStatus.getId()));
+        optBatchGetUrlRequest.setEncrypt(true);
 
         return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
     }
