@@ -105,27 +105,28 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             imcFacilitatorGroupTask.setFacilitatorGroupId(facilitatorGroupId);
             imcFacilitatorGroupTask.setTaskId(taskId);
             imcFacilitatorGroupTaskMapper.insert(imcFacilitatorGroupTask);
-
-            //保存新创建的巡检任务子项
-            imcAddInspectionItemDtoList.forEach(item->{//保存所有巡检任务子项
-                item.setInspectionTaskId(taskId);//设置巡检任务子项对应的任务id
-                item.setDays(imcInspectionTask.getDays());//设置巡检任务子项对应的巡检周期
-                item.setFrequency(imcInspectionTask.getFrequency());//设置巡检任务子项对应的巡检频率
-                item.setScheduledStartTime(imcInspectionTask.getScheduledStartTime());//设置巡检任务子项的对应的计划开始时间
-                item.setUserId(userId);
-                item.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
-                Long scheduledStartTime = item.getScheduledStartTime().getTime();//获得巡检任务子项的预计开始时间
-                Long currentTime = System.currentTimeMillis();//获得当前时间
-                if(scheduledStartTime<=currentTime){//如果计划执行时间<=当前时间，说明，巡检任务需要立即执行
-                    //将巡检任务子项的状态设置为等待分配工程师
+            if(imcAddInspectionItemDtoList!=null){
+                //保存新创建的巡检任务子项
+                imcAddInspectionItemDtoList.forEach(item->{//保存所有巡检任务子项
+                    item.setInspectionTaskId(taskId);//设置巡检任务子项对应的任务id
+                    item.setDays(imcInspectionTask.getDays());//设置巡检任务子项对应的巡检周期
+                    item.setFrequency(imcInspectionTask.getFrequency());//设置巡检任务子项对应的巡检频率
+                    item.setScheduledStartTime(imcInspectionTask.getScheduledStartTime());//设置巡检任务子项的对应的计划开始时间
+                    item.setUserId(userId);
                     item.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
-                }
-                //创建新的任务子项，并更新返回结果
-                BeanUtils.copyProperties(imcInspectionItemService.saveInspectionItem(item,loginAuthDto),item);
-            });
+                    Long scheduledStartTime = item.getScheduledStartTime().getTime();//获得巡检任务子项的预计开始时间
+                    Long currentTime = System.currentTimeMillis();//获得当前时间
+                    if(scheduledStartTime<=currentTime){//如果计划执行时间<=当前时间，说明，巡检任务需要立即执行
+                        //将巡检任务子项的状态设置为等待分配工程师
+                        item.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
+                    }
+                    //创建新的任务子项，并更新返回结果
+                    BeanUtils.copyProperties(imcInspectionItemService.saveInspectionItem(item,loginAuthDto),item);
+                });
+                BeanUtils.copyProperties(imcAddInspectionItemDtoList,imcAddInspectionTaskDto);
+            }
             //更新返回结果
             BeanUtils.copyProperties(imcInspectionTask,imcAddInspectionTaskDto);
-            BeanUtils.copyProperties(imcAddInspectionItemDtoList,imcAddInspectionTaskDto);
         }else{
             //如果当前是更新一条记录
             imcInspectionTaskMapper.updateByPrimaryKeySelective(imcInspectionTask);
