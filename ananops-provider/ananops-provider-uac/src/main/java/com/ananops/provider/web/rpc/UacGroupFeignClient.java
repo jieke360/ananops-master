@@ -1,9 +1,11 @@
 package com.ananops.provider.web.rpc;
 
 import com.ananops.base.dto.LoginAuthDto;
+import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.UacGroup;
 import com.ananops.provider.model.domain.UacUser;
+import com.ananops.provider.model.dto.group.GroupNameLikeQuery;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
 import com.ananops.provider.model.vo.GroupZtreeVo;
@@ -13,10 +15,12 @@ import com.ananops.provider.service.UacGroupService;
 import com.ananops.provider.service.UacUserService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -108,13 +112,17 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
     }
 
     @Override
-    @ApiOperation(httpMethod = "POST", value = "通过公司名称模糊查询Group信息")
-    public Wrapper<List<GroupSaveDto>> getUacGroupByLikeName(@RequestParam("groupName") String groupName) {
+    @ApiOperation(httpMethod = "POST", value = "通过组织名称及类型模糊查询Group信息")
+    public Wrapper<List<GroupSaveDto>> getUacGroupByLikeName(@RequestBody GroupNameLikeQuery groupNameLikeQuery) {
         logger.info("通过公司名称模糊查询Group信息");
         List<GroupSaveDto> groupSaveDtos = new ArrayList<>();
-        List<UacGroup> uacGroups = uacGroupService.queryByLikeName(groupName);
+        Preconditions.checkArgument(!StringUtils.isEmpty(groupNameLikeQuery.getGroupName()), ErrorCodeEnum.UAC10015011.msg());
+        Preconditions.checkArgument(!StringUtils.isEmpty(groupNameLikeQuery.getType()), ErrorCodeEnum.UAC10015012.msg());
+        List<UacGroup> uacGroups = uacGroupService.queryByLikeName(groupNameLikeQuery.getGroupName());
         if (uacGroups != null) {
             for (UacGroup uacGroup : uacGroups) {
+                if (!uacGroup.getType().equals(groupNameLikeQuery.getType()))
+                    continue;
                 GroupSaveDto groupSaveDto = new GroupSaveDto();
                 try {
                     BeanUtils.copyProperties(groupSaveDto, uacGroup);

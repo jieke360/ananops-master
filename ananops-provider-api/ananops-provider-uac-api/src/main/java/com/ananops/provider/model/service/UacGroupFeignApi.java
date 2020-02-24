@@ -1,5 +1,6 @@
 package com.ananops.provider.model.service;
 
+import com.ananops.provider.model.dto.group.GroupNameLikeQuery;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
 import com.ananops.provider.model.vo.GroupZtreeVo;
@@ -61,7 +62,7 @@ public interface UacGroupFeignApi {
      * @return the wrapper
      */
     @PostMapping(value = "/api/uac/group/getUacGroupByLikeName")
-    Wrapper<List<GroupSaveDto>> getUacGroupByLikeName(@RequestParam("groupName") String groupName);
+    Wrapper<List<GroupSaveDto>> getUacGroupByLikeName(@RequestBody GroupNameLikeQuery groupNameLikeQuery);
 
     /**
      * 根据Group Id查询UacUserIdList
