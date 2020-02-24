@@ -1,5 +1,6 @@
 package com.ananops.provider.service.impl;
 
+import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -128,6 +129,17 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		role.setUpdateInfo(loginAuthDto);
 		if (role.isNew()) {
 			Long roleId = super.generateId();
+			List<UacRoleUser> roles = uacRoleUserService.queryByUserId(loginAuthDto.getUserId());
+			if (roles != null) {
+				Iterator<UacRoleUser> iterator = roles.iterator();
+				if (iterator.hasNext()) {
+					UacRoleUser uacRoleUser = iterator.next();
+					UacRole uacRoleQuery = new UacRole();
+					uacRoleQuery.setId(uacRoleUser.getRoleId());
+					UacRole uacRole = uacRoleMapper.selectOne(uacRoleQuery);
+					role.setVersion(uacRole.getVersion()+1);
+				}
+			}
 			role.setId(roleId);
 			uacRoleMapper.insertSelective(role);
 			// 插入组织和角色的关系
