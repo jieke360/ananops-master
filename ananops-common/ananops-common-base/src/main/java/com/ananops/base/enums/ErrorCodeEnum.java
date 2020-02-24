@@ -526,6 +526,14 @@ public enum ErrorCodeEnum {
 	 * Uac 10015010 error code enum.
 	 */
 	UAC10015010(10015010, "组织ID不能为空, groupId=%s"),
+	/**
+	 * Uac 10015011 error code enum.
+	 */
+	UAC10015011(10015011, "组织名称不能为空, groupName=%s"),
+	/**
+	 * Uac 10015012 error code enum.
+	 */
+	UAC10015012(10015012, "组织类型不能为空, groupType=%s"),
 
 
 	/**

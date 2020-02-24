@@ -1,21 +1,14 @@
 package com.ananops.provider.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ananops.provider.mapper.BasebillMapper;
 import com.ananops.provider.model.domain.Basebill;
 import com.ananops.provider.model.dto.BillCreateDto;
 import com.ananops.provider.model.dto.BillDisplayDto;
-import com.ananops.provider.model.dto.PmcPayDto;
-import com.ananops.provider.model.dto.TaskDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
-import com.ananops.provider.model.vo.EngineerSimpleVo;
 import com.ananops.provider.service.BaseService;
 import com.ananops.provider.service.SpcCompanyFeignApi;
-import com.ananops.wrapper.Wrapper;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +19,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 @Slf4j
 @Service
@@ -108,6 +100,29 @@ public class BaseServiceImpl implements BaseService {
             }
         }
         return billDisplayDtoList;
+    }
+
+    public BillDisplayDto getOneBillById(String id) {
+        Basebill baseBill = getBillById(id);
+
+        //创建待返回的账单展示传输对象
+        BillDisplayDto billDisplayDto = new BillDisplayDto();
+        UserInfoDto uacUserInfo = uacUserFeignApi.getUacUserById(Long.valueOf(baseBill.getUserid())).getResult();
+        if(uacUserInfo != null){
+            billDisplayDto.setUserName(uacUserInfo.getUserName());
+        }
+        CompanyVo companyVo = spcCompanyFeignApi.getCompanyDetailsById(Long.valueOf(baseBill.getSupplier())).getResult();
+        if(companyVo != null){
+            billDisplayDto.setSupplierName(companyVo.getGroupName());
+        }
+        try{
+            BeanUtils.copyProperties(baseBill,billDisplayDto);
+        }catch (Exception e){
+            log.error("账单BaseBill与账单展示billDisplayDto属性拷贝异常");
+            e.printStackTrace();
+        }
+
+        return billDisplayDto;
     }
 
     @Override

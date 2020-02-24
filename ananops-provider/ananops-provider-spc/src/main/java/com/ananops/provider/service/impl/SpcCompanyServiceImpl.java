@@ -12,6 +12,7 @@ import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
+import com.ananops.provider.model.dto.group.GroupNameLikeQuery;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
@@ -141,7 +142,10 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
     public List<CompanyVo> queryByLikeCompanyName(String companyName) {
         logger.info("queryByLikeCompanyName - 根据公司名称模糊查询公司信息. companyName={}", companyName);
         List<CompanyVo> companyVos = new ArrayList<>();
-        List<GroupSaveDto> groupSaveDtos = uacGroupFeignApi.getUacGroupByLikeName(companyName).getResult();
+        GroupNameLikeQuery groupNameLikeQuery = new GroupNameLikeQuery();
+        groupNameLikeQuery.setGroupName(companyName);
+        groupNameLikeQuery.setType("company");
+        List<GroupSaveDto> groupSaveDtos = uacGroupFeignApi.getUacGroupByLikeName(groupNameLikeQuery).getResult();
         if (groupSaveDtos != null) {
             for (GroupSaveDto groupSaveDto : groupSaveDtos) {
                 CompanyVo companyVo = new CompanyVo();

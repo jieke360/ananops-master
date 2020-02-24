@@ -107,11 +107,6 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>io.github.swagger2markup</groupId>-->
-        <!--<artifactId>swagger2markup</artifactId>-->
-        <!--<version>1.3.1</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -135,6 +130,16 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-uac-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-spc-api</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
