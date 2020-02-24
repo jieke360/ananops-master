@@ -443,11 +443,12 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         criteria.andEqualTo("taskId",taskId);
         criteria.andEqualTo("itemId",itemId);
         criteria.andEqualTo("itemStatus",itemStatus);
-        ImcFileTaskItemStatus imcFileTaskItemStatus = imcFileTaskItemStatusMapper.selectByExample(example).get(0);
-        if(imcFileTaskItemStatus!=null){
-            String refNo = imcFileTaskItemStatus.getRefNo();
+        List<ImcFileTaskItemStatus> imcFileTaskItemStatusList = imcFileTaskItemStatusMapper.selectByExample(example);
+        if(imcFileTaskItemStatusList.size()>0){
+            String refNo = imcFileTaskItemStatusList.get(0).getRefNo();
             OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
             optBatchGetUrlRequest.setRefNo(refNo);
+            optBatchGetUrlRequest.setEncrypt(true);
             return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
         }else{
             throw new BusinessException(ErrorCodeEnum.IMC10090005);
