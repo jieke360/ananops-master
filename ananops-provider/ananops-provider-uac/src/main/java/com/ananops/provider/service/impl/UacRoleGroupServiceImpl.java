@@ -6,7 +6,6 @@ import com.ananops.provider.mapper.UacRoleGroupMapper;
 import com.ananops.provider.model.domain.UacRoleGroup;
 import com.ananops.provider.model.exceptions.UacBizException;
 import com.ananops.provider.service.UacRoleGroupService;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,5 +41,20 @@ public class UacRoleGroupServiceImpl extends BaseService<UacRoleGroup> implement
             }
         }
         return roleIds;
+    }
+
+    @Override
+    public void deleteByRoleId(Long roleId) {
+        if (roleId == null) {
+            throw new UacBizException(ErrorCodeEnum.UAC10012001);
+        }
+        UacRoleGroup roleGroup = new UacRoleGroup();
+        roleGroup.setRoleId(roleId);
+        uacRoleGroupMapper.delete(roleGroup);
+    }
+
+    @Override
+    public void deleteByRoleIdList(List<Long> roleIdList) {
+        uacRoleGroupMapper.deleteByRoleIdList(roleIdList);
     }
 }

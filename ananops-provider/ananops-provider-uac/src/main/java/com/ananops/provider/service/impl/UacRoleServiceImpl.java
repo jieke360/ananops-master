@@ -117,6 +117,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		}
 
 		uacRoleActionService.deleteByRoleId(roleId);
+		uacRoleGroupService.deleteByRoleId(roleId);
 		uacRoleMenuService.deleteByRoleId(roleId);
 		return uacRoleMapper.deleteByPrimaryKey(roleId);
 	}
@@ -126,8 +127,14 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		int result = 0;
 		role.setUpdateInfo(loginAuthDto);
 		if (role.isNew()) {
-			role.setId(super.generateId());
+			Long roleId = super.generateId();
+			role.setId(roleId);
 			uacRoleMapper.insertSelective(role);
+			// 插入组织和角色的关系
+			UacRoleGroup uacRoleGroup = new UacRoleGroup();
+			uacRoleGroup.setRoleId(roleId);
+			uacRoleGroup.setGroupId(loginAuthDto.getGroupId());
+			uacRoleGroupService.save(uacRoleGroup);
 		} else {
 			result = uacRoleMapper.updateByPrimaryKeySelective(role);
 		}
@@ -353,6 +360,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		}
 
 		uacRoleMenuService.deleteByRoleIdList(roleIdList);
+		uacRoleGroupService.deleteByRoleIdList(roleIdList);
 		uacRoleActionService.deleteByRoleIdList(roleIdList);
 
 		int result = uacRoleMapper.batchDeleteByIdList(roleIdList);

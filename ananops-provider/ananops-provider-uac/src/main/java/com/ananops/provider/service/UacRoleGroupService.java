@@ -21,4 +21,18 @@ public interface UacRoleGroupService extends IService<UacRoleGroup> {
      * @return the list
      */
     List<Long> listByRoleId(Long groupId);
+
+    /**
+     * 通过角色Id删除与Group的关联表记录
+     *
+     * @param roleId 角色ID
+     */
+    void deleteByRoleId(Long roleId);
+
+    /**
+     * 批量通过角色Id删除与Group的关联表记录
+     *
+     * @param roleId 角色ID
+     */
+    void deleteByRoleIdList(List<Long> roleIdList);
 }

@@ -5,4 +5,11 @@
     <id column="role_id" property="roleId" jdbcType="BIGINT" />
     <id column="group_id" property="groupId" jdbcType="BIGINT" />
   </resultMap>
+  <delete id="deleteByRoleIdList">
+    delete from an_uac_role_group
+    where role_id in
+    <foreach collection="roleIdList" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
 </mapper>
