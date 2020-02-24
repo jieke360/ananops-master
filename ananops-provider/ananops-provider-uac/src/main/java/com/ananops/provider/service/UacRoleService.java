@@ -45,7 +45,7 @@ public interface UacRoleService extends IService<UacRole> {
 	 *
 	 * @return the list
 	 */
-	List<RoleVo> queryRoleListWithPage(UacRole role);
+	List<RoleVo> queryRoleListWithPage(UacRole role, LoginAuthDto loginAuthDto);
 
 	/**
 	 * 根据角色删除用户.
