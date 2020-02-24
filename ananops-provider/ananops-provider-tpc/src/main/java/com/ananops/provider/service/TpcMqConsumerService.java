@@ -11,7 +11,9 @@ package com.ananops.provider.service;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.TpcMqConsumer;
+import com.ananops.provider.model.domain.TpcMqSubscribe;
 import com.ananops.provider.model.dto.AddMqConsumerDto;
+import com.ananops.provider.model.dto.ConsumerSubscribeTopicDto;
 import com.ananops.provider.model.vo.TpcMqConsumerVo;
 import com.ananops.provider.model.vo.TpcMqSubscribeVo;
 
@@ -30,6 +32,7 @@ public interface TpcMqConsumerService extends IService<TpcMqConsumer> {
 	 */
 	TpcMqConsumer addConsumer(AddMqConsumerDto addMqConsumerDto, LoginAuthDto loginAuthDto);
 
+	TpcMqSubscribe consumerSubcribeTopic(ConsumerSubscribeTopicDto consumerSubscribeTopicDto);
 
 	/**
 	 * 查询Mq消费者列表.

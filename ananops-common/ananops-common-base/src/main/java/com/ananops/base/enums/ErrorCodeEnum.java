@@ -797,6 +797,14 @@ public enum ErrorCodeEnum {
 	 * Tpc 100500019 error code enum
 	 */
 	TPC100500019(10050019,"topic绑定tag失败"),
+	/**
+	 * Tpc 100500020 error code enum
+	 */
+	TPC100500020(10050020,"无此消费者"),
+	/**
+	 * Tpc 100500021 error code enum
+	 */
+	TPC100500021(10050021,"无此topic"),
 
 	//1008 项目管理
 	/**
