@@ -183,7 +183,21 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	public PageInfo queryUserListWithPage(UacUser uacUser) {
 		PageHelper.startPage(uacUser.getPageNum(), uacUser.getPageSize());
 		uacUser.setOrderBy("u.update_time desc");
-		List<UacUser> uacUserList = uacUserMapper.selectUserList(uacUser);
+		List<UacUser> uacUserList = new ArrayList<>();
+		Long groupId = uacUser.getGroupId();
+		if (groupId != null) {
+			List<GroupZtreeVo> groupZtreeVos = uacGroupService.getGroupTree(groupId);
+			if (groupZtreeVos != null) {
+				for (GroupZtreeVo groupZtreeVo : groupZtreeVos) {
+					if (groupId.equals(groupZtreeVo.getId()))
+						continue;
+					uacUser.setGroupId(groupZtreeVo.getId());
+					uacUserList.addAll(uacUserMapper.selectUserList(uacUser));
+				}
+			}
+		} else {
+			uacUserList = uacUserMapper.selectUserList(uacUser);
+		}
 		return new PageInfo<>(uacUserList);
 	}
 
