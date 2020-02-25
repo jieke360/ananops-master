@@ -26,6 +26,7 @@ public class TopicConsumer {
     WebSocketPushMsgService webSocketPushMsgService;
 
     public void handlerSendMqMsg(String body, String topicName, String tags, String keys){
+        log.info("handlerSendMqMsg:body={},topicName={},tags={},keys={}",body,topicName,tags,keys);
         MqMessage.checkMessage(body, keys, topicName);
         MqSendMsgDto mqSendMsgDto = new MqSendMsgDto();
         try {

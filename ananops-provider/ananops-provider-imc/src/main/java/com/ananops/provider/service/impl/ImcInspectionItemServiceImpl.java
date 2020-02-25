@@ -7,14 +7,12 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
+import com.ananops.provider.manager.ImcItemManager;
 import com.ananops.provider.mapper.ImcFileTaskItemStatusMapper;
 import com.ananops.provider.mapper.ImcInspectionItemMapper;
 import com.ananops.provider.mapper.ImcInspectionTaskMapper;
 import com.ananops.provider.mapper.ImcUserItemMapper;
-import com.ananops.provider.model.domain.ImcFileTaskItemStatus;
-import com.ananops.provider.model.domain.ImcInspectionItem;
-import com.ananops.provider.model.domain.ImcInspectionTask;
-import com.ananops.provider.model.domain.ImcUserItem;
+import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
@@ -22,6 +20,7 @@ import com.ananops.provider.model.dto.oss.*;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 
 import com.ananops.provider.model.enums.TaskStatusEnum;
+import com.ananops.provider.mq.producer.ItemMsgProducer;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.provider.service.OpcOssFeignApi;
@@ -65,6 +64,12 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
 
     @Resource
     private ImcFileTaskItemStatusMapper imcFileTaskItemStatusMapper;
+
+    @Resource
+    private ImcItemManager imcItemManager;
+
+    @Resource
+    private ItemMsgProducer itemMsgProducer;
 
     /**
      *
@@ -113,11 +118,14 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                     this.bindImcItemAndFiles(attachmentId,taskId,itemId,refNo,statusList,loginAuthDto);
                 }
             }
-
+            //推送消息
+            MqMessageData mqMessageData = itemMsgProducer.sendItemStatusMsgMq(imcInspectionItem);
+            imcItemManager.modifyItemStatus(mqMessageData);
         }else{//如果是更新已经存在的巡检任务子项
             imcInspectionItemMapper.updateByPrimaryKeySelective(imcInspectionItem);
         }
         BeanUtils.copyProperties(imcInspectionItem,imcAddInspectionItemDto);
+
         return imcAddInspectionItemDto;
     }
 
@@ -281,6 +289,9 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             imcInspectionItem.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
             imcInspectionItem.setUpdateInfo(loginAuthDto);
             imcInspectionItemMapper.updateByPrimaryKeySelective(imcInspectionItem);
+            //推送消息
+            MqMessageData mqMessageData = itemMsgProducer.sendItemStatusMsgMq(imcInspectionItem);
+            imcItemManager.modifyItemStatus(mqMessageData);
         }else{
             throw new BusinessException(ErrorCodeEnum.GL9999087);
         }
@@ -315,6 +326,9 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             imcInspectionItem.setUpdateInfo(loginAuthDto);
             imcInspectionItem.setActualStartTime(new Date(System.currentTimeMillis()));
             imcInspectionItemMapper.updateByPrimaryKeySelective(imcInspectionItem);
+            //推送消息
+            MqMessageData mqMessageData = itemMsgProducer.sendItemStatusMsgMq(imcInspectionItem);
+            imcItemManager.modifyItemStatus(mqMessageData);
         }else{
             throw new BusinessException(ErrorCodeEnum.GL9999087);
         }
@@ -369,8 +383,10 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         else{
             this.update(imcInspectionItem);//更新当前巡检任务子项的状态
         }
-
-
+        //推送消息
+        imcInspectionItem = imcInspectionItemMapper.selectByPrimaryKey(itemId);
+        MqMessageData mqMessageData = itemMsgProducer.sendItemStatusMsgMq(imcInspectionItem);
+        imcItemManager.modifyItemStatus(mqMessageData);
         return imcItemChangeStatusDto;
     }
 
