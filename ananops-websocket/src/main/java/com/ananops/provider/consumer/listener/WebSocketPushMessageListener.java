@@ -4,8 +4,8 @@ import com.ananops.PublicUtil;
 import com.ananops.base.constant.AliyunMqTopicConstants;
 import com.ananops.core.mq.MqMessage;
 import com.ananops.provider.annotation.MqConsumerStore;
-import com.ananops.provider.consumer.ImcTopicConsumer;
 import com.ananops.provider.consumer.MdmcTopicConsumer;
+import com.ananops.provider.consumer.TopicConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -26,8 +26,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class WebSocketPushMessageListener implements MessageListenerConcurrently {
 
+
     @Resource
-    ImcTopicConsumer imcTopicConsumer;
+    TopicConsumer topicConsumer;
 
     @Resource
     MdmcTopicConsumer mdmcTopicConsumer;
@@ -56,7 +57,7 @@ public class WebSocketPushMessageListener implements MessageListenerConcurrently
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
             if (AliyunMqTopicConstants.MqTopicEnum.IMC_TOPIC.getTopic().equals(topicName)) {
-                imcTopicConsumer.handlerSendImcTopic(body, topicName, tags, keys);
+                topicConsumer.handlerSendMqMsg(body,topicName,tags,keys);
             }
             if (AliyunMqTopicConstants.MqTopicEnum.MDMC_TOPIC.getTopic().equals(topicName)){
                 mdmcTopicConsumer.handlerSendMdmcTopic(body,topicName,tags,keys);
