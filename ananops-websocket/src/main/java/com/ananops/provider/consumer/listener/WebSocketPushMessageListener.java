@@ -59,7 +59,7 @@ public class WebSocketPushMessageListener implements MessageListenerConcurrently
                 imcTopicConsumer.handlerSendImcTopic(body, topicName, tags, keys);
             }
             if (AliyunMqTopicConstants.MqTopicEnum.MDMC_TOPIC.getTopic().equals(topicName)){
-                mdmcTopicConsumer.handlerSendImcTopic(body,topicName,tags,keys);
+                mdmcTopicConsumer.handlerSendMdmcTopic(body,topicName,tags,keys);
             }
         } catch (IllegalArgumentException ex) {
             log.error("校验MQ message 失败 ex={}", ex.getMessage(), ex);

@@ -24,7 +24,7 @@ public class MdmcTopicConsumer {
     @Resource
     WebSocketPushMsgService webSocketPushMsgService;
 
-    public void handlerSendImcTopic(String body, String topicName, String tags, String keys){
+    public void handlerSendMdmcTopic(String body, String topicName, String tags, String keys){
         MqMessage.checkMessage(body, keys, topicName);
         if (StringUtils.equals(tags, AliyunMqTopicConstants.MqTagEnum.MDMC_TASK_STATUS_CHANGED.getTag())) {
             System.out.println("MDMC_TASK_TOPIC:" + body);
