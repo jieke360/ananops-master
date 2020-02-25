@@ -165,10 +165,10 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public List<Basebill> getBillByWorkOrderId(String workOrderId) {
+    public List<Basebill> getBillByWorkOrderId(String workorderid) {
         Example example = new Example(Basebill.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(workOrderId);
+        criteria.andEqualTo(workorderid);
         return basebillMapper.selectByExample(example);
     }
 }

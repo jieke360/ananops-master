@@ -22,7 +22,7 @@ public class BillDisplayDto {
     private Float amount;
 
     @ApiModelProperty(value = "用户id")
-    private String userId;
+    private String userid;
 
     @ApiModelProperty(value = "用户姓名")
     private String userName;
@@ -37,7 +37,7 @@ public class BillDisplayDto {
     private String supplierName;
 
     @ApiModelProperty(value = "工单ID")
-    private String workOrderId;
+    private String workorderid;
 
     @ApiModelProperty(value = "状态")
     private String state;

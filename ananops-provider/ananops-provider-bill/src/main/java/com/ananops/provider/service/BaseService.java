@@ -13,7 +13,7 @@ public interface BaseService {
     public Basebill getBillById(String id);
     public void modifyAmount(Basebill basebill, Float modifyAmount);
     public List<Basebill> getAllUBillBystate(String userid, String state);
-    List<Basebill> getBillByWorkOrderId(String workOrderId);
+    List<Basebill> getBillByWorkOrderId(String workorderid);
 }
 
 
