@@ -27,7 +27,6 @@ public class TopicConsumer {
 
     public void handlerSendMqMsg(String body, String topicName, String tags, String keys){
         MqMessage.checkMessage(body, keys, topicName);
-        System.out.println("IMC_TASK_TOPIC:" + body);
         MqSendMsgDto mqSendMsgDto = new MqSendMsgDto();
         try {
             mqSendMsgDto = JacksonUtil.parseJson(body, MqSendMsgDto.class);
@@ -40,8 +39,8 @@ public class TopicConsumer {
         }
         String userId = String.valueOf(mqSendMsgDto.getUserId());
         WebSocketMsgDto<MqSendMsgDto> webSocketMsgDto = new WebSocketMsgDto<>();
-        webSocketMsgDto.setTopic(AliyunMqTopicConstants.MqTopicEnum.IMC_TOPIC.getTopic());
-        webSocketMsgDto.setTag(AliyunMqTopicConstants.MqTagEnum.IMC_TASK_STATUS_CHANGED.getTag());
+        webSocketMsgDto.setTopic(topicName);
+        webSocketMsgDto.setTag(tags);
         webSocketMsgDto.setContent(mqSendMsgDto);
         log.info("webSocketMsgDto = {}",webSocketMsgDto);
         log.info("userId = {}",userId);

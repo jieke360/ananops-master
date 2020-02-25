@@ -1,10 +1,8 @@
 package com.ananops.provider.consumer.listener;
 
 import com.ananops.PublicUtil;
-import com.ananops.base.constant.AliyunMqTopicConstants;
 import com.ananops.core.mq.MqMessage;
 import com.ananops.provider.annotation.MqConsumerStore;
-import com.ananops.provider.consumer.MdmcTopicConsumer;
 import com.ananops.provider.consumer.TopicConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -31,8 +29,6 @@ public class WebSocketPushMessageListener implements MessageListenerConcurrently
     TopicConsumer topicConsumer;
 
     @Resource
-    MdmcTopicConsumer mdmcTopicConsumer;
-    @Resource
     private StringRedisTemplate srt;
 
     @Override
@@ -56,12 +52,8 @@ public class WebSocketPushMessageListener implements MessageListenerConcurrently
                 log.error("MQ消费Topic={},tag={},key={}, 重复消费", topicName, tags, keys);
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
-            if (AliyunMqTopicConstants.MqTopicEnum.IMC_TOPIC.getTopic().equals(topicName)) {
-                topicConsumer.handlerSendMqMsg(body,topicName,tags,keys);
-            }
-            if (AliyunMqTopicConstants.MqTopicEnum.MDMC_TOPIC.getTopic().equals(topicName)){
-                mdmcTopicConsumer.handlerSendMdmcTopic(body,topicName,tags,keys);
-            }
+            //处理消息
+            topicConsumer.handlerSendMqMsg(body,topicName,tags,keys);
         } catch (IllegalArgumentException ex) {
             log.error("校验MQ message 失败 ex={}", ex.getMessage(), ex);
         } catch (Exception e) {
