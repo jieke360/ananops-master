@@ -99,7 +99,7 @@ public interface UacRoleService extends IService<UacRole> {
 	 *
 	 * @return the role bind user dto by role id
 	 */
-	RoleBindUserDto getRoleBindUserDto(Long roleId, Long currentUserId);
+	RoleBindUserDto getRoleBindUserDto(Long roleId, Long currentUserId, Long currentUserGroupId);
 
 	/**
 	 * 角色绑定用户.

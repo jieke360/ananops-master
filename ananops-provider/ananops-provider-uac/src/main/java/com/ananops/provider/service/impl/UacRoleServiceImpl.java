@@ -1,5 +1,6 @@
 package com.ananops.provider.service.impl;
 
+import com.ananops.provider.mapper.UacGroupMapper;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.google.common.base.Joiner;
@@ -43,6 +44,9 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 
 	@Resource
 	private UacRoleMapper uacRoleMapper;
+
+	@Resource
+	private UacGroupMapper uacGroupMapper;
 
 	@Resource
 	private UacRoleUserService uacRoleUserService;
@@ -210,7 +214,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
-	public RoleBindUserDto getRoleBindUserDto(Long roleId, Long currentUserId) {
+	public RoleBindUserDto getRoleBindUserDto(Long roleId, Long currentUserId, Long currentUserGroupId) {
 		RoleBindUserDto roleBindUserDto = new RoleBindUserDto();
 		Set<Long> alreadyBindUserIdSet = Sets.newHashSet();
 		UacRole uacRole = uacRoleMapper.selectByPrimaryKey(roleId);
@@ -220,13 +224,28 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		}
 
 		// 查询所有用户包括已禁用的用户
-		List<BindUserDto> bindUserDtoList = uacRoleMapper.selectAllNeedBindUser(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID, currentUserId);
-		// 该角色已经绑定的用户
-		List<UacRoleUser> setAlreadyBindUserSet = uacRoleUserService.listByRoleId(roleId);
-		Set<BindUserDto> allUserSet = new HashSet<>(bindUserDtoList);
+//		List<BindUserDto> bindUserDtoList = uacRoleMapper.selectAllNeedBindUser(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID, currentUserId);
+		Set<BindUserDto> allUserSet = new HashSet<>();
+		// 查询该组织下所有用户包括已禁用的用户
+		List<GroupZtreeVo> groupZtreeVos = uacGroupService.getGroupTree(currentUserGroupId);
+		for (GroupZtreeVo groupZtreeVo : groupZtreeVos) {
+			List<BindUserDto> bindUserDtoList = uacGroupMapper.selectAllUserByGroupId(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID, groupZtreeVo.getId(), currentUserId);
+			allUserSet.addAll(bindUserDtoList);
+		}
 
-		for (UacRoleUser uacRoleUser : setAlreadyBindUserSet) {
-			alreadyBindUserIdSet.add(uacRoleUser.getUserId());
+//		List<UacRoleUser> setAlreadyBindUserSet = uacRoleUserService.listByRoleId(roleId);
+//
+//		for (UacRoleUser uacRoleUser : setAlreadyBindUserSet) {
+//			alreadyBindUserIdSet.add(uacRoleUser.getUserId());
+//		}
+		// 获取该组织下所有用户Id
+		List<Long> userIds = new ArrayList<>();
+		for (BindUserDto bindUserDto : allUserSet) {
+			userIds.add(bindUserDto.getUserId());
+		}
+		// 该组织以绑定该角色的用户
+		if (!userIds.isEmpty()) {
+			alreadyBindUserIdSet.addAll(uacRoleUserService.listByRoleIdUserIds(roleId, userIds));
 		}
 
 		roleBindUserDto.setAllUserSet(allUserSet);
