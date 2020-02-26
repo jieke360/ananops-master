@@ -103,7 +103,7 @@ public class PmcProjectController extends BaseController {
         return WrapMapper.ok();
     }
 
-    @PostMapping("/getProjectCount")
+    @PostMapping("/getProjectCount/{groupId}")
     @ApiOperation(httpMethod = "POST", value = "获取项目总数")
     public Wrapper getProjectCount(@ApiParam(value = "组织id") @PathVariable Long groupId) {
         log.info("获取项目总数");
