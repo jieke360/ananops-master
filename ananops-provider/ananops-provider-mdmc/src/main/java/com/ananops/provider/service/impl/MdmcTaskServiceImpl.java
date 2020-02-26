@@ -608,6 +608,12 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     }
 
+    @Override
+    public int getTaskCount(Long userId) {
+
+        return taskMapper.selectBySomeoneId(userId).size();
+    }
+
     private List<MdmcTask> getTaskListByUserIdAndStatusOptional(Long userId, Integer status) {
         String roleCode="";
         if (userId!=null)roleCode=uacUserFeignApi.getUacUserById(userId).getResult().getRoleCode();

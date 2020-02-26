@@ -126,5 +126,14 @@ public class MdmcTaskItemServiceImpl extends BaseService<MdmcTaskItem> implement
         return pageItemDto;
     }
 
+    @Override
+    public int getTaskItemCount(Long taskId) {
+        Example example = new Example(MdmcTaskItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("taskId",taskId);
+
+        return mdmcTaskItemMapper.selectCountByExample(example);
+    }
+
 
 }
