@@ -1,5 +1,6 @@
 package com.ananops.provider.service.impl;
 
+import com.ananops.provider.model.domain.UacRole;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -46,16 +47,24 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 
 	@Resource
 	private UacGroupMapper uacGroupMapper;
+
 	@Resource
 	private UacGroupUserMapper uacGroupUserMapper;
+
 	@Resource
 	private UacRoleUserMapper uacRoleUserMapper;
+
 	@Resource
-	private UacRoleMapper uacRoleMapper;
+	private UacGroupService uacGroupService;
+
 	@Resource
 	private UacUserService uacUserService;
+
 	@Resource
 	private MdcAddressService mdcAddressService;
+
+	@Resource
+	private UacRoleMapper uacRoleMapper;
 
 	private int addUacGroup(UacGroup group) {
 		if (StringUtils.isEmpty(group.getStatus())) {
@@ -258,17 +267,29 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 		}
 
 		// 查询所有用户包括已禁用的用户
-		List<BindUserDto> bindUserDtoList = uacRoleMapper.selectAllNeedBindUser(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID, currentUserId);
+//		List<BindUserDto> bindUserDtoList = uacRoleMapper.selectAllNeedBindUser(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID, currentUserId);
+		Set<BindUserDto> allUserSet = new HashSet<>();
+		// 查询该组织下所有用户包括已禁用的用户
+		List<GroupZtreeVo> groupZtreeVos = uacGroupService.getGroupTree(groupId);
+		for (GroupZtreeVo groupZtreeVo : groupZtreeVos) {
+			List<BindUserDto> bindUserDtoList = uacGroupMapper.selectAllUserByGroupId(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID, groupZtreeVo.getId(), currentUserId);
+			allUserSet.addAll(bindUserDtoList);
+		}
+
+		// 为所有用户绑定角色信息
+		for (BindUserDto bindUserDto : allUserSet) {
+			List<UacRole> roles = uacRoleMapper.selectAllRoleInfoByUserId(bindUserDto.getUserId());
+			if (roles == null || roles.size() < 1)
+				continue;
+			bindUserDto.setRoleCode(roles.get(0).getRoleCode());
+		}
+		groupBindUserDto.setAllUserSet(allUserSet);
+
 		// 该组织已经绑定的用户
 		List<UacGroupUser> setAlreadyBindUserSet = uacGroupUserMapper.listByGroupId(groupId);
-
-		Set<BindUserDto> allUserSet = new HashSet<>(bindUserDtoList);
-
 		for (UacGroupUser uacGroupUser : setAlreadyBindUserSet) {
 			alreadyBindUserIdSet.add(uacGroupUser.getUserId());
 		}
-
-		groupBindUserDto.setAllUserSet(allUserSet);
 		groupBindUserDto.setAlreadyBindUserIdSet(alreadyBindUserIdSet);
 
 		return groupBindUserDto;

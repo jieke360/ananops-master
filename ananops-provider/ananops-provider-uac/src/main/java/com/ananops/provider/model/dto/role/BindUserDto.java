@@ -32,6 +32,11 @@ public class BindUserDto implements Serializable {
 	@ApiModelProperty(value = "用户名")
 	private String userName;
 	/**
+	 * 角色编码
+	 */
+	@ApiModelProperty(value = "角色编码")
+	private String roleCode;
+	/**
 	 * 是否可以操作
 	 */
 	@ApiModelProperty(value = "是否可以操作")

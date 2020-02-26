@@ -10,7 +10,9 @@ package com.ananops.provider.mapper;
 
 import com.ananops.core.mybatis.MyMapper;
 import com.ananops.provider.model.domain.UacGroup;
+import com.ananops.provider.model.dto.role.BindUserDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,4 +29,17 @@ public interface UacGroupMapper extends MyMapper<UacGroup> {
     List<UacGroup> selectGroupListByUserId(Long userId);
 
     List<UacGroup> selectGroupByGroupName(String groupName);
+
+    /**
+     * 查询一个GroupId下所绑定的所有User
+     *
+     * @param superManagerRoleId 超级用户管理员角色Id
+     *
+     * @param groupId 组织Id
+     *
+     * @param currentUserId 当前登录用户的Id
+     *
+     * @return 返回板顶用户信息
+     */
+    List<BindUserDto> selectAllUserByGroupId(@Param("superManagerRoleId") Long superManagerRoleId, @Param("groupId") Long groupId, @Param("currentUserId") Long currentUserId);
 }
