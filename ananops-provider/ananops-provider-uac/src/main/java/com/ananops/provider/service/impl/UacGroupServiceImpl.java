@@ -1,6 +1,7 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.provider.model.domain.UacRole;
+import com.ananops.provider.service.UacGroupService;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -26,7 +27,6 @@ import com.ananops.provider.model.exceptions.UacBizException;
 import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.ananops.provider.model.vo.MenuVo;
 import com.ananops.provider.service.MdcAddressService;
-import com.ananops.provider.service.UacGroupService;
 import com.ananops.provider.service.UacUserService;
 import com.ananops.provider.utils.TreeUtil;
 import org.springframework.stereotype.Service;

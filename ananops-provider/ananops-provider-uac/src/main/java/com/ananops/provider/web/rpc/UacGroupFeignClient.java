@@ -5,6 +5,7 @@ import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.UacGroup;
 import com.ananops.provider.model.domain.UacUser;
+import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.dto.group.GroupNameLikeQuery;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
@@ -163,7 +164,9 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
 
     @Override
     @ApiOperation(httpMethod = "POST", value = "通过组织ID查询其所在公司信息")
-    public Wrapper getCompanyInfoById(@PathVariable("groupId") Long groupId) {
-        return WrapMapper.ok(uacGroupService.getCompanyInfo(groupId));
+    public Wrapper<CompanyDto> getCompanyInfoById(@PathVariable("groupId") Long groupId) {
+        CompanyDto companyDto = new CompanyDto();
+        org.springframework.beans.BeanUtils.copyProperties(uacGroupService.getCompanyInfo(groupId),companyDto);
+        return WrapMapper.ok(companyDto);
     }
 }

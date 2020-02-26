@@ -1,5 +1,6 @@
 package com.ananops.provider.model.service;
 
+import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.dto.group.GroupNameLikeQuery;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
@@ -89,5 +90,5 @@ public interface UacGroupFeignApi {
      * @return
      */
     @PostMapping(value = "/api/uac/group/getCompanyInfoById/{groupId}")
-    Wrapper getCompanyInfoById(@PathVariable("groupId") Long groupId);
+    Wrapper<CompanyDto> getCompanyInfoById(@PathVariable("groupId") Long groupId);
 }
