@@ -51,4 +51,6 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
     List<ElementImgUrlDto> getImcItemFileList(ImcPicQueryDto imcPicQueryDto);
 
     List<ImcItemUrlDto> getAllImcItemPicList(ImcPicQueryDto imcPicQueryDto);
+
+    Integer getImcItemNumberByTaskId(Long taskId);
 }

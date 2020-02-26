@@ -200,4 +200,11 @@ public class ImcInspectionItemController extends BaseController {
     public Wrapper<List<ImcItemUrlDto>> getAllImcItemPics(@RequestBody ImcPicQueryDto imcPicQueryDto){
         return WrapMapper.ok(imcInspectionItemService.getAllImcItemPicList(imcPicQueryDto));
     }
+
+    @PostMapping(value = "/getImcItemNumberByTaskId/{taskId}")
+    @ApiOperation(httpMethod = "POST",value = "根据任务Id查询对应的子项的数目")
+    public Wrapper<Integer> getImcItemNumberByTaskId(@PathVariable Long taskId){
+        logger.info("根据任务Id查询对应的子项的数目 taskId={}",taskId);
+        return WrapMapper.ok(imcInspectionItemService.getImcItemNumberByTaskId(taskId));
+    }
 }

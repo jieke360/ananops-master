@@ -11,6 +11,8 @@ import java.util.List;
 @Mapper
 @Component
 public interface ImcInspectionTaskMapper extends MyMapper<ImcInspectionTask> {
+    Integer countTaskByUserId(@Param(value = "userId") Long userId);
+
     List<ImcInspectionTask> queryTaskByUserId(@Param(value = "userId") Long userId);
 
     List<ImcInspectionTask> queryTaskByUserIdAndTaskName(@Param(value = "userId") Long userId,@Param(value = "taskName")String taskName);

@@ -532,6 +532,21 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         opcOssFeignApi.updateAttachmentInfo(optAttachmentUpdateReqDto);
     }
 
+    /**
+     * 根据任务Id查询对应的子项的数目
+     * @param taskId
+     * @return
+     */
+    @Override
+    public Integer getImcItemNumberByTaskId(Long taskId){
+        if(taskId==null){
+            throw new BusinessException(ErrorCodeEnum.GL99990100);
+        }
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("inspectionTaskId",taskId);
+        return imcInspectionItemMapper.selectCountByExample(example);
+    }
     public Integer setBasicInfoFromContract(){//将从合同中获取到的基本信息填写到巡检任务中
         return 1;
     }

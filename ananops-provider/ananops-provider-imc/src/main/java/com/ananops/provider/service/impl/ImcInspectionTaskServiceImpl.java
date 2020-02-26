@@ -285,6 +285,29 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     }
 
     /**
+     * 根据用户id和用户角色获取全部的巡检任务数目
+     * @param taskQueryDto
+     * @return
+     */
+    @Override
+    public Integer getImcTaskNumberByUserIdAndRole(TaskQueryDto taskQueryDto){
+        Integer role = taskQueryDto.getRole();
+        Long userId = taskQueryDto.getUserId();
+        if(role==null||userId==null){
+            throw new BusinessException(ErrorCodeEnum.IMC10090008);
+        }else{
+            switch (role){
+                case 1://如果角色是甲方负责人
+                    return imcInspectionTaskMapper.countTaskByUserId(userId);
+                case 2://如果角色是服务商
+                    return this.countTaskByFacilitatorId(userId);
+                default:
+                    throw new BusinessException(ErrorCodeEnum.GL9999089);
+            }
+        }
+    }
+
+    /**
      * 根据用户id获取对应的巡检任务
      * @param taskQueryDto
      * @return
@@ -387,6 +410,13 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         }
         criteria.andEqualTo("facilitatorId",facilitatorId);
         return imcInspectionTaskMapper.selectByExample(example);
+    }
+
+    public Integer countTaskByFacilitatorId(Long facilitatorId){
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("facilitatorId",facilitatorId);
+        return imcInspectionTaskMapper.selectCountByExample(example);
     }
 
     /**

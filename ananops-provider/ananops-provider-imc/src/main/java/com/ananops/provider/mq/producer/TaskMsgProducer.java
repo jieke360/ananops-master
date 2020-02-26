@@ -36,7 +36,6 @@ public class TaskMsgProducer {
     public MqMessageData sendTaskStatusMsgMq(ImcInspectionTask imcInspectionTask){
         Long taskId = imcInspectionTask.getId();
         Long facilitatorId = imcInspectionTask.getFacilitatorId();
-        Long principalId = imcInspectionTask.getPrincipalId();
         int status = imcInspectionTask.getStatus();
         String statusMsg = TaskStatusEnum.getStatusMsg(status);
         Example example = new Example(ImcUserTask.class);
@@ -51,22 +50,13 @@ public class TaskMsgProducer {
         ImcSendTaskStatusDto imcSendTaskStatusDto = new ImcSendTaskStatusDto();
         MqSendMsgDto<ImcSendTaskStatusDto> mqSendMsgDto = new MqSendMsgDto<>();
         if(userId!=null){
-            if(status==-1){
-                //发给值机员的消息
+            if(status == -1 ||status==0||status==1||status==3||status==4||status==5||status==6||status==7){
+                //发给甲方负责人的消息
                 imcSendTaskStatusDto.setStatus(status);
                 imcSendTaskStatusDto.setStatusMsg(statusMsg);
                 imcSendTaskStatusDto.setTaskId(taskId);
                 imcSendTaskStatusDto.setUserId(userId);
                 mqSendMsgDto.setUserId(userId);
-                mqSendMsgDto.setMsgBodyDto(imcSendTaskStatusDto);
-                msgBody = JSON.toJSONString(mqSendMsgDto);
-            }else if(status==0||status==1||status==3||status==4||status==5||status==6||status==7){
-                //发给甲方负责人的消息
-                imcSendTaskStatusDto.setStatus(status);
-                imcSendTaskStatusDto.setStatusMsg(statusMsg);
-                imcSendTaskStatusDto.setTaskId(taskId);
-                imcSendTaskStatusDto.setUserId(principalId);
-                mqSendMsgDto.setUserId(principalId);
                 mqSendMsgDto.setMsgBodyDto(imcSendTaskStatusDto);
                 msgBody = JSON.toJSONString(mqSendMsgDto);
             }else if(status==2){

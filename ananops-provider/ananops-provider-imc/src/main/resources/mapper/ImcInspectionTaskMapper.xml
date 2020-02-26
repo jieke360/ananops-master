@@ -44,6 +44,11 @@
     an_imc_inspection_task as task , an_imc_user_task as userTask
     WHERE 1=1 AND userTask.user_id = #{userId} AND task.id = userTask.task_id
   </select>
+  <!-- 根据甲方id查询对应的巡检任务-->
+  <select id="countTaskByUserId" resultType="integer">
+    SELECT COUNT(*) FROM an_imc_inspection_task as task , an_imc_user_task as userTask
+    WHERE 1=1 AND userTask.user_id = #{userId} AND task.id = userTask.task_id
+  </select>
   <!--  根据甲方用户id和任务名模糊查询对应的巡检任务-->
   <select id="queryTaskByUserIdAndTaskName" resultType="com.ananops.provider.model.domain.ImcInspectionTask">
     SELECT

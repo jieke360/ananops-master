@@ -90,14 +90,14 @@ public class ImcInspectionTaskController extends BaseController {
     }
 
     @PostMapping(value = "/getTaskByUserId")
-    @ApiOperation(httpMethod = "POST",value = "根据用户（1：甲方，2：服务商，3：服务商管理员，4：服务商组织）的id查询对应的巡检任务")
-    public Wrapper<List<ImcInspectionTask>> getTaskByUserId(@ApiParam(name = "getTaskByUserId",value = "根据用户（1：甲方，2：服务商）的ID查询巡检任务")@RequestBody TaskQueryDto taskQueryDto){
+    @ApiOperation(httpMethod = "POST",value = "根据用户（1：甲方负责人，2：服务商）的id查询对应的巡检任务")
+    public Wrapper<List<ImcInspectionTask>> getTaskByUserId(@ApiParam(name = "getTaskByUserId",value = "根据用户（1：甲方负责人，2：服务商）的ID查询巡检任务")@RequestBody TaskQueryDto taskQueryDto){
         return WrapMapper.ok(imcInspectionTaskService.getTaskByUserId(taskQueryDto));
     }
 
     @PostMapping(value = "/getTaskByUserIdAndStatus")
-    @ApiOperation(httpMethod = "POST",value = "根据用户（1：甲方，2：服务商，3：服务商管理员，4：服务商组织）id查询指定状态的巡检任务")
-    public Wrapper<List<ImcInspectionTask>> getTaskByUserIdAndStatus(@ApiParam(name = "getTaskByUserIdAndStatus",value = "根据用户（1：甲方，2：服务商）id查询指定状态的巡检任务")@RequestBody TaskQueryDto taskQueryDto){
+    @ApiOperation(httpMethod = "POST",value = "根据用户（1：甲方负责人，2：服务商）id查询指定状态的巡检任务")
+    public Wrapper<List<ImcInspectionTask>> getTaskByUserIdAndStatus(@ApiParam(name = "getTaskByUserIdAndStatus",value = "根据用户（1：甲方负责人，2：服务商）id查询指定状态的巡检任务")@RequestBody TaskQueryDto taskQueryDto){
         return WrapMapper.ok(imcInspectionTaskService.getTaskByUserIdAndStatus(taskQueryDto));
     }
 
@@ -161,4 +161,10 @@ public class ImcInspectionTaskController extends BaseController {
         return WrapMapper.ok(imcInspectionTaskService.denyImcTaskByPrincipal(imcTaskChangeStatusDto));
     }
 
+    @PostMapping(value = "/getImcTaskNumberByUserIdAndRole")
+    @ApiOperation(httpMethod = "POST",value = "根据用户id和用户角色获取全部的巡检任务数目(1->甲方负责人   2->服务商)")
+    public Wrapper<Integer> getImcTaskNumberByUserIdAndRole(@RequestBody TaskQueryDto taskQueryDto){
+        logger.info("根据用户id和用户角色获取全部的巡检任务数目，taskQueryDto={}",taskQueryDto);
+        return WrapMapper.ok(imcInspectionTaskService.getImcTaskNumberByUserIdAndRole(taskQueryDto));
+    }
 }
