@@ -52,6 +52,11 @@ public class UacGroupFeignHystrix implements UacGroupFeignApi {
     }
 
     @Override
+    public Wrapper getCompanyInfoById(Long groupId) {
+        return null;
+    }
+
+    @Override
     public Wrapper<List<GroupSaveDto>> getUacGroupByLikeName(@RequestBody GroupNameLikeQuery groupNameLikeQuery) {
         return null;
     }

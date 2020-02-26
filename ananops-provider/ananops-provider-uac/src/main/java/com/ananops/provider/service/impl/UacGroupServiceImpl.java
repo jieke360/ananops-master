@@ -196,7 +196,7 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 		return uacGroupMapper.selectGroupByGroupName(groupName);
 	}
 
-	@Override
+    @Override
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
 	public List<GroupZtreeVo> getGroupTree(Long groupId) {
 		// 1. 如果是仓库则 直接把仓库信息封装成ztreeVo返回
@@ -496,4 +496,21 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 		}
 		return tree;
 	}
+
+	@Override
+	public UacGroup getCompanyInfo(Long groupId) {
+		// 根据前台传入的组织参数校验该组织是否存在
+		UacGroup uacGroup = uacGroupMapper.selectByPrimaryKey(groupId);
+		if (PublicUtil.isEmpty(uacGroup)) {
+			throw new UacBizException(ErrorCodeEnum.UAC10015004, groupId);
+		}
+		//递归获取公司信息
+		if("company".equals(uacGroup.getType())){
+			return uacGroup;
+		}else{
+			return getCompanyInfo(uacGroup.getPid());
+		}
+	}
+
+
 }

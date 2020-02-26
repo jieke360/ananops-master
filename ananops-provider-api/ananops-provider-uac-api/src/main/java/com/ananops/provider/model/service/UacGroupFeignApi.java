@@ -8,6 +8,7 @@ import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.service.hystrix.UacGroupFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
+import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,4 +82,12 @@ public interface UacGroupFeignApi {
      */
     @PostMapping(value = "/api/uac/group/getGroupTreeById/{groupId}")
     Wrapper<List<GroupZtreeVo>> getGroupTreeById(@PathVariable("groupId") Long groupId);
+
+    /**
+     * 通过组织ID查询其所在公司信息
+     * @param groupId
+     * @return
+     */
+    @PostMapping(value = "/api/uac/group/getCompanyInfoById/{groupId}")
+    Wrapper getCompanyInfoById(@PathVariable("groupId") Long groupId);
 }

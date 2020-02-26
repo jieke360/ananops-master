@@ -160,4 +160,10 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
         List<com.ananops.provider.model.vo.GroupZtreeVo> tree = uacGroupService.getGroupTree(groupId);
         return WrapMapper.wrap(Wrapper.SUCCESS_CODE, "操作成功", tree);
     }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "通过组织ID查询其所在公司信息")
+    public Wrapper getCompanyInfoById(@PathVariable("groupId") Long groupId) {
+        return WrapMapper.ok(uacGroupService.getCompanyInfo(groupId));
+    }
 }
