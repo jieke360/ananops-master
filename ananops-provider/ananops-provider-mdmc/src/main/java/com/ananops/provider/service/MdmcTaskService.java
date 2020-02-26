@@ -102,6 +102,13 @@ public interface MdmcTaskService extends IService<MdmcTask> {
     MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto);
 
     /**
+     * 根据用户ID获取工单数目
+     * @param userId
+     * @return
+     */
+    int getTaskCount(Long userId);
+
+    /**
      * 分配工程师
      * @param mdmcChangeMaintainerDto
      * @return

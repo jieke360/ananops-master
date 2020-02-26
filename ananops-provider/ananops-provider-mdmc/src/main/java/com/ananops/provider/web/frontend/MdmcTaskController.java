@@ -256,4 +256,21 @@ public class MdmcTaskController extends BaseController {
 
         return WrapMapper.ok(taskService.getTroubleList(userId));
     }
+
+    /**
+     * 根据用户id获取工单数目
+     *
+     * @param userId HTTP请求参数
+     *
+     * @return 返回
+     */
+    @GetMapping(value = "/getTaskCountByUserId")
+    @ApiOperation(httpMethod = "GET",value = "根据用户id获取工单数目")
+    public Wrapper<Integer> getTaskCountByUserId(@ApiParam(name = "userId",value = "用户id")@RequestParam("userId") Long userId) {
+
+        return WrapMapper.ok(taskService.getTaskCount(userId));
+    }
+
+
+
 }

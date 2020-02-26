@@ -100,5 +100,18 @@ public class MdmcTaskItemController extends BaseController {
         return WrapMapper.ok(taskItemService.getItemList(statusDto));
     }
 
+    /**
+     * 根据工单id获取任务子项数目
+     *
+     * @param taskId HTTP请求参数
+     *
+     * @return 返回
+     */
+    @GetMapping(value = "/getTaskItemCountByTaskId")
+    @ApiOperation(httpMethod = "GET",value = "根据工单id获取任务子项数目")
+    public Wrapper<Integer> getTaskItemCountByTaskId(@ApiParam(name = "taskId",value = "工单id")@RequestParam("taskId") Long taskId) {
+
+        return WrapMapper.ok(taskItemService.getTaskItemCount(taskId));
+    }
 
 }
