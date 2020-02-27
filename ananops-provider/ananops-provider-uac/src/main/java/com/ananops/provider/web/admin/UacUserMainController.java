@@ -183,7 +183,11 @@ public class UacUserMainController extends BaseController {
 			throw new UacBizException(ErrorCodeEnum.UAC10011023);
 		}
 		Wrapper<UserInfoDto> wrapper = uacUserFeignApi.getUacUserById(loginAuthDto.getUserId());
-		UserBindRoleVo bindUserDto = uacUserService.getUserPermitBindRoleDto(userId,wrapper.getResult().getRoleId());
+		Long roleId = wrapper.getResult().getRoleId();
+		if (roleId.equals(1L)) {
+			roleId = null;
+		}
+		UserBindRoleVo bindUserDto = uacUserService.getUserPermitBindRoleDto(userId,roleId);
 		UserBindRoleNeedKeyVo userBindRoleNeedKeyVo = new UserBindRoleNeedKeyVo();
 		for (BindRoleDto bindRoleDto : bindUserDto.getAllRoleSet()) {
 			bindRoleDto.setKey(bindRoleDto.getRoleId());

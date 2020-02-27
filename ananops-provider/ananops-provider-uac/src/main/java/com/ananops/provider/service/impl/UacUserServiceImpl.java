@@ -798,11 +798,11 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		}
 		List<BindRoleDto> bindRoleDtoList = new ArrayList<>();
 		if(roleId == null){
-			 bindRoleDtoList = uacUserMapper.selectAllNeedBindRole(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID);
+			bindRoleDtoList = uacUserMapper.selectAllNeedBindRole(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID);
 		}else{
 			UacRole uacRole = uacRoleMapper.selectByPrimaryKey(roleId);
 			// 查询该用户可以绑定的角色
-		     bindRoleDtoList = uacUserMapper.selectAllPermitBindRole(uacRole.getVersion()+1);
+			bindRoleDtoList = uacUserMapper.selectAllPermitBindRole(uacRole.getVersion()+1);
 		}
 
 		// 该角色已经绑定的用户
