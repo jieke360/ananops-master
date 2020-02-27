@@ -1,6 +1,7 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.provider.mapper.*;
+import com.ananops.provider.model.constant.RoleConstant;
 import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.ananops.provider.model.vo.UserVo;
 import com.github.pagehelper.PageHelper;
@@ -60,52 +61,78 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserService {
+
 	@Resource
 	private UacUserMapper uacUserMapper;
+
 	@Resource
 	private UacMenuService uacMenuService;
+
 	@Resource
 	private UacActionMapper uacActionMapper;
+
 	@Resource
 	private UacMenuMapper uacMenuMapper;
+
 	@Resource
 	private UacGroupUserService uacGroupUserService;
+
 	@Resource
 	private UacGroupService uacGroupService;
+
 	@Resource
 	private UacGroupUserMapper uacGroupUserMapper;
+
 	@Resource
 	private UacLogService uacLogService;
+
 	@Resource
 	private UacRoleService uacRoleService;
+
 	@Resource
 	private UacRoleUserService uacRoleUserService;
+
 	@Resource
 	private UacUserMenuMapper uacUserMenuMapper;
+
 	@Resource
 	private UacUserMenuService uacUserMenuService;
+
 	@Resource
 	private RedisService redisService;
+
 	@Resource
 	private EmailProducer emailProducer;
+
 	@Value("${ananops.auth.active-user-url}")
 	private String activeUserUrl;
+
 	@Resource
 	private UacActionService uacActionService;
+
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
+
 	@Resource
 	private TaskExecutor taskExecutor;
+
 	@Resource
 	private UacUserTokenService uacUserTokenService;
+
 	@Resource
 	private OpcRpcService opcRpcService;
+
 	@Resource
 	private UserManager userManager;
+
 	@Resource
 	private UacGroupMapper uacGroupMapper;
+
 	@Resource
 	private UacRoleMapper uacRoleMapper;
+
+	@Resource
+	private UacRoleGroupService uacRoleGroupService;
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
@@ -353,8 +380,12 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		updateUser.setUpdateInfo(authResDto);
 		uacUserMapper.updateUacUser(updateUser);
 
+		Long groupId = user.getGroupId();
+		// 删除当前组织下的平台默认角色
+		uacRoleGroupService.deleteDefaultByGroupId(groupId);
+
 		if (PublicUtil.isEmpty(roleIdList)) {
-			// 取消该角色的所有用户的绑定
+			// 取消该角色的所有组织的绑定
 			logger.info("绑定角色成功");
 			return;
 		}
@@ -367,6 +398,17 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 				throw new UacBizException(ErrorCodeEnum.UAC10012008, roleId);
 			}
 			uacRoleUserService.saveRoleUser(operUserId, roleId);
+
+			// 如果是用户方或者服务方管理员角色，为其添加默认的平台角色支持
+			if ("user_manager".equals(uacRole.getRoleCode())) {
+				if (groupId != null) {
+					uacRoleGroupService.saveRolesGroup(groupId, RoleConstant.USER_DEFAULT_ROLE_IDS);
+				}
+			} else if ("fac_manager".equals(uacRole.getRoleCode())) {
+				if (user.getGroupId() != null) {
+					uacRoleGroupService.saveRolesGroup(groupId, RoleConstant.FAC_DEFAULT_ROLE_IDS);
+				}
+			}
 		}
 	}
 

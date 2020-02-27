@@ -97,7 +97,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 			}
 		}
 		// 获取该Group下的所有角色；
-		List<Long> roleIds = uacRoleGroupService.listByRoleId(rootGroupId);
+		List<Long> roleIds = uacRoleGroupService.listByGroupId(rootGroupId);
 		if (roleIds != null && roleIds.size() > 0)
 			return uacRoleMapper.queryRoleListWithBatchRoleId(roleIds);
 		return new ArrayList<>();

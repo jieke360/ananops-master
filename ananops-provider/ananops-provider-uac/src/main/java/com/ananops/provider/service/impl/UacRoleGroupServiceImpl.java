@@ -3,6 +3,7 @@ package com.ananops.provider.service.impl;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
 import com.ananops.provider.mapper.UacRoleGroupMapper;
+import com.ananops.provider.model.constant.RoleConstant;
 import com.ananops.provider.model.domain.UacRoleGroup;
 import com.ananops.provider.model.exceptions.UacBizException;
 import com.ananops.provider.service.UacRoleGroupService;
@@ -27,7 +28,7 @@ public class UacRoleGroupServiceImpl extends BaseService<UacRoleGroup> implement
 
     @Override
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public List<Long> listByRoleId(Long groupId) {
+    public List<Long> listByGroupId(Long groupId) {
         if (groupId == null) {
             throw new UacBizException(ErrorCodeEnum.UAC10015010);
         }
@@ -56,5 +57,32 @@ public class UacRoleGroupServiceImpl extends BaseService<UacRoleGroup> implement
     @Override
     public void deleteByRoleIdList(List<Long> roleIdList) {
         uacRoleGroupMapper.deleteByRoleIdList(roleIdList);
+    }
+
+    @Override
+    public int saveRolesGroup(Long groupId, List<Long> userDefaultRoleIds) {
+        if (groupId == null) {
+            throw new UacBizException(ErrorCodeEnum.UAC10015010);
+        }
+        for (Long roleId : userDefaultRoleIds) {
+            UacRoleGroup uacRoleGroup = new UacRoleGroup();
+            uacRoleGroup.setGroupId(groupId);
+            uacRoleGroup.setRoleId(roleId);
+            if (uacRoleGroupMapper.selectCount(uacRoleGroup) < 1) {
+                uacRoleGroupMapper.insertSelective(uacRoleGroup);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public void deleteDefaultByGroupId(Long groupId) {
+        if (groupId == null) {
+            throw new UacBizException(ErrorCodeEnum.UAC10015010);
+        }
+        List<Long> roleIdList = new ArrayList<>();
+        roleIdList.addAll(RoleConstant.USER_DEFAULT_ROLE_IDS);
+        roleIdList.addAll(RoleConstant.FAC_DEFAULT_ROLE_IDS);
+        uacRoleGroupMapper.deleteByGroupIdAndRoleIds(groupId, roleIdList);
     }
 }

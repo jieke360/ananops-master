@@ -23,4 +23,13 @@ public interface UacRoleGroupMapper extends MyMapper<UacRoleGroup> {
      * @param roleIdList 角色ID集合
      */
     int deleteByRoleIdList(@Param("roleIdList") List<Long> roleIdList);
+
+    /**
+     * 批量通过角色Id删除与Group的关联表记录
+     *
+     * @param groupId groupId
+     *
+     * @param roleIds roleIds
+     */
+    int deleteByGroupIdAndRoleIds(@Param("groupId") Long groupId, @Param("roleIdList") List<Long> roleIdList);
 }

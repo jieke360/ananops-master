@@ -20,7 +20,7 @@ public interface UacRoleGroupService extends IService<UacRoleGroup> {
      *
      * @return the list
      */
-    List<Long> listByRoleId(Long groupId);
+    List<Long> listByGroupId(Long groupId);
 
     /**
      * 通过角色Id删除与Group的关联表记录
@@ -35,4 +35,22 @@ public interface UacRoleGroupService extends IService<UacRoleGroup> {
      * @param roleId 角色ID
      */
     void deleteByRoleIdList(List<Long> roleIdList);
+
+    /**
+     * 批量绑定group与role关系
+     *
+     * @param groupId 组织Id
+     *
+     * @param userDefaultRoleIds 角色Id集合
+     *
+     * @return 结果
+     */
+    int saveRolesGroup(Long groupId, List<Long> userDefaultRoleIds);
+
+    /**
+     * 删除当前组织下的平台默认角色
+     *
+     * @param groupId
+     */
+    void deleteDefaultByGroupId(Long groupId);
 }

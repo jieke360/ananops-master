@@ -100,14 +100,16 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
     @Override
     @ApiOperation(httpMethod = "POST", value = "通过Id查询Group信息")
     public Wrapper<GroupSaveDto> getUacGroupById(@RequestParam("groupId") Long groupId) {
-        logger.info("根据组织Id查询组织列表");
+        logger.info("根据组织Id查询组织信息");
         GroupSaveDto groupSaveDto = new GroupSaveDto();
         UacGroup uacGroup = uacGroupService.queryById(groupId);
-        try {
-            BeanUtils.copyProperties(groupSaveDto, uacGroup);
-        } catch (Exception e) {
-            logger.error("用户组Dto与用户组传输Dto属性拷贝异常");
-            e.printStackTrace();
+        if (uacGroup != null) {
+            try {
+                BeanUtils.copyProperties(groupSaveDto, uacGroup);
+            } catch (Exception e) {
+                logger.error("用户组Dto与用户组传输Dto属性拷贝异常");
+                e.printStackTrace();
+            }
         }
         return WrapMapper.ok(groupSaveDto);
     }

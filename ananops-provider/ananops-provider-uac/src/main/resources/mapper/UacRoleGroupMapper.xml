@@ -12,4 +12,11 @@
       #{item}
     </foreach>
   </delete>
+  <delete id="deleteByGroupIdAndRoleIds">
+    delete from an_uac_role_group
+    where group_id = #{groupId, jdbcType=BIGINT} and role_id in
+    <foreach collection="roleIdList" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
 </mapper>
