@@ -15,6 +15,8 @@ import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.group.GroupNameLikeQuery;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
+import com.ananops.provider.model.dto.oss.OptBatchGetUrlRequest;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
@@ -37,9 +39,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 操作加盟服务商Company的Service接口实现类
@@ -134,6 +134,31 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
                 logger.error("queryByCompanyId 服务商Dto与用户组Dto属性拷贝异常");
                 e.printStackTrace();
             }
+        }
+        // 为公司封状态附件链接
+        OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
+        optBatchGetUrlRequest.setEncrypt(true);
+        optBatchGetUrlRequest.setRefNo(String.valueOf(companyVo.getId()));
+        List<ElementImgUrlDto> elementImgUrlDtos = opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+        Map<Long, String> attachURLMap = new HashMap<>();
+        for (ElementImgUrlDto elementImgUrlDto : elementImgUrlDtos) {
+            attachURLMap.put(elementImgUrlDto.getAttachmentId(), elementImgUrlDto.getUrl());
+        }
+        if (companyVo.getLegalPersonidPhoto() != null) {
+            String legalPersonidPhoto = companyVo.getLegalPersonidPhoto();
+            if (legalPersonidPhoto.contains(",")) {
+                // 多个文件时，只显示第一张
+                String[] legalPersonidPhotos = legalPersonidPhoto.split(",");
+                companyVo.setLegalPersonidPhoto(attachURLMap.get(Long.valueOf(legalPersonidPhotos[0])));
+            } else {
+                companyVo.setLegalPersonidPhoto(attachURLMap.get(Long.valueOf(legalPersonidPhoto)));
+            }
+        }
+        if (companyVo.getBusinessLicensePhoto() != null) {
+            companyVo.setBusinessLicensePhoto(attachURLMap.get(Long.valueOf(companyVo.getBusinessLicensePhoto())));
+        }
+        if (companyVo.getAccountOpeningLicense() != null) {
+            companyVo.setAccountOpeningLicense(attachURLMap.get(Long.valueOf(companyVo.getAccountOpeningLicense())));
         }
         return companyVo;
     }
