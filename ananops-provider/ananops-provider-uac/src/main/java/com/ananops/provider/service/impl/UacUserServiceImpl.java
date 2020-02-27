@@ -198,6 +198,12 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		} else {
 			uacUserList = uacUserMapper.selectUserList(uacUser);
 		}
+		// 清除查询出的用户密码
+		if (!uacUserList.isEmpty()) {
+			for (UacUser user : uacUserList) {
+				user.setLoginPwd("");
+			}
+		}
 		return new PageInfo<>(uacUserList);
 	}
 
