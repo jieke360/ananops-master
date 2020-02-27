@@ -800,4 +800,27 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
         return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
     }
+
+    @Override
+    public List<MdmcFileUrlDto> getFileByTaskId(Long taskId) {
+        Example example=new Example(MdmcFileTaskStatus.class);
+        Example.Criteria criteria=example.createCriteria();
+        criteria.andEqualTo("taskId",taskId);
+        if (fileTaskStatusMapper.selectCountByExample(example)==0){
+            throw new BusinessException(ErrorCodeEnum.OPC10040008,taskId);
+        }
+        List<MdmcFileTaskStatus> fileTaskStatusList=fileTaskStatusMapper.selectByExample(example);
+        List<MdmcFileUrlDto> fileUrlDtoList=new ArrayList<>();
+        for (MdmcFileTaskStatus fileTaskStatus:fileTaskStatusList){
+            MdmcFileUrlDto fileUrlDto=new MdmcFileUrlDto();
+            OptBatchGetUrlRequest optBatchGetUrlRequest=new OptBatchGetUrlRequest();
+            fileUrlDto.setStatus(fileTaskStatus.getStatus());
+            optBatchGetUrlRequest.setRefNo(String.valueOf(fileTaskStatus.getId()));
+            optBatchGetUrlRequest.setEncrypt(true);
+            fileUrlDto.setElementImgUrlDtoList(opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult());
+            fileUrlDtoList.add(fileUrlDto);
+
+        }
+        return fileUrlDtoList;
+    }
 }

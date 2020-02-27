@@ -165,6 +165,13 @@ public interface MdmcTaskService extends IService<MdmcTask> {
     List<ElementImgUrlDto> getFileByTaskIdAndStatus(MdmcFileReqDto mdmcFileReqDto);
 
     /**
+     * 根据工单id和状态查看附件信息
+     * @param taskId
+     * @return
+     */
+    List<MdmcFileUrlDto> getFileByTaskId(Long taskId);
+
+    /**
      * =========================== 待优化 ============================
      *
      * 1. 将工单数据和状态流转分开，用户操作只修改数据，不修改状态

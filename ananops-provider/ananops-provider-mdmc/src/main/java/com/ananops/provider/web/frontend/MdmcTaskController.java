@@ -207,6 +207,21 @@ public class MdmcTaskController extends BaseController {
     }
 
     /**
+     * 根据工单id查询不同状态的图片
+     *
+     *
+     * @param taskId  HTTP请求参数
+     *
+     * @return 返回
+     */
+    @GetMapping(value = "/getPictureByTaskId")
+    @ApiOperation(httpMethod = "GET",value = "根据任务的ID，查看不同状态的附件信息")
+    public Wrapper<List<MdmcFileUrlDto>> getPictureByTaskId(@RequestParam("taskId") Long taskId){
+
+        return WrapMapper.ok(taskService.getFileByTaskId(taskId));
+    }
+
+    /**
      * 上传工单不同状态的图片
      *
      * @param request HTTP请求
