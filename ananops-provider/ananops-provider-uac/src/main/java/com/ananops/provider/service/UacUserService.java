@@ -317,7 +317,7 @@ public interface UacUserService extends IService<UacUser> {
 	 *
 	 * @param userInfoDto 注册的用户信息
      */
-	void addUser(UserInfoDto userInfoDto);
+	Long addUser(UserInfoDto userInfoDto);
 
 	/**
 	 * 根据用户值机员id获取用户负责人列表

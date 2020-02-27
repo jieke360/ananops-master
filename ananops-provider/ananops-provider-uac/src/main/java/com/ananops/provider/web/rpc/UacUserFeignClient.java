@@ -74,15 +74,10 @@ public class UacUserFeignClient extends BaseController implements UacUserFeignAp
     }
 
     @Override
-    @ApiOperation(httpMethod = "POST", value = "添加用户")
+    @ApiOperation(httpMethod = "POST", value = "添加工程师用户")
     public Wrapper<Long> addUser(@RequestBody UserInfoDto userInfoDto) {
-        uacUserService.addUser(userInfoDto);
-        UacUser uacUser = new UacUser();
-        uacUser.setLoginName(userInfoDto.getLoginName());
-        uacUser.setMobileNo(userInfoDto.getMobileNo());
-        uacUser.setEmail(userInfoDto.getEmail());
-        UacUser result = uacUserService.selectOne(uacUser);
-        return WrapMapper.ok(result.getId());
+        logger.info("添加工程师用户. userInfoDto={}", userInfoDto);
+        return WrapMapper.ok(uacUserService.addUser(userInfoDto));
     }
 
     @Override

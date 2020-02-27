@@ -211,10 +211,6 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
 
     @Override
     public void addSpcEngineer(EngineerRegisterDto engineerRegisterDto, LoginAuthDto loginAuthDto) {
-        Long loginAuthDtoUserId = loginAuthDto.getUserId();
-//        SpcCompany spcCompany = new SpcCompany();
-//        spcCompany.setUserId(loginAuthDtoUserId);
-//        Long companyId = spcCompanyMapper.selectOne(spcCompany).getId();
         // 校验注册信息
         validateRegisterInfo(engineerRegisterDto);
 
@@ -228,41 +224,19 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
             e.printStackTrace();
         }
         //新建的工程师和创建人属于同一个group
-       // userInfoDto.setGroupId(loginAuthDto.getGroupId());
-        // userInfoDto.setGroupName(loginAuthDto.getGroupName());
+        userInfoDto.setGroupId(loginAuthDto.getGroupId());
+        userInfoDto.setGroupName(loginAuthDto.getGroupName());
+        // 使用UserId将当前的操作用户Id带过去
+        userInfoDto.setUserId(String.valueOf(loginAuthDto.getUserId()));
+        userInfoDto.setType("engineer");
+        userInfoDto.setRemark("工程师");
         Long newUserId = uacUserFeignApi.addUser(userInfoDto).getResult();
-
-        Long groupId = uacGroupBindUserFeignApi.getGroupIdByUserId(loginAuthDtoUserId).getResult();
-        //用UAC里面的group_user表来维护关系
-        if (loginAuthDto.getGroupId() != null) {
-            GroupBindUserApiDto groupBindUserDto=new GroupBindUserApiDto();
-            groupBindUserDto.setGroupId(loginAuthDto.getGroupId());
-            List<Long> list =new ArrayList<>();
-
-            //<Long> list = uacGroupFeignApi.getUacUserIdListByGroupId(groupId).getResult();
-
-            list.add(newUserId);
-            groupBindUserDto.setUserIdList(list);
-
-            System.out.println("////////////////");
-            System.out.println("loginAuthDtoUserId"+loginAuthDtoUserId);
-            System.out.println("loginAuthDto.getGroupId():"+groupBindUserDto);
-            System.out.println("////////////////");
-            log.info("绑定用户到组织. groupBindUserReqDto={}", groupBindUserDto);
-            uacGroupBindUserFeignApi.bindUacUser4Group(groupBindUserDto);
-            log.info("绑定用户到组织.【ok】");
-        }
 
         Long engineerId = super.generateId();
         spcEngineer.setId(engineerId);
         spcEngineer.setUserId(newUserId);
-        spcEngineer.setCreatorId(loginAuthDtoUserId);
-        spcEngineer.setCreator(loginAuthDto.getUserName());
+        spcEngineer.setUpdateInfo(loginAuthDto);
         spcEngineerMapper.insertSelective(spcEngineer);
-//        SpcCompanyEngineer spcCompanyEngineer = new SpcCompanyEngineer();
-//        spcCompanyEngineer.setCompanyId(companyId);
-//        spcCompanyEngineer.setEngineerId(engineerId);
-//        spcCompanyEngineerMapper.insert(spcCompanyEngineer);
     }
 
     private void validateRegisterInfo(EngineerRegisterDto engineerRegisterDto) {

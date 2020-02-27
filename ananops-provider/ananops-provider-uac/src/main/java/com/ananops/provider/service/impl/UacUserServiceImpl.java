@@ -1092,7 +1092,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	}
 
 	@Override
-	public void addUser(UserInfoDto userInfoDto) {
+	public Long addUser(UserInfoDto userInfoDto) {
 		UacUser uacUser = new UacUser();
 		try {
 			BeanUtils.copyProperties(uacUser, userInfoDto);
@@ -1100,9 +1100,23 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 			logger.error("工程师Dto与用户Dto属性拷贝异常");
 			e.printStackTrace();
 		}
+		Long userId = super.generateId();
+		uacUser.setId(userId);
 		uacUser.setLoginPwd(Md5Util.encrypt("123456"));
-		uacUser.setStatus("0");
+		uacUser.setStatus(UacUserStatusEnum.DISABLE.getKey());
+		uacUser.setUserSource(UacUserSourceEnum.INSERT.getKey());
+		uacUser.setCreator(userInfoDto.getGroupName());
+		uacUser.setCreatorId(Long.valueOf(userInfoDto.getUserId()));
+		uacUser.setCreatedTime(new Date());
 		uacUserMapper.insertSelective(uacUser);
+
+		// 为该用户添加默认工程师角色
+		uacRoleUserService.saveRoleUser(userId, 781829167275574272L);
+
+		// 将该用户绑定到公司组织下
+		uacGroupUserService.saveUserGroup(userId, userInfoDto.getGroupId());
+
+		return userId;
 	}
 
 	@Override
