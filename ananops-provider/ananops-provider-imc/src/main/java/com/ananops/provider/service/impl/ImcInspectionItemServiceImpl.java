@@ -26,6 +26,7 @@ import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.provider.service.OpcOssFeignApi;
 import com.ananops.wrapper.WrapMapper;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.xiaoleilu.hutool.io.FileTypeUtil;
@@ -141,6 +142,28 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
      * @param itemQueryDto
      * @return
      */
+    @Override
+    public PageInfo getAllItemByTaskIdAndPage(ItemQueryDto itemQueryDto){
+        Long taskId = itemQueryDto.getTaskId();
+        Example example1 = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria1 = example1.createCriteria();
+        criteria1.andEqualTo("id",taskId);
+        if(imcInspectionTaskMapper.selectCountByExample(example1)==0){
+            //如果查询的任务不存在
+            throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+        }
+        Example example2 = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria2 = example2.createCriteria();
+        criteria2.andEqualTo("inspectionTaskId",taskId);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example2);
+        return new PageInfo<>(imcInspectionItems);
+    }
+    /**
+     *
+     * @param itemQueryDto
+     * @return
+     */
     public List<ImcInspectionItem> getAllItemByTaskId(ItemQueryDto itemQueryDto){
         Long taskId = itemQueryDto.getTaskId();
         Example example1 = new Example(ImcInspectionTask.class);
@@ -156,6 +179,26 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example2);
         return imcInspectionItems;
+    }
+
+    @Override
+    public PageInfo getAllItemByTaskIdAndStatusAndPage(ItemQueryDto itemQueryDto){
+        Long taskId = itemQueryDto.getTaskId();
+        int status = itemQueryDto.getStatus();
+        Example example1 = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria1 = example1.createCriteria();
+        criteria1.andEqualTo("id",taskId);
+        if(imcInspectionTaskMapper.selectCountByExample(example1)==0){
+            //如果查询的任务不存在
+            throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+        }
+        Example example2 = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria2 = example2.createCriteria();
+        criteria2.andEqualTo("inspectionTaskId",taskId);
+        criteria2.andEqualTo("status",status);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example2);
+        return new PageInfo<>(imcInspectionItems);
     }
 
     @Override
@@ -210,16 +253,42 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         return imcInspectionItemMapper.selectByExample(example);
     }
 
+    @Override
+    public PageInfo getItemByUserIdAndPage(ItemQueryDto itemQueryDto){
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.queryItemByUserId(itemQueryDto.getUserId());
+        return new PageInfo<>(imcInspectionItems);
+    }
+
+    @Override
     public List<ImcInspectionItem> getItemByUserId(ItemQueryDto itemQueryDto){
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         return imcInspectionItemMapper.queryItemByUserId(itemQueryDto.getUserId());
     }
 
+    @Override
+    public PageInfo getItemByUserIdAndStatusAndPage(ItemQueryDto itemQueryDto){
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.queryItemByUserIdAndStatus(itemQueryDto.getUserId(),itemQueryDto.getStatus());
+        return new PageInfo<>(imcInspectionItems);
+    }
+    @Override
     public List<ImcInspectionItem> getItemByUserIdAndStatus(ItemQueryDto itemQueryDto){
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         return imcInspectionItemMapper.queryItemByUserIdAndStatus(itemQueryDto.getUserId(),itemQueryDto.getStatus());
     }
 
+    @Override
+    public PageInfo getItemByMaintainerIdAndPage(ItemQueryDto itemQueryDto){
+        Long maintainerId = itemQueryDto.getMaintainerId();
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("maintainerId",maintainerId);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example);
+        return new PageInfo<>(imcInspectionItems);
+    }
+    @Override
     public List<ImcInspectionItem> getItemByMaintainerId(ItemQueryDto itemQueryDto){
         Long maintainerId = itemQueryDto.getMaintainerId();
         Example example = new Example(ImcInspectionItem.class);
@@ -229,6 +298,19 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         return imcInspectionItemMapper.selectByExample(example);
     }
 
+    @Override
+    public PageInfo getItemByMaintainerIdAndStatusAndPage(ItemQueryDto itemQueryDto){
+        Long maintainerId = itemQueryDto.getMaintainerId();
+        Integer status = itemQueryDto.getStatus();
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("maintainerId",maintainerId);
+        criteria.andEqualTo("status",status);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example);
+        return new PageInfo<>(imcInspectionItems);
+    }
+    @Override
     public List<ImcInspectionItem> getItemByMaintainerIdAndStatus(ItemQueryDto itemQueryDto){
         Long maintainerId = itemQueryDto.getMaintainerId();
         Integer status = itemQueryDto.getStatus();
@@ -390,6 +472,23 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         return imcItemChangeStatusDto;
     }
 
+    @Override
+    public PageInfo getAcceptedItemOfMaintainerAndPage(ItemQueryDto itemQueryDto){
+        Long maintainerId = itemQueryDto.getMaintainerId();
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("maintainerId",maintainerId);
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example);
+        List<ImcInspectionItem> imcInspectionItemsResult = new ArrayList<>();
+        imcInspectionItems.forEach(imcInspectionItem -> {
+            int status = imcInspectionItem.getStatus();
+            if(status!=ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum() && status != ItemStatusEnum.WAITING_FOR_ACCEPT.getStatusNum() && status != ItemStatusEnum.INSPECTION_OVER.getStatusNum() && status != ItemStatusEnum.VERIFIED.getStatusNum()){
+                imcInspectionItemsResult.add(imcInspectionItem);
+            }
+        });
+        return new PageInfo<>(imcInspectionItemsResult);
+    }
     @Override
     public List<ImcInspectionItem> getAcceptedItemOfMaintainer(ItemQueryDto itemQueryDto){
         Long maintainerId = itemQueryDto.getMaintainerId();

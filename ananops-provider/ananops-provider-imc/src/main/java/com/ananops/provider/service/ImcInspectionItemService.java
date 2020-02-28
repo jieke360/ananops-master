@@ -8,6 +8,7 @@ import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
@@ -53,4 +54,18 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
     List<ImcItemUrlDto> getAllImcItemPicList(ImcPicQueryDto imcPicQueryDto);
 
     Integer getImcItemNumberByTaskId(Long taskId);
+
+    PageInfo getAllItemByTaskIdAndPage(ItemQueryDto itemQueryDto);
+
+    PageInfo getAllItemByTaskIdAndStatusAndPage(ItemQueryDto itemQueryDto);
+
+    PageInfo getItemByUserIdAndPage(ItemQueryDto itemQueryDto);
+
+    PageInfo getItemByUserIdAndStatusAndPage(ItemQueryDto itemQueryDto);
+
+    PageInfo getItemByMaintainerIdAndPage(ItemQueryDto itemQueryDto);
+
+    PageInfo getItemByMaintainerIdAndStatusAndPage(ItemQueryDto itemQueryDto);
+
+    PageInfo getAcceptedItemOfMaintainerAndPage(ItemQueryDto itemQueryDto);
 }
