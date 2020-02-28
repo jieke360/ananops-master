@@ -34,25 +34,35 @@ public class BaseBillController {
     @ApiOperation(httpMethod = "POST",value = "创建账单")
     public Wrapper<String> createNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto abc){
         PmcPayDto pmcPayDto = new PmcPayDto();
-        com.ananops.wrapper.Wrapper<List<PmcPayDto>> list = pmcContractFeignApi.getContactByAB(Long.valueOf(abc.getUserid()),Long.valueOf(abc.getSupplier()));
-        if (list.getResult() == null) {
-            log.info("该用户与该服务商没有合同");
-        }
-        List<PmcPayDto> payDtoList = new ArrayList<>(list.getResult());
-        for (PmcPayDto payDto : payDtoList) {
-            try {
-                BeanUtils.copyProperties(pmcPayDto, payDto);
-            }catch (Exception e) {
-                e.printStackTrace();
+        if (abc.getUserid()!=null && abc.getSupplier()!=null){
+            com.ananops.wrapper.Wrapper<List<PmcPayDto>> list = pmcContractFeignApi.getContactByAB(Long.valueOf(abc.getUserid()),Long.valueOf(abc.getSupplier()));
+            if (list.getResult() == null) {
+                log.info("该用户与该服务商没有合同");
             }
+            List<PmcPayDto> payDtoList = new ArrayList<>(list.getResult());
+            for (PmcPayDto payDto : payDtoList) {
+                try {
+                    BeanUtils.copyProperties(pmcPayDto, payDto);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
 
+            }
         }
-        Float servicePrice = pmcPayDto.getPaymentMoney().floatValue();
-        String transactionMethod = pmcPayDto.getPaymentType().toString();
-        List<DeviceDto> deviceDtoList = abc.getDeviceDtos();
-        List<Long> deviceIds = new ArrayList<>();
-        for (DeviceDto deviceDto : deviceDtoList) {
-            deviceIds.add(deviceDto.getDeviceId());
+        Float servicePrice = null;
+        String transactionMethod = null;
+        if (pmcPayDto.getPaymentMoney() != null){
+            servicePrice = pmcPayDto.getPaymentMoney().floatValue();
+        }
+        if (pmcPayDto.getPaymentType() != null){
+            transactionMethod = pmcPayDto.getPaymentType().toString();
+        }
+        if (abc.getDeviceDtos() != null){
+            List<DeviceDto> deviceDtoList = abc.getDeviceDtos();
+            List<Long> deviceIds = new ArrayList<>();
+            for (DeviceDto deviceDto : deviceDtoList) {
+                deviceIds.add(deviceDto.getDeviceId());
+            }
         }
 //        com.ananops.wrapper.Wrapper<Object> objects = rdcDeviceOrderFeignApi.getPriceOfDevices(deviceIds);
 //        List<JSONObject> jsonObjects = (List<JSONObject>)objects.getResult();
