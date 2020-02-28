@@ -1,14 +1,18 @@
 package com.ananops.provider.web.rpc;
 
+import com.ananops.base.constant.GlobalConstant;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseController;
+import com.ananops.provider.mapper.UacGroupUserMapper;
 import com.ananops.provider.model.domain.UacGroup;
+import com.ananops.provider.model.domain.UacGroupUser;
 import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.dto.group.GroupNameLikeQuery;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
+import com.ananops.provider.model.dto.role.BindUserDto;
 import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
@@ -30,7 +34,9 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 操作Group
@@ -40,6 +46,9 @@ import java.util.List;
 @RestController
 @Api(value = "API - UacGroupFeignClient", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class UacGroupFeignClient extends BaseController implements UacGroupFeignApi {
+
+    @Resource
+    private UacGroupUserMapper uacGroupUserMapper;
 
     @Resource
     private UacGroupService uacGroupService;
@@ -144,16 +153,17 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
     @ApiOperation(httpMethod = "POST", value = "根据Group的Id查询对应的全部User的Id")
     public Wrapper<List<Long>> getUacUserIdListByGroupId(@RequestParam("groupId")Long groupId){
         logger.info("根据组织Id查询组织对应的全部用户的Id");
-        Example example = new Example(UacUser.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("groupId",groupId);
-        List<Long> userIdList = new ArrayList<>();
-        List<UacUser> uacUserList = uacUserService.selectByExample(example);
-        uacUserList.forEach(uacUser -> {
-            Long userId = uacUser.getId();
-            userIdList.add(userId);
+        List<Long> res = new ArrayList<>();
+        Set<UacGroupUser> allUserSet = new HashSet<>();
+        List<GroupZtreeVo> groupZtreeVos = uacGroupService.getGroupTree(groupId);
+        for (GroupZtreeVo groupZtreeVo : groupZtreeVos) {
+            List<UacGroupUser> bindUserDtoList = uacGroupUserMapper.listByGroupId(groupZtreeVo.getId());
+            allUserSet.addAll(bindUserDtoList);
+        }
+        allUserSet.forEach(uacGroupUser -> {
+            res.add(uacGroupUser.getUserId());
         });
-        return WrapMapper.ok(userIdList);
+        return WrapMapper.ok(res);
     }
 
     @Override
