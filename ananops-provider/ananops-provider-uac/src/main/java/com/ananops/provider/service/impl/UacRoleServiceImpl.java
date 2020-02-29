@@ -241,16 +241,18 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		// 该组织以绑定该角色的用户
 		if (!userIds.isEmpty()) {
 			List<Long> alreadyUserId = uacRoleUserService.listByRoleIdUserIds(roleId, userIds);
-			List<UacUser> alreadyUserInfo = uacUserService.batchGetUserInfo(alreadyUserId);
-			for (UacUser uacUser : alreadyUserInfo) {
-				BindUserDto bindUserDto = new BindUserDto();
-				bindUserDto.setUserId(uacUser.getId());
-				bindUserDto.setKey(uacUser.getId());
-				if (uacUser.getUserName() != null)
-					bindUserDto.setUserName(uacUser.getUserName());
-				bindUserDto.setRoleCode(uacRole.getRoleCode());
-				bindUserDto.setMobileNo(uacUser.getMobileNo());
-				alreadyBindUserIdSet.add(bindUserDto);
+			if (!PublicUtil.isEmpty(alreadyUserId)) {
+				List<UacUser> alreadyUserInfo = uacUserService.batchGetUserInfo(alreadyUserId);
+				for (UacUser uacUser : alreadyUserInfo) {
+					BindUserDto bindUserDto = new BindUserDto();
+					bindUserDto.setUserId(uacUser.getId());
+					bindUserDto.setKey(uacUser.getId());
+					if (uacUser.getUserName() != null)
+						bindUserDto.setUserName(uacUser.getUserName());
+					bindUserDto.setRoleCode(uacRole.getRoleCode());
+					bindUserDto.setMobileNo(uacUser.getMobileNo());
+					alreadyBindUserIdSet.add(bindUserDto);
+				}
 			}
 		}
 
