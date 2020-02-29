@@ -63,7 +63,12 @@ public class AliyunMqTopicConstants {
 		/**
 		 * Mdmc topic mq topic enum.
 		 */
-		MDMC_TOPIC("MDMC_TOPIC","MDMC_TOPIC"),;
+		MDMC_TOPIC("MDMC_TOPIC","MDMC_TOPIC"),
+		/**
+		 * Amc topic mq topic enum.
+		 */
+		AMC_TOPIC("AMC_TOPIC","AMC_TOPIC"),
+		;
 
 		MqTopicEnum(String topic, String topicName) {
 			this.topic = topic;
@@ -171,7 +176,12 @@ public class AliyunMqTopicConstants {
 		/**
 		 * 维修工单状态改变
 		 */
-		MDMC_TASK_STATUS_CHANGED("MDMC_TASK_STATUS_CHANGED",MqTopicEnum.MDMC_TOPIC.getTopic(),"维修工单状态改变"),;
+		MDMC_TASK_STATUS_CHANGED("MDMC_TASK_STATUS_CHANGED",MqTopicEnum.MDMC_TOPIC.getTopic(),"维修工单状态改变"),
+		/**
+		 * 发生报警
+		 */
+		AMC_ALARM_OCCUR("AMC_ALARM_OCCUR",MqTopicEnum.AMC_TOPIC.getTopic(),"发生报警"),
+		;
 		/**
 		 * The Tag.
 		 */

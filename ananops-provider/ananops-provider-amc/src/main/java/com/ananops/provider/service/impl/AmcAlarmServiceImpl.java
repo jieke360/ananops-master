@@ -8,8 +8,10 @@ import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
 import com.ananops.core.utils.RequestUtil;
 import com.ananops.provider.exception.AmcBizException;
+import com.ananops.provider.manager.AmcAlarmManager;
 import com.ananops.provider.mapper.AmcAlarmMapper;
 import com.ananops.provider.model.domain.AmcAlarm;
+import com.ananops.provider.model.domain.MqMessageData;
 import com.ananops.provider.model.dto.AlarmQuery;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
@@ -19,6 +21,7 @@ import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.vo.GroupZtreeVo;
+import com.ananops.provider.mq.producer.AlarmMsgProducer;
 import com.ananops.provider.service.AmcAlarmService;
 import com.ananops.provider.service.OpcOssFeignApi;
 import com.ananops.wrapper.Wrapper;
@@ -51,6 +54,10 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
     UacGroupFeignApi uacGroupFeignApi;
     @Resource
     private OpcOssFeignApi opcOssFeignApi;
+    @Resource
+    AlarmMsgProducer alarmMsgProducer;
+    @Resource
+    AmcAlarmManager amcAlarmManager;
 
     @Override
     public int saveAlarm(AmcAlarm amcAlarm, LoginAuthDto loginAuthDto) {
@@ -62,6 +69,9 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
             amcAlarm.setGroupId(loginAuthDto.getGroupId());
             amcAlarm.setGroupName(loginAuthDto.getGroupName());
             result = amcAlarmMapper.insertSelective(amcAlarm);
+            //推送mq消息
+            MqMessageData mqMessageData = alarmMsgProducer.sendAlarmOccurMsgMq(amcAlarm);
+            amcAlarmManager.alarmOccur(mqMessageData);
         } else {
             result = amcAlarmMapper.updateByPrimaryKeySelective(amcAlarm);
             if (result < 1) {
