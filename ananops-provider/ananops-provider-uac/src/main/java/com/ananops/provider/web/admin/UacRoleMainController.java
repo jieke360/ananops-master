@@ -8,7 +8,6 @@
 
 package com.ananops.provider.web.admin;
 
-import com.ananops.base.dto.BaseQuery;
 import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.github.pagehelper.PageHelper;

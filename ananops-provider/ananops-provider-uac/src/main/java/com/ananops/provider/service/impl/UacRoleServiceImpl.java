@@ -216,7 +216,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
 	public RoleBindUserDto getRoleBindUserDto(Long roleId, Long currentUserId, Long currentUserGroupId) {
 		RoleBindUserDto roleBindUserDto = new RoleBindUserDto();
-		Set<Long> alreadyBindUserIdSet = Sets.newHashSet();
+		Set<BindUserDto> alreadyBindUserIdSet = Sets.newHashSet();
 		UacRole uacRole = uacRoleMapper.selectByPrimaryKey(roleId);
 		if (PublicUtil.isEmpty(uacRole)) {
 			logger.error("找不到roleId={}, 的角色", roleId);
@@ -224,7 +224,6 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		}
 
 		// 查询所有用户包括已禁用的用户
-//		List<BindUserDto> bindUserDtoList = uacRoleMapper.selectAllNeedBindUser(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID, currentUserId);
 		Set<BindUserDto> allUserSet = new HashSet<>();
 		// 查询该组织下所有用户包括已禁用的用户
 		List<GroupZtreeVo> groupZtreeVos = uacGroupService.getGroupTree(currentUserGroupId);
@@ -233,19 +232,26 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 			allUserSet.addAll(bindUserDtoList);
 		}
 
-//		List<UacRoleUser> setAlreadyBindUserSet = uacRoleUserService.listByRoleId(roleId);
-//
-//		for (UacRoleUser uacRoleUser : setAlreadyBindUserSet) {
-//			alreadyBindUserIdSet.add(uacRoleUser.getUserId());
-//		}
 		// 获取该组织下所有用户Id
 		List<Long> userIds = new ArrayList<>();
 		for (BindUserDto bindUserDto : allUserSet) {
 			userIds.add(bindUserDto.getUserId());
+			bindUserDto.setKey(bindUserDto.getUserId());
 		}
 		// 该组织以绑定该角色的用户
 		if (!userIds.isEmpty()) {
-			alreadyBindUserIdSet.addAll(uacRoleUserService.listByRoleIdUserIds(roleId, userIds));
+			List<Long> alreadyUserId = uacRoleUserService.listByRoleIdUserIds(roleId, userIds);
+			List<UacUser> alreadyUserInfo = uacUserService.batchGetUserInfo(alreadyUserId);
+			for (UacUser uacUser : alreadyUserInfo) {
+				BindUserDto bindUserDto = new BindUserDto();
+				bindUserDto.setUserId(uacUser.getId());
+				bindUserDto.setKey(uacUser.getId());
+				if (uacUser.getUserName() != null)
+					bindUserDto.setUserName(uacUser.getUserName());
+				bindUserDto.setRoleCode(uacRole.getRoleCode());
+				bindUserDto.setMobileNo(uacUser.getMobileNo());
+				alreadyBindUserIdSet.add(bindUserDto);
+			}
 		}
 
 		roleBindUserDto.setAllUserSet(allUserSet);

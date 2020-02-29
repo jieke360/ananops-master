@@ -360,4 +360,13 @@ public interface UacUserService extends IService<UacUser> {
 	 * @return
 	 */
     int authUserModifyPwd(UserModifyPwdDto userModifyPwdDto, LoginAuthDto loginAuthDto);
+
+	/**
+	 * 通过用户Id集合批量查询用户信息
+	 *
+	 * @param alreadyUserId 用户Id集合
+	 *
+	 * @return 返回用户信息列表
+	 */
+	List<UacUser> batchGetUserInfo(List<Long> alreadyUserId);
 }

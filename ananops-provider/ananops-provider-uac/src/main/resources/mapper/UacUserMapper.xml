@@ -312,4 +312,16 @@
     LEFT JOIN an_uac_group g on gu.group_id = g.id
     WHERE u.login_name = #{loginName}
   </select>
+
+    <select id="batchGetUserInfo" parameterType="list" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from
+        an_uac_user u
+        WHERE
+        u.id IN
+        <foreach collection="userIdList" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

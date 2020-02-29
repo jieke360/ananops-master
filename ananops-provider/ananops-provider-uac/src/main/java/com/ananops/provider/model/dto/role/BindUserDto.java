@@ -41,5 +41,9 @@ public class BindUserDto implements Serializable {
 	 */
 	@ApiModelProperty(value = "是否可以操作")
 	private boolean disabled;
-
+	/**
+	 * 用户ID
+	 */
+	@ApiModelProperty(value = "用户ID")
+	private Long key;
 }

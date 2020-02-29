@@ -1232,4 +1232,12 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		Preconditions.checkArgument(user.getId().equals(loginAuthDto.getUserId()), "越权操作，只能修改本人密码！");
 		return this.userModifyPwd(userModifyPwdDto, loginAuthDto);
 	}
+
+	@Override
+	public List<UacUser> batchGetUserInfo(List<Long> alreadyUserId) {
+		if (PublicUtil.isEmpty(alreadyUserId)) {
+			throw new UacBizException(ErrorCodeEnum.UAC10011001, alreadyUserId);
+		}
+		return uacUserMapper.batchGetUserInfo(alreadyUserId);
+	}
 }
