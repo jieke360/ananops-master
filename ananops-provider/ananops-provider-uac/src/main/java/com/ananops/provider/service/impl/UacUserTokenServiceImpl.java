@@ -150,9 +150,10 @@ public class UacUserTokenServiceImpl extends BaseService<UacUserToken> implement
 
 	@Override
 	public PageInfo listTokenWithPage(TokenMainQueryDto token, LoginAuthDto loginAuthDto) {
-		PageHelper.startPage(token.getPageNum(), token.getPageSize());
 		UacUserToken userToken = new UacUserToken();
 		userToken.setStatus(token.getStatus());
+		userToken.setPageNum(token.getPageNum());
+		userToken.setPageSize(token.getPageSize());
 		if (token.getStatus() != null) {
 			userToken.setStatus(token.getStatus());
 		}
@@ -176,6 +177,7 @@ public class UacUserTokenServiceImpl extends BaseService<UacUserToken> implement
 		for (BindUserDto bindUserDto : allUserSet) {
 			userIds.add(bindUserDto.getUserId());
 		}
+		PageHelper.startPage(token.getPageNum(), token.getPageSize());
 		List<UacUserToken> userTokenList = uacUserTokenMapper.selectTokenListInUserIds(userToken, userIds);
 		return new PageInfo<>(userTokenList);
 	}
