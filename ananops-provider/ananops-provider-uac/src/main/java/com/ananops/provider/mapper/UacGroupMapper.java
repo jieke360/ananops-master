@@ -26,8 +26,22 @@ import java.util.List;
 @Component
 public interface UacGroupMapper extends MyMapper<UacGroup> {
 
+    /**
+     * 根据用户Id查询组织列表
+     *
+     * @param userId 用户Id
+     *
+     * @return 组织列表
+     */
     List<UacGroup> selectGroupListByUserId(Long userId);
 
+    /**
+     * 通过组织名称查询组织列表
+     *
+     * @param groupName 组织名称
+     *
+     * @return 组织列表
+     */
     List<UacGroup> selectGroupByGroupName(String groupName);
 
     /**

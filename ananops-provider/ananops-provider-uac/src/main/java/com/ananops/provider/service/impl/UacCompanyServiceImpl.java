@@ -63,6 +63,8 @@ public class UacCompanyServiceImpl implements UacCompanyService {
             uacGroup.setPid(1L);
             // 新注册服务商默认地址为中国/北京
             uacGroup.setAddressList(Arrays.asList(368100109646176256L, 368100109679730688L));
+            // 新注册的服务商组织类型设置为company
+            uacGroup.setType("company");
 
             // 拷贝服务商注册信息到SPC注册对象
             BeanUtils.copyProperties(companyDto, company);

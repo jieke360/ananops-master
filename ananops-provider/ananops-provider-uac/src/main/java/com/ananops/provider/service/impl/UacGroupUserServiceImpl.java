@@ -1,6 +1,7 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.core.support.BaseService;
+import com.ananops.provider.mapper.UacGroupMapper;
 import com.ananops.provider.mapper.UacGroupUserMapper;
 import com.ananops.provider.model.domain.UacGroup;
 import com.ananops.provider.model.domain.UacGroupUser;
@@ -17,8 +18,12 @@ import java.util.List;
  */
 @Service
 public class UacGroupUserServiceImpl extends BaseService<UacGroupUser> implements UacGroupUserService {
+
 	@Resource
 	private UacGroupUserMapper uacGroupUserMapper;
+
+	@Resource
+	private UacGroupMapper uacGroupMapper;
 
 	@Override
 	public UacGroupUser queryByUserId(Long userId) {
@@ -32,7 +37,7 @@ public class UacGroupUserServiceImpl extends BaseService<UacGroupUser> implement
 
 	@Override
 	public List<UacGroup> getGroupListByUserId(Long userId) {
-		return uacGroupUserMapper.selectGroupListByUserId(userId);
+		return uacGroupMapper.selectGroupListByUserId(userId);
 	}
 
 	@Override

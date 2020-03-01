@@ -883,6 +883,12 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 			throw new UacBizException(ErrorCodeEnum.UAC10011004, email);
 		}
 
+		List<UacGroup> uacGroups = uacGroupUserService.getGroupListByUserId(uacUser.getId());
+		if (uacGroups.isEmpty()) {
+			logger.error("找不到用户组织信息. userId={}", uacUser.getId());
+			throw new UacBizException(ErrorCodeEnum.UAC10015004, uacUser.getId());
+		}
+
 		UacUser update = new UacUser();
 		update.setId(uacUser.getId());
 		update.setStatus(UacUserStatusEnum.ENABLE.getKey());
@@ -891,6 +897,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		loginAuthDto.setUserName(uacUser.getLoginName());
 		loginAuthDto.setLoginName(uacUser.getLoginName());
 		update.setUpdateInfo(loginAuthDto);
+		update.setGroupId(uacGroups.get(0).getId());
 
 		UacUser user = this.queryByUserId(uacUser.getId());
 
@@ -900,7 +907,6 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 
 		Set<String> to = Sets.newHashSet();
 		to.add(user.getEmail());
-
 
 		MqMessageData mqMessageData = emailProducer.sendEmailMq(to, UacEmailTemplateEnum.ACTIVE_USER_SUCCESS, AliyunMqTopicConstants.MqTagEnum.ACTIVE_USER_SUCCESS, param);
 		userManager.activeUser(mqMessageData, update, activeUserKey);
