@@ -57,6 +57,7 @@ public class BaseServiceImpl implements BaseService {
         bill.setTime(time);
         bill.setSupplier(billCreateDto.getSupplier());
         bill.setWorkorderid(billCreateDto.getWorkorderid());
+        bill.setState(billCreateDto.getState());
         bill.setDeviceAmount(devicePrice);
         bill.setServiceAmount(servicePrice);
         bill.setAmount(bill.getDeviceAmount() + bill.getServiceAmount());
@@ -99,6 +100,7 @@ public class BaseServiceImpl implements BaseService {
 
             }
         }
+        billDisplayDtoList.sort(BillDisplayDto.Comparators.TIME);
         return billDisplayDtoList;
     }
 

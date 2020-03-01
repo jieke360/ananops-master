@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Comparator;
+
 @EqualsAndHashCode()
 @Data
 public class BillDisplayDto {
@@ -47,4 +49,14 @@ public class BillDisplayDto {
 
     @ApiModelProperty(value = "服务数量")
     private Float serviceAmount;
+
+    public static class Comparators {
+        //根据时间进行排序
+        public static Comparator<BillDisplayDto> TIME = new Comparator<BillDisplayDto>() {
+            @Override
+            public int compare(BillDisplayDto o1, BillDisplayDto o2) {
+                return o2.time.compareTo(o1.time);
+            }
+        };
+    }
 }
