@@ -57,6 +57,7 @@ public class BaseServiceImpl implements BaseService {
         bill.setTime(time);
         bill.setSupplier(billCreateDto.getSupplier());
         bill.setWorkorderid(billCreateDto.getWorkorderid());
+        bill.setState(billCreateDto.getState());
         bill.setDeviceAmount(devicePrice);
         bill.setServiceAmount(servicePrice);
         bill.setAmount(bill.getDeviceAmount() + bill.getServiceAmount());
@@ -68,7 +69,7 @@ public class BaseServiceImpl implements BaseService {
         //使用模板example获取BaseBill类
         Example example = new Example(Basebill.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(userid);
+        criteria.andEqualTo("userid",userid);
 
         //将获取到的BaseBill类添加到basebills列表中去
 //        List<TaskDto> imcTaskDtos = imcTaskFeignApi.getByFacilitatorId(taskQueryDto).getResult();
@@ -99,6 +100,7 @@ public class BaseServiceImpl implements BaseService {
 
             }
         }
+        billDisplayDtoList.sort(BillDisplayDto.Comparators.TIME);
         return billDisplayDtoList;
     }
 

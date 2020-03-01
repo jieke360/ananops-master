@@ -3,6 +3,11 @@ package com.ananops.provider.web;
 import com.alibaba.fastjson.JSONObject;
 import com.ananops.provider.model.domain.Basebill;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.group.CompanyDto;
+import com.ananops.provider.model.dto.group.GroupSaveDto;
+import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
+import com.ananops.provider.model.service.UacGroupFeignApi;
+import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.service.PmcContractFeignApi;
 import com.ananops.provider.service.impl.BaseServiceImpl;
 import com.ananops.provider.utils.WrapMapper;
@@ -29,15 +34,43 @@ public class BaseBillController {
     PmcContractFeignApi pmcContractFeignApi;
     @Resource
     BaseServiceImpl baseServiceImpl;
+    @Resource
+    UacGroupBindUserFeignApi uacGroupBindUserFeignApi;
+    @Resource
+    UacGroupFeignApi uacGroupFeignApi;
 
     @PostMapping(value = "/create")
     @ApiOperation(httpMethod = "POST",value = "创建账单")
-    public Wrapper<String> createNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto abc){
+    public Wrapper<String> createNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto billCreateDto){
         PmcPayDto pmcPayDto = new PmcPayDto();
-        if (abc.getUserid()!=null && abc.getSupplier()!=null){
-            com.ananops.wrapper.Wrapper<List<PmcPayDto>> list = pmcContractFeignApi.getContactByAB(Long.valueOf(abc.getUserid()),Long.valueOf(abc.getSupplier()));
+        if (billCreateDto.getUserid()!=null && billCreateDto.getSupplier()!=null){
+            com.ananops.wrapper.Wrapper<Long> partyAId = uacGroupBindUserFeignApi.getGroupIdByUserId(Long.valueOf(billCreateDto.getUserid()));
+            Long partyAIdResult = partyAId.getResult();
+            com.ananops.wrapper.Wrapper<GroupSaveDto> partyAGroupSaveDto = uacGroupFeignApi.getUacGroupById(partyAIdResult);
+            String partyAType = partyAGroupSaveDto.getResult().getType();
+            if (partyAType.equals("company")){
+            }else if (partyAType.equals("department")){
+                com.ananops.wrapper.Wrapper<CompanyDto> companyDtoPartyA = uacGroupFeignApi.getCompanyInfoById(partyAIdResult);
+                partyAIdResult = companyDtoPartyA.getResult().getId();
+            }else {
+                return WrapMapper.error("未知的组织类型！组织ID："+partyAIdResult+"组织类型："+partyAType+"请至数据库查看详情或与开发人员联系");
+            }
+            com.ananops.wrapper.Wrapper<Long> partyBId = uacGroupBindUserFeignApi.getGroupIdByUserId(Long.valueOf(billCreateDto.getSupplier()));
+            Long partyBIdResult = partyBId.getResult();
+            com.ananops.wrapper.Wrapper<GroupSaveDto> partyBGroupSaveDto = uacGroupFeignApi.getUacGroupById(partyBIdResult);
+            String partyBType = partyBGroupSaveDto.getResult().getType();
+            if (partyAType.equals("company")){
+            }else if (partyBType.equals("department")){
+                com.ananops.wrapper.Wrapper<CompanyDto> companyDtoPartyB = uacGroupFeignApi.getCompanyInfoById(partyBIdResult);
+                partyBIdResult = companyDtoPartyB.getResult().getId();
+            }else {
+                return WrapMapper.error("未知的组织类型！组织ID："+partyAIdResult+"组织类型："+partyAType+"请至数据库查看详情或与开发人员联系");
+            }
+            billCreateDto.setSupplier(partyBIdResult.toString());
+            com.ananops.wrapper.Wrapper<List<PmcPayDto>> list = pmcContractFeignApi.getContactByAB(partyAIdResult,partyBIdResult);
             if (list.getResult() == null) {
                 log.info("该用户与该服务商没有合同");
+                return WrapMapper.error("该用户与该服务商没有合同"+"partyAID:"+partyAIdResult+"partyBID:"+partyBIdResult);
             }
             List<PmcPayDto> payDtoList = new ArrayList<>(list.getResult());
             for (PmcPayDto payDto : payDtoList) {
@@ -57,8 +90,8 @@ public class BaseBillController {
         if (pmcPayDto.getPaymentType() != null){
             transactionMethod = pmcPayDto.getPaymentType().toString();
         }
-        if (abc.getDeviceDtos() != null){
-            List<DeviceDto> deviceDtoList = abc.getDeviceDtos();
+        if (billCreateDto.getDeviceDtos() != null){
+            List<DeviceDto> deviceDtoList = billCreateDto.getDeviceDtos();
             List<Long> deviceIds = new ArrayList<>();
             for (DeviceDto deviceDto : deviceDtoList) {
                 deviceIds.add(deviceDto.getDeviceId());
@@ -71,17 +104,40 @@ public class BaseBillController {
 //            devicePrice += object.getBigDecimal("price").floatValue();
 //        }
 
-        baseServiceImpl.insert(abc, devicePrice, servicePrice, transactionMethod);
+        baseServiceImpl.insert(billCreateDto, devicePrice, servicePrice, transactionMethod);
         return  WrapMapper.ok("success");
     }
 
     @PostMapping(value = "/createFakeOrder")
     @ApiOperation(httpMethod = "POST",value = "创建账单")
-    public Wrapper<Float> createFakeNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto abc){
+    public Wrapper<Float> createFakeNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto billCreateDto){
         PmcPayDto pmcPayDto = new PmcPayDto();
-        com.ananops.wrapper.Wrapper<List<PmcPayDto>> list = pmcContractFeignApi.getContactByAB(Long.valueOf(abc.getUserid()),Long.valueOf(abc.getSupplier()));
+        com.ananops.wrapper.Wrapper<Long> partyAId = uacGroupBindUserFeignApi.getGroupIdByUserId(Long.valueOf(billCreateDto.getUserid()));
+        Long partyAIdResult = partyAId.getResult();
+        com.ananops.wrapper.Wrapper<GroupSaveDto> partyAGroupSaveDto = uacGroupFeignApi.getUacGroupById(partyAIdResult);
+        String partyAType = partyAGroupSaveDto.getResult().getType();
+        if (partyAType.equals("company")){
+        }else if (partyAType.equals("department")){
+            com.ananops.wrapper.Wrapper<CompanyDto> companyDtoPartyA = uacGroupFeignApi.getCompanyInfoById(partyAIdResult);
+            partyAIdResult = companyDtoPartyA.getResult().getId();
+        }else {
+            return WrapMapper.error("未知的组织类型！组织ID："+partyAIdResult+"组织类型："+partyAType+"请至数据库查看详情或与开发人员联系");
+        }
+        com.ananops.wrapper.Wrapper<Long> partyBId = uacGroupBindUserFeignApi.getGroupIdByUserId(Long.valueOf(billCreateDto.getSupplier()));
+        Long partyBIdResult = partyBId.getResult();
+        com.ananops.wrapper.Wrapper<GroupSaveDto> partyBGroupSaveDto = uacGroupFeignApi.getUacGroupById(partyBIdResult);
+        String partyBType = partyBGroupSaveDto.getResult().getType();
+        if (partyAType.equals("company")){
+        }else if (partyBType.equals("department")){
+            com.ananops.wrapper.Wrapper<CompanyDto> companyDtoPartyB = uacGroupFeignApi.getCompanyInfoById(partyBIdResult);
+            partyBIdResult = companyDtoPartyB.getResult().getId();
+        }else {
+            return WrapMapper.error("未知的组织类型！组织ID："+partyAIdResult+"组织类型："+partyAType+"请至数据库查看详情或与开发人员联系");
+        }
+        com.ananops.wrapper.Wrapper<List<PmcPayDto>> list = pmcContractFeignApi.getContactByAB(partyAIdResult,partyBIdResult);
         if (list.getResult() == null) {
             log.info("该用户与该服务商没有合同");
+            return WrapMapper.error("该用户与该服务商没有合同"+"partyAID:"+partyAIdResult+"partyBID:"+partyBIdResult);
         }
         List<PmcPayDto> payDtoList = new ArrayList<>(list.getResult());
         for (PmcPayDto payDto : payDtoList) {
@@ -92,8 +148,11 @@ public class BaseBillController {
             }
 
         }
+        if (pmcPayDto.getPaymentMoney() == null){
+            return WrapMapper.error("交易金额为空！请仔细查看合同！合同双方："+"partyAID:"+partyAIdResult+"partyBID:"+partyBIdResult);
+        }
         Float servicePrice = pmcPayDto.getPaymentMoney().floatValue();
-//        List<DeviceDto> deviceDtoList = abc.getDeviceDtos();
+//        List<DeviceDto> deviceDtoList = billCreateDto.getDeviceDtos();
 //        List<Long> deviceIds = new ArrayList<>();
 //        for (DeviceDto deviceDto : deviceDtoList) {
 //            deviceIds.add(deviceDto.getDeviceId());
