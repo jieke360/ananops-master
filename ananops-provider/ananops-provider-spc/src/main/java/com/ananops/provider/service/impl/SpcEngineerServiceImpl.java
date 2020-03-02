@@ -332,7 +332,7 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         logger.info("queryByEngineerId - 根据工程师Id查询工程师信息接口. engineerId={}", engineerId);
         EngineerVo engineerVo = new EngineerVo();
         SpcEngineer queryE = new SpcEngineer();
-        queryE.setUserId(engineerId);
+        queryE.setId(engineerId);
         SpcEngineer spcEngineer = spcEngineerMapper.selectOne(queryE);
         Long userId = spcEngineer.getUserId();
         if (!StringUtils.isEmpty(userId)) {
