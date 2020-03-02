@@ -48,8 +48,13 @@ public class BaseServiceImpl implements BaseService {
         Date date=new Date();
         Long time=date.getTime();
         Basebill bill = new Basebill();
-        Long timestamp = System.currentTimeMillis();
-        String id = String.valueOf(timestamp)+billCreateDto.getUserid();
+
+        Example example = new Example(Basebill.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userid",billCreateDto.getUserid());
+        int billIndex = basebillMapper.selectByExample(example).size()+1;
+
+        String id = billCreateDto.getUserid()+String.format("%09d",billIndex);
         bill.setId(id);
         bill.setPaymentMethod(billCreateDto.getPaymentMethod());
         bill.setTransactionMethod(transactionMethod);
