@@ -288,16 +288,22 @@ public class AliyunMqTopicConstants {
 	private static String buildWebSocketConsumerTopics(){
 		List<TopicObj> topicObjList = new ArrayList<>();
 
+		//IMC
 		Set<String> imcTagList = new HashSet<>();
 		imcTagList.add(MqTagEnum.IMC_TASK_STATUS_CHANGED.getTag());
 		imcTagList.add(MqTagEnum.IMC_ITEM_STATUS_CHANGED.getTag());
-
+		//MDMC
 		Set<String> mdmcTagList=new HashSet<>();
 		mdmcTagList.add(MqTagEnum.MDMC_TASK_STATUS_CHANGED.getTag());
+		//AMC
+		Set<String> amcTagList=new HashSet<>();
+		amcTagList.add(MqTagEnum.AMC_ALARM_OCCUR.getTag());
 
 		topicObjList.add(new TopicObj(MqTopicEnum.MDMC_TOPIC.getTopic(),mdmcTagList));
 
 		topicObjList.add(new TopicObj(MqTopicEnum.IMC_TOPIC.getTopic(),imcTagList));
+
+		topicObjList.add(new TopicObj(MqTopicEnum.AMC_TOPIC.getTopic(),amcTagList));
 
 		return buildOpcConsumerTopics(topicObjList);
 	}
