@@ -283,6 +283,14 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		} else {
 			UacUser uacUser = uacUserMapper.selectByPrimaryKey(user.getId());
 			Preconditions.checkArgument(uacUser != null, "用户不存在");
+
+			// 判断密码长度，密码长度低于两个字符表示不更改原密码
+			String loginPwd = user.getLoginPwd();
+			if (loginPwd != null && loginPwd.length() < 3) {
+				// 将更新的user密码设置为null，代表不更改原密码
+				user.setLoginPwd(null);
+			}
+
 			// 1.更新用户信息
 			int updateInt = uacUserMapper.updateUacUser(user);
 			if (updateInt < 1) {
