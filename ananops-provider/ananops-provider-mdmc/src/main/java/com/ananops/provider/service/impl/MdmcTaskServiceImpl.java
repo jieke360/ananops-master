@@ -269,24 +269,33 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         }
 
 
-        if (troubleTypeList!=null){
+        if (troubleTypeList.size()>0){
             for (String troubleType:troubleTypeList){
-                MdmcTroubleType mdmcTroubleType=new MdmcTroubleType();
-                Long typeId=super.generateId();
-                mdmcTroubleType.setId(typeId);
-                mdmcTroubleType.setGroupId(groupId);
-                mdmcTroubleType.setTroubleType(troubleType);
-                troubleTypeMapper.insert(mdmcTroubleType);
+                if(troubleType.length()>0){
+                    MdmcTroubleType mdmcTroubleType=new MdmcTroubleType();
+                    Long typeId=super.generateId();
+                    mdmcTroubleType.setId(typeId);
+                    mdmcTroubleType.setGroupId(groupId);
+                    mdmcTroubleType.setTroubleType(troubleType);
+                    mdmcTroubleType.setUpdateInfo(loginAuthDto);
+                    troubleTypeMapper.insert(mdmcTroubleType);
+                }
             }
         }
-        if (!troubleAddrssList.isEmpty()){
+        if (troubleAddrssList.size()>0){
             for (MdmcTroubleAddressDto troubleAddressDto:troubleAddrssList){
-                MdmcTroubleAddress mdmcTroubleAddress=new MdmcTroubleAddress();
-                Long addressId=super.generateId();
-                mdmcTroubleAddress.setId(addressId);
-                mdmcTroubleAddress.setGroupId(groupId);
-                copyPropertiesWithIgnoreNullProperties(troubleAddressDto,mdmcTroubleAddress);
-                troubleAddressMapper.insert(mdmcTroubleAddress);
+                if (troubleAddressDto!=null && (troubleAddressDto.getTroubleLatitude()!=null
+                        ||troubleAddressDto.getTroubleAddress()!=null)){
+
+                    MdmcTroubleAddress mdmcTroubleAddress=new MdmcTroubleAddress();
+                    Long addressId=super.generateId();
+                    mdmcTroubleAddress.setId(addressId);
+                    mdmcTroubleAddress.setGroupId(groupId);
+                    copyPropertiesWithIgnoreNullProperties(troubleAddressDto,mdmcTroubleAddress);
+                    mdmcTroubleAddress.setUpdateInfo(loginAuthDto);
+                    troubleAddressMapper.insert(mdmcTroubleAddress);
+                }
+
             }
         }
 
