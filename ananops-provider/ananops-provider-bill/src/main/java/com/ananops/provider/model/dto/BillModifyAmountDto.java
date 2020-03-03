@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 @ApiModel
@@ -14,5 +15,5 @@ public class BillModifyAmountDto implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "修改金额")
-    private Float modifyAmount;
+    private BigDecimal modifyAmount;
 }

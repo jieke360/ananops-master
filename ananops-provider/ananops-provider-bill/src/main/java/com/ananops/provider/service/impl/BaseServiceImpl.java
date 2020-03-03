@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +35,7 @@ public class BaseServiceImpl implements BaseService {
     private SpcCompanyFeignApi spcCompanyFeignApi;
 
     @Override
-    public void insert(BillCreateDto billCreateDto, Float devicePrice, Float servicePrice, String transactionMethod) {
+    public void insert(BillCreateDto billCreateDto, BigDecimal devicePrice, BigDecimal servicePrice, String transactionMethod) {
 //        JSONObject jsonObject=JSONObject.parseObject(billCreateDto.toString());
 //        String paymentMethod=jsonObject.get("paymentMethod").toString();
 //        String userid=jsonObject.get("userid").toString();
@@ -51,7 +52,7 @@ public class BaseServiceImpl implements BaseService {
 
         int billIndex = bmcBillMapper.selectAll().size()%100000;
 
-        String idString = String.format("%04d", date.getYear()+1900)+String.format("%02d", date.getMonth())+String.format("%02d",date.getDate())+String.format("%02d", date.getHours())+String.format("%02d", date.getMinutes())+String.format("%02d", date.getSeconds())+String.format("%05d",billIndex);
+        String idString = String.format("%04d", date.getYear()+1900)+String.format("%02d", date.getMonth()+1)+String.format("%02d",date.getDate())+String.format("%02d", date.getHours())+String.format("%02d", date.getMinutes())+String.format("%02d", date.getSeconds())+String.format("%05d",billIndex);
         Long id = Long.valueOf(idString);
         bill.setId(id);
         bill.setPaymentMethod(billCreateDto.getPaymentMethod());
@@ -76,7 +77,7 @@ public class BaseServiceImpl implements BaseService {
         bill.setState(billCreateDto.getState());
         bill.setDeviceAmount(devicePrice);
         bill.setServiceAmount(servicePrice);
-        bill.setAmount(bill.getDeviceAmount() + bill.getServiceAmount());
+        bill.setAmount(bill.getDeviceAmount().add(bill.getServiceAmount()));
         UserInfoDto uacUserInfo = uacUserFeignApi.getUacUserById(bill.getUserId()).getResult();
         if(uacUserInfo != null){
             bill.setUserName(uacUserInfo.getUserName());
@@ -144,7 +145,7 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public Float getAmountByWorkOrderId(Long workOrderId) {
+    public BigDecimal getAmountByWorkOrderId(Long workOrderId) {
         Example example = new Example(BmcBill.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("workOrderId",workOrderId);
@@ -159,7 +160,7 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public void modifyAmount(BmcBill bmcBill, Float modifyAmount) {
+    public void modifyAmount(BmcBill bmcBill, BigDecimal modifyAmount) {
         bmcBill.setAmount(modifyAmount);
         bmcBillMapper.updateByPrimaryKey(bmcBill);
     }

@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class BillFeignClient extends BaseController implements BillFeignApi {
     @Override
     @ApiOperation(httpMethod = "GET", value = "根据工单ID查询金额")
 
-    public Wrapper<Float> getAmountByWorkOrderId(Long workOrderId) {
+    public Wrapper<BigDecimal> getAmountByWorkOrderId(Long workOrderId) {
         List<BmcBill> list=new ArrayList<>();
         Example example = new Example(BmcBill.class);
         Example.Criteria criteria = example.createCriteria();

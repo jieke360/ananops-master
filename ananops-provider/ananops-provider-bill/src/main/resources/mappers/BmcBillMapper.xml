@@ -8,7 +8,7 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="payment_method" property="paymentMethod" jdbcType="VARCHAR" />
     <result column="transaction_method" property="transactionMethod" jdbcType="VARCHAR" />
-    <result column="amount" property="amount" jdbcType="REAL" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
     <result column="user_id" property="userId" jdbcType="BIGINT" />
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="supplier" property="supplier" jdbcType="BIGINT" />
@@ -16,8 +16,8 @@
     <result column="time" property="time" jdbcType="BIGINT" />
     <result column="work_order_id" property="workOrderId" jdbcType="BIGINT" />
     <result column="state" property="state" jdbcType="VARCHAR" />
-    <result column="device_amount" property="deviceAmount" jdbcType="REAL" />
-    <result column="service_amount" property="serviceAmount" jdbcType="REAL" />
+    <result column="device_amount" property="deviceAmount" jdbcType="DECIMAL" />
+    <result column="service_amount" property="serviceAmount" jdbcType="DECIMAL" />
     <result column="version" property="version" jdbcType="INTEGER" />
     <result column="creator" property="creator" jdbcType="VARCHAR" />
     <result column="creator_id" property="creatorId" jdbcType="BIGINT" />

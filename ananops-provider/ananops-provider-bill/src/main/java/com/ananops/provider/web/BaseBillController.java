@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import service.RdcDeviceOrderFeignApi;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class BaseBillController {
         if (billCreateDto.getUserId()!=null && billCreateDto.getSupplier()!=null){
             Long partyAIdResult = uacGroupBindUserFeignApi.getGroupIdByUserId(billCreateDto.getUserId()).getResult();
             String partyAType = uacGroupFeignApi.getUacGroupById(partyAIdResult).getResult().getType();
+            assert partyAType != null;
             if (partyAType.equals("company")){
             }else if (partyAType.equals("department")){
                 partyAIdResult = uacGroupFeignApi.getCompanyInfoById(partyAIdResult).getResult().getId();
@@ -55,7 +57,8 @@ public class BaseBillController {
             }
             Long partyBIdResult = uacGroupBindUserFeignApi.getGroupIdByUserId(billCreateDto.getSupplier()).getResult();
             String partyBType = uacGroupFeignApi.getUacGroupById(partyBIdResult).getResult().getType();
-            if (partyAType.equals("company")){
+            assert partyBType != null;
+            if (partyBType.equals("company")){
             }else if (partyBType.equals("department")){
                 partyBIdResult = uacGroupFeignApi.getCompanyInfoById(partyBIdResult).getResult().getId();
             }else {
@@ -77,10 +80,10 @@ public class BaseBillController {
 
             }
         }
-        Float servicePrice = null;
+        BigDecimal servicePrice = null;
         String transactionMethod = null;
         if (pmcPayDto.getPaymentMoney() != null){
-            servicePrice = pmcPayDto.getPaymentMoney().floatValue();
+            servicePrice = pmcPayDto.getPaymentMoney();
         }
         if (pmcPayDto.getPaymentType() != null){
             transactionMethod = pmcPayDto.getPaymentType().toString();
@@ -94,21 +97,23 @@ public class BaseBillController {
         }
 //        com.ananops.wrapper.Wrapper<Object> objects = rdcDeviceOrderFeignApi.getPriceOfDevices(deviceIds);
 //        List<JSONObject> jsonObjects = (List<JSONObject>)objects.getResult();
-        Float devicePrice = 0.0F;
+        BigDecimal devicePrice = BigDecimal.valueOf(0);
 //        for (JSONObject object : jsonObjects) {
 //            devicePrice += object.getBigDecimal("price").floatValue();
 //        }
 
+        assert transactionMethod != null;
         baseServiceImpl.insert(billCreateDto, devicePrice, servicePrice, transactionMethod);
         return  WrapMapper.ok("success");
     }
 
     @PostMapping(value = "/createFakeOrder")
     @ApiOperation(httpMethod = "POST",value = "创建账单")
-    public Wrapper<Float> createFakeNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto billCreateDto){
+    public Wrapper<BigDecimal> createFakeNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto billCreateDto){
         PmcPayDto pmcPayDto = new PmcPayDto();
         Long partyAIdResult = uacGroupBindUserFeignApi.getGroupIdByUserId(billCreateDto.getUserId()).getResult();
         String partyAType = uacGroupFeignApi.getUacGroupById(partyAIdResult).getResult().getType();
+        assert partyAType != null;
         if (partyAType.equals("company")){
         }else if (partyAType.equals("department")){
             partyAIdResult = uacGroupFeignApi.getCompanyInfoById(partyAIdResult).getResult().getId();
@@ -118,7 +123,8 @@ public class BaseBillController {
         Long partyBIdResult = uacGroupBindUserFeignApi.getGroupIdByUserId(billCreateDto.getSupplier()).getResult();
         com.ananops.wrapper.Wrapper<GroupSaveDto> partyBGroupSaveDto = uacGroupFeignApi.getUacGroupById(partyBIdResult);
         String partyBType = partyBGroupSaveDto.getResult().getType();
-        if (partyAType.equals("company")){
+        assert partyBType != null;
+        if (partyBType.equals("company")){
         }else if (partyBType.equals("department")){
             partyBIdResult = uacGroupFeignApi.getCompanyInfoById(partyBIdResult).getResult().getId();
         }else {
@@ -141,7 +147,7 @@ public class BaseBillController {
         if (pmcPayDto.getPaymentMoney() == null){
             return WrapMapper.error("交易金额为空！请仔细查看合同！合同双方："+"partyAID:"+partyAIdResult+"partyBID:"+partyBIdResult);
         }
-        Float servicePrice = pmcPayDto.getPaymentMoney().floatValue();
+        BigDecimal servicePrice = pmcPayDto.getPaymentMoney();
 //        List<DeviceDto> deviceDtoList = billCreateDto.getDeviceDtos();
 //        List<Long> deviceIds = new ArrayList<>();
 //        for (DeviceDto deviceDto : deviceDtoList) {
@@ -149,12 +155,12 @@ public class BaseBillController {
 //        }
 //        com.ananops.wrapper.Wrapper<Object> objects = rdcDeviceOrderFeignApi.getPriceOfDevices(deviceIds);
 //        List<JSONObject> jsonObjects = (List<JSONObject>)objects.getResult();
-        Float devicePrice = 0.0F;
+        BigDecimal devicePrice = BigDecimal.valueOf(0);
 //        for (JSONObject object : jsonObjects) {
 //            devicePrice += object.getBigDecimal("price").floatValue();
 //        }
 
-        return  WrapMapper.ok(servicePrice + devicePrice);
+        return  WrapMapper.ok(servicePrice.add(devicePrice));
     }
 
     @GetMapping(value = "/getAllByUser/{userId}")
@@ -171,7 +177,7 @@ public class BaseBillController {
 
     @GetMapping(value = "/getAmountByWorkOrder/{workOrderId}")
     @ApiOperation(httpMethod = "GET",value = "根据工单id获取金额")
-    public Wrapper<Float> getAmountByWorkOrderId(@ApiParam(name = "workOrderId",value = "工单id") @RequestParam Long workOrderId){
+    public Wrapper<BigDecimal> getAmountByWorkOrderId(@ApiParam(name = "workOrderId",value = "工单id") @RequestParam Long workOrderId){
         return WrapMapper.ok(baseServiceImpl.getAmountByWorkOrderId(workOrderId));
     }
 
