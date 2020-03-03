@@ -68,6 +68,7 @@ public class UacMenuServiceImpl extends BaseService<UacMenu> implements UacMenuS
 			UacMenu uacMenuQuery = new UacMenu();
 			uacMenuQuery.setStatus(UacMenuStatusEnum.ENABLE.getType());
 			uacMenuQuery.setApplicationId(applicationId);
+			//菜单排序
 			uacMenuQuery.setOrderBy(" level asc,number asc");
 			menuList = uacMenuMapper.selectMenuList(uacMenuQuery);
 		} else {
