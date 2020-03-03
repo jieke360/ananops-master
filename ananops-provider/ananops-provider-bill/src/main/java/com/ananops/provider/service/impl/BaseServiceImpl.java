@@ -1,7 +1,7 @@
 package com.ananops.provider.service.impl;
 
-import com.ananops.provider.mapper.BasebillMapper;
-import com.ananops.provider.model.domain.Basebill;
+import com.ananops.provider.mapper.BmcBillMapper;
+import com.ananops.provider.model.domain.BmcBill;
 import com.ananops.provider.model.dto.BillCreateDto;
 import com.ananops.provider.model.dto.BillDisplayDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
@@ -25,7 +25,7 @@ import java.util.List;
 public class BaseServiceImpl implements BaseService {
 
     @Autowired
-    BasebillMapper basebillMapper;
+    BmcBillMapper bmcBillMapper;
 
     @Resource
     private UacUserFeignApi uacUserFeignApi;
@@ -47,54 +47,72 @@ public class BaseServiceImpl implements BaseService {
 //        JsonObject jsonObject1 = new JsonParser().parse(payDto).getAsJsonObject();
         Date date=new Date();
         Long time=date.getTime();
-        Basebill bill = new Basebill();
+        BmcBill bill = new BmcBill();
 
-        Example example = new Example(Basebill.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userid",billCreateDto.getUserid());
-        int billIndex = basebillMapper.selectByExample(example).size()+1;
+        int billIndex = bmcBillMapper.selectAll().size()%100000;
 
-        String id = billCreateDto.getUserid()+String.format("%09d",billIndex);
+        String idString = String.format("%04d", date.getYear()+1900)+String.format("%02d", date.getMonth())+String.format("%02d",date.getDate())+String.format("%02d", date.getHours())+String.format("%02d", date.getMinutes())+String.format("%02d", date.getSeconds())+String.format("%05d",billIndex);
+        Long id = Long.valueOf(idString);
         bill.setId(id);
         bill.setPaymentMethod(billCreateDto.getPaymentMethod());
-        bill.setTransactionMethod(transactionMethod);
-        bill.setUserid(billCreateDto.getUserid());
+        /*
+        transactionMethod（1-现结、2-账期、3-年结）
+         */
+        switch (transactionMethod){
+            case "1":
+                bill.setTransactionMethod("现结");
+                break;
+            case "2":
+                bill.setTransactionMethod("账期");
+                break;
+            case "3":
+                bill.setTransactionMethod("年结");
+                break;
+        }
+        bill.setUserId(billCreateDto.getUserId());
         bill.setTime(time);
         bill.setSupplier(billCreateDto.getSupplier());
-        bill.setWorkorderid(billCreateDto.getWorkorderid());
+        bill.setWorkOrderId(billCreateDto.getWorkOrderId());
         bill.setState(billCreateDto.getState());
         bill.setDeviceAmount(devicePrice);
         bill.setServiceAmount(servicePrice);
         bill.setAmount(bill.getDeviceAmount() + bill.getServiceAmount());
-        basebillMapper.insertSelective(bill);
+        UserInfoDto uacUserInfo = uacUserFeignApi.getUacUserById(bill.getUserId()).getResult();
+        if(uacUserInfo != null){
+            bill.setUserName(uacUserInfo.getUserName());
+        }
+        CompanyVo companyVo = spcCompanyFeignApi.getCompanyDetailsById(bill.getSupplier()).getResult();
+        if(companyVo != null){
+            bill.setSupplierName(companyVo.getGroupName());
+        }
+        bill.setVersion(1);
+        bill.setCreator(bill.getUserName());
+        bill.setCreatorId(bill.getUserId());
+        bill.setCreatedTime(new Date());
+        bill.setLastOperator(bill.getUserName());
+        bill.setLastOperatorId(bill.getUserId());
+        bill.setUpdateTime(new Date());
+        bmcBillMapper.insertSelective(bill);
     }
 
     @Override
-    public List<BillDisplayDto> getAllBillByUserId(String userid) {
+    public List<BillDisplayDto> getAllBillByUserId(Long userId) {
         //使用模板example获取BaseBill类
-        Example example = new Example(Basebill.class);
+        Example example = new Example(BmcBill.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userid",userid);
+        criteria.andEqualTo("userId",userId);
 
         //将获取到的BaseBill类添加到basebills列表中去
 //        List<TaskDto> imcTaskDtos = imcTaskFeignApi.getByFacilitatorId(taskQueryDto).getResult();
-        List<Basebill> basebills = basebillMapper.selectByExample(example);
+        List<BmcBill> bmcBills = bmcBillMapper.selectByExample(example);
 
         //创建待返回的账单展示传输对象
         List<BillDisplayDto> billDisplayDtoList = new ArrayList<>();
-        if(basebills != null){
-            for(Basebill OneBaseBill : basebills){
+        if(bmcBills != null){
+            for(BmcBill bmcBill : bmcBills){
                 BillDisplayDto billDisplayDto = new BillDisplayDto();
-                UserInfoDto uacUserInfo = uacUserFeignApi.getUacUserById(Long.valueOf(OneBaseBill.getUserid())).getResult();
-                if(uacUserInfo != null){
-                    billDisplayDto.setUserName(uacUserInfo.getUserName());
-                }
-                CompanyVo companyVo = spcCompanyFeignApi.getCompanyDetailsById(Long.valueOf(OneBaseBill.getSupplier())).getResult();
-                if(companyVo != null){
-                    billDisplayDto.setSupplierName(companyVo.getGroupName());
-                }
                 try{
-                    BeanUtils.copyProperties(OneBaseBill,billDisplayDto);
+                    BeanUtils.copyProperties(bmcBill,billDisplayDto);
                 }catch (Exception e){
                     log.error("账单BaseBill与账单展示billDisplayDto属性拷贝异常");
                     e.printStackTrace();
@@ -109,21 +127,14 @@ public class BaseServiceImpl implements BaseService {
         return billDisplayDtoList;
     }
 
-    public BillDisplayDto getOneBillById(String id) {
-        Basebill baseBill = getBillById(id);
+    public BillDisplayDto getOneBillById(Long id) {
+        BmcBill bmcBill = getBillById(id);
 
         //创建待返回的账单展示传输对象
         BillDisplayDto billDisplayDto = new BillDisplayDto();
-        UserInfoDto uacUserInfo = uacUserFeignApi.getUacUserById(Long.valueOf(baseBill.getUserid())).getResult();
-        if(uacUserInfo != null){
-            billDisplayDto.setUserName(uacUserInfo.getUserName());
-        }
-        CompanyVo companyVo = spcCompanyFeignApi.getCompanyDetailsById(Long.valueOf(baseBill.getSupplier())).getResult();
-        if(companyVo != null){
-            billDisplayDto.setSupplierName(companyVo.getGroupName());
-        }
+
         try{
-            BeanUtils.copyProperties(baseBill,billDisplayDto);
+            BeanUtils.copyProperties(bmcBill,billDisplayDto);
         }catch (Exception e){
             log.error("账单BaseBill与账单展示billDisplayDto属性拷贝异常");
             e.printStackTrace();
@@ -133,49 +144,48 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    public Float getAmountByworkorderid(String workorderid) {
-        Example example = new Example(Basebill.class);
+    public Float getAmountByWorkOrderId(Long workOrderId) {
+        Example example = new Example(BmcBill.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(workorderid);
-        List<Basebill> list = basebillMapper.selectByExample(example);
-        Basebill basebill = list.get(0);
-        return basebill.getAmount();
+        criteria.andEqualTo("workOrderId",workOrderId);
+        List<BmcBill> list = bmcBillMapper.selectByExample(example);
+        BmcBill bmcBill = list.get(0);
+        return bmcBill.getAmount();
     }
 
     @Override
-    public Basebill getBillById(String id) {
-        return basebillMapper.selectByPrimaryKey(id);
+    public BmcBill getBillById(Long id) {
+        return bmcBillMapper.selectByPrimaryKey(id);
     }
 
     @Override
-    public void modifyAmount(Basebill basebill, Float modifyAmount) {
-        basebill.setAmount(modifyAmount);
-        basebillMapper.updateByPrimaryKey(basebill);
-
+    public void modifyAmount(BmcBill bmcBill, Float modifyAmount) {
+        bmcBill.setAmount(modifyAmount);
+        bmcBillMapper.updateByPrimaryKey(bmcBill);
     }
 
     @Override
-    public List<Basebill> getAllUBillBystate(String userid, String state) {
-        Example example = new Example(Basebill.class);
+    public List<BmcBill> getAllUBillByState(Long userId, String state) {
+        Example example = new Example(BmcBill.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(userid);
-        List<Basebill> list = basebillMapper.selectByExample(example);
-        List<Basebill> listnew = new ArrayList<>();
+        criteria.andEqualTo("userId", userId);
+        List<BmcBill> list = bmcBillMapper.selectByExample(example);
+        List<BmcBill> bmcBills = new ArrayList<>();
         if(list != null && list.size()>0){
-            for(Basebill basebill:list){
-                if(basebill.getState().equals(state)){
-                    listnew.add(basebill);
+            for(BmcBill bmcBill:list){
+                if(bmcBill.getState().equals(state)){
+                    bmcBills.add(bmcBill);
                 }
             }
         }
-        return listnew;
+        return bmcBills;
     }
 
     @Override
-    public List<Basebill> getBillByWorkOrderId(String workorderid) {
-        Example example = new Example(Basebill.class);
+    public List<BmcBill> getBillByWorkOrderId(Long workOrderId) {
+        Example example = new Example(BmcBill.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(workorderid);
-        return basebillMapper.selectByExample(example);
+        criteria.andEqualTo(workOrderId);
+        return bmcBillMapper.selectByExample(example);
     }
 }

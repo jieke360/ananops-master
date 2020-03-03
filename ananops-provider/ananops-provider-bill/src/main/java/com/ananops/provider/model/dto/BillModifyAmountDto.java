@@ -9,8 +9,9 @@ import java.io.Serializable;
 @Data
 @ApiModel
 public class BillModifyAmountDto implements Serializable {
+    private static final long serialVersionUID = 2542090063167460622L;
     @ApiModelProperty(value = "账单id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "修改金额")
     private Float modifyAmount;

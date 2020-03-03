@@ -1,7 +1,7 @@
 package com.ananops.provider.web;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ananops.provider.model.domain.Basebill;
+import com.ananops.provider.model.domain.BmcBill;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.PmcPayDto;
 import com.ananops.provider.model.dto.group.CompanyDto;
@@ -44,30 +44,24 @@ public class BaseBillController {
     @ApiOperation(httpMethod = "POST",value = "创建账单")
     public Wrapper<String> createNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto billCreateDto){
         PmcPayDto pmcPayDto = new PmcPayDto();
-        if (billCreateDto.getUserid()!=null && billCreateDto.getSupplier()!=null){
-            com.ananops.wrapper.Wrapper<Long> partyAId = uacGroupBindUserFeignApi.getGroupIdByUserId(Long.valueOf(billCreateDto.getUserid()));
-            Long partyAIdResult = partyAId.getResult();
-            com.ananops.wrapper.Wrapper<GroupSaveDto> partyAGroupSaveDto = uacGroupFeignApi.getUacGroupById(partyAIdResult);
-            String partyAType = partyAGroupSaveDto.getResult().getType();
+        if (billCreateDto.getUserId()!=null && billCreateDto.getSupplier()!=null){
+            Long partyAIdResult = uacGroupBindUserFeignApi.getGroupIdByUserId(billCreateDto.getUserId()).getResult();
+            String partyAType = uacGroupFeignApi.getUacGroupById(partyAIdResult).getResult().getType();
             if (partyAType.equals("company")){
             }else if (partyAType.equals("department")){
-                com.ananops.wrapper.Wrapper<CompanyDto> companyDtoPartyA = uacGroupFeignApi.getCompanyInfoById(partyAIdResult);
-                partyAIdResult = companyDtoPartyA.getResult().getId();
+                partyAIdResult = uacGroupFeignApi.getCompanyInfoById(partyAIdResult).getResult().getId();
             }else {
                 return WrapMapper.error("未知的组织类型！组织ID："+partyAIdResult+"组织类型："+partyAType+"请至数据库查看详情或与开发人员联系");
             }
-            com.ananops.wrapper.Wrapper<Long> partyBId = uacGroupBindUserFeignApi.getGroupIdByUserId(Long.valueOf(billCreateDto.getSupplier()));
-            Long partyBIdResult = partyBId.getResult();
-            com.ananops.wrapper.Wrapper<GroupSaveDto> partyBGroupSaveDto = uacGroupFeignApi.getUacGroupById(partyBIdResult);
-            String partyBType = partyBGroupSaveDto.getResult().getType();
+            Long partyBIdResult = uacGroupBindUserFeignApi.getGroupIdByUserId(billCreateDto.getSupplier()).getResult();
+            String partyBType = uacGroupFeignApi.getUacGroupById(partyBIdResult).getResult().getType();
             if (partyAType.equals("company")){
             }else if (partyBType.equals("department")){
-                com.ananops.wrapper.Wrapper<CompanyDto> companyDtoPartyB = uacGroupFeignApi.getCompanyInfoById(partyBIdResult);
-                partyBIdResult = companyDtoPartyB.getResult().getId();
+                partyBIdResult = uacGroupFeignApi.getCompanyInfoById(partyBIdResult).getResult().getId();
             }else {
                 return WrapMapper.error("未知的组织类型！组织ID："+partyAIdResult+"组织类型："+partyAType+"请至数据库查看详情或与开发人员联系");
             }
-            billCreateDto.setSupplier(partyBIdResult.toString());
+            billCreateDto.setSupplier(partyBIdResult);
             com.ananops.wrapper.Wrapper<List<PmcPayDto>> list = pmcContractFeignApi.getContactByAB(partyAIdResult,partyBIdResult);
             if (list.getResult() == null) {
                 log.info("该用户与该服务商没有合同");
@@ -113,25 +107,20 @@ public class BaseBillController {
     @ApiOperation(httpMethod = "POST",value = "创建账单")
     public Wrapper<Float> createFakeNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto billCreateDto){
         PmcPayDto pmcPayDto = new PmcPayDto();
-        com.ananops.wrapper.Wrapper<Long> partyAId = uacGroupBindUserFeignApi.getGroupIdByUserId(Long.valueOf(billCreateDto.getUserid()));
-        Long partyAIdResult = partyAId.getResult();
-        com.ananops.wrapper.Wrapper<GroupSaveDto> partyAGroupSaveDto = uacGroupFeignApi.getUacGroupById(partyAIdResult);
-        String partyAType = partyAGroupSaveDto.getResult().getType();
+        Long partyAIdResult = uacGroupBindUserFeignApi.getGroupIdByUserId(billCreateDto.getUserId()).getResult();
+        String partyAType = uacGroupFeignApi.getUacGroupById(partyAIdResult).getResult().getType();
         if (partyAType.equals("company")){
         }else if (partyAType.equals("department")){
-            com.ananops.wrapper.Wrapper<CompanyDto> companyDtoPartyA = uacGroupFeignApi.getCompanyInfoById(partyAIdResult);
-            partyAIdResult = companyDtoPartyA.getResult().getId();
+            partyAIdResult = uacGroupFeignApi.getCompanyInfoById(partyAIdResult).getResult().getId();
         }else {
             return WrapMapper.error("未知的组织类型！组织ID："+partyAIdResult+"组织类型："+partyAType+"请至数据库查看详情或与开发人员联系");
         }
-        com.ananops.wrapper.Wrapper<Long> partyBId = uacGroupBindUserFeignApi.getGroupIdByUserId(Long.valueOf(billCreateDto.getSupplier()));
-        Long partyBIdResult = partyBId.getResult();
+        Long partyBIdResult = uacGroupBindUserFeignApi.getGroupIdByUserId(billCreateDto.getSupplier()).getResult();
         com.ananops.wrapper.Wrapper<GroupSaveDto> partyBGroupSaveDto = uacGroupFeignApi.getUacGroupById(partyBIdResult);
         String partyBType = partyBGroupSaveDto.getResult().getType();
         if (partyAType.equals("company")){
         }else if (partyBType.equals("department")){
-            com.ananops.wrapper.Wrapper<CompanyDto> companyDtoPartyB = uacGroupFeignApi.getCompanyInfoById(partyBIdResult);
-            partyBIdResult = companyDtoPartyB.getResult().getId();
+            partyBIdResult = uacGroupFeignApi.getCompanyInfoById(partyBIdResult).getResult().getId();
         }else {
             return WrapMapper.error("未知的组织类型！组织ID："+partyAIdResult+"组织类型："+partyAType+"请至数据库查看详情或与开发人员联系");
         }
@@ -168,41 +157,41 @@ public class BaseBillController {
         return  WrapMapper.ok(servicePrice + devicePrice);
     }
 
-    @GetMapping(value = "/getallbyuser/{userid}")
+    @GetMapping(value = "/getAllByUser/{userId}")
     @ApiOperation(httpMethod = "GET",value = "根据用户id获取所有账单")
-    public  Wrapper<List<BillDisplayDto>> getAllBillByUserId(@ApiParam(name = "userid",value = "用户id") @RequestParam Long userid){
-        return WrapMapper.ok(baseServiceImpl.getAllBillByUserId(userid.toString()));
+    public  Wrapper<List<BillDisplayDto>> getAllBillByUserId(@ApiParam(name = "userId",value = "用户id") @RequestParam Long userId){
+        return WrapMapper.ok(baseServiceImpl.getAllBillByUserId(userId));
     }
 
     @PostMapping(value = "/getBillById/{id}")
-    @ApiOperation(httpMethod = "POST",value = "根据账单id获取所有账单")
-    public  Wrapper<BillDisplayDto> getBillById(@PathVariable String id){
+    @ApiOperation(httpMethod = "POST",value = "根据账单id获取账单")
+    public  Wrapper<BillDisplayDto> getBillById(@PathVariable Long id){
         return WrapMapper.ok(baseServiceImpl.getOneBillById(id));
     }
 
-    @GetMapping(value = "/getamountbyworkorder/{workorderid}")
+    @GetMapping(value = "/getAmountByWorkOrder/{workOrderId}")
     @ApiOperation(httpMethod = "GET",value = "根据工单id获取金额")
-    public Wrapper<Float> getAmountByworkorderid(@ApiParam(name = "workorderid",value = "工单id") @RequestParam Long workorderid){
-        return WrapMapper.ok(baseServiceImpl.getAmountByworkorderid(workorderid.toString()));
+    public Wrapper<Float> getAmountByWorkOrderId(@ApiParam(name = "workOrderId",value = "工单id") @RequestParam Long workOrderId){
+        return WrapMapper.ok(baseServiceImpl.getAmountByWorkOrderId(workOrderId));
     }
 
-    @PutMapping(value = "/modifyamount")
+    @PutMapping(value = "/modifyAmount")
     @ApiOperation(httpMethod = "PUT",value = "修改金额")
-    public void modifyAmount(@ApiParam(name = "modifyamount",value = "修改金额") @RequestBody BillModifyAmountDto billModifyAmountDto){
-        Basebill basebill = baseServiceImpl.getBillById(billModifyAmountDto.getId());
-        baseServiceImpl.modifyAmount(basebill, billModifyAmountDto.getModifyAmount());
+    public void modifyAmount(@ApiParam(name = "modifyAmount",value = "修改金额") @RequestBody BillModifyAmountDto billModifyAmountDto){
+        BmcBill bmcBill = baseServiceImpl.getBillById(billModifyAmountDto.getId());
+        baseServiceImpl.modifyAmount(bmcBill, billModifyAmountDto.getModifyAmount());
     }
 
-    @GetMapping(value = "/getubill/{userid}/{state}")
+    @GetMapping(value = "/getUBill/{userId}/{state}")
     @ApiOperation(httpMethod = "GET",value = "根据状态及用户id获取账单")
-    public Wrapper<List<Basebill>> getAllUBillBystate(@ApiParam(name = "userid",value = "用户id") @RequestParam Long userid,
-                                             @ApiParam(name = "state",value = "状态") @RequestParam String state){
-        return WrapMapper.ok(baseServiceImpl.getAllUBillBystate(userid.toString(), state));
+    public Wrapper<List<BmcBill>> getAllUBillByState(@ApiParam(name = "userId",value = "用户id") @RequestParam Long userId,
+                                                      @ApiParam(name = "state",value = "状态") @RequestParam String state){
+        return WrapMapper.ok(baseServiceImpl.getAllUBillByState(userId, state));
     }
 
-    @GetMapping(value = "/getBillByWorkOrderId/{workorderid}")
+    @GetMapping(value = "/getBillByWorkOrderId/{workOrderId}")
     @ApiOperation(httpMethod = "GET",value = "根据状态及用户id获取账单")
-    public Wrapper<List<Basebill>> getBillByWorkOrderId(@ApiParam(name = "workorderid",value = "工单id") @RequestParam Long workorderid){
-        return WrapMapper.ok(baseServiceImpl.getBillByWorkOrderId(workorderid.toString()));
+    public Wrapper<List<BmcBill>> getBillByWorkOrderId(@ApiParam(name = "workOrderId",value = "工单id") @RequestParam Long workOrderId){
+        return WrapMapper.ok(baseServiceImpl.getBillByWorkOrderId(workOrderId));
     }
 }
