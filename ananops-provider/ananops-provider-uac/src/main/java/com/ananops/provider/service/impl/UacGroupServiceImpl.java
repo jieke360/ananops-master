@@ -511,6 +511,4 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 			return getCompanyInfo(uacGroup.getPid());
 		}
 	}
-
-
 }

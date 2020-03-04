@@ -4,6 +4,7 @@ import com.ananops.provider.model.dto.group.GroupBindUserApiDto;
 import com.ananops.provider.model.service.hystrix.UacGroupBindUserFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
+import javafx.scene.control.Dialog;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,5 +36,15 @@ public interface UacGroupBindUserFeignApi {
      * @return Group Id
      */
     @PostMapping(value = "/api/uac/group/getGroupIdByUserId")
-    Wrapper<Long> getGroupIdByUserId(@RequestParam("userId")Long userId);
+    Wrapper<Long> getGroupIdByUserId(@RequestParam("userId") Long userId);
+
+    /**
+     * 根据User Id查询其公司对应的Group Id
+     *
+     * @param userId 参数
+     *
+     * @return 公司组织的GroupId
+     */
+    @PostMapping(value = "/api/uac/group/getCompanyGroupIdByUserId")
+    Wrapper<Long> getCompanyGroupIdByUserId(@RequestParam("userId") Long userId);
 }

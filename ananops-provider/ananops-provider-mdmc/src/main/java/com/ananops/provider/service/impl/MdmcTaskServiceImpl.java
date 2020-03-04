@@ -257,7 +257,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     @Override
     public MdmcAddTroubleInfoDto saveTroubleList(MdmcAddTroubleInfoDto addTroubleInfoDto, LoginAuthDto loginAuthDto) {
         Long userId=addTroubleInfoDto.getUserId();
-        Long groupId=uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();
+        Long groupId=uacGroupBindUserFeignApi.getCompanyGroupIdByUserId(userId).getResult();
 
         if (groupId==null){
             throw new BusinessException(ErrorCodeEnum.UAC10015010,groupId);
@@ -304,7 +304,7 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     @Override
     public MdmcAddTroubleInfoDto getTroubleList(Long userId) {
-        Long groupId=uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();
+        Long groupId=uacGroupBindUserFeignApi.getCompanyGroupIdByUserId(userId).getResult();
         MdmcAddTroubleInfoDto mdmcAddTroubleInfoDto=new MdmcAddTroubleInfoDto();
         mdmcAddTroubleInfoDto.setUserId(userId);
         Example example=new Example(MdmcTroubleAddress.class);
