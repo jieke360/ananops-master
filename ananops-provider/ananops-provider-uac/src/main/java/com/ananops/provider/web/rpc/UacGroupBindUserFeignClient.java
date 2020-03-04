@@ -57,4 +57,12 @@ public class UacGroupBindUserFeignClient extends BaseController implements UacGr
         Long groupId = uacGroupUserService.queryByUserId(userId).getGroupId();
         return WrapMapper.ok(groupId);
     }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "根据UserId查询其公司组织的GroupId")
+    public Wrapper<Long> getCompanyGroupIdByUserId(@RequestParam("userId") Long userId) {
+        logger.info("根据UserId查询其公司组织的GroupId...  userId={}", userId);
+        Long groupId = uacGroupUserService.queryCompanyGroupIdByUserId(userId);
+        return WrapMapper.ok(groupId);
+    }
 }
