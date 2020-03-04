@@ -169,6 +169,33 @@ public class BaseBillController {
         return WrapMapper.ok(baseServiceImpl.getAllBillByUserId(userId));
     }
 
+    @GetMapping(value = "/getBillNumByUserId/{userId}")
+    @ApiOperation(httpMethod = "GET",value = "根据用户id获取账单数量")
+    public Wrapper<Integer> getBillNumByUserId(@ApiParam(name = "userId",value = "用户id") @RequestParam Long userId){
+        return WrapMapper.ok(baseServiceImpl.getBillNumByUserId(userId));
+    }
+
+    @GetMapping(value = "/getBillNumByUserIdAndState/{userId}/{state}")
+    @ApiOperation(httpMethod = "GET",value = "根据用户id和支付状态获取账单数量")
+    public Wrapper<Integer> getBillNumByUserIdAndState(@ApiParam(name = "userId",value = "用户id") @RequestParam Long userId,
+                                                     @ApiParam(name = "state",value = "状态") @RequestParam String state){
+        return WrapMapper.ok(baseServiceImpl.getBillNumByUserIdAndState(userId, state));
+    }
+
+    @GetMapping(value = "/getBillNumByUserIdAndTransactionMethod/{userId}/{transactionMethod}")
+    @ApiOperation(httpMethod = "GET",value = "根据用户id和交易方式获取帐单数量")
+    public Wrapper<Integer> getBillNumByUserIdAndTransactionMethod(@ApiParam(name = "userId",value = "用户id") @RequestParam Long userId,
+                                                       @ApiParam(name = "transactionMethod",value = "交易方式") @RequestParam String transactionMethod){
+        return WrapMapper.ok(baseServiceImpl.getBillNumByUserIdAndTransactionMethod(userId, transactionMethod));
+    }
+
+    @GetMapping(value = "/getBillNumByUserIdAndAmount/{userId}/{amount}")
+    @ApiOperation(httpMethod = "GET",value = "根据用户id和预约金额获取账单数量")
+    public Wrapper<Integer> getBillNumByUserIdAndAmount(@ApiParam(name = "userId",value = "用户id") @RequestParam Long userId,
+                                                                   @ApiParam(name = "amount",value = "交易方式") @RequestParam BigDecimal amount){
+        return WrapMapper.ok(baseServiceImpl.getBillNumByUserIdAndAmount(userId, amount));
+    }
+
     @PostMapping(value = "/getBillById/{id}")
     @ApiOperation(httpMethod = "POST",value = "根据账单id获取账单")
     public  Wrapper<BillDisplayDto> getBillById(@PathVariable Long id){

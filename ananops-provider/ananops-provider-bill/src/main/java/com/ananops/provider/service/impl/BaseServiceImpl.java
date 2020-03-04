@@ -144,6 +144,62 @@ public class BaseServiceImpl implements BaseService {
         return billDisplayDto;
     }
 
+    public int getBillNumByUserId(Long userId){
+        Example example = new Example(BmcBill.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",userId);
+
+        return bmcBillMapper.selectCountByExample(example);
+    }
+
+    public int getBillNumByUserIdAndState(Long userId, String state) {
+        Example example = new Example(BmcBill.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId", userId);
+        List<BmcBill> list = bmcBillMapper.selectByExample(example);
+        List<BmcBill> bmcBills = new ArrayList<>();
+        if(list != null && list.size()>0){
+            for(BmcBill bmcBill:list){
+                if(bmcBill.getState().equals(state)){
+                    bmcBills.add(bmcBill);
+                }
+            }
+        }
+        return bmcBills.size();
+    }
+
+    public int getBillNumByUserIdAndTransactionMethod(Long userId, String transactionMethod) {
+        Example example = new Example(BmcBill.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId", userId);
+        List<BmcBill> list = bmcBillMapper.selectByExample(example);
+        List<BmcBill> bmcBills = new ArrayList<>();
+        if(list != null && list.size()>0){
+            for(BmcBill bmcBill:list){
+                if(bmcBill.getTransactionMethod().equals(transactionMethod)){
+                    bmcBills.add(bmcBill);
+                }
+            }
+        }
+        return bmcBills.size();
+    }
+
+    public int getBillNumByUserIdAndAmount(Long userId, BigDecimal amount) {
+        Example example = new Example(BmcBill.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId", userId);
+        List<BmcBill> list = bmcBillMapper.selectByExample(example);
+        List<BmcBill> bmcBills = new ArrayList<>();
+        if(list != null && list.size()>0){
+            for(BmcBill bmcBill:list){
+                if(bmcBill.getAmount().compareTo(amount) > 0){
+                    bmcBills.add(bmcBill);
+                }
+            }
+        }
+        return bmcBills.size();
+    }
+
     @Override
     public BigDecimal getAmountByWorkOrderId(Long workOrderId) {
         Example example = new Example(BmcBill.class);
