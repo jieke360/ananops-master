@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 
 @EqualsAndHashCode()
@@ -12,7 +13,7 @@ public class BillDisplayDto {
 
     
     @ApiModelProperty(value = "账单ID")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "支付方式")
     private String paymentMethod;
@@ -21,10 +22,10 @@ public class BillDisplayDto {
     private String transactionMethod;
 
     @ApiModelProperty(value = "数额")
-    private Float amount;
+    private BigDecimal amount;
 
     @ApiModelProperty(value = "用户id")
-    private String userid;
+    private Long userId;
 
     @ApiModelProperty(value = "用户姓名")
     private String userName;
@@ -33,22 +34,22 @@ public class BillDisplayDto {
     private Long time;
 
     @ApiModelProperty(value = "服务商id")
-    private String supplier;
+    private Long supplier;
 
     @ApiModelProperty(value = "服务商名称")
     private String supplierName;
 
     @ApiModelProperty(value = "工单ID")
-    private String workorderid;
+    private Long workOrderId;
 
     @ApiModelProperty(value = "状态")
     private String state;
 
-    @ApiModelProperty(value = "设备数量")
-    private Float deviceAmount;
+    @ApiModelProperty(value = "设备总价")
+    private BigDecimal deviceAmount = BigDecimal.valueOf(-1);
 
-    @ApiModelProperty(value = "服务数量")
-    private Float serviceAmount;
+    @ApiModelProperty(value = "服务总价")
+    private BigDecimal serviceAmount = BigDecimal.valueOf(-1);
 
     public static class Comparators {
         //根据时间进行排序
