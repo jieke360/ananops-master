@@ -47,6 +47,8 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     MdmcTaskMapper taskMapper;
 
     @Resource
+    MdmcTaskItemMapper taskItemMapper;
+    @Resource
     MdmcTaskLogMapper taskLogMapper;
 
     @Resource
@@ -406,6 +408,10 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         Integer status = changeStatusDto.getStatus();
         if (status == MdmcTaskStatusEnum.QuXiao.getStatusNum()){          // 工单终止
             logger.info("当前维修工单已被终止[Terminal] Task = {}", task);
+            Example example = new Example(MdmcTaskItem.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("taskId",taskId);
+            taskItemMapper.deleteByPrimaryKey(example);
             taskMapper.deleteByPrimaryKey(taskId);
         } else {
             task.setStatus(status);
