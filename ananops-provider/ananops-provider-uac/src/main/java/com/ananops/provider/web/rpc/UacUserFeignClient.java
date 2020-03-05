@@ -5,6 +5,7 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.UacRole;
 import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.user.IdStatusDto;
+import com.ananops.provider.model.dto.user.UserIdsReqDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.dto.user.UserRegisterDto;
 import com.ananops.provider.model.service.UacUserFeignApi;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -119,5 +121,26 @@ public class UacUserFeignClient extends BaseController implements UacUserFeignAp
         }
         return WrapMapper.ok(Boolean.TRUE);
 
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "通过传入的批量UserId集合查找用户信息集合")
+    public Wrapper<List<UserInfoDto>> getUserListByUserIds(@RequestBody UserIdsReqDto userIdsReqDto) {
+        logger.info("批量用户Ids. userIdsReqDto={}", userIdsReqDto);
+        List<UserInfoDto> userInfoDtos = new ArrayList<>();
+        if (userIdsReqDto.getUserIds() != null) {
+            List<UacUser> uacUsers = uacUserService.batchGetUserInfo(userIdsReqDto.getUserIds());
+            for (UacUser uacUser : uacUsers) {
+                UserInfoDto userInfoDto = new UserInfoDto();
+                try {
+                    BeanUtils.copyProperties(userInfoDto, uacUser);
+                } catch (Exception e) {
+                    logger.error("用户Dto与用户传输Dto属性拷贝异常");
+                    e.printStackTrace();
+                }
+                userInfoDtos.add(userInfoDto);
+            }
+        }
+        return WrapMapper.ok(userInfoDtos);
     }
 }

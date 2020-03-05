@@ -20,6 +20,7 @@ import com.ananops.provider.model.dto.group.GroupBindUserApiDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
+import com.ananops.provider.model.dto.user.UserIdsReqDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
 import com.ananops.provider.model.service.UacGroupFeignApi;
@@ -475,15 +476,30 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
 
     @Override
     public List<EngineerSimpleVo> getEngineersListByProjectId(Long projectId) {
-        List<Long> engineerUserIdList = pmcProjectEngineerFeignApi.getEngineersIdByProjectId(projectId).getResult();
-        logger.info("getEngineersIdByProjectId - 根据项目Id查询工程师UserId列表. engineerUserIdList={}", engineerUserIdList);
+        List<Long> userIdList = pmcProjectEngineerFeignApi.getEngineersIdByProjectId(projectId).getResult();
+        logger.info("getEngineersIdByProjectId - 根据项目Id查询UserId列表. userIdList={}", userIdList);
         List<EngineerSimpleVo> engineerSimpleVos = new ArrayList<>();
-        if (engineerUserIdList != null) {
-            for (Long userId : engineerUserIdList) {
-                UserInfoDto userInfoDto = uacUserFeignApi.getUacUserById(userId).getResult();
-                if (userInfoDto != null) {
+        // 筛选工程师的UserId
+        List<Long> engineerUserIdList = new ArrayList<>();
+        if (userIdList != null) {
+            for (Long userId : userIdList) {
+                SpcEngineer queryEng = new SpcEngineer();
+                queryEng.setUserId(userId);
+                int count = spcEngineerMapper.selectCount(queryEng);
+                if (count > 0) {
+                    engineerUserIdList.add(userId);
+                }
+            }
+        }
+        // 填充工程师姓名
+        if (!engineerUserIdList.isEmpty()) {
+            UserIdsReqDto userIdsReqDto = new UserIdsReqDto();
+            userIdsReqDto.setUserIds(engineerUserIdList);
+            List<UserInfoDto> userInfoDtos = uacUserFeignApi.getUserListByUserIds(userIdsReqDto).getResult();
+            if (userInfoDtos != null) {
+                for (UserInfoDto userInfoDto : userInfoDtos) {
                     EngineerSimpleVo engineerSimpleVo = new EngineerSimpleVo();
-                    engineerSimpleVo.setId(userId);
+                    engineerSimpleVo.setId(userInfoDto.getId());
                     engineerSimpleVo.setName(userInfoDto.getUserName());
                     engineerSimpleVos.add(engineerSimpleVo);
                 }
