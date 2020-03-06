@@ -65,6 +65,9 @@ public class UacUserFeignClient extends BaseController implements UacUserFeignAp
         }
         logger.info("getUacUserById - 根据用户Id查询用户信息. [OK] uacUser={}", uacUser);
         if (uacUser != null) {
+            uacUser.setRoleId(userInfoDto.getRoleId());
+            uacUser.setRoleCode(userInfoDto.getRoleCode());
+            uacUser.setRoleName(userInfoDto.getRoleName());
             try {
                 BeanUtils.copyProperties(userInfoDto, uacUser);
             } catch (Exception e) {

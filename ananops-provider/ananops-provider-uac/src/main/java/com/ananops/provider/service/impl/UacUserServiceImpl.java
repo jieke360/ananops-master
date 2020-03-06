@@ -846,7 +846,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 			throw new UacBizException(ErrorCodeEnum.UAC10011003, userId);
 		}
 		List<BindRoleDto> bindRoleDtoList = new ArrayList<>();
-		if(roleId == null){
+		if(roleId == 1L){
 			bindRoleDtoList = uacUserMapper.selectAllNeedBindRole(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID);
 		}else{
 			UacRole uacRole = uacRoleMapper.selectByPrimaryKey(roleId);
