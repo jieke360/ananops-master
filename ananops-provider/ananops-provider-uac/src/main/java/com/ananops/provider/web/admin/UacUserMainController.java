@@ -185,9 +185,9 @@ public class UacUserMainController extends BaseController {
 		}
 		Wrapper<UserInfoDto> wrapper = uacUserFeignApi.getUacUserById(loginAuthDto.getUserId());
 		Long roleId = wrapper.getResult().getRoleId();
-		if (roleId.equals(1L)) {
-			roleId = null;
-		}
+        if (roleId == null) {
+            logger.error("当前登录用户currentUserId={}, 的用户为绑定角色", currentUserId);
+        }
 		UserBindRoleVo bindUserDto = uacUserService.getUserPermitBindRoleDto(userId,roleId);
 		UserBindRoleNeedKeyVo userBindRoleNeedKeyVo = new UserBindRoleNeedKeyVo();
 		for (BindRoleDto bindRoleDto : bindUserDto.getAllRoleSet()) {

@@ -29,7 +29,7 @@ public class MdmcTaskDetailDto implements Serializable {
      * 服务商信息
      */
     @ApiModelProperty(value = "服务商信息")
-    private CompanyVo companyVo;
+    private UserInfoDto companyVo;
 
     /**
      * 报修人信息
@@ -41,7 +41,7 @@ public class MdmcTaskDetailDto implements Serializable {
      * 维修工信息
      */
     @ApiModelProperty(value = "维修工信息")
-    private EngineerDto engineerDto;
+    private UserInfoDto engineerDto;
 
     /**
      * 用户负责人信息

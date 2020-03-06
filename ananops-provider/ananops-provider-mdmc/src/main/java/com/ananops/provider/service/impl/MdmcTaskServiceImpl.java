@@ -110,11 +110,11 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             taskDetailDto.setPrincipalInfoDto(principalInfoDto);
         }
         if (mdmcTask.getFacilitatorId()!=null){
-            CompanyVo companyVo=spcCompanyFeignApi.getCompanyDetailsById(mdmcTask.getFacilitatorId()).getResult();
+            UserInfoDto companyVo=uacUserFeignApi.getUacUserById(mdmcTask.getFacilitatorId()).getResult();
             taskDetailDto.setCompanyVo(companyVo);
         }
         if (mdmcTask.getMaintainerId()!=null){
-            EngineerDto engineerDto=spcEngineerFeignApi.getEngineerById(mdmcTask.getMaintainerId()).getResult();
+            UserInfoDto engineerDto=uacUserFeignApi.getUacUserById(mdmcTask.getMaintainerId()).getResult();
             taskDetailDto.setEngineerDto(engineerDto);
         }
         if (mdmcTask.getProjectId()!=null){
