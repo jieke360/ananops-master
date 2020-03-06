@@ -216,10 +216,10 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 			List<GroupZtreeVo> groupZtreeVos = uacGroupService.getGroupTree(groupId);
 			if (groupZtreeVos != null) {
 				for (GroupZtreeVo groupZtreeVo : groupZtreeVos) {
-					if (groupId.equals(groupZtreeVo.getId()))
-						continue;
-					uacUser.setGroupId(groupZtreeVo.getId());
-					uacUserList.addAll(uacUserMapper.selectUserList(uacUser));
+					if (!groupId.equals(groupZtreeVo.getId())) {
+						uacUser.setGroupId(groupZtreeVo.getId());
+						uacUserList.addAll(uacUserMapper.selectUserList(uacUser));
+					}
 				}
 			}
 		} else {
