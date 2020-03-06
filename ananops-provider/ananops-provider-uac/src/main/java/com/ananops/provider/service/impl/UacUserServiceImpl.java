@@ -374,7 +374,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 			throw new UacBizException(ErrorCodeEnum.UAC10011023);
 		}
 
-		// 1. 先取消对该角色的用户绑定(不包含超级管理员用户)
+		// 1. 先取消对该用户的角色绑定(不包含超级管理员用户)
 		List<UacRoleUser> userRoles = uacRoleUserService.listByUserId(operUserId);
 
 		if (PublicUtil.isNotEmpty(userRoles)) {
