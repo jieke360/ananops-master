@@ -319,7 +319,7 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 		UacGroup group = uacGroupMapper.selectByPrimaryKey(groupId);
 
 		if (group == null) {
-			logger.error("找不到角色信息 groupId={}", groupId);
+			logger.error("找不到组织信息 groupId={}", groupId);
 			throw new UacBizException(ErrorCodeEnum.UAC10015001, groupId);
 		}
 
@@ -336,7 +336,7 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 			throw new UacBizException(ErrorCodeEnum.UAC10011023);
 		}
 
-		// 1. 先取消对该角色的用户绑定(不包含超级管理员用户)
+		// 1. 先取消对该组织的用户绑定(不包含超级管理员用户)
 		List<UacGroupUser> groupUsers = uacGroupUserMapper.listByGroupId(groupId);
 
 		if (PublicUtil.isNotEmpty(groupUsers)) {
@@ -344,7 +344,7 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 		}
 
 		if (PublicUtil.isEmpty(userIdList)) {
-			// 取消该角色的所有用户的绑定
+			// 取消该组织的所有用户的绑定
 			logger.info("取消绑定所有非超级管理员用户成功");
 			return;
 		}

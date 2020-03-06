@@ -46,6 +46,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -216,10 +217,8 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 			List<GroupZtreeVo> groupZtreeVos = uacGroupService.getGroupTree(groupId);
 			if (groupZtreeVos != null) {
 				for (GroupZtreeVo groupZtreeVo : groupZtreeVos) {
-					if (!groupId.equals(groupZtreeVo.getId())) {
-						uacUser.setGroupId(groupZtreeVo.getId());
-						uacUserList.addAll(uacUserMapper.selectUserList(uacUser));
-					}
+					uacUser.setGroupId(groupZtreeVo.getId());
+					uacUserList.addAll(uacUserMapper.selectUserList(uacUser));
 				}
 			}
 		} else {
@@ -1254,4 +1253,26 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		}
 		return uacUserMapper.batchGetUserInfo(alreadyUserId);
 	}
+
+    @Override
+    public void bindUserGroup(UacGroupUser uacGroupUser, LoginAuthDto loginAuthDto) {
+		if (uacGroupUser==null) {
+			logger.error("参数不能为空");
+			throw new IllegalArgumentException("参数不能为空");
+		}
+
+		if(uacGroupUser.getGroupId() ==null){
+			return;
+		}
+
+		Long userId = uacGroupUser.getUserId();
+		Example example = new Example(UacGroupUser.class);
+		Example.Criteria criteria= example.createCriteria();
+		criteria.andEqualTo("userId",userId);
+		//限定一个用户只能绑定一个组织
+		//1.先取消该用户的组织绑定
+		Integer result = uacGroupUserMapper.deleteByExample(example);
+		//2.绑定新组织
+		uacGroupUserMapper.insertSelective(uacGroupUser);
+    }
 }

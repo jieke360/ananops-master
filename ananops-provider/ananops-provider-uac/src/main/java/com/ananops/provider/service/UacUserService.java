@@ -8,6 +8,7 @@
 
 package com.ananops.provider.service;
 
+import com.ananops.provider.model.domain.UacGroupUser;
 import com.ananops.provider.model.vo.UserVo;
 import com.github.pagehelper.PageInfo;
 import com.ananops.base.dto.LoginAuthDto;
@@ -369,4 +370,11 @@ public interface UacUserService extends IService<UacUser> {
 	 * @return 返回用户信息列表
 	 */
 	List<UacUser> batchGetUserInfo(List<Long> alreadyUserId);
+
+	/**
+	 * 用户绑定组织
+	 * @param uacGroupUser
+	 * @param loginAuthDto
+	 */
+    void bindUserGroup(UacGroupUser uacGroupUser, LoginAuthDto loginAuthDto);
 }
