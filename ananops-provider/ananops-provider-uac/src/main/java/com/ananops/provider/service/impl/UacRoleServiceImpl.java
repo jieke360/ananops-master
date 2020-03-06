@@ -1,6 +1,7 @@
 package com.ananops.provider.service.impl;
 
 import com.ananops.provider.mapper.UacGroupMapper;
+import com.ananops.provider.model.constant.RoleConstant;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.google.common.base.Joiner;
@@ -319,6 +320,22 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 				throw new UacBizException(ErrorCodeEnum.UAC10011024, userId);
 			}
 			uacRoleUserService.saveRoleUser(userId, roleId);
+
+			// 如果给该角色分配的不是（用户或者服务商）管理员账号，去除掉默认的平台角色
+			if (uacUser.getGroupId() != null) {
+				uacRoleGroupService.deleteDefaultByGroupId(uacUser.getGroupId());
+			}
+
+			// 如果是用户方或者服务方管理员角色，为其添加默认的平台角色支持
+			if ("user_manager".equals(role.getRoleCode())) {
+				if (uacUser.getGroupId() != null) {
+					uacRoleGroupService.saveRolesGroup(uacUser.getGroupId(), RoleConstant.USER_DEFAULT_ROLE_IDS);
+				}
+			} else if ("fac_manager".equals(role.getRoleCode())) {
+				if (uacUser.getGroupId() != null) {
+					uacRoleGroupService.saveRolesGroup(uacUser.getGroupId(), RoleConstant.FAC_DEFAULT_ROLE_IDS);
+				}
+			}
 		}
 
 	}
