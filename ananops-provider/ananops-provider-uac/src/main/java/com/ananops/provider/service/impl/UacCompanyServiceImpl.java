@@ -47,6 +47,14 @@ public class UacCompanyServiceImpl implements UacCompanyService {
     public void register(CompanyRegisterDto company) {
         // 校验注册信息
         validateRegisterInfo(company);
+
+        //校验登录名唯一性
+        String loginName=company.getGroupName();
+        boolean result = uacUserService.checkLoginName(loginName);
+        log.info(String.valueOf(result));
+        Preconditions.checkArgument(result, "登录名已存在,请更换登录名:"+loginName);
+
+
         // 构建UAC User注册Dto
         UserRegisterDto userRegisterDto = new UserRegisterDto();
         UacGroup uacGroup = new UacGroup();

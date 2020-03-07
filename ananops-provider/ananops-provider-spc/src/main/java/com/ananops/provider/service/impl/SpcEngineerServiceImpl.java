@@ -2,6 +2,7 @@ package com.ananops.provider.service.impl;
 
 import com.ananops.PublicUtil;
 import com.ananops.base.constant.GlobalConstant;
+import com.ananops.base.dto.CheckValidDto;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
@@ -213,6 +214,16 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
     public void addSpcEngineer(EngineerRegisterDto engineerRegisterDto, LoginAuthDto loginAuthDto) {
         // 校验注册信息
         validateRegisterInfo(engineerRegisterDto);
+
+        //校验登录名唯一性
+        String loginName=engineerRegisterDto.getLoginName();
+        CheckValidDto checkValidDto =new CheckValidDto();
+        checkValidDto.setType("loginName");
+        checkValidDto.setValidValue(loginName);
+        String message= uacUserFeignApi.checkValid(checkValidDto).getMessage();
+        logger.info(message);
+        Preconditions.checkArgument(message==null, "登录名已存在,请更换登录名:"+loginName);
+
 
         UserInfoDto userInfoDto = new UserInfoDto();
         SpcEngineer spcEngineer = new SpcEngineer();
