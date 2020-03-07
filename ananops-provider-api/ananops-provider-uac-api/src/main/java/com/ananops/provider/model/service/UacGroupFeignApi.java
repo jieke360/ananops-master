@@ -9,7 +9,6 @@ import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.service.hystrix.UacGroupFeignHystrix;
 import com.ananops.security.feign.OAuth2FeignAutoConfiguration;
 import com.ananops.wrapper.Wrapper;
-import io.swagger.annotations.ApiParam;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

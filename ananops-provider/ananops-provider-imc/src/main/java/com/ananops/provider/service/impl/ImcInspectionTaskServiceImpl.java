@@ -1,6 +1,7 @@
 package com.ananops.provider.service.impl;
 
 
+import com.ananops.PublicUtil;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
@@ -9,8 +10,11 @@ import com.ananops.provider.manager.ImcTaskManager;
 import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
+import com.ananops.provider.model.exceptions.UacBizException;
+import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.mq.producer.TaskMsgProducer;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
@@ -56,7 +60,8 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     @Resource
     TaskMsgProducer taskMsgProducer;
 
-
+    @Resource
+    private UacGroupFeignApi uacGroupFeignApi;
 
     /**
      * 插入一条巡检任务记录
@@ -385,7 +390,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndTaskName(taskQueryDto.getUserId(),taskName);
                     return new PageInfo<>(imcInspectionTaskList);
                 case 4://如果角色是服务商组织
-                    imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndTaskName(taskQueryDto.getUserId(),taskName);
+                    imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndTaskName(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskName);
                     return new PageInfo<>(imcInspectionTaskList);
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
@@ -405,7 +410,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerId(taskQueryDto.getUserId());
                     return new PageInfo<>(imcInspectionTaskList);
                 case 4://如果角色是服务商组织
-                    imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupId(taskQueryDto.getUserId());
+                    imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupId(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()));
                     return new PageInfo<>(imcInspectionTaskList);
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
@@ -435,7 +440,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                 case 3://如果角色是服务商管理员
                     return imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndTaskName(taskQueryDto.getUserId(),taskName);
                 case 4://如果角色是服务商组织
-                    return imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndTaskName(taskQueryDto.getUserId(),taskName);
+                    return imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndTaskName(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskName);
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
@@ -451,7 +456,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                 case 3://如果角色是服务商管理员
                     return imcInspectionTaskMapper.queryTaskByFacilitatorManagerId(taskQueryDto.getUserId());
                 case 4://如果角色是服务商组织
-                    return imcInspectionTaskMapper.queryTaskByFacilitatorGroupId(taskQueryDto.getUserId());
+                    return imcInspectionTaskMapper.queryTaskByFacilitatorGroupId(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()));
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
@@ -482,7 +487,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndStatusAndTaskName(taskQueryDto.getUserId(),taskQueryDto.getStatus(),taskName);
                     return new PageInfo<>(imcInspectionTaskList);
                 case 4://如果角色是服务商组织
-                    imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatusAndTaskName(taskQueryDto.getUserId(),taskQueryDto.getStatus(),taskName);
+                    imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatusAndTaskName(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskQueryDto.getStatus(),taskName);
                     return new PageInfo<>(imcInspectionTaskList);
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
@@ -499,7 +504,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
                     return new PageInfo<>(imcInspectionTaskList);
                 case 4://如果角色是服务商组织
-                    imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
+                    imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatus(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskQueryDto.getStatus());
                     return new PageInfo<>(imcInspectionTaskList);
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
@@ -526,7 +531,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                 case 3://如果角色是服务商管理员
                     return imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndStatusAndTaskName(taskQueryDto.getUserId(),taskQueryDto.getStatus(),taskName);
                 case 4://如果角色是服务商组织
-                    return imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatusAndTaskName(taskQueryDto.getUserId(),taskQueryDto.getStatus(),taskName);
+                    return imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatusAndTaskName(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskQueryDto.getStatus(),taskName);
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
@@ -539,7 +544,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                 case 3://如果角色是服务商管理员
                     return imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
                 case 4://如果角色是服务商组织
-                    return imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
+                    return imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatus(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskQueryDto.getStatus());
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
@@ -625,7 +630,10 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     @Override
     public List<ImcInspectionTask> getTaskByFacilitatorIdAndStatus(TaskQueryDto taskQueryDto){
         PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
-        Long facilitatorId = taskQueryDto.getUserId();
+        // 登录用户的组织Id
+        Long userGroupId = taskQueryDto.getUserId();
+        // 获取该用户所属公司Id
+        Long facilitatorId = getCompanyGroupIdFromUserGroupId(userGroupId); // 根据组织Id查询公司Id
         Integer status = taskQueryDto.getStatus();
         Example example = new Example(ImcInspectionTask.class);
         Example.Criteria criteria = example.createCriteria();
@@ -868,5 +876,25 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         }
         //如果巡检任务子项都完成了，则巡检任务也完成了
         return true;
+    }
+
+    /**
+     * 从用户的部门组织Id获取用户所属公司的组织Id
+     *
+     * @param userGroupId
+     *
+     * @return
+     */
+    private Long getCompanyGroupIdFromUserGroupId(Long userGroupId) {
+        if (userGroupId == null) {
+            throw new UacBizException(ErrorCodeEnum.UAC10015010, userGroupId);
+        }
+        // 根据组织Id查询公司信息
+        CompanyDto companyDto = uacGroupFeignApi.getCompanyInfoById(userGroupId).getResult();
+        if (PublicUtil.isEmpty(companyDto)) {
+            throw new UacBizException(ErrorCodeEnum.UAC10015001, userGroupId);
+        }
+        Long facilitatorId = companyDto.getId();
+        return facilitatorId;
     }
 }

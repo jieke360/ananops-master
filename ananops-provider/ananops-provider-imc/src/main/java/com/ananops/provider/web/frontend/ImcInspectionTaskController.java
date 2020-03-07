@@ -7,7 +7,6 @@ import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.vo.TaskLogVo;
-import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskLogService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.wrapper.WrapMapper;
@@ -34,10 +33,6 @@ public class ImcInspectionTaskController extends BaseController {
 
     @Resource
     ImcInspectionTaskLogService imcInspectionTaskLogService;
-
-    @Resource
-    ImcInspectionItemService imcInspectionItemService;
-
 
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "编辑巡检任务记录")

@@ -3,9 +3,7 @@ package com.ananops.provider.service.impl;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
-import com.ananops.provider.mapper.SpcCompanyEngineerMapper;
 import com.ananops.provider.mapper.SpcCompanyMapper;
-import com.ananops.provider.mapper.SpcEngineerMapper;
 import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.*;
@@ -40,13 +38,7 @@ import java.util.List;
 public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
 
     @Resource
-    private SpcEngineerMapper spcEngineerMapper;
-
-    @Resource
     private SpcCompanyMapper spcCompanyMapper;
-
-    @Resource
-    private SpcCompanyEngineerMapper spcCompanyEngineerMapper;
 
     @Resource
     private ImcTaskFeignApi imcTaskFeignApi;
@@ -66,12 +58,16 @@ public class SpcWorkOrderServiceImpl implements SpcWorkOrderService {
     @Resource
     private SpcEngineerService spcEngineerService;
 
+    @Resource
     private UacUserFeignApi uacUserFeignApi;
 
     @Override
     public List<WorkOrderVo> queryAllWorkOrders(WorkOrderStatusQueryDto workOrderStatusQueryDto, LoginAuthDto loginAuthDto) {
         List<WorkOrderVo> workOrderVos = new ArrayList<>();
-        Long groupId = loginAuthDto.getGroupId();
+        // 获取登录用户的组织Id
+        Long userGroupId = loginAuthDto.getGroupId();
+        // 根据组织Id查询公司Id
+        Long groupId = uacGroupFeignApi.getCompanyInfoById(userGroupId).getResult().getId();
         String workOrderType = workOrderStatusQueryDto.getType();
         Integer workOrderStatus = workOrderStatusQueryDto.getStatus();
 

@@ -1,18 +1,15 @@
 package com.ananops.provider.web.rpc;
 
-import com.ananops.base.constant.GlobalConstant;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.mapper.UacGroupUserMapper;
 import com.ananops.provider.model.domain.UacGroup;
 import com.ananops.provider.model.domain.UacGroupUser;
-import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.dto.group.GroupNameLikeQuery;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
 import com.ananops.provider.model.dto.group.GroupStatusDto;
-import com.ananops.provider.model.dto.role.BindUserDto;
 import com.ananops.provider.model.vo.GroupZtreeVo;
 import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
@@ -30,7 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
