@@ -1,5 +1,6 @@
 package com.ananops.provider.model.service;
 
+import com.ananops.base.dto.CheckValidDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.dto.user.UserIdsReqDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
@@ -83,4 +84,14 @@ public interface UacUserFeignApi {
      */
     @PostMapping(value = "/api/uac/user/getUserListByUserIds")
     Wrapper<List<UserInfoDto>> getUserListByUserIds(@RequestBody UserIdsReqDto userIdsReqDto);
+
+    /**
+     * 校验数据
+     *
+     * @param checkValidDto 需要校验数据DTO
+     *
+     * @return
+     */
+    @PostMapping(value = "/api/uac/user/checkUserValid")
+    Wrapper checkValid(@RequestBody CheckValidDto checkValidDto);
 }

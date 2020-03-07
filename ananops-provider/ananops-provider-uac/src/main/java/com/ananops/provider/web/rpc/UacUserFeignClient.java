@@ -1,7 +1,9 @@
 package com.ananops.provider.web.rpc;
 
+import com.ananops.base.dto.CheckValidDto;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
+import com.ananops.provider.model.constant.UacApiConstant;
 import com.ananops.provider.model.domain.UacRole;
 import com.ananops.provider.model.domain.UacUser;
 import com.ananops.provider.model.dto.user.IdStatusDto;
@@ -13,9 +15,11 @@ import com.ananops.provider.service.UacRoleService;
 import com.ananops.provider.service.UacUserService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
+import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -145,5 +149,38 @@ public class UacUserFeignClient extends BaseController implements UacUserFeignAp
             }
         }
         return WrapMapper.ok(userInfoDtos);
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "校验数据")
+    public Wrapper checkValid(@RequestBody CheckValidDto checkValidDto) {
+        String type = checkValidDto.getType();
+        String validValue = checkValidDto.getValidValue();
+
+        Preconditions.checkArgument(StringUtils.isNotEmpty(validValue), "参数错误");
+        String message = null;
+        boolean result = false;
+        //开始校验
+        if (UacApiConstant.Valid.LOGIN_NAME.equals(type)) {
+            result = uacUserService.checkLoginName(validValue);
+            if (!result) {
+                message = "用户名已存在";
+            }
+        }
+        if (UacApiConstant.Valid.EMAIL.equals(type)) {
+            result = uacUserService.checkEmail(validValue);
+            if (!result) {
+                message = "邮箱已存在";
+            }
+        }
+
+        if (UacApiConstant.Valid.MOBILE_NO.equals(type)) {
+            result = uacUserService.checkMobileNo(validValue);
+            if (!result) {
+                message = "手机号码已存在";
+            }
+        }
+
+        return WrapMapper.wrap(Wrapper.SUCCESS_CODE, message, result);
     }
 }

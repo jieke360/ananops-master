@@ -1,5 +1,6 @@
 package com.ananops.provider.model.service.hystrix;
 
+import com.ananops.base.dto.CheckValidDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
 import com.ananops.provider.model.dto.user.UserIdsReqDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
@@ -52,6 +53,11 @@ public class UacUserFeignHystrix implements UacUserFeignApi {
 
     @Override
     public Wrapper<List<UserInfoDto>> getUserListByUserIds(@RequestBody UserIdsReqDto userIdsReqDto) {
+        return null;
+    }
+
+    @Override
+    public Wrapper checkValid(CheckValidDto checkValidDto) {
         return null;
     }
 }
