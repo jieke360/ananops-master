@@ -194,6 +194,8 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             // 更新工单信息和状态
             taskMapper.updateByPrimaryKeySelective(task);
 
+            MdmcTask task1=taskMapper.selectByPrimaryKey(taskId);
+            BeanUtils.copyProperties(task1,task);
             Integer status = task.getStatus();
             Integer objectType = task.getObjectType();
 
@@ -826,13 +828,31 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         }
         List<MdmcFileTaskStatus> fileTaskStatusList=fileTaskStatusMapper.selectByExample(example);
         List<MdmcFileUrlDto> fileUrlDtoList=new ArrayList<>();
+        HashMap<Integer,List<ElementImgUrlDto>> map=new HashMap<>();
+        map.put(-1, null);
         for (MdmcFileTaskStatus fileTaskStatus:fileTaskStatusList){
             MdmcFileUrlDto fileUrlDto=new MdmcFileUrlDto();
             OptBatchGetUrlRequest optBatchGetUrlRequest=new OptBatchGetUrlRequest();
-            fileUrlDto.setStatus(fileTaskStatus.getStatus());
+            int status=fileTaskStatus.getStatus();
+            fileUrlDto.setStatus(status);
             optBatchGetUrlRequest.setRefNo(String.valueOf(fileTaskStatus.getId()));
             optBatchGetUrlRequest.setEncrypt(true);
-            fileUrlDto.setElementImgUrlDtoList(opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult());
+            List<ElementImgUrlDto> imgUrlDtos=opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+            if (map.containsKey(status)){
+                List<ElementImgUrlDto> t=map.get(status);
+                t.addAll(imgUrlDtos);
+                map.put(status,t);
+                for (MdmcFileUrlDto fileUrlDto1:fileUrlDtoList){
+                    if (status==fileUrlDto1.getStatus()){
+                        List<ElementImgUrlDto> imgUrlDtos1=fileUrlDto1.getElementImgUrlDtoList();
+                        imgUrlDtos1.addAll(imgUrlDtos);
+                        break;
+                    }
+                }
+                continue;
+            }
+            map.put(status,imgUrlDtos);
+            fileUrlDto.setElementImgUrlDtoList(imgUrlDtos);
             fileUrlDtoList.add(fileUrlDto);
 
         }
