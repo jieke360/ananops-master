@@ -579,7 +579,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
      */
     @Override
     public List<ImcInspectionTask> getTaskByFacilitatorId(TaskQueryDto taskQueryDto){
-        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+//        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
         Long facilitatorId = taskQueryDto.getUserId();
         Example example = new Example(ImcInspectionTask.class);
         Example.Criteria criteria = example.createCriteria();

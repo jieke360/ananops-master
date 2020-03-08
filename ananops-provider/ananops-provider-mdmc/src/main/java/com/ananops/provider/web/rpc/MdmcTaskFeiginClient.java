@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @RefreshScope
@@ -38,6 +39,18 @@ public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeig
     public Wrapper<MdmcTask> getTaskByTaskId(@PathVariable("taskId") Long taskId){
         MdmcTask task = taskService.getTaskByTaskId(taskId);
         return WrapMapper.ok(task);
+    }
+
+    @Override
+    @ApiOperation(httpMethod = "POST",value = "根据任务的ID列表，获取对应的全部的任务详情")
+    public Wrapper<List<MdmcTask>> getMdmcTaskList(@PathVariable Long[] mdmcTaskIdList){
+        List<MdmcTask> mdmcTaskList = new ArrayList<>();
+        for(int i=0;i<mdmcTaskIdList.length;i++){
+            Long taskId = mdmcTaskIdList[i];
+            MdmcTask task = taskService.getTaskByTaskId(taskId);
+            mdmcTaskList.add(task);
+        }
+        return WrapMapper.ok(mdmcTaskList);
     }
     
     @ApiOperation(httpMethod = "POST",value = "返回全部工单列表")

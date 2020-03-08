@@ -60,4 +60,7 @@ public interface MdmcTaskFeignApi {
 
     @PostMapping(value = "/api/mamcTask/payment/done/{taskId}")
     Wrapper<Object> updateStatusAfterPaymentDone(@PathVariable("taskId") Long taskId, @RequestBody LoginAuthDto loginAuthDto);
+
+    @PostMapping(value = "/api/mdmcTask/getMdmcTaskList/{mdmcTaskIdList}")
+    Wrapper<List<MdmcTask>> getMdmcTaskList(@PathVariable("mdmcTaskIdList") Long[] mdmcTaskIdList);
 }
