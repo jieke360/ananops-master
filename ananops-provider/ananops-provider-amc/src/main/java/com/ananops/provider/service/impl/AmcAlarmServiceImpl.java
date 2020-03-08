@@ -5,6 +5,7 @@ import com.ananops.base.constant.GlobalConstant;
 import com.ananops.base.dto.BaseQuery;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
+import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
 import com.ananops.core.utils.RequestUtil;
 import com.ananops.provider.exception.AmcBizException;
@@ -80,14 +81,14 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
         }
         // 更新附件信息
         List<Long> attachmentIds = new ArrayList<>();
-        if (amcAlarm.getAlarmPhoto()!=null) {
+        if (amcAlarm.getAlarmPhoto() != null) {
             String alarmPhotos = amcAlarm.getAlarmPhoto();
             if (alarmPhotos.contains(",")) {
                 String[] legalIds = alarmPhotos.split(",");
                 for (String id : legalIds) {
                     attachmentIds.add(Long.parseLong(id));
                 }
-            }else {
+            } else {
                 attachmentIds.add(Long.parseLong(alarmPhotos));
             }
         }
@@ -277,6 +278,19 @@ public class AmcAlarmServiceImpl extends BaseService<AmcAlarm> implements AmcAla
         optBatchGetUrlRequest.setEncrypt(true);
         optBatchGetUrlRequest.setExpires(null);
         return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+    }
+
+    @Override
+    public int updateAlarmStatus(Long alarmId) {
+        AmcAlarm amcAlarm = this.getAlarmById(alarmId);
+        if (amcAlarm == null) {
+            throw new BusinessException("无此报警信息");
+        }
+        Integer alarmStatus = amcAlarm.getAlarmStatus();
+        alarmStatus = (alarmStatus == 1) ? 0 : 1;
+        amcAlarm.setAlarmStatus(alarmStatus);
+        amcAlarm.setUpdateInfo(RequestUtil.getLoginUser());
+        return amcAlarmMapper.updateByPrimaryKeySelective(amcAlarm);
     }
 
 }

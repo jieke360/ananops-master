@@ -121,4 +121,11 @@ public interface AmcAlarmService extends IService<AmcAlarm> {
      * @return
      */
     List<ElementImgUrlDto> getAlarmAttachment(Long id);
+
+    /**
+     * 更新报警状态
+     * @param alarmId
+     * @return
+     */
+    int updateAlarmStatus(Long alarmId);
 }

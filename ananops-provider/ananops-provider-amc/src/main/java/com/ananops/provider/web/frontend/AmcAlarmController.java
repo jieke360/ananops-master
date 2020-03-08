@@ -185,4 +185,12 @@ public class AmcAlarmController extends BaseController {
         return WrapMapper.ok(elementImgUrlDtoList);
     }
 
+    @PostMapping("/updateAlarmStatus/{alarmId}")
+    @ApiOperation(httpMethod = "POST", value = "根据报警id更新告警状态")
+    public Wrapper updateAlarmStatus(@PathVariable Long alarmId) {
+        int result = amcAlarmService.updateAlarmStatus(alarmId);
+        return WrapMapper.ok(result);
+    }
+
+
 }
