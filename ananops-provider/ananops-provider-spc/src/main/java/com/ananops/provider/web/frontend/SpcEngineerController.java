@@ -8,6 +8,7 @@ import com.ananops.provider.model.dto.EngineerDto;
 import com.ananops.provider.model.dto.EngineerRegisterDto;
 import com.ananops.provider.model.dto.EngineerStatusDto;
 import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.EngineerSimpleVo;
@@ -222,6 +223,19 @@ public class SpcEngineerController extends BaseController {
         Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         return spcEngineerService.uploadEngineerFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
+    }
+
+    /**
+     * 根据工程师id下载工程师文件
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/getEngineerFile/{id}")
+    @ApiOperation(httpMethod = "POST", value = "工程师文件下载")
+    public Wrapper<List<ElementImgUrlDto>> getEngineerFile(@PathVariable Long id) {
+        List<ElementImgUrlDto> elementImgUrlDtoList = spcEngineerService.getEngineerFile(id);
+        logger.info("elementImgUrlDtoList："+elementImgUrlDtoList);
+        return WrapMapper.ok(elementImgUrlDtoList);
     }
 
 }

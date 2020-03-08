@@ -6,6 +6,7 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.CompanyVo;
@@ -176,5 +177,18 @@ public class SpcCompanyController extends BaseController {
         Preconditions.checkArgument(StringUtils.isNotEmpty(bucketName), "存储地址为空");
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         return spcCompanyService.uploadCompanyFile(multipartRequest, optUploadFileReqDto, getLoginAuthDto());
+    }
+
+    /**
+     * 根据服务商id下载服务商附件
+     * @param id
+     * @return
+     */
+    @PostMapping(value = "/getCompanyPicture/{id}")
+    @ApiOperation(httpMethod = "POST", value = "服务商附件下载")
+    public Wrapper<List<ElementImgUrlDto>> getCompanyPicture(@PathVariable Long id) {
+        List<ElementImgUrlDto> elementImgUrlDtoList = spcCompanyService.getCompanyFile(id);
+        logger.info("elementImgUrlDtoList："+elementImgUrlDtoList);
+        return WrapMapper.ok(elementImgUrlDtoList);
     }
 }

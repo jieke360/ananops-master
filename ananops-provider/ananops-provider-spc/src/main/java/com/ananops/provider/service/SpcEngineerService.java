@@ -7,6 +7,7 @@ import com.ananops.provider.model.dto.EngineerDto;
 import com.ananops.provider.model.dto.EngineerRegisterDto;
 import com.ananops.provider.model.dto.EngineerStatusDto;
 import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.EngineerSimpleVo;
@@ -129,4 +130,13 @@ public interface SpcEngineerService extends IService<SpcEngineer> {
      * @return
      */
     List<OptUploadFileRespDto> uploadEngineerFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto);
+
+    /**
+     * 下载工程师相关文件
+     *
+     * @param id
+     *
+     * @return
+     */
+    List<ElementImgUrlDto> getEngineerFile(Long id);
 }

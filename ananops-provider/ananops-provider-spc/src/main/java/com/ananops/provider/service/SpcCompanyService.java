@@ -6,6 +6,7 @@ import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.dto.CompanyDto;
 import com.ananops.provider.model.dto.CompanyStatusDto;
 import com.ananops.provider.model.dto.ModifyCompanyStatusDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.CompanyVo;
@@ -106,6 +107,15 @@ public interface SpcCompanyService extends IService<SpcCompany> {
      * @return
      */
     List<OptUploadFileRespDto> uploadCompanyFile(MultipartHttpServletRequest multipartRequest, OptUploadFileReqDto optUploadFileReqDto, LoginAuthDto loginAuthDto);
+
+    /**
+     * 下载服务商相关附件
+     *
+     * @param id
+     *
+     * @return
+     */
+    List<ElementImgUrlDto> getCompanyFile(Long id);
 
     /**
      * 根据用户Id查询公司详细信息

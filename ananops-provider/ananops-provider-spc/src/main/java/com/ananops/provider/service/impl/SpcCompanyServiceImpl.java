@@ -340,6 +340,15 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
     }
 
     @Override
+    public List<ElementImgUrlDto> getCompanyFile(Long id) {
+        OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
+        optBatchGetUrlRequest.setRefNo(id.toString());
+        optBatchGetUrlRequest.setEncrypt(true);
+        optBatchGetUrlRequest.setExpires(null);
+        return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+    }
+
+    @Override
     public CompanyVo queryByUserId(Long userId) {
         logger.info("queryByUserId - 根据用户Id(userId)查询公司信息接口. userId={}", userId);
         Long groupId = uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();

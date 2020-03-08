@@ -2,6 +2,7 @@ package com.ananops.provider.service.impl;
 
 import com.ananops.PublicUtil;
 import com.ananops.base.constant.GlobalConstant;
+import com.ananops.base.dto.CheckValidDto;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
@@ -17,6 +18,8 @@ import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.group.GroupBindUserApiDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
+import com.ananops.provider.model.dto.oss.OptBatchGetUrlRequest;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.dto.user.IdStatusDto;
@@ -214,6 +217,16 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         // 校验注册信息
         validateRegisterInfo(engineerRegisterDto);
 
+        //校验登录名唯一性
+        String loginName=engineerRegisterDto.getLoginName();
+        CheckValidDto checkValidDto =new CheckValidDto();
+        checkValidDto.setType("loginName");
+        checkValidDto.setValidValue(loginName);
+        String message= uacUserFeignApi.checkValid(checkValidDto).getMessage();
+        logger.info(message);
+        Preconditions.checkArgument(message==null, "登录名已存在,请更换登录名:"+loginName);
+
+
         UserInfoDto userInfoDto = new UserInfoDto();
         SpcEngineer spcEngineer = new SpcEngineer();
         try {
@@ -392,6 +405,16 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         }
         return result;
     }
+
+    @Override
+    public List<ElementImgUrlDto> getEngineerFile(Long id) {
+        OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
+        optBatchGetUrlRequest.setRefNo(id.toString());
+        optBatchGetUrlRequest.setEncrypt(true);
+        optBatchGetUrlRequest.setExpires(null);
+        return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+    }
+
     @Override
     public int modifyEngineerStatusById(ModifyEngineerStatusDto modifyEngineerStatusDto) {
         Long engineerId = modifyEngineerStatusDto.getEngineerId();
