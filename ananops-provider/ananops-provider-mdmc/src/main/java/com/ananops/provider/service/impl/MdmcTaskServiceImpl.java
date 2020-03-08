@@ -18,6 +18,7 @@ import com.ananops.provider.model.dto.oss.*;
 import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.enums.*;
 import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
+import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.mq.producer.TaskMsgProducer;
@@ -89,6 +90,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 
     @Resource
     MdmcTaskManager taskManager;
+
+    @Resource
+    UacGroupFeignApi uacGroupFeignApi;
 
     @Override
     public MdmcTask getTaskByTaskId(Long taskId) {
@@ -256,6 +260,38 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
        }
 
         return mdmcAddTaskDto;
+    }
+
+    @Override
+    public List<MdmcUserWatcherDto> getUserWatcherList(Long userId) {
+        List<MdmcUserWatcherDto> userWatcherDtoList=new ArrayList<>();
+        MdmcUserWatcherDto userWatcherDto=new MdmcUserWatcherDto();
+        userWatcherDto.setUserId(userId);
+        UserInfoDto userInfoDto=uacUserFeignApi.getUacUserById(userId).getResult();
+        if (userInfoDto!=null && userInfoDto.getUserName()!=null){
+            userWatcherDto.setUserName(userInfoDto.getUserName());
+        }
+        userWatcherDtoList.add(userWatcherDto);
+        if (userInfoDto!=null && userInfoDto.getGroupId()!=null){
+            List<Long> idList=uacGroupFeignApi.getUacUserIdListByGroupId(userInfoDto.getGroupId()).getResult();
+            if (idList.size()>0){
+                for (Long id:idList){
+                    UserInfoDto userInfoDto1=uacUserFeignApi.getUacUserById(userId).getResult();
+                    if (userInfoDto1!=null&&userInfoDto1.getRoleCode().equals("user_watcher")){
+                        MdmcUserWatcherDto userWatcherDto1=new MdmcUserWatcherDto();
+                        userWatcherDto1.setUserId(id);
+
+                        if (userInfoDto1.getUserName()!=null){
+                            userWatcherDto1.setUserName(userInfoDto1.getUserName());
+                        }
+                        userWatcherDtoList.add(userWatcherDto1);
+                    }
+
+                }
+            }
+        }
+
+        return userWatcherDtoList;
     }
 
     @Override

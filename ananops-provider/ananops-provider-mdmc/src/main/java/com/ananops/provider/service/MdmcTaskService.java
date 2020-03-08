@@ -36,6 +36,12 @@ public interface MdmcTaskService extends IService<MdmcTask> {
     MdmcAddTaskDto saveTask(MdmcAddTaskDto mdmcAddTaskDto, LoginAuthDto loginAuthDto);
 
     /**
+     * 根据用户负责人id获取值机员列表
+     * @param userId
+     * @return
+     */
+    List<MdmcUserWatcherDto> getUserWatcherList(Long userId);
+    /**
      * 录入故障类型和故障位置列表
      * @param addTroubleInfoDto
      * @param loginAuthDto
