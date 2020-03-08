@@ -41,6 +41,9 @@ public class BmcBill extends BaseEntity implements Serializable {
     @Column(name = "supplier_name")
     private String supplierName;
 
+    @Column(name = "project_id")
+    private Long projectId;
+
     private Long time;
 
     @Column(name = "work_order_id")

@@ -19,6 +19,9 @@ public class BillCreateDto implements Serializable {
     @ApiModelProperty(value = "服务商ID")
     private Long supplier;
 
+    @ApiModelProperty(value = "项目ID")
+    private Long projectId;
+
     @ApiModelProperty(value = "支付方式") //填固定字段"未确定"
     private String paymentMethod;
 
