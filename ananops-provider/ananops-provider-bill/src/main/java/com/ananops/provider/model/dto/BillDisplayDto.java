@@ -39,6 +39,9 @@ public class BillDisplayDto {
     @ApiModelProperty(value = "服务商名称")
     private String supplierName;
 
+    @ApiModelProperty(value = "项目id")
+    private Long projectId;
+
     @ApiModelProperty(value = "工单ID")
     private Long workOrderId;
 

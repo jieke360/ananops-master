@@ -13,6 +13,7 @@
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="supplier" property="supplier" jdbcType="BIGINT" />
     <result column="supplier_name" property="supplierName" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="BIGINT" />
     <result column="time" property="time" jdbcType="BIGINT" />
     <result column="work_order_id" property="workOrderId" jdbcType="BIGINT" />
     <result column="state" property="state" jdbcType="VARCHAR" />

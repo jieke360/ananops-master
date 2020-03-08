@@ -74,6 +74,7 @@ public class BaseServiceImpl implements BaseService {
         bill.setTime(time);
         bill.setSupplier(billCreateDto.getSupplier());
         bill.setWorkOrderId(billCreateDto.getWorkOrderId());
+        bill.setProjectId(billCreateDto.getProjectId());
         bill.setState(billCreateDto.getState());
         bill.setDeviceAmount(devicePrice);
         bill.setServiceAmount(servicePrice);
