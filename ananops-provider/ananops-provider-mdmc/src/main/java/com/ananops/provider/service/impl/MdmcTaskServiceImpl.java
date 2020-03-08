@@ -276,21 +276,23 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             List<Long> idList=uacGroupFeignApi.getUacUserIdListByGroupId(userInfoDto.getGroupId()).getResult();
             if (idList.size()>0){
                 for (Long id:idList){
-                    UserInfoDto userInfoDto1=uacUserFeignApi.getUacUserById(userId).getResult();
-                    if (userInfoDto1!=null&&userInfoDto1.getRoleCode().equals("user_watcher")){
-                        MdmcUserWatcherDto userWatcherDto1=new MdmcUserWatcherDto();
-                        userWatcherDto1.setUserId(id);
+                    UserInfoDto userInfoDto1=uacUserFeignApi.getUacUserById(id).getResult();
+                    if (userInfoDto1!=null&& userInfoDto1.getRoleCode()!=null && userInfoDto1.getRoleCode().equals("user_watcher")){
+                        MdmcUserWatcherDto userWatcherDto2=new MdmcUserWatcherDto();
+                        userWatcherDto2.setUserId(id);
 
                         if (userInfoDto1.getUserName()!=null){
-                            userWatcherDto1.setUserName(userInfoDto1.getUserName());
+                            userWatcherDto2.setUserName(userInfoDto1.getUserName());
                         }
-                        userWatcherDtoList.add(userWatcherDto1);
+                        userWatcherDtoList.add(userWatcherDto2);
                     }
 
                 }
             }
         }
-
+        if (userWatcherDtoList.size()>1){
+            userWatcherDtoList.remove(0);
+        }
         return userWatcherDtoList;
     }
 
