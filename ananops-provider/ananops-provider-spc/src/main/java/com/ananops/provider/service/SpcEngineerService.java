@@ -88,7 +88,7 @@ public interface SpcEngineerService extends IService<SpcEngineer> {
      *
      * @return 返回工程师对象
      */
-    EngineerVo queryByEngineerId(Long engineerId);
+    EngineerVo queryByEngineerId(Long userId);
 
     /**
      * 根据工程师Id修改工程师状态
