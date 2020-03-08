@@ -126,7 +126,8 @@ public class UacCompanyServiceImpl implements UacCompanyService {
         Preconditions.checkArgument(!StringUtils.isEmpty(mobileNo), "手机号不能为空");
         Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getLoginPwd()), ErrorCodeEnum.UAC10011014.msg());
         Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getConfirmPwd()), ErrorCodeEnum.UAC10011009.msg());
-        Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getPhoneSmsCode()), "短信验证码不能为空");
+        //TODO 短信验证码校验暂时不启用
+        //Preconditions.checkArgument(!StringUtils.isEmpty(companyRegisterDto.getPhoneSmsCode()), "短信验证码不能为空");
         Preconditions.checkArgument(companyRegisterDto.getLoginPwd().equals(companyRegisterDto.getConfirmPwd()), "两次密码不一致");
     }
 }
