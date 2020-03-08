@@ -1,27 +1,20 @@
 package com.ananops.provider.web;
 
-import com.alibaba.fastjson.JSONObject;
+import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.BmcBill;
 import com.ananops.provider.model.dto.*;
-import com.ananops.provider.model.dto.PmcPayDto;
 import com.ananops.provider.model.dto.PmcContractDto;
 import com.ananops.provider.model.dto.PmcProjectDto;
-import com.ananops.provider.model.dto.group.CompanyDto;
-import com.ananops.provider.model.dto.group.GroupSaveDto;
-import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
-import com.ananops.provider.model.service.UacGroupFeignApi;
-import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.service.PmcContractFeignApi;
 import com.ananops.provider.service.PmcProjectFeignApi;
 import com.ananops.provider.service.impl.BaseServiceImpl;
 import com.ananops.provider.utils.WrapMapper;
 import com.ananops.provider.utils.Wrapper;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import service.RdcDeviceOrderFeignApi;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -29,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bill")
-@Slf4j
-public class BaseBillController {
+@RequestMapping(value = "/bill", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value = "WEB - BaseBillController", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+public class BaseBillController extends BaseController {
 
 //    @Resource
 //    RdcDeviceOrderFeignApi rdcDeviceOrderFeignApi;
@@ -85,6 +78,7 @@ public class BaseBillController {
     @PostMapping(value = "/createFakeOrder")
     @ApiOperation(httpMethod = "POST",value = "创建账单")
     public Wrapper<BigDecimal> createFakeNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto billCreateDto){
+        logger.info("createFakeNew - 创建账单. billCreateDto={}", billCreateDto);
         // 判断projectId是否为空
         if (billCreateDto.getProjectId() == null){
             return WrapMapper.error("创建工单时传入的参数projectId为空！getProjectId = "+billCreateDto.getProjectId());
@@ -114,8 +108,10 @@ public class BaseBillController {
 //        for (JSONObject object : jsonObjects) {
 //            devicePrice += object.getBigDecimal("price").floatValue();
 //        }
-
-        return  WrapMapper.ok(servicePrice.add(devicePrice));
+        if (servicePrice != null) {
+            return WrapMapper.ok(servicePrice.add(devicePrice));
+        }
+        return WrapMapper.ok(devicePrice);
     }
 
     @GetMapping(value = "/getAllByUser/{userId}")
