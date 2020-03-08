@@ -141,14 +141,14 @@ public class SpcEngineerController extends BaseController {
     /**
      * 通过工程师在UAC中的UserId查询工程师信息
      *
-     * @param engineerId 工程师ID
+     * @param userId 工程师ID
      *
      * @return 返回工程师信息
      */
     @PostMapping(value = "/getSpcEngineerById/{userId}")
     @LogAnnotation
     @ApiOperation(httpMethod = "POST", value = "工程师在UAC中的UserId查询工程师信息")
-    public Wrapper<EngineerVo> getSpcEngineerById(@ApiParam(name = "engineerId", value = "工程师ID") @PathVariable Long userId) {
+    public Wrapper<EngineerVo> getSpcEngineerById(@ApiParam(name = "userId", value = "工程师在UAC中的UserID") @PathVariable Long userId) {
         logger.info("getSpcEngineerById - 根据工程师在UAC中的UserId查询工程师信息. userId={}", userId);
         EngineerVo engineerVo = spcEngineerService.queryByEngineerId(userId);
         logger.info("getSpcEngineerById - 根据工程师在UAC中的UserId查询工程师信息. [OK] engineerVo={}", engineerVo);
