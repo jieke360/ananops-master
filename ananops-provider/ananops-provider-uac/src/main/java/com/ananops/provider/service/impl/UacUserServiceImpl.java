@@ -1242,6 +1242,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		if (PublicUtil.isEmpty(user)) {
 			throw new UacBizException(ErrorCodeEnum.UAC10011002, loginName);
 		}
+		logger.info("authUserModifyPwd userId = {}, loginAuthUserId = {}", user.getId(), loginAuthDto.getUserId());
 		Preconditions.checkArgument(user.getId().equals(loginAuthDto.getUserId()), "越权操作，只能修改本人密码！");
 		return this.userModifyPwd(userModifyPwdDto, loginAuthDto);
 	}
