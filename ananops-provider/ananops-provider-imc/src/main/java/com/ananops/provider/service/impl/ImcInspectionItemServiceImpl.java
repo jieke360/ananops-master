@@ -449,9 +449,11 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             String refNo = String.valueOf(super.generateId());
             int[] statusList = {
                     ItemStatusEnum.INSPECTION_OVER.getStatusNum()};
-            for(Long attachmentId:attachmentIds){
-                //建立附件与巡检任务、任务子项、当前状态的关联关系
-                this.bindImcItemAndFiles(attachmentId,taskId,itemId,refNo,statusList,loginAuthDto);
+            if(attachmentIds!=null){
+                for(Long attachmentId:attachmentIds){
+                    //建立附件与巡检任务、任务子项、当前状态的关联关系
+                    this.bindImcItemAndFiles(attachmentId,taskId,itemId,refNo,statusList,loginAuthDto);
+                }
             }
             if(imcInspectionTaskService.isTaskFinish(taskId)){
                 //如果该巡检子项对应的巡检任务中全部的任务子项均已完成
