@@ -2,25 +2,45 @@ package com.ananops.provider.service.impl;
 
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
+import com.ananops.core.support.BaseService;
+import com.ananops.provider.mapper.WebsocketUserMessageInfoMapper;
+import com.ananops.provider.model.domain.WebsocketUserMessageInfo;
 import com.ananops.provider.model.dto.WebSocketMsgDto;
 import com.ananops.provider.service.WebSocketPushMsgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * Created by rongshuai on 2020/2/19 19:28
  */
 @Service
-public class WebSocketPushMsgServiceImpl implements WebSocketPushMsgService {
+public class WebSocketPushMsgServiceImpl extends BaseService<WebsocketUserMessageInfo> implements WebSocketPushMsgService {
     @Autowired
     SimpMessagingTemplate messagingTemplate;
+
+    @Resource
+    WebsocketUserMessageInfoMapper websocketUserMessageInfoMapper;
+
 
     @Override
     public void SendMessageToWebSocketClient(WebSocketMsgDto webSocketMsgDto, String userId){
         if(userId!=null){
             try{
+                Long messageId = super.generateId();
+                WebsocketUserMessageInfo websocketUserMessageInfo = new WebsocketUserMessageInfo();
+                websocketUserMessageInfo.setMessageBody(String.valueOf(webSocketMsgDto.getContent()));
+                websocketUserMessageInfo.setMessageTag(webSocketMsgDto.getTag());
+                websocketUserMessageInfo.setMessageTopic(webSocketMsgDto.getTopic());
+                websocketUserMessageInfo.setStatus(0);
+                websocketUserMessageInfo.setUserId(Long.parseLong(userId));
+                websocketUserMessageInfo.setId(messageId);
+                websocketUserMessageInfoMapper.insert(websocketUserMessageInfo);
+                logger.info("插入websocket消息：websocketUserMessageInfo={}",websocketUserMessageInfo);
                 //发送单对单WebSocket消息
+                webSocketMsgDto.setMessageId(messageId);
                 messagingTemplate.convertAndSendToUser(userId,"/queue/chat",webSocketMsgDto);
             }catch (Exception e){
                 throw new BusinessException(ErrorCodeEnum.WEBSOCKET10100001);
