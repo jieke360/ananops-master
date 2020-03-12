@@ -956,6 +956,7 @@ public enum ErrorCodeEnum {
 
 	WEBSOCKET10100001(10100001,"消息推送失败"),
 
+	WEBSOCKET10100002(10100002,"查无此消息"),
 	;
 	private int code;
 	private String msg;

@@ -16,9 +16,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         // This is not for websocket authorization, and this should most likely not be altered.
         http
+                .csrf().disable()
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/ws").permitAll()
-                .anyRequest().denyAll();
+                .authorizeRequests().antMatchers("/ws","/druid/**", "/pay/alipayCallback", "/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs", "/api/applications").permitAll()
+                .anyRequest().permitAll().and().logout().permitAll();
     }
 }

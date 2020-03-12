@@ -11,6 +11,10 @@ import java.io.Serializable;
 public class WebSocketMsgDto<T> implements Serializable {
     private static final long serialVersionUID = -6638463898812891463L;
     /**
+     * 消息Id
+     */
+    private Long messageId;
+    /**
      * 消息的主题
      */
     private String topic;
