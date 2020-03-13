@@ -13,6 +13,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,6 +58,7 @@ public class WebSocketMsgServiceImpl extends BaseService<WebsocketUserMessageInf
                     = websocketUserMessageInfoMapper.selectByPrimaryKey(messageId);
             if(websocketUserMessageInfo!=null){
                 websocketUserMessageInfo.setStatus(status);
+                websocketUserMessageInfo.setUpdateTime(new Date());
                 return websocketUserMessageInfoMapper.updateByPrimaryKeySelective(websocketUserMessageInfo);
             }else{
                 throw new BusinessException(ErrorCodeEnum.WEBSOCKET10100002);

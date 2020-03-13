@@ -47,7 +47,7 @@ public class PcObjectMapper {
 		converters.add(jackson2MessageConverter);
 	}
 
-	private static ObjectMapper getObjectMapper() {
+	public static ObjectMapper getObjectMapper() {
 		SimpleModule simpleModule = new SimpleModule();
 		simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
 		simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);

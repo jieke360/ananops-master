@@ -3,6 +3,7 @@ package com.ananops.provider.service.impl;
 import com.ananops.JacksonUtil;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
+import com.ananops.core.config.PcObjectMapper;
 import com.ananops.core.support.BaseService;
 import com.ananops.provider.mapper.WebsocketUserMessageInfoMapper;
 import com.ananops.provider.model.domain.WebsocketUserMessageInfo;
@@ -13,6 +14,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * Created by rongshuai on 2020/2/19 19:28
@@ -31,7 +33,7 @@ public class WebSocketPushMsgServiceImpl extends BaseService<WebsocketUserMessag
         if(userId!=null){
             try{
                 Long messageId = super.generateId();
-                String body = JacksonUtil.toJsonWithFormat(webSocketMsgDto.getContent());
+                String body = PcObjectMapper.getObjectMapper().writeValueAsString(webSocketMsgDto.getContent());//JacksonUtil.toJsonWithFormat(webSocketMsgDto.getContent());
                 WebsocketUserMessageInfo websocketUserMessageInfo = new WebsocketUserMessageInfo();
                 websocketUserMessageInfo.setMessageBody(body);
                 websocketUserMessageInfo.setMessageTag(webSocketMsgDto.getTag());
@@ -39,6 +41,8 @@ public class WebSocketPushMsgServiceImpl extends BaseService<WebsocketUserMessag
                 websocketUserMessageInfo.setStatus(0);
                 websocketUserMessageInfo.setUserId(Long.parseLong(userId));
                 websocketUserMessageInfo.setId(messageId);
+                websocketUserMessageInfo.setCreatedTime(new Date());
+                websocketUserMessageInfo.setUpdateTime(new Date());
                 websocketUserMessageInfoMapper.insert(websocketUserMessageInfo);
                 logger.info("插入websocket消息：websocketUserMessageInfo={}",websocketUserMessageInfo);
                 //发送单对单WebSocket消息
