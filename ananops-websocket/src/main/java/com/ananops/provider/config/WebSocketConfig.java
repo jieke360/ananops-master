@@ -5,12 +5,14 @@ import com.ananops.RedisKeyUtil;
 import com.ananops.base.constant.AliyunMqTopicConstants;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.dto.UserTokenDto;
+import com.ananops.core.config.PcObjectMapper;
 import com.ananops.provider.model.domain.MqMessageData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -23,6 +25,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
 import javax.annotation.Resource;
 import java.security.Principal;
+import java.util.List;
 
 /**
  * Created by rongshuai on 2020/2/18 22:43
@@ -56,6 +59,17 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 				return message;
 			}
 		});
+	}
+
+	@Override
+	public boolean configureMessageConverters(List<MessageConverter> messageConverters){
+		try{
+			WebSocketPOJOMapper.buidMvcMessageConverter(messageConverters);
+			return true;
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
