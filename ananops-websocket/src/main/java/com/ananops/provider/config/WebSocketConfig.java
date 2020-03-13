@@ -1,12 +1,6 @@
 package com.ananops.provider.config;
 
-
-import com.ananops.RedisKeyUtil;
-import com.ananops.base.constant.AliyunMqTopicConstants;
-import com.ananops.base.dto.LoginAuthDto;
-import com.ananops.base.dto.UserTokenDto;
 import com.ananops.core.config.PcObjectMapper;
-import com.ananops.provider.model.domain.MqMessageData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -64,7 +58,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 	@Override
 	public boolean configureMessageConverters(List<MessageConverter> messageConverters){
 		try{
-			WebSocketPOJOMapper.buidMvcMessageConverter(messageConverters);
+			PcObjectMapper.buidMessageConverter(messageConverters);
 			return true;
 		}catch (Exception e){
 			e.printStackTrace();
