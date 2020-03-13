@@ -5,6 +5,7 @@ import com.ananops.provider.model.domain.MdmcTask;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.service.MdmcTaskFeignApi;
 import com.ananops.wrapper.Wrapper;
+import com.github.pagehelper.PageInfo;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.stereotype.Component;
@@ -43,7 +44,7 @@ public class MdmcTaskFeignHystrix implements MdmcTaskFeignApi {
     }
     
     @Override
-    public Wrapper<MdmcPageDto> getTaskList(MdmcQueryDto queryDto) {
+    public Wrapper<PageInfo> getTaskList(MdmcQueryDto queryDto) {
         return null;
     }
 

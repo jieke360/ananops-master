@@ -14,6 +14,7 @@ import com.ananops.provider.service.MdmcTaskLogService;
 import com.ananops.provider.service.MdmcTaskService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -181,9 +182,8 @@ public class MdmcTaskController extends BaseController {
 
     @PostMapping(value = "/getTaskList")
     @ApiOperation(httpMethod = "POST",value = "分页查询列表")
-    public Wrapper<MdmcPageDto> getTaskList(@RequestBody MdmcQueryDto queryDto){
-        MdmcPageDto pageDto=taskService.getTaskListByPage(queryDto);
-        return WrapMapper.ok(pageDto);
+    public Wrapper<PageInfo> getTaskList(@RequestBody MdmcQueryDto queryDto){
+        return WrapMapper.ok(taskService.getTaskListByPage(queryDto));
     }
 
     @PostMapping(value = "/refuseTaskByFacilitator")

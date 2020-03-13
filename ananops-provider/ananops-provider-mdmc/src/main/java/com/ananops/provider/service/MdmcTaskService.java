@@ -7,6 +7,7 @@ import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
@@ -105,7 +106,7 @@ public interface MdmcTaskService extends IService<MdmcTask> {
      * @param queryDto
      * @return
      */
-    MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto);
+    PageInfo getTaskListByPage(MdmcQueryDto queryDto);
 
     /**
      * 根据用户ID获取工单数目

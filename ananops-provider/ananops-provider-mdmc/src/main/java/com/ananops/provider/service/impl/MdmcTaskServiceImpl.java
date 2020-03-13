@@ -24,6 +24,7 @@ import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.mq.producer.TaskMsgProducer;
 import com.ananops.provider.service.*;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.xiaoleilu.hutool.io.FileTypeUtil;
@@ -632,10 +633,9 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     }
 
     @Override
-    public MdmcPageDto getTaskListByPage(MdmcQueryDto queryDto) {
+    public PageInfo getTaskListByPage(MdmcQueryDto queryDto) {
 //        String roleCode=queryDto.getRoleCode();
         Long id=queryDto.getId();
-        Integer status=queryDto.getStatus();
 //        Example example = new Example(MdmcTask.class);
 //        Example.Criteria criteria = example.createCriteria();
 //        if (status!=null){
@@ -652,14 +652,13 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
 //        if(taskMapper.selectCountByExample(example)==0){
 //            throw new BusinessException(ErrorCodeEnum.MDMC9998098);
 //        }
-        PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
-        MdmcPageDto pageDto=new MdmcPageDto();
-//        pageDto.setTaskList(taskMapper.selectByExample(example));
-        pageDto.setTaskList(getTaskListByUserIdAndStatusOptional(id, status));
-        pageDto.setPageNum(queryDto.getPageNum());
-        pageDto.setPageSize(queryDto.getPageSize());
 
-        return pageDto;
+
+//        pageDto.setTaskList(taskMapper.selectByExample(example));
+        List<MdmcTask> taskList=getTaskListOptional(queryDto,id);
+
+
+        return new PageInfo<>(taskList);
 
     }
 
@@ -667,6 +666,40 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     public int getTaskCount(Long userId) {
 
         return taskMapper.selectBySomeoneId(userId).size();
+    }
+
+    private List<MdmcTask> getTaskListOptional(MdmcQueryDto queryDto,Long userId){
+        String roleCode="";
+        if (userId!=null)roleCode=uacUserFeignApi.getUacUserById(userId).getResult().getRoleCode();
+        Integer status=queryDto.getStatus();
+        if(status == null) {
+
+            if (roleCode!=null){
+                if (roleCode.equals("fac_service")||roleCode.equals("fac_manager")||roleCode.equals("fac_leader")){
+                    PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
+                    List<MdmcTask> factaskList=taskMapper.selectByFacId(userId);
+                    return factaskList;
+                }
+                if(roleCode.equals("engineer")){
+                    PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
+                    List<MdmcTask> mantainerTaskList=taskMapper.selectByMantainerId(userId);
+                    return  mantainerTaskList;
+                }
+                if(roleCode.equals("user_watcher") || roleCode.equals("user")||roleCode.equals("user_leader")){
+                    PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
+                    List<MdmcTask> taskList=taskMapper.selectBySomeoneId(userId);
+                    return  taskList;
+                }
+            }
+            else
+            {PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
+                return taskMapper.selectBySomeoneId(userId);}
+        } else{
+            PageHelper.startPage(queryDto.getPageNum(),queryDto.getPageSize());
+            return taskMapper.selectBySomeoneIdAndStatus(userId, status);
+        }
+
+        return taskMapper.selectBySomeoneIdAndStatus(userId, status);
     }
 
     private List<MdmcTask> getTaskListByUserIdAndStatusOptional(Long userId, Integer status) {

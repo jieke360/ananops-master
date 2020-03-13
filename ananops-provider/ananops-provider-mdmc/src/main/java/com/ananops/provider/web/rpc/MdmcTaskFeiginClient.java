@@ -9,6 +9,7 @@ import com.ananops.provider.service.MdmcTaskLogService;
 import com.ananops.provider.service.MdmcTaskService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -72,9 +73,9 @@ public class MdmcTaskFeiginClient extends BaseController implements MdmcTaskFeig
     }
     
     @ApiOperation(httpMethod = "POST",value = "分页查询列表")
-    public Wrapper<MdmcPageDto> getTaskList(@RequestBody MdmcQueryDto queryDto){
-        MdmcPageDto pageDto=taskService.getTaskListByPage(queryDto);
-        return WrapMapper.ok(pageDto);
+    public Wrapper<PageInfo> getTaskList(@RequestBody MdmcQueryDto queryDto){
+
+        return WrapMapper.ok(taskService.getTaskListByPage(queryDto));
     }
 
     @Override
