@@ -1,5 +1,6 @@
 package com.ananops.provider.service.impl;
 
+import com.ananops.JacksonUtil;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
@@ -30,8 +31,9 @@ public class WebSocketPushMsgServiceImpl extends BaseService<WebsocketUserMessag
         if(userId!=null){
             try{
                 Long messageId = super.generateId();
+                String body = JacksonUtil.toJsonWithFormat(webSocketMsgDto.getContent());
                 WebsocketUserMessageInfo websocketUserMessageInfo = new WebsocketUserMessageInfo();
-                websocketUserMessageInfo.setMessageBody(String.valueOf(webSocketMsgDto.getContent()));
+                websocketUserMessageInfo.setMessageBody(body);
                 websocketUserMessageInfo.setMessageTag(webSocketMsgDto.getTag());
                 websocketUserMessageInfo.setMessageTopic(webSocketMsgDto.getTopic());
                 websocketUserMessageInfo.setStatus(0);
