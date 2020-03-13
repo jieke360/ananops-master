@@ -99,8 +99,16 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 		}
 		// 获取该Group下的所有角色；
 		List<Long> roleIds = uacRoleGroupService.listByGroupId(rootGroupId);
-		if (roleIds != null && roleIds.size() > 0)
-			return uacRoleMapper.queryRoleListWithBatchRoleId(roleIds);
+		QueryGroupRoleDto queryGroupRoleDto = new QueryGroupRoleDto();
+		queryGroupRoleDto.setRoleIds(roleIds);
+		queryGroupRoleDto.setRoleCode(role.getRoleCode());
+		queryGroupRoleDto.setRoleName(role.getRoleName());
+		queryGroupRoleDto.setStatus(role.getStatus());
+		if (roleIds != null && roleIds.size() > 0){
+//			return uacRoleMapper.queryRoleListWithBatchRoleId(roleIds);
+			//增加筛选条件
+			return uacRoleMapper.queryRoleListWithQueryGroupRoleDto(queryGroupRoleDto);
+		}
 		return new ArrayList<>();
 	}
 
