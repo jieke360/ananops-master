@@ -28,7 +28,6 @@ public class RoleConstant {
      */
     public static final List<Long> FAC_DEFAULT_ROLE_IDS = Arrays.asList(
             781824027910996992L,  // 服务商负责人
-            781828423130547200L,  // 服务商业务员
-            781829167275574272L  // 维修工程师
+            781828423130547200L  // 服务商业务员
     );
 }
