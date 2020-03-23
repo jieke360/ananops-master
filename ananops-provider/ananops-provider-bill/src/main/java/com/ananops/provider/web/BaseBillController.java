@@ -84,19 +84,19 @@ public class BaseBillController extends BaseController {
             return WrapMapper.error("创建工单时传入的参数projectId为空！getProjectId = "+billCreateDto.getProjectId());
         }
         // 通过projectId找到project，再通过project信息找到ContractId，然后找到contract信息
-        PmcProjectDto pmcProjectDto = pmcProjectFeignApi.getProjectByProjectId(billCreateDto.getProjectId()).getResult();
-        if (pmcProjectDto == null){
-            return WrapMapper.error("getProjectByProjectId获得的项目信息为空！projectId = "+billCreateDto.getProjectId());
-        }
-        if (pmcProjectDto.getContractId() == null){
-            return WrapMapper.error("pmcProjectDto中的合同id为空！pmcProjectDto.getContractId() = "+pmcProjectDto.getContractId());
-        }
-        PmcContractDto pmcContractDto = pmcContractFeignApi.getContractById(pmcProjectDto.getContractId()).getResult();
-        if (pmcContractDto == null){
-            return WrapMapper.error("通过getContractById获得的合同信息为空！ContractId = "+pmcProjectDto.getContractId());
-        }
+        Long contractId = getContractId(billCreateDto.getProjectId());
+//        if (pmcProjectDto == null){
+//            return WrapMapper.error("getProjectByProjectId获得的项目信息为空！projectId = "+billCreateDto.getProjectId());
+//        }
+//        if (pmcProjectDto.getContractId() == null){
+//            return WrapMapper.error("pmcProjectDto中的合同id为空！pmcProjectDto.getContractId() = "+pmcProjectDto.getContractId());
+//        }
+//        PmcContractDto pmcContractDto = pmcContractFeignApi.getContractById(contractId).getResult();
+//        if (pmcContractDto == null){
+//            return WrapMapper.error("通过getContractById获得的合同信息为空！ContractId = "+contractId);
+//        }
 
-        BigDecimal servicePrice = pmcContractDto.getPaymentMoney();
+        BigDecimal servicePrice = getServicePrice(contractId);
 //        List<DeviceDto> deviceDtoList = billCreateDto.getDeviceDtos();
 //        List<Long> deviceIds = new ArrayList<>();
 //        for (DeviceDto deviceDto : deviceDtoList) {
@@ -112,6 +112,14 @@ public class BaseBillController extends BaseController {
             return WrapMapper.ok(servicePrice.add(devicePrice));
         }
         return WrapMapper.ok(devicePrice);
+    }
+
+    public Long getContractId(Long projectId){
+        return pmcProjectFeignApi.getProjectByProjectId(projectId).getResult().getContractId();
+    }
+
+    public BigDecimal getServicePrice(Long contractId){
+        return pmcContractFeignApi.getContractById(contractId).getResult().getPaymentMoney();
     }
 
     @GetMapping(value = "/getAllByUser/{userId}")
