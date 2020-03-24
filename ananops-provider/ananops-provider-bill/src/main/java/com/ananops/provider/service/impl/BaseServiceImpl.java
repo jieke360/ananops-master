@@ -4,7 +4,10 @@ import com.ananops.provider.mapper.BmcBillMapper;
 import com.ananops.provider.model.domain.BmcBill;
 import com.ananops.provider.model.dto.BillCreateDto;
 import com.ananops.provider.model.dto.BillDisplayDto;
+import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.dto.user.UserInfoDto;
+import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
+import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.model.vo.CompanyVo;
 import com.ananops.provider.service.BaseService;
@@ -30,6 +33,12 @@ public class BaseServiceImpl implements BaseService {
 
     @Resource
     private UacUserFeignApi uacUserFeignApi;
+
+    @Resource
+    private UacGroupFeignApi uacGroupFeignApi;
+
+    @Resource
+    private UacGroupBindUserFeignApi uacGroupBindUserFeignApi;
 
     @Resource
     private SpcCompanyFeignApi spcCompanyFeignApi;
@@ -72,7 +81,18 @@ public class BaseServiceImpl implements BaseService {
         }
         bill.setUserId(billCreateDto.getUserId());
         bill.setTime(time);
-        bill.setSupplier(billCreateDto.getSupplier());
+        Long groupId = uacGroupBindUserFeignApi.getCompanyGroupIdByUserId(billCreateDto.getSupplier()).getResult();
+        CompanyDto companyDto = uacGroupFeignApi.getCompanyInfoById(groupId).getResult();
+        switch (companyDto.getType()){
+            case "department":
+                groupId = companyDto.getPid();
+                break;
+            case "company":
+                break;
+            default:
+                log.info("暂不支持此类公司类型，公司类型："+companyDto.getType());
+        }
+        bill.setSupplier(groupId);
         bill.setWorkOrderId(billCreateDto.getWorkOrderId());
         bill.setProjectId(billCreateDto.getProjectId());
         bill.setState(billCreateDto.getState());
@@ -82,10 +102,14 @@ public class BaseServiceImpl implements BaseService {
         UserInfoDto uacUserInfo = uacUserFeignApi.getUacUserById(bill.getUserId()).getResult();
         if(uacUserInfo != null){
             bill.setUserName(uacUserInfo.getUserName());
+        }else{
+            log.info("通过用户ID："+bill.getUserId()+"找到的用户名为空");
         }
-        CompanyVo companyVo = spcCompanyFeignApi.getCompanyDetailsById(bill.getSupplier()).getResult();
+        CompanyVo companyVo = spcCompanyFeignApi.getCompanyDetailsById(groupId).getResult();
         if(companyVo != null){
             bill.setSupplierName(companyVo.getGroupName());
+        }else{
+            log.info("通过服务商ID："+bill.getSupplier()+"找到的服务商名为空");
         }
         bill.setVersion(1);
         bill.setCreator(bill.getUserName());
