@@ -68,6 +68,8 @@ public interface ImcInspectionTaskService extends IService<ImcInspectionTask> {
     PageInfo getAllUnauthorizedTaskByPrincipalIdAndPage(TaskQueryDto taskQueryDto);
 
     PageInfo getAllDeniedTaskByPrincipalIdAndPage(TaskQueryDto taskQueryDto);
+
+    Integer getItemNumberByTaskId(Long taskId);
 //    List<ImcInspectionTask> getTaskByFacilitatorId(TaskQueryDto taskQueryDto);//根据服务商id查询对应的巡检任务
 //
 //    List<ImcInspectionTask> getTaskByFacilitatorIdAndStatus(TaskQueryDto taskQueryDto);//根据服务商id查询指定状态的巡检任务

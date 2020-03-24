@@ -858,6 +858,23 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     }
 
     /**
+     * 根据任务id查询任务下的子项数
+     * @param taskId
+     * @return
+     */
+    @Override
+    public Integer getItemNumberByTaskId(Long taskId){
+        if(null!=taskId){
+            Example example = new Example(ImcInspectionItem.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("inspectionTaskId",taskId);
+            return imcInspectionItemService.selectCountByExample(example);
+        }else{
+            throw new BusinessException(ErrorCodeEnum.GL99990100);
+        }
+    }
+
+    /**
      * 判断巡检任务是否完成
      * @param taskId
      * @return

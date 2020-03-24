@@ -199,4 +199,10 @@ public class ImcInspectionTaskController extends BaseController {
         logger.info("根据用户id和用户角色获取全部的巡检任务数目，taskQueryDto={}",taskQueryDto);
         return WrapMapper.ok(imcInspectionTaskService.getImcTaskNumberByUserIdAndRole(taskQueryDto));
     }
+
+    @GetMapping(value = "/getItemNumberByTaskId/{taskId}")
+    @ApiOperation(httpMethod = "GET",value = "根据任务的ID，获取当前任务下的子项数")
+    public Wrapper<Integer> getItemNumberByTaskId(@PathVariable Long taskId){
+        return WrapMapper.ok(imcInspectionTaskService.getItemNumberByTaskId(taskId));
+    }
 }
