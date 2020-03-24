@@ -251,7 +251,12 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         taskLog.setId(taskLogId);
         taskLog.setTaskId(task.getId());
         taskLog.setStatus(task.getStatus());
-        taskLog.setMovement(MdmcTaskStatusEnum.getStatusMsg(task.getStatus()));
+
+        String move=MdmcTaskStatusEnum.getStatusMsg(task.getStatus());
+        if(task.getLevel()!=null){
+            move+=("，当前紧急程度是"+task.getLevel());
+        }
+        taskLog.setMovement(move);
         taskLogMapper.insert(taskLog);
 
         logger.info("记录维修工单操作日志[OK] TaskLog = {}", taskLog);
@@ -493,7 +498,11 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         taskLog.setId(taskLogId);
         taskLog.setTaskId(taskId);
         taskLog.setStatus(status);
-        taskLog.setMovement(MdmcTaskStatusEnum.getStatusMsg(status));
+        String move=MdmcTaskStatusEnum.getStatusMsg(task.getStatus());
+        if(task.getLevel()!=null){
+            move+=("，当前紧急程度是"+task.getLevel());
+        }
+        taskLog.setMovement(move);
         taskLogMapper.insert(taskLog);
 
         logger.info("记录维修工单操作日志[OK] TaskLog = {}", taskLog);
