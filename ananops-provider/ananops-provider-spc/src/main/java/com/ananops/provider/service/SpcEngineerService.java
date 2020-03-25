@@ -3,10 +3,7 @@ package com.ananops.provider.service;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.SpcEngineer;
-import com.ananops.provider.model.dto.EngineerDto;
-import com.ananops.provider.model.dto.EngineerRegisterDto;
-import com.ananops.provider.model.dto.EngineerStatusDto;
-import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
@@ -139,4 +136,15 @@ public interface SpcEngineerService extends IService<SpcEngineer> {
      * @return
      */
     List<ElementImgUrlDto> getEngineerFile(Long id);
+
+    /**
+     * 根据公司GroupId查询工程师列表
+     *
+     * @param engineerQueryDto
+     *
+     * @param loginAuthDto
+     *
+     * @return
+     */
+    List<EngineerDto> queryListByGroupId(EngineerQueryDto engineerQueryDto, LoginAuthDto loginAuthDto);
 }

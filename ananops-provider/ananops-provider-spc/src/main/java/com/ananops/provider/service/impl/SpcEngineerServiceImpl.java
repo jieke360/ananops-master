@@ -11,12 +11,10 @@ import com.ananops.provider.mapper.SpcCompanyMapper;
 import com.ananops.provider.mapper.SpcEngineerMapper;
 import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.domain.SpcEngineer;
-import com.ananops.provider.model.dto.EngineerDto;
-import com.ananops.provider.model.dto.EngineerRegisterDto;
-import com.ananops.provider.model.dto.EngineerStatusDto;
-import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
+import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.dto.group.GroupBindUserApiDto;
 import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptBatchGetUrlRequest;
@@ -528,6 +526,41 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
             }
         }
         return engineerSimpleVos;
+    }
+
+    @Override
+    public List<EngineerDto> queryListByGroupId(EngineerQueryDto engineerQueryDto, LoginAuthDto loginAuthDto) {
+        List<EngineerDto> result = new ArrayList<>();
+        Long groupId = loginAuthDto.getGroupId();
+        // 获取公司的GroupId
+        CompanyDto companyDto = uacGroupFeignApi.getCompanyInfoById(groupId).getResult();
+        if (PublicUtil.isEmpty(companyDto)||(companyDto.getId())==null) {
+            return result;
+        }
+        List<Long> userIdList = uacGroupFeignApi.getUacUserIdListByGroupId(companyDto.getId()).getResult();
+        // 查询所有工程信息
+        for(Long userId : userIdList) {
+            EngineerDto engineerDto = new EngineerDto();
+            SpcEngineer queryCom = new SpcEngineer();
+            queryCom.setUserId(userId);
+            SpcEngineer queryResult = spcEngineerMapper.selectOne(queryCom);
+            String position = engineerQueryDto.getPosition();
+            if (queryResult != null && position != null && position.equals(queryResult.getPosition())) {
+                UserInfoDto userInfoDto = uacUserFeignApi.getUacUserById(userId).getResult();
+                if (userInfoDto != null) {
+                    try {
+                        BeanUtils.copyProperties(engineerDto, userInfoDto);
+                        BeanUtils.copyProperties(engineerDto, queryResult);
+                    } catch (Exception e) {
+                        logger.error("工程师Dto与用户Dto属性拷贝异常");
+                        e.printStackTrace();
+                    }
+                }
+                engineerDto.setUserId(userId);
+                result.add(engineerDto);
+            }
+        }
+        return result;
     }
 
     private void validateCompanyVo(EngineerVo engineerVo) {

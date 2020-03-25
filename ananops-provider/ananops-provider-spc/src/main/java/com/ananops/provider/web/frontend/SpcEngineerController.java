@@ -4,10 +4,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.annotation.LogAnnotation;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.SpcEngineer;
-import com.ananops.provider.model.dto.EngineerDto;
-import com.ananops.provider.model.dto.EngineerRegisterDto;
-import com.ananops.provider.model.dto.EngineerStatusDto;
-import com.ananops.provider.model.dto.ModifyEngineerStatusDto;
+import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
 import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
@@ -67,6 +64,25 @@ public class SpcEngineerController extends BaseController {
         PageHelper.startPage(spcEngineer.getPageNum(), spcEngineer.getPageSize());
         spcEngineer.setOrderBy("update_time desc");
         List<EngineerDto> engineersVoList = spcEngineerService.queryAllEngineers(spcEngineer, loginAuthDto);
+        return WrapMapper.ok(new PageInfo<>(engineersVoList));
+    }
+
+    /**
+     * 根据公司GroupId查询服务商下工程师.
+     *
+     * @param engineerQueryDto 传入的查询参数
+     *
+     * @return the wrapper
+     */
+    @PostMapping(value = "/queryListByGroupId")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据公司GroupId分页查询服务商下工程师")
+    public Wrapper<PageInfo<EngineerDto>> queryAllEngineers(@ApiParam(name = "engineerQueryDto", value = "分页查询参数") @RequestBody EngineerQueryDto engineerQueryDto) {
+        logger.info(" 分页查询参数 engineerQueryDto={}", engineerQueryDto);
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        PageHelper.startPage(engineerQueryDto.getPageNum(), engineerQueryDto.getPageSize());
+        engineerQueryDto.setOrderBy("update_time desc");
+        List<EngineerDto> engineersVoList = spcEngineerService.queryListByGroupId(engineerQueryDto, loginAuthDto);
         return WrapMapper.ok(new PageInfo<>(engineersVoList));
     }
 
