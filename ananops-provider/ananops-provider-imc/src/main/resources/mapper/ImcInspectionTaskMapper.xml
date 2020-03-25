@@ -27,6 +27,7 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="frequency" jdbcType="INTEGER" property="frequency" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
     ${alias}.id,${alias}.version,${alias}.creator,${alias}.creator_id,${alias}.created_time,${alias}.last_operator,${alias}.last_operator_id,

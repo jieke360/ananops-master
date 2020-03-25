@@ -141,4 +141,7 @@ public class ImcAddInspectionTaskDto implements Serializable {
      */
     @ApiModelProperty(value = "巡检执行次数")
     private Integer times;
+
+    @ApiModelProperty(value = "巡检内容")
+    private String content;
 }
