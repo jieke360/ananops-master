@@ -32,6 +32,7 @@ import com.ananops.provider.utils.TreeUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -513,4 +514,17 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 			return getCompanyInfo(uacGroup.getPid());
 		}
 	}
+
+    @Override
+    public List<GroupZtreeVo> getCompanyList() { ;
+		List<GroupZtreeVo> tree = Lists.newArrayList();
+		UacGroup uacGroupQuery = new UacGroup();
+		uacGroupQuery.setType("company");
+		List<UacGroup> groupList = uacGroupMapper.select(uacGroupQuery);
+		for (UacGroup uacGroup : groupList) {
+			GroupZtreeVo zTreeMenuVo = buildGroupZTreeVoByGroup(uacGroup);
+			tree.add(zTreeMenuVo);
+		}
+        return tree;
+    }
 }

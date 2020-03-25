@@ -151,4 +151,16 @@ public class UacGroupCommonController extends BaseController {
         UacGroup uacGroup = uacGroupService.getCompanyInfo(groupId);
         return WrapMapper.ok(uacGroup);
     }
+
+    /**
+     * 获取企业列表
+     * @return
+     */
+    @PostMapping(value = "/getCompanyList")
+    @ApiOperation(httpMethod = "POST", value = "通过组织ID查询其所在公司信息")
+    public Wrapper<List<GroupZtreeVo>> getCompanyList() {
+        List<GroupZtreeVo> companyList = uacGroupService.getCompanyList();
+        return WrapMapper.ok(companyList);
+    }
+
 }

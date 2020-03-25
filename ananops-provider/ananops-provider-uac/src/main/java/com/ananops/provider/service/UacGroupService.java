@@ -117,4 +117,10 @@ public interface UacGroupService extends IService<UacGroup> {
      * @return
      */
     UacGroup getCompanyInfo(Long groupId);
+
+    /**
+     * 获取企业列表
+     * @return
+     */
+    List<GroupZtreeVo> getCompanyList();
 }
