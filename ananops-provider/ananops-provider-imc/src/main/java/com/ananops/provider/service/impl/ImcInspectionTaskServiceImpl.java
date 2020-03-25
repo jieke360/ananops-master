@@ -83,6 +83,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             Integer days = imcAddInspectionTaskDto.getDays();
             Date startTime = imcAddInspectionTaskDto.getScheduledStartTime();
             Calendar calendar = new GregorianCalendar();
+            Integer inspectionType = imcAddInspectionTaskDto.getInspectionType();
             int count=1;
             if(times!=null) count=times;
             for(int i=0;i<count;i++){
@@ -92,9 +93,13 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                 Long facilitatorGroupId = imcAddInspectionTaskDto.getFacilitatorGroupId();
                 imcInspectionTask.setId(taskId);
                 imcInspectionTask.setScheduledStartTime(startTime);
-                //将巡检任务的装填设置为等待甲方负责人审核
-                imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_PRINCIPAL.getStatusNum());
-                //将巡检任务状态设置为等待服务商接单
+                if(inspectionType==1){
+                    //如果是从巡检方案中发起的，则无需甲方负责人审核
+                    imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_ACCEPT.getStatusNum());
+                }else{
+                    //将巡检任务的状态设置为等待甲方负责人审核
+                    imcInspectionTask.setStatus(TaskStatusEnum.WAITING_FOR_PRINCIPAL.getStatusNum());
+                }
                 imcInspectionTaskMapper.insert(imcInspectionTask);
                 logger.info("新创建一条巡检记录：" + imcInspectionTask.toString());
                 //更新startTime
