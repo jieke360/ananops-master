@@ -372,7 +372,9 @@ public class UacGroupServiceImpl extends BaseService<UacGroup> implements UacGro
 		if (PublicUtil.isEmpty(parenGroup)) {
 			throw new UacBizException(ErrorCodeEnum.UAC10015009, group.getPid());
 		}
-		setGroupAddress(group);
+		if(!PublicUtil.isEmpty(group.getAddressList())){
+			setGroupAddress(group);
+		}
 		group.setUpdateInfo(loginAuthDto);
 
 		if (group.isNew()) {
