@@ -155,6 +155,12 @@ public class MdmcTask extends BaseEntity {
     private Long contractId;
 
     /**
+     * 故障原因
+     */
+    @Column(name = "trouble_reason")
+    private String troubleReason;
+
+    /**
      * 紧急程度
      */
     @Column(name = "level")

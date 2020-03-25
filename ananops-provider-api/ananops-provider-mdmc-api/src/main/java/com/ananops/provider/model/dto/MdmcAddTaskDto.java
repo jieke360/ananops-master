@@ -100,6 +100,9 @@ public class MdmcAddTaskDto implements Serializable {
     @ApiModelProperty("附件id")
     private List<Long> attachmentIdList;
 
+    @ApiModelProperty("故障原因")
+    private String troubleReason;
+
     @ApiModelProperty("任务子项")
     private List<MdmcAddTaskItemDto> mdmcAddTaskItemDtoList;
 }
