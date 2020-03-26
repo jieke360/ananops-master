@@ -170,6 +170,10 @@ public class AliyunMqTopicConstants {
 		 */
 		IMC_TASK_STATUS_CHANGED("IMC_TASK_STATUS_CHANGED",MqTopicEnum.IMC_TOPIC.getTopic(),"巡检任务状态改变"),
 		/**
+		 * 通知服务商
+		 */
+		IMC_TASK_NOTIFY_FACILITATOR("IMC_TASK_NOTIFY_FACILITATOR",MqTopicEnum.IMC_TOPIC.getTopic(),"巡检任务状态改变"),
+		/**
 		 * 巡检任务子项状态改变
 		 */
 		IMC_ITEM_STATUS_CHANGED("IMC_ITEM_STATUS_CHANGED",MqTopicEnum.IMC_TOPIC.getTopic(),"巡检任务子项状态改变"),

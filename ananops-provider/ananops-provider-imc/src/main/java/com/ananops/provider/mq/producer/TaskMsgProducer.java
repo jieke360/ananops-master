@@ -11,6 +11,7 @@ import com.ananops.provider.mapper.ImcUserTaskMapper;
 import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.domain.ImcUserTask;
 import com.ananops.provider.model.domain.MqMessageData;
+import com.ananops.provider.model.dto.UndistributedImcTaskDto;
 import com.ananops.provider.model.dto.mqDto.ImcSendTaskStatusDto;
 import com.ananops.provider.model.enums.TaskStatusEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -81,5 +82,28 @@ public class TaskMsgProducer {
         String key = RedisKeyUtil.createMqKey(topic, tag, String.valueOf(taskId), msgBody);
         log.info("发送巡检任务状态改变消息，mqSendMsgDto={}",mqSendMsgDto);
         return new MqMessageData(msgBody, topic, tag, key);
+    }
+
+    /**
+     * 通知服务商
+     * @param undistributedImcTaskDto
+     * @return
+     */
+    public MqMessageData sendNotifyMsgToFacilitator(UndistributedImcTaskDto undistributedImcTaskDto){
+        Long facilitatorId = undistributedImcTaskDto.getFacilitatorId();
+        Long taskId =undistributedImcTaskDto.getId();
+        if(null!=facilitatorId){
+            MqSendMsgDto<UndistributedImcTaskDto> mqSendMsgDto = new MqSendMsgDto<>();
+            mqSendMsgDto.setMsgBodyDto(undistributedImcTaskDto);
+            mqSendMsgDto.setUserId(facilitatorId);
+            String msgBody = JSON.toJSONString(mqSendMsgDto);
+            String topic = AliyunMqTopicConstants.MqTopicEnum.IMC_TOPIC.getTopic();
+            String tag = AliyunMqTopicConstants.MqTagEnum.IMC_TASK_NOTIFY_FACILITATOR.getTag();
+            String key = RedisKeyUtil.createMqKey(topic, tag, String.valueOf(taskId), msgBody);
+            log.info("发送巡检任务服务商通知消息，mqSendMsgDto={}",mqSendMsgDto);
+            return new MqMessageData(msgBody, topic, tag, key);
+        }else{
+            throw new BusinessException(ErrorCodeEnum.GL99990100);
+        }
     }
 }
