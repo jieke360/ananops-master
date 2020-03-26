@@ -894,6 +894,15 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     }
 
     /**
+     * 获取全部未分配工程师，且还剩10天截止的巡检任务
+     * @return
+     */
+    @Override
+    public List<UndistributedImcTaskDto> queryAllUndistributedTask(){
+        return imcInspectionTaskMapper.queryAllUndistributedTask();
+    }
+
+    /**
      * 判断巡检任务是否完成
      * @param taskId
      * @return

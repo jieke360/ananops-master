@@ -162,4 +162,22 @@
     WHERE 1=1 AND facilitatorGroupTask.facilitator_group_id = #{facilitatorGroupId} AND task.id = facilitatorGroupTask.task_id AND task.status = #{status}
     AND task.task_name like #{taskName}
   </select>
+  <!--获取全部未分配工程师，并且距离截止日期已不足10天的巡检任务-->
+  <resultMap id="undistributedTaskList" type="com.ananops.provider.model.dto.UndistributedImcTaskDto" extends="BaseResultMap">
+    <result column="endDate" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="remainDays" jdbcType="INTEGER" property="remainDays" />
+  </resultMap>
+  <select id="queryAllUndistributedTask" resultMap="undistributedTaskList">
+    SELECT
+    <include refid="Base_Column_List">
+      <property name="alias" value="task"></property>
+    </include>
+    ,DATE_ADD(item.scheduled_start_time,INTERVAL item.days DAY) as endDate,
+    DATEDIFF(DATE_ADD(item.scheduled_start_time,INTERVAL item.days DAY),NOW()) as remainDays
+    FROM
+    an_imc_inspection_task as task,an_imc_inspection_item as item
+    WHERE 1=1 AND item.status = 1 and item.inspection_task_id = task.id
+    AND DATEDIFF(DATE_ADD(item.scheduled_start_time,INTERVAL item.days DAY),NOW())>=0
+    AND DATEDIFF(DATE_ADD(item.scheduled_start_time,INTERVAL item.days DAY),NOW()) &lt;=10
+  </select>
 </mapper>
