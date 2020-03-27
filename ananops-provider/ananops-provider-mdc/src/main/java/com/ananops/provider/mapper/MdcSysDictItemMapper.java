@@ -15,6 +15,6 @@ import java.util.List;
 @Mapper
 @Component
 public interface MdcSysDictItemMapper extends MyMapper<MdcSysDictItem> {
-    @Select("select * from sys_dict_item where `dict_id`=#{id} and `dr`=0 order by sort")
+    @Select("select * from an_mdc_sys_dict_item where `dict_id`=#{id} and `dr`=0 order by sort")
     List<MdcSysDictItem> selectBygDictId(@Param("id")Long dictId);
 }

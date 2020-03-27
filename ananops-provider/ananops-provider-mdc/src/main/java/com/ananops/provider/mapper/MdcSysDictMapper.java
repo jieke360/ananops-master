@@ -15,9 +15,9 @@ import java.util.List;
 @Mapper
 @Component
 public interface MdcSysDictMapper  extends MyMapper<MdcSysDict> {
-    @Select("select * from sys_dict where `group_id`=-1 and `dr`=0")
+    @Select("select * from an_mdc_sys_dict where `group_id`=-1 and `dr`=0")
     List<MdcSysDict> selectByDefault();
 
-    @Select("select * from sys_dict where `group_id`=#{id} and `dr`=0")
+    @Select("select * from an_mdc_sys_dict where `group_id`=#{id} and `dr`=0")
     List<MdcSysDict> selectBygroupId(@Param("id")Long groupId);
 }
