@@ -8,13 +8,12 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * Created by huqiaoqian on 2020/3/26
+ * Created by huqiaoqian on 2020/3/27
  */
 @Data
 @ApiModel
-public class AddDictItemDto implements Serializable {
-    private static final long serialVersionUID = -604507772499809219L;
-
+public class MdcAddDictItemDto implements Serializable {
+    private static final long serialVersionUID = 7949222645428789509L;
     @ApiModelProperty("字典项id")
     private Long id;
 

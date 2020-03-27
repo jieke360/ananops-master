@@ -2,9 +2,9 @@ package com.ananops.provider.web.frontend;
 
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
-import com.ananops.provider.model.domain.ConsoleDictItem;
-import com.ananops.provider.model.dto.AddDictItemDto;
-import com.ananops.provider.service.ConsoleDictItemService;
+import com.ananops.provider.model.domain.MdcSysDictItem;
+import com.ananops.provider.model.dto.MdcAddDictItemDto;
+import com.ananops.provider.service.MdcDictItemService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
 import io.swagger.annotations.Api;
@@ -17,15 +17,14 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * Created by huqiaoqian on 2020/3/26
+ * Created by huqiaoqian on 2020/3/27
  */
 @RestController
-@RequestMapping(value = "/consoleDictItem",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-@Api(value = "WEB - ConsoleDictItem",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class ConsoleDictItemController extends BaseController {
-
+@RequestMapping(value = "/dictItem", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value = "WEB - MdcDictItemController", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+public class MdcDictItemController extends BaseController {
     @Resource
-    ConsoleDictItemService dictItemService;
+    MdcDictItemService dictItemService;
 
     /**
      * 创建或编辑字典项
@@ -36,7 +35,7 @@ public class ConsoleDictItemController extends BaseController {
      */
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "创建或编辑字典项")
-    public Wrapper<AddDictItemDto> saveInspectionItem(@ApiParam(name = "saveDictItem",value = "创建或编辑字典项")@RequestBody AddDictItemDto addDictItemDto){
+    public Wrapper<MdcAddDictItemDto> saveInspectionItem(@ApiParam(name = "saveDictItem",value = "创建或编辑字典项")@RequestBody MdcAddDictItemDto addDictItemDto){
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         return WrapMapper.ok(dictItemService.saveItem(addDictItemDto,loginAuthDto));
     }
@@ -51,8 +50,8 @@ public class ConsoleDictItemController extends BaseController {
      */
     @GetMapping(value = "/getDictItemListByDictId")
     @ApiOperation(httpMethod = "GET",value = "根据字典库id获取字典项列表")
-    public Wrapper<List<ConsoleDictItem>> getDictItemListByDictId(@RequestParam("dictId") Long dictId){
-        List<ConsoleDictItem> dictItemList=dictItemService.getDictItemListByDictId(dictId);
+    public Wrapper<List<MdcSysDictItem>> getDictItemListByDictId(@RequestParam("dictId") Long dictId){
+        List<MdcSysDictItem> dictItemList=dictItemService.getDictItemListByDictId(dictId);
         return WrapMapper.ok(dictItemList);
     }
 
@@ -65,10 +64,9 @@ public class ConsoleDictItemController extends BaseController {
      */
     @PostMapping(value = "/deleteDictItemByItemDictId/{itemId}")
     @ApiOperation(httpMethod = "POST",value = "根据字典库id删除字典库及其所属字典项")
-    public Wrapper<ConsoleDictItem> deleteDictByDictId(@PathVariable Long itemId) {
+    public Wrapper<MdcSysDictItem> deleteDictByDictId(@PathVariable Long itemId) {
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         return WrapMapper.ok(dictItemService.deleteDictItemByItemId(itemId,loginAuthDto));
     }
-
 
 }

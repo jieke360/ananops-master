@@ -589,7 +589,7 @@ public enum ErrorCodeEnum {
 	/**
 	 * Mdc 10021024 error code enum.
 	 */
-	MDC10021024(10021024, "商品编码不能为空"),
+	MDC10021028(10021024, "商品编码不能为空"),
 
 	/**
 	 * Mdc 10023001 error code enum.
@@ -613,6 +613,14 @@ public enum ErrorCodeEnum {
 	 * Mdc 10021023 error code enum.
 	 */
 	MDC10021023(10021023, "删除商品信息失败, productId=%s"),
+
+	MDC10021024(10021024,"不存在此字典库，dictId=%s"),
+
+	MDC10021025(10021025,"不存在此字典项，dictItemId=%s"),
+
+	MDC10021026(10021026,"字典库id不能是空"),
+
+	MDC10021027(10021027,"字典项id不能是空"),
 	/**
 	 * Omc 10031001 error code enum.
 	 */
@@ -958,16 +966,7 @@ public enum ErrorCodeEnum {
 
 	WEBSOCKET10100002(10100002,"查无此消息"),
 
-	/**
-	 * Console error code enum 1011
-	 */
-	CONSOLE10110000(10110000,"不存在此字典库，dictId=%s"),
 
-	CONSOLE10110001(10110001,"不存在此字典项，dictItemId=%s"),
-
-	CONSOLE10110002(10110002,"字典库id不能是空"),
-
-	CONSOLE10110003(10110003,"字典项id不能是空"),
 	;
 	private int code;
 	private String msg;

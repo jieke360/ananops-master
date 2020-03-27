@@ -7,12 +7,12 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * Created by huqiaoqian on 2020/3/26
+ * Created by huqiaoqian on 2020/3/27
  */
 @Data
 @ApiModel
-public class AddDictDto implements Serializable {
-    private static final long serialVersionUID = -2110934650993998583L;
+public class MdcAddDictDto implements Serializable {
+    private static final long serialVersionUID = 6008944267115633917L;
 
     @ApiModelProperty("字典库ID")
     private Long id;

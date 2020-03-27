@@ -4,26 +4,29 @@ import com.ananops.core.mybatis.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Table;
 
+/**
+ * Created by huqiaoqian on 2020/3/27
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Table(name = "sys_dict_item")
-public class ConsoleDictItem  extends BaseEntity {
-
-
-    private static final long serialVersionUID = 6738298482999665625L;
-    @Column(name = "dict_id")
-    private Long dictId;
-
-    private Long sort;
-
-    private String code;
+@Table(name = "an_mdc_sys_dict")
+public class MdcSysDict extends BaseEntity {
+    private static final long serialVersionUID = -5041275675556841474L;
+    @Column(name = "dict_level")
+    private String dictLevel;
 
     /**
-     * 公司组织Id
+     * 状态
+     */
+    private String status;
+
+    private String mark;
+
+    /**
+     * 如果为-1，表示都能查看
      */
     @Column(name = "group_id")
     private Long groupId;
@@ -34,6 +37,7 @@ public class ConsoleDictItem  extends BaseEntity {
     private String dr;
 
 
+
     @Column(name = "create_by")
     private String createBy;
 
@@ -41,15 +45,7 @@ public class ConsoleDictItem  extends BaseEntity {
     @Column(name = "update_by")
     private String updateBy;
 
-    private BigDecimal latitude;
-
-    private BigDecimal longitude;
-
-
 
     private String name;
-
-    private String mark;
-
 
 }
