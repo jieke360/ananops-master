@@ -111,8 +111,7 @@ public class UacUserFeignClient extends BaseController implements UacUserFeignAp
             e.printStackTrace();
         }
         uacUserService.saveUacUser(uacUser, loginAuthDto);
-        UacUser result = uacUserService.selectOne(uacUser);
-        return WrapMapper.ok(result.getId());
+        return WrapMapper.ok(userInfoDto.getId());
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.ananops.base.dto.CheckValidDto;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
-import com.ananops.provider.mapper.SpcCompanyEngineerMapper;
 import com.ananops.provider.mapper.SpcCompanyMapper;
 import com.ananops.provider.mapper.SpcEngineerMapper;
 import com.ananops.provider.model.domain.SpcCompany;
@@ -15,7 +14,6 @@ import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.group.CompanyDto;
-import com.ananops.provider.model.dto.group.GroupBindUserApiDto;
 import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.model.dto.oss.OptBatchGetUrlRequest;
 import com.ananops.provider.model.dto.oss.OptUploadFileReqDto;
@@ -34,7 +32,6 @@ import com.ananops.provider.service.SpcEngineerService;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.xiaoleilu.hutool.io.FileTypeUtil;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -53,7 +50,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -82,6 +78,9 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
 
     @Resource
     private UacGroupFeignApi uacGroupFeignApi;
+
+    @Resource
+    private UacGroupBindUserFeignApi uacGroupBindUserFeignApi;
 
     @Resource
     private OpcOssFeignApi opcOssFeignApi;
@@ -437,13 +436,19 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         // 校验保存信息
         validateCompanyVo(engineerVo);
 
+        // 获取该工程师所属组织id
+        Long groupId = uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();
+
         UserInfoDto userInfoDto = new UserInfoDto();
-        userInfoDto.setId(userId);
         try {
             BeanUtils.copyProperties(userInfoDto, engineerVo);
         } catch (Exception e) {
             logger.error("服务商Dto与用户组Dto属性拷贝异常");
             e.printStackTrace();
+        }
+        userInfoDto.setId(userId);
+        if (groupId != null) {
+            userInfoDto.setGroupId(groupId);
         }
         Long uacUserId = uacUserFeignApi.userSave(userInfoDto).getResult();
 
@@ -451,20 +456,16 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         if (!StringUtils.isEmpty(engineerId) && !StringUtils.isEmpty(uacUserId)) {
             Date row = new Date();
             // 封装更新工程师的信息
-            spcEngineer.setId(engineerId);
-            spcEngineer.setUserId(userId);
-            spcEngineer.setUpdateTime(row);
-            spcEngineer.setLastOperatorId(loginAuthDto.getUserId());
-            spcEngineer.setLastOperator(loginAuthDto.getLoginName());
             try {
                 BeanUtils.copyProperties(spcEngineer, engineerVo);
             } catch (Exception e) {
                 logger.error("工程师Dto与用户Dto属性拷贝异常");
                 e.printStackTrace();
             }
+            spcEngineer.setId(engineerId);
+            spcEngineer.setUserId(userId);
+            spcEngineer.setUpdateInfo(loginAuthDto);
               //这个地方应该是完善工程师的信息，而不是注册
-//            logger.info("注册工程师. spcEngineer={}", spcEngineer);
-//            spcEngineerMapper.insertSelective(spcEngineer);
             logger.info("完善工程师信息. spcEngineer={}", spcEngineer);
             spcEngineerMapper.updateByPrimaryKeySelective(spcEngineer);
         }
@@ -485,7 +486,7 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         if (spcEngineer.getTitleCePhoto() != null) {
             attachmentIds.add(Long.parseLong(spcEngineer.getTitleCePhoto()));
         }
-        if(attachmentIds!=null) {
+        if(PublicUtil.isNotEmpty(attachmentIds)) {
             OptAttachmentUpdateReqDto optAttachmentUpdateReqDto = new OptAttachmentUpdateReqDto();
             optAttachmentUpdateReqDto.setAttachmentIds(attachmentIds);
             optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);

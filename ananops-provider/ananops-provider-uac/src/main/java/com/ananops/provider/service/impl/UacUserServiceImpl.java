@@ -291,7 +291,7 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 			}
 
 			// 1.更新用户信息
-			int updateInt = uacUserMapper.updateUacUser(user);
+			int updateInt = uacUserMapper.updateByPrimaryKeySelective(user);
 			if (updateInt < 1) {
 				throw new UacBizException(ErrorCodeEnum.UAC10011026, user.getId());
 			}
