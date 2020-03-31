@@ -55,7 +55,6 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
     @Override
     @ApiOperation(httpMethod = "POST", value = "编辑用户组")
     public Wrapper<Long> groupSave(@RequestBody GroupSaveDto groupSaveDto) {
-        LoginAuthDto loginAuthDto = super.getLoginAuthDto();
         logger.info("groupSave - 注册或更新组织. groupSaveDto={}", groupSaveDto);
         UacGroup uacGroup = new UacGroup();
         try {
@@ -64,9 +63,8 @@ public class UacGroupFeignClient extends BaseController implements UacGroupFeign
             logger.error("用户组Dto与用户组状态传输Dto属性拷贝异常");
             e.printStackTrace();
         }
-        uacGroupService.saveUacGroup(uacGroup, loginAuthDto);
-        UacGroup result = uacGroupService.selectOne(uacGroup);
-        return WrapMapper.ok(result.getId());
+        uacGroupService.saveUacGroup(uacGroup, groupSaveDto.getLoginAuthDto());
+        return WrapMapper.ok(groupSaveDto.getId());
     }
 
     @Override

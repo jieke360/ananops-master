@@ -204,13 +204,17 @@ public class SpcCompanyServiceImpl extends BaseService<SpcCompany> implements Sp
         validateCompanyVo(companyVo);
 
         GroupSaveDto groupSaveDto = new GroupSaveDto();
-        groupSaveDto.setId(groupId);
         try {
             BeanUtils.copyProperties(groupSaveDto, companyVo);
         } catch (Exception e) {
             logger.error("服务商Dto与用户组Dto属性拷贝异常");
             e.printStackTrace();
         }
+        groupSaveDto.setId(groupId);
+        // 公司组织的Pid默认均为1，即挂在安安运维平台下。
+        groupSaveDto.setPid(1L);
+        // 传送当前操作用户
+        groupSaveDto.setLoginAuthDto(loginAuthDto);
         // 更新UAC中组织信息
         uacGroupFeignApi.groupSave(groupSaveDto);
 
