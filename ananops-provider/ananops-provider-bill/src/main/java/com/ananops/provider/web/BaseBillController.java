@@ -35,6 +35,11 @@ public class BaseBillController extends BaseController {
     @Resource
     BaseServiceImpl baseServiceImpl;
 
+    /**
+     * 创建账单
+     * @param billCreateDto
+     * @return
+     */
     @PostMapping(value = "/create")
     @ApiOperation(httpMethod = "POST",value = "创建账单")
     public Wrapper<String> createNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto billCreateDto){
@@ -75,6 +80,11 @@ public class BaseBillController extends BaseController {
         return  WrapMapper.ok("success");
     }
 
+    /**
+     * 用于实时获取创建账单前展示给用户的总金额
+     * @param billCreateDto
+     * @return
+     */
     @PostMapping(value = "/createFakeOrder")
     @ApiOperation(httpMethod = "POST",value = "创建账单")
     public Wrapper<BigDecimal> createFakeNew(@ApiParam(name = "body",value="账单信息") @RequestBody BillCreateDto billCreateDto){
@@ -114,18 +124,55 @@ public class BaseBillController extends BaseController {
         return WrapMapper.ok(devicePrice);
     }
 
+    /**
+     * 一个小方法，用于获取合同ID
+     * @param projectId 项目ID
+     * @return 合同ID
+     */
     public Long getContractId(Long projectId){
         return pmcProjectFeignApi.getProjectByProjectId(projectId).getResult().getContractId();
     }
 
+    /**
+     * 一个小方法，用于获取服务金额
+     * @param contractId 合同ID
+     * @return 服务金额
+     */
     public BigDecimal getServicePrice(Long contractId){
         return pmcContractFeignApi.getContractById(contractId).getResult().getPaymentMoney();
     }
 
+    /**
+     * 根据用户ID获取该用户下所产生的所有账单
+     * @param userId 用户ID
+     * @return 一个包含账单所有信息的LIST
+     */
     @GetMapping(value = "/getAllByUser/{userId}")
     @ApiOperation(httpMethod = "GET",value = "根据用户id获取所有账单")
     public  Wrapper<List<BillDisplayDto>> getAllBillByUserId(@ApiParam(name = "userId",value = "用户id") @RequestParam Long userId){
         return WrapMapper.ok(baseServiceImpl.getAllBillByUserId(userId));
+    }
+
+    /**
+     * 用于通过用户ID获取该用户下的所有已完成账单
+     * @param userId 用户ID
+     * @param state 账单状态
+     * @return 包含已完成账单所有信息的LIST
+     */
+    @GetMapping(value="/getFinishedBillsByUserId/{userId}/{state}")
+    @ApiOperation(httpMethod = "GET",value = "根据用户id获取所有已完成账单")
+    public Wrapper<List<BillDisplayDto>> getBillsByUserIdAndState(@ApiParam(name = "userId",value = "用户id") @RequestParam Long userId,
+                                                         @ApiParam(name = "state",value = "账单状态") @RequestParam String state){
+        return WrapMapper.ok(baseServiceImpl.getBillsByUserIdAndState(userId,state));
+    }
+
+    @GetMapping(value="/getMoneySumByUserIdYearAndMonth/{userId}/{year}/{month}/{length}")
+    @ApiOperation(httpMethod = "GET",value = "根据用户ID、年、月份以及时间跨度来获取账单的统计金额")
+    public Wrapper<Object> getMoneySumByUserIdAndMonth(@ApiParam(name="userId",value="用户id") @RequestParam Long userId,
+                                                  @ApiParam(name="year",value="年份") @RequestParam int year,
+                                                  @ApiParam(name="month",value="月份") @RequestParam int month,
+                                                  @ApiParam(name="length",value="时间跨度") @RequestParam int length){
+        return WrapMapper.ok(baseServiceImpl.getMoneySumByUserIdYearAndMonth(userId, year, month, length));
     }
 
     @GetMapping(value = "/getBillNumByUserId/{userId}")

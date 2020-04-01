@@ -1,5 +1,6 @@
 package com.ananops.provider.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.ananops.provider.mapper.BmcBillMapper;
 import com.ananops.provider.model.domain.BmcBill;
 import com.ananops.provider.model.dto.BillCreateDto;
@@ -151,6 +152,65 @@ public class BaseServiceImpl implements BaseService {
         }
         billDisplayDtoList.sort(BillDisplayDto.Comparators.TIME);
         return billDisplayDtoList;
+    }
+
+    public List<BillDisplayDto> getBillsByUserIdAndState(Long userId, String state){
+        Example example = new Example(BmcBill.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",userId);
+        List<BmcBill> bmcBills = bmcBillMapper.selectByExample(example);
+        List<BillDisplayDto> billDisplayDtoList = new ArrayList<>();
+        if(bmcBills != null){
+            for(BmcBill bmcBill : bmcBills){
+                BillDisplayDto billDisplayDto = new BillDisplayDto();
+                if (!bmcBill.getState().equals(state)){
+                    continue;
+                }
+                try{
+                    BeanUtils.copyProperties(bmcBill,billDisplayDto);
+                }catch (Exception e){
+                    log.error("账单BaseBill与账单展示billDisplayDto属性拷贝异常");
+                    e.printStackTrace();
+                }
+                billDisplayDtoList.add(billDisplayDto);
+
+            }
+        }
+        billDisplayDtoList.sort(BillDisplayDto.Comparators.TIME);
+        return billDisplayDtoList;
+    }
+
+    public Object getMoneySumByUserIdYearAndMonth(Long userId, int year, int month, int length){
+        Example example = new Example(BmcBill.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",userId);
+        List<BmcBill> bmcBills = bmcBillMapper.selectByExample(example);
+        BigDecimal[] moneySums = new BigDecimal[length];
+        if (bmcBills == null){
+            log.error("bmcBills list is null!");
+        }
+        assert bmcBills != null;
+        int calcYear = year;
+        int calcMonth = month;
+        for (int i = 0;i<length;i++){
+            BigDecimal moneySum = new BigDecimal(0);
+            for (BmcBill bmcBill:bmcBills){
+                Date billDate = new Date();
+                billDate.setTime(bmcBill.getTime());
+                int billYear = billDate.getYear()+1900;
+                int billMonth = billDate.getMonth()+1;
+                if (billYear == calcYear && billMonth == calcMonth){
+                    moneySum = moneySum.add(bmcBill.getAmount());
+                }
+            }
+            calcMonth--;
+            if (calcMonth == 0){
+                calcMonth = 12;
+                calcYear--;
+            }
+            moneySums[length-i-1] = moneySum;
+        }
+        return JSON.toJSON(moneySums);
     }
 
     public BillDisplayDto getOneBillById(Long id) {
