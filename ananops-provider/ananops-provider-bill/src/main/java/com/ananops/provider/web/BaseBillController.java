@@ -154,25 +154,33 @@ public class BaseBillController extends BaseController {
     }
 
     /**
-     * 用于通过用户ID获取该用户下的所有已完成账单
+     * 用于通过用户ID和账单状态获取该用户下的所有已完成账单
      * @param userId 用户ID
      * @param state 账单状态
      * @return 包含已完成账单所有信息的LIST
      */
-    @GetMapping(value="/getFinishedBillsByUserId/{userId}/{state}")
-    @ApiOperation(httpMethod = "GET",value = "根据用户id获取所有已完成账单")
+    @GetMapping(value="/getBillsByUserIdAndState/{userId}/{state}")
+    @ApiOperation(httpMethod = "GET",value = "根据用户id和账单状态获取所有已完成账单")
     public Wrapper<List<BillDisplayDto>> getBillsByUserIdAndState(@ApiParam(name = "userId",value = "用户id") @RequestParam Long userId,
                                                          @ApiParam(name = "state",value = "账单状态") @RequestParam String state){
         return WrapMapper.ok(baseServiceImpl.getBillsByUserIdAndState(userId,state));
     }
 
-    @GetMapping(value="/getMoneySumByUserIdYearAndMonth/{userId}/{year}/{month}/{length}")
+    @GetMapping(value="/getMoneySumByUserIdYearMonthAndLength/{userId}/{year}/{month}/{length}")
     @ApiOperation(httpMethod = "GET",value = "根据用户ID、年、月份以及时间跨度来获取账单的统计金额")
-    public Wrapper<Object> getMoneySumByUserIdAndMonth(@ApiParam(name="userId",value="用户id") @RequestParam Long userId,
+    public Wrapper<Object> getMoneySumByUserIdMonthAndLength(@ApiParam(name="userId",value="用户id") @RequestParam Long userId,
                                                   @ApiParam(name="year",value="年份") @RequestParam int year,
                                                   @ApiParam(name="month",value="月份") @RequestParam int month,
                                                   @ApiParam(name="length",value="时间跨度") @RequestParam int length){
-        return WrapMapper.ok(baseServiceImpl.getMoneySumByUserIdYearAndMonth(userId, year, month, length));
+        return WrapMapper.ok(baseServiceImpl.getMoneySumByUserIdYearMonthAndLength(userId, year, month, length));
+    }
+
+    @GetMapping(value="/getMoneySumByUserIdYearAndMonth/{userId}/{year}/{month}")
+    @ApiOperation(httpMethod = "GET",value = "根据用户ID、年、月份来获取账单的统计金额")
+    public Wrapper<BigDecimal> getMoneySumByUserIdAndMonth(@ApiParam(name="userId",value="用户id") @RequestParam Long userId,
+                                                             @ApiParam(name="year",value="年份") @RequestParam int year,
+                                                             @ApiParam(name="month",value="月份") @RequestParam int month){
+        return WrapMapper.ok(baseServiceImpl.getMoneySumByUserIdYearAndMonth(userId, year, month));
     }
 
     @GetMapping(value = "/getBillNumByUserId/{userId}")

@@ -22,6 +22,7 @@ import tk.mybatis.mapper.entity.Example;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -180,12 +181,12 @@ public class BaseServiceImpl implements BaseService {
         return billDisplayDtoList;
     }
 
-    public Object getMoneySumByUserIdYearAndMonth(Long userId, int year, int month, int length){
+    public Object getMoneySumByUserIdYearMonthAndLength(Long userId, int year, int month, int length){
         Example example = new Example(BmcBill.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId",userId);
         List<BmcBill> bmcBills = bmcBillMapper.selectByExample(example);
-        BigDecimal[] moneySums = new BigDecimal[length];
+        List<BigDecimal> moneySums = new ArrayList<>();
         if (bmcBills == null){
             log.error("bmcBills list is null!");
         }
@@ -208,9 +209,32 @@ public class BaseServiceImpl implements BaseService {
                 calcMonth = 12;
                 calcYear--;
             }
-            moneySums[length-i-1] = moneySum;
+            moneySums.add(moneySum);
         }
+        Collections.reverse(moneySums);
         return JSON.toJSON(moneySums);
+    }
+
+    public BigDecimal getMoneySumByUserIdYearAndMonth(Long userId, int year, int month){
+        Example example = new Example(BmcBill.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",userId);
+        List<BmcBill> bmcBills = bmcBillMapper.selectByExample(example);
+        if (bmcBills == null){
+            log.error("bmcBills list is null!");
+        }
+        assert bmcBills != null;
+        BigDecimal moneySum = new BigDecimal(0);
+        for (BmcBill bmcBill:bmcBills){
+            Date billDate = new Date();
+            billDate.setTime(bmcBill.getTime());
+            int billYear = billDate.getYear()+1900;
+            int billMonth = billDate.getMonth()+1;
+            if (billYear == year && billMonth == month){
+                moneySum = moneySum.add(bmcBill.getAmount());
+            }
+        }
+        return moneySum;
     }
 
     public BillDisplayDto getOneBillById(Long id) {
