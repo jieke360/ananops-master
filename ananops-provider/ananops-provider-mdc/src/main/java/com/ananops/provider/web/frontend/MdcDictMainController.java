@@ -72,7 +72,7 @@ public class MdcDictMainController extends BaseController {
 	 */
 	@GetMapping(value = "/getDictListByUserId")
 	@ApiOperation(httpMethod = "GET",value = "根据用户id获取字典库列表")
-	public Wrapper<List<MdcGetDictDto>> getDictListByUserId(@ApiParam(name = "userId",value = "用户id")@RequestParam("userId") Long userId) {
+	public Wrapper<List<MdcSysDict>> getDictListByUserId(@ApiParam(name = "userId",value = "用户id")@RequestParam("userId") Long userId) {
 
 		return WrapMapper.ok(mdcDictService.getDictListByUserId(userId));
 	}

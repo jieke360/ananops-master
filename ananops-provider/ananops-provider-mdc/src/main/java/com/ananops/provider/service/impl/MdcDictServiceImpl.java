@@ -17,9 +17,7 @@ import com.ananops.provider.model.dto.MdcAddDictDto;
 import com.ananops.provider.model.dto.MdcGetDictDto;
 import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
 import com.google.common.collect.Lists;
-import com.ananops.PublicUtil;
 import com.ananops.base.dto.LoginAuthDto;
-import com.ananops.base.dto.UpdateStatusDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
 import com.ananops.core.support.TreeUtils;
@@ -29,7 +27,6 @@ import com.ananops.provider.model.domain.MdcDict;
 import com.ananops.provider.model.enums.MdcDictStatusEnum;
 import com.ananops.provider.model.vo.MdcDictVo;
 import com.ananops.provider.service.MdcDictService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -103,31 +100,23 @@ public class MdcDictServiceImpl extends BaseService<MdcDict> implements MdcDictS
 	}
 
 	@Override
-	public List<MdcGetDictDto> getDictListByUserId(Long userId) {
+	public List<MdcSysDict> getDictListByUserId(Long userId) {
 		Long groupId=null;
 		if(uacGroupBindUserFeignApi.getCompanyGroupIdByUserId(userId).getResult()!=null){
 			groupId=uacGroupBindUserFeignApi.getCompanyGroupIdByUserId(userId).getResult();
 		}
-		List<MdcGetDictDto> dictDtoList=new ArrayList<>();
+		List<MdcSysDict> res = new ArrayList<>();
 		List<MdcSysDict> dictList=dictMapper.selectByDefault();
 		if (dictList.size()>0){
-			for (MdcSysDict dict:dictList){
-				MdcGetDictDto dictDto=new MdcGetDictDto();
-				dictDto.setDict(dict);
-				dictDtoList.add(dictDto);
-			}
+			res.addAll(dictList);
 		}
 		if (groupId!=null){
 			List<MdcSysDict> dictList1=dictMapper.selectBygroupId(groupId);
 			if(dictList1.size()>0){
-				for (MdcSysDict dict:dictList1){
-					MdcGetDictDto dictDto=new MdcGetDictDto();
-					dictDto.setDict(dict);
-					dictDtoList.add(dictDto);
-				}
+				res.addAll(dictList1);
 			}
 		}
-		return dictDtoList;
+		return res;
 	}
 
 	@Override

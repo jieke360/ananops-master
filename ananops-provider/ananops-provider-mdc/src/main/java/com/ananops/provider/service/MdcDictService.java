@@ -46,7 +46,7 @@ public interface MdcDictService extends IService<MdcDict> {
 	 * @param userId
 	 * @return
 	 */
-	List<MdcGetDictDto> getDictListByUserId(Long userId);
+	List<MdcSysDict> getDictListByUserId(Long userId);
 
 	/**
 	 * 根据字典库id删除字典库及其所属字典项
