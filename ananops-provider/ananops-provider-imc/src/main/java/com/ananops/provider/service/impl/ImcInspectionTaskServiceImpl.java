@@ -11,13 +11,17 @@ import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.group.CompanyDto;
+import com.ananops.provider.model.dto.group.GroupSaveDto;
+import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.model.exceptions.UacBizException;
 import com.ananops.provider.model.service.UacGroupFeignApi;
+import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.mq.producer.TaskMsgProducer;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
+import com.ananops.provider.service.PmcProjectFeignApi;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
@@ -27,10 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by rongshuai on 2019/11/27 19:31
@@ -64,6 +65,12 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
 
     @Resource
     private UacGroupFeignApi uacGroupFeignApi;
+
+    @Resource
+    private UacUserFeignApi uacUserFeignApi;
+
+    @Resource
+    private PmcProjectFeignApi pmcProjectFeignApi;
 
     /**
      * 插入一条巡检任务记录
@@ -498,16 +505,16 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             switch (role){
                 case 1://如果角色是甲方用户
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByUserIdAndStatusAndTaskName(taskQueryDto.getUserId(),taskQueryDto.getStatus(),taskName);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    return new PageInfo<>(transform(imcInspectionTaskList));
                 case 2://如果角色是服务商
                     imcInspectionTaskList = this.getTaskByFacilitatorIdAndStatus(taskQueryDto);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    return new PageInfo<>(transform(imcInspectionTaskList));
                 case 3://如果角色是服务商管理员
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndStatusAndTaskName(taskQueryDto.getUserId(),taskQueryDto.getStatus(),taskName);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    return new PageInfo<>(transform(imcInspectionTaskList));
                 case 4://如果角色是服务商组织
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatusAndTaskName(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskQueryDto.getStatus(),taskName);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    return new PageInfo<>(transform(imcInspectionTaskList));
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
@@ -515,16 +522,16 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             switch (role){
                 case 1://如果角色是甲方用户
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByUserIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
-                    return new PageInfo<>(imcInspectionTaskList);
+                    return new PageInfo<>(transform(imcInspectionTaskList));
                 case 2://如果角色是服务商
                     imcInspectionTaskList = this.getTaskByFacilitatorIdAndStatus(taskQueryDto);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    return new PageInfo<>(transform(imcInspectionTaskList));
                 case 3://如果角色是服务商管理员
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
-                    return new PageInfo<>(imcInspectionTaskList);
+                    return new PageInfo<>(transform(imcInspectionTaskList));
                 case 4://如果角色是服务商组织
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatus(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskQueryDto.getStatus());
-                    return new PageInfo<>(imcInspectionTaskList);
+                    return new PageInfo<>(transform(imcInspectionTaskList));
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
@@ -941,5 +948,49 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         }
         Long facilitatorId = companyDto.getId();
         return facilitatorId;
+    }
+
+    private List<ImcInspectionTaskDto> transform(List<ImcInspectionTask> inspectionTasks) {
+        List<ImcInspectionTaskDto> imcInspectionTaskDtos = new ArrayList<>();
+        Map<Long, String> nameMap = new HashMap<>();
+        for (ImcInspectionTask imcInspectionTask : inspectionTasks) {
+            ImcInspectionTaskDto inspectionTaskDto = new ImcInspectionTaskDto();
+            BeanUtils.copyProperties(imcInspectionTask,inspectionTaskDto);
+            // 转换用户名
+            Long principalId = imcInspectionTask.getPrincipalId();
+            if (nameMap.containsKey(principalId)) {
+                inspectionTaskDto.setPrincipalName(nameMap.get(principalId));
+            } else {
+                UserInfoDto user = uacUserFeignApi.getUacUserById(principalId).getResult();
+                if (user != null) {
+                    nameMap.put(principalId, user.getUserName());
+                    inspectionTaskDto.setPrincipalName(user.getUserName());
+                }
+            }
+            // 转换项目名称
+            Long projectId = imcInspectionTask.getProjectId();
+            if (nameMap.containsKey(projectId)) {
+                inspectionTaskDto.setProjectName(nameMap.get(projectId));
+            } else {
+                PmcProjectDto projectDto = pmcProjectFeignApi.getProjectByProjectId(projectId).getResult();
+                if (projectDto != null) {
+                    nameMap.put(projectId, projectDto.getProjectName());
+                    inspectionTaskDto.setProjectName(projectDto.getProjectName());
+                }
+            }
+            // 转换服务商名称
+            Long facilitatorId = imcInspectionTask.getFacilitatorId();
+            if (nameMap.containsKey(facilitatorId)) {
+                inspectionTaskDto.setFacilitatorName(nameMap.get(facilitatorId));
+            } else {
+                GroupSaveDto groupSaveDto = uacGroupFeignApi.getUacGroupById(facilitatorId).getResult();
+                if (groupSaveDto != null) {
+                    nameMap.put(facilitatorId, groupSaveDto.getGroupName());
+                    inspectionTaskDto.setFacilitatorName(groupSaveDto.getGroupName());
+                }
+            }
+            imcInspectionTaskDtos.add(inspectionTaskDto);
+        }
+        return imcInspectionTaskDtos;
     }
 }
