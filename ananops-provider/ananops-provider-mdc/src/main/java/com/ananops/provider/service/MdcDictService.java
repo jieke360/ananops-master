@@ -55,6 +55,15 @@ public interface MdcDictService extends IService<MdcDict> {
 	 */
 	MdcSysDict deleteDictByDictId(Long dictId, LoginAuthDto loginAuthDto);
 
+	/**
+	 * 根据字典库Id查询字典库信息
+	 *
+	 * @param id
+	 *
+	 * @return
+	 */
+	MdcSysDict getMdcDictById(Long dictId);
+
 //	/**
 //	 * 根据ID获取字典信息.
 //	 *

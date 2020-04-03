@@ -92,22 +92,20 @@ public class MdcDictMainController extends BaseController {
 	}
 
 
-//	/**
-//	 * 根据ID获取字典信息.
-//	 *
-//	 * @param id the id
-//	 *
-//	 * @return the wrapper
-//	 */
-//	@PostMapping(value = "/queryById/{id}")
-//	@ApiOperation(httpMethod = "POST", value = "根据ID获取字典信息")
-//	public Wrapper<MdcDictVo> queryDictVoById(@ApiParam(name = "id", value = "字典id") @PathVariable Long id) {
-//		logger.info("根据Id查询字典信息, dictId={}", id);
-//		MdcDictVo mdcDictVo = mdcDictService.getMdcDictVoById(id);
-//		return WrapMapper.ok(mdcDictVo);
-//	}
-//
-//
+	/**
+	 * 根据ID获取字典信息.
+	 *
+	 * @param id the id
+	 *
+	 * @return the wrapper
+	 */
+	@PostMapping(value = "/queryById/{dictId}")
+	@ApiOperation(httpMethod = "POST", value = "根据ID获取字典信息")
+	public Wrapper<MdcSysDict> queryMdcDictById(@ApiParam(name = "dictId", value = "字典id") @PathVariable Long dictId) {
+		logger.info("根据Id查询字典信息, dictId={}", dictId);
+		return WrapMapper.ok(mdcDictService.getMdcDictById(dictId));
+	}
+
 //	/**
 //	 * 根据id修改字典的禁用状态
 //	 *

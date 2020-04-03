@@ -141,6 +141,14 @@ public class MdcDictServiceImpl extends BaseService<MdcDict> implements MdcDictS
 		return dict;
 	}
 
+	@Override
+	public MdcSysDict getMdcDictById(Long dictId) {
+		if (dictId == null){
+			throw new BusinessException(ErrorCodeEnum.MDC10021024,dictId);
+		}
+		return dictMapper.selectByPrimaryKey(dictId);
+	}
+
 	private void copyPropertiesWithIgnoreNullProperties(Object source, Object target){
 		String[] ignore = getNullPropertyNames(source);
 		BeanUtils.copyProperties(source, target, ignore);
