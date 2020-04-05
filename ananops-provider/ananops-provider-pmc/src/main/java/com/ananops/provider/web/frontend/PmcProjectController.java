@@ -83,6 +83,14 @@ public class PmcProjectController extends BaseController {
         return WrapMapper.ok(pmcProjectList);
     }
 
+    @PostMapping("/getProjectByContractId/{contractId}")
+    @ApiOperation(httpMethod = "POST",value = "根据合同Id获取项目列表")
+    public Wrapper<List<PmcProject>> getProjectByContractId(@PathVariable Long contractId){
+        log.info("根据合同Id获取项目列表,contractId={}",contractId);
+        List<PmcProject> pmcProjectList  = pmcProjectService.getProjectByContractId(contractId);
+        return WrapMapper.ok(pmcProjectList);
+    }
+
     @PostMapping("/addProUser")
     @ApiOperation(httpMethod = "POST",value = "添加项目用户关联信息")
     public Wrapper addProUser(@RequestBody PmcProjectUser pmcProjectUser){

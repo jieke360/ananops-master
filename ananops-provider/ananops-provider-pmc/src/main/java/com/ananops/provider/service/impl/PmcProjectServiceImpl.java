@@ -125,6 +125,11 @@ public class PmcProjectServiceImpl extends BaseService<PmcProject> implements Pm
     }
 
     @Override
+    public List<PmcProject> getProjectByContractId(Long contractId) {
+        return pmcProjectMapper.getProjectByContractId(contractId);
+    }
+
+    @Override
     public void deleteProjectById(Long projectId) {
         if (pmcInspectTaskService.getTasksByProjectId(projectId) != null) {
             pmcInspectTaskService.deleteTaskByProjectId(projectId); //删除级联的巡检任务
