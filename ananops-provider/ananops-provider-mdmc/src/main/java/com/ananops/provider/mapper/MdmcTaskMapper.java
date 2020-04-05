@@ -1,6 +1,7 @@
 package com.ananops.provider.mapper;
 
 import com.ananops.core.mybatis.MyMapper;
+import com.ananops.provider.model.domain.MdmcFileTaskStatus;
 import com.ananops.provider.model.domain.MdmcTask;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -30,5 +31,7 @@ public interface MdmcTaskMapper extends MyMapper<MdmcTask> {
     @Select("select * from task where `status`>4 and `status`<>14 and `maintainer_id`=#{id} order by created_time desc")
     List<MdmcTask> selectByMantainerId(@Param("id")Long userId);
 
+    @Select("select * from an_mdmc_file_task_status where `status`=#{status} and `task_id`=#{id}")
+    List<MdmcFileTaskStatus> selectByTaskIdAndStatus(@Param("id")Long taskId, @Param("status")Integer status);
 
 }

@@ -151,6 +151,12 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             taskMapper.insert(task);
             logger.info("新创建一条维修任务记录成功[OK], 创建维修任务子项中...");
             if (attachmentIdList != null && !attachmentIdList.isEmpty()){
+                List<MdmcFileTaskStatus> fileTaskStatusList=taskMapper.selectByTaskIdAndStatus(taskId,2);
+                if(fileTaskStatusList.size()>0){
+                    for(MdmcFileTaskStatus file:fileTaskStatusList){
+                        fileTaskStatusMapper.deleteByPrimaryKey(file);
+                    }
+                }
                 Long refNo=super.generateId();
                 for(Long attachmentId:attachmentIdList){
                     OptAttachmentUpdateReqDto optAttachmentUpdateReqDto=new OptAttachmentUpdateReqDto();
@@ -205,6 +211,12 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
             Integer objectType = task.getObjectType();
 
             if (attachmentIdList!=null && !attachmentIdList.isEmpty()){
+                List<MdmcFileTaskStatus> fileTaskStatusList1=taskMapper.selectByTaskIdAndStatus(taskId,status);
+                if(fileTaskStatusList1.size()>0){
+                    for(MdmcFileTaskStatus file:fileTaskStatusList1){
+                        fileTaskStatusMapper.deleteByPrimaryKey(file);
+                    }
+                }
                 Long refNo1=super.generateId();
 
                 for (Long attachmentId:attachmentIdList){
