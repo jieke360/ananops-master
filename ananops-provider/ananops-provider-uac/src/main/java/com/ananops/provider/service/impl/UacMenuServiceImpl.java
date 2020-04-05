@@ -381,12 +381,12 @@ public class UacMenuServiceImpl extends BaseService<UacMenu> implements UacMenuS
 		List<UacMenu> menuList = uacMenuMapper.listMenuListByRoleId(roleId);
 		List<UacMenu> addMenuList = Lists.newArrayList();
 
-		if (PublicUtil.isNotEmpty(menuList)) {
-			for (UacMenu uacMenu : menuList) {
-				getMenuList(addMenuList, uacMenu.getPid());
-			}
-		}
-		menuList.addAll(addMenuList);
+//		if (PublicUtil.isNotEmpty(menuList)) {
+//			for (UacMenu uacMenu : menuList) {
+//				getMenuList(addMenuList, uacMenu.getPid());
+//			}
+//		}
+//		menuList.addAll(addMenuList);
 		return new ArrayList<>(new HashSet<>(menuList));
 	}
 
