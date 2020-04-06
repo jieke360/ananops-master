@@ -147,7 +147,7 @@ public class UacMenuServiceImpl extends BaseService<UacMenu> implements UacMenuS
 				throw new UacBizException(ErrorCodeEnum.UAC10013002, menuId);
 			}
 
-			menu.setStatus(UacMenuStatusEnum.ENABLE.getType());
+//			menu.setStatus(UacMenuStatusEnum.ENABLE.getType());
 			menu.setCreatorId(loginAuthDto.getUserId());
 			menu.setCreator(loginAuthDto.getUserName());
 			menu.setLastOperatorId(loginAuthDto.getUserId());
