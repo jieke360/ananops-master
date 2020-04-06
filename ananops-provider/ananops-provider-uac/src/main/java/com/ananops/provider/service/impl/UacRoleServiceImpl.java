@@ -372,10 +372,10 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
             logger.error("找不到角色信息 roleId={}", roleId);
             throw new UacBizException(ErrorCodeEnum.UAC10012005, roleId);
         }
-        //查询平台创建的所有菜单，不包括其它角色自定义菜单
+        //返回所有菜单，不包括其它角色自定义菜单和禁用菜单
         List<UacMenu> uacMenus = Lists.newArrayList();
         UacMenu uacMenuQuery = new UacMenu();
-//        uacMenuQuery.setStatus(UacMenuStatusEnum.ENABLE.getType());
+        uacMenuQuery.setStatus(UacMenuStatusEnum.ENABLE.getType());
         uacMenuQuery.setApplicationId(1L);
         //菜单排序
         uacMenuQuery.setOrderBy(" level asc,number asc");
@@ -393,7 +393,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
 
         List<MenuVo> tree = TreeUtil.getChildMenuVos(menuVoList, 0L);
 
-        // 获取角色已经绑定的菜单和按钮权限Id集合
+        // 获取该角色已经绑定的菜单和按钮权限Id集合
         List<Long> checkedAuthList = uacActionService.getCheckedActionList(roleId);
 		List<Long> checkedMenuList = uacActionService.getCheckedMenuList(roleId);
 
@@ -411,7 +411,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
         for (UacMenu uacMenu : uacMenus) {
             menuVo = new MenuVo();
             BeanUtils.copyProperties(uacMenu, menuVo);
-            menuVo.setRemark("menu");
+            menuVo.setRemark("菜单");
             menuVoList.add(menuVo);
         }
         if (PublicUtil.isNotEmpty(uacActions)) {
@@ -423,7 +423,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
                 menuVo.setPid(uacAction.getMenuId());
                 menuVo.setUrl(uacAction.getUrl());
                 menuVo.setStatus(uacAction.getStatus());
-                menuVo.setRemark("action");
+                menuVo.setRemark("按钮");
                 menuVoList.add(menuVo);
             }
         }

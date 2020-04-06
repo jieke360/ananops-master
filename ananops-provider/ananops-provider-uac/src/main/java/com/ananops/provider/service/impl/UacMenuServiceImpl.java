@@ -62,11 +62,11 @@ public class UacMenuServiceImpl extends BaseService<UacMenu> implements UacMenuS
 		List<MenuVo> menuVoList = Lists.newArrayList();
 		List<UacMenu> menuList = Lists.newArrayList();
 		Set<UacMenu> menuSet = Sets.newHashSet();
-		// 如果是admin则返回所有的菜单
+		// 如果是admin则返回所有的菜单，包括禁用的菜单
 		if (userId == 1L) {
 			// 1.1 查询该用户下所有的菜单列表
 			UacMenu uacMenuQuery = new UacMenu();
-			uacMenuQuery.setStatus(UacMenuStatusEnum.ENABLE.getType());
+//			uacMenuQuery.setStatus(UacMenuStatusEnum.ENABLE.getType());
 			uacMenuQuery.setApplicationId(applicationId);
 			//菜单排序
 			uacMenuQuery.setOrderBy(" level asc,number asc");

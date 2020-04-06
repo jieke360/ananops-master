@@ -69,7 +69,7 @@ public class MenuVo implements Serializable {
 	 * 序号
 	 */
 	@ApiModelProperty("序号")
-	private String number;
+	private Integer number;
 
 	/**
 	 * 备注(研发中心)
