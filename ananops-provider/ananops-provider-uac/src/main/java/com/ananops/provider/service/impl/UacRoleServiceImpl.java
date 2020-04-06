@@ -375,7 +375,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
         //查询平台创建的所有菜单，不包括其它角色自定义菜单
         List<UacMenu> uacMenus = Lists.newArrayList();
         UacMenu uacMenuQuery = new UacMenu();
-        uacMenuQuery.setStatus(UacMenuStatusEnum.ENABLE.getType());
+//        uacMenuQuery.setStatus(UacMenuStatusEnum.ENABLE.getType());
         uacMenuQuery.setApplicationId(1L);
         //菜单排序
         uacMenuQuery.setOrderBy(" level asc,number asc");
@@ -422,6 +422,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
                 menuVo.setMenuCode(uacAction.getActionCode());
                 menuVo.setPid(uacAction.getMenuId());
                 menuVo.setUrl(uacAction.getUrl());
+                menuVo.setStatus(uacAction.getStatus());
                 menuVo.setRemark("action");
                 menuVoList.add(menuVo);
             }

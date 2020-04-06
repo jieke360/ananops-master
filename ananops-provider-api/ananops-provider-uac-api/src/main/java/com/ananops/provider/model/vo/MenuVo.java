@@ -77,6 +77,9 @@ public class MenuVo implements Serializable {
 	@ApiModelProperty("备注(研发中心)")
 	private String remark;
 
+	@ApiModelProperty("状态")
+	private String status;
+
 	/**
 	 * 删除标识
 	 */
