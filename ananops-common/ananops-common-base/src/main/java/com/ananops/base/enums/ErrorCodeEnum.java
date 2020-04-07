@@ -540,6 +540,9 @@ public enum ErrorCodeEnum {
 	 */
 	UAC10015012(10015012, "组织类型不能为空, groupType=%s"),
 
+	UAC10015013(10015013, "更新权限信息失败, apiId=%s"),
+
+
 
 	/**
 	 * Mdc 10021001 error code enum.
