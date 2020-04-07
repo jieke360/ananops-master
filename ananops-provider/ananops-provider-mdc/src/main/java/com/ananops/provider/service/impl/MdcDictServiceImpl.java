@@ -14,8 +14,8 @@ import com.ananops.provider.mapper.MdcSysDictMapper;
 import com.ananops.provider.model.domain.MdcSysDict;
 import com.ananops.provider.model.domain.MdcSysDictItem;
 import com.ananops.provider.model.dto.MdcAddDictDto;
-import com.ananops.provider.model.dto.MdcGetDictDto;
 import com.ananops.provider.model.service.UacGroupBindUserFeignApi;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
@@ -32,6 +32,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class MdcDictServiceImpl extends BaseService<MdcDict> implements MdcDictS
 		MdcSysDict dict = new MdcSysDict();
 		copyPropertiesWithIgnoreNullProperties(addDictDto,dict);
 		dict.setUpdateInfo(loginAuthDto);
-
+		Preconditions.checkArgument(!StringUtils.isEmpty(addDictDto.getName()), ErrorCodeEnum.MDC10021033.msg());
 
 		if(addDictDto.getId()==null){
 			logger.info("创建一条字典库记录... CrateDictInfo = {}", addDictDto);
@@ -72,6 +73,11 @@ public class MdcDictServiceImpl extends BaseService<MdcDict> implements MdcDictS
 			Long dictId = super.generateId();
 			dict.setId(dictId);
 			dict.setDr(String.valueOf(0));
+			if (addDictDto.getGroupId() == null && loginAuthDto.getGroupId().equals(1L)) {
+				dict.setGroupId(-1L);
+			} else if(addDictDto.getGroupId() == null) {
+				dict.setGroupId(loginAuthDto.getGroupId());
+			}
 			dictMapper.insert(dict);
 			BeanUtils.copyProperties(dict,addDictDto);
 		} else {
@@ -81,6 +87,10 @@ public class MdcDictServiceImpl extends BaseService<MdcDict> implements MdcDictS
 			MdcSysDict t =dictMapper.selectByPrimaryKey(dictId);
 			if (t == null) {
 				throw new BusinessException(ErrorCodeEnum.MDC10021024,dictId);
+			}
+
+			if (!loginAuthDto.getGroupId().equals(1L) && t.getGroupId().equals(-1L)) {
+				throw new BusinessException(ErrorCodeEnum.MDC10021031,dictId);
 			}
 
 			// 更新字典库信息
@@ -127,10 +137,13 @@ public class MdcDictServiceImpl extends BaseService<MdcDict> implements MdcDictS
 		if (dict==null){
 			throw new BusinessException(ErrorCodeEnum.MDC10021024,dictId);
 		}
+		if (!loginAuthDto.getGroupId().equals(1L) && "system".equals(dict.getDictLevel())) {
+			throw new BusinessException(ErrorCodeEnum.MDC10021029,dictId);
+		}
 		dict.setUpdateInfo(loginAuthDto);
 		dict.setDr(String.valueOf(1));
 		dictMapper.updateByPrimaryKeySelective(dict);
-		List<MdcSysDictItem> dictItemList=dictItemMapper.selectBygDictId(dictId);
+		List<MdcSysDictItem> dictItemList=dictItemMapper.selectBygDictId(dictId, loginAuthDto.getUserId());
 		if (dictItemList.size()>0){
 			for (MdcSysDictItem dictItem:dictItemList){
 				dictItem.setUpdateInfo(loginAuthDto);

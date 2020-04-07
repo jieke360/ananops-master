@@ -274,8 +274,8 @@ public class MdmcTaskController extends BaseController {
     @GetMapping(value = "/getTroubleTypeListAndAddressList")
     @ApiOperation(httpMethod = "GET",value = "填写工单时根据不同客户返回故障类型列表和故障位置列表")
     public Wrapper<MdmcAddTroubleInfoDto> getTroubleTypeListAndAddressList(@ApiParam(name = "userId",value = "用户id")@RequestParam("userId") Long userId) {
-
-        return WrapMapper.ok(taskService.getTroubleList(userId));
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        return WrapMapper.ok(taskService.getTroubleList(userId, loginAuthDto));
     }
 
     /**

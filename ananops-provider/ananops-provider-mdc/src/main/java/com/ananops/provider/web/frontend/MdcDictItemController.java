@@ -4,6 +4,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.MdcSysDictItem;
 import com.ananops.provider.model.dto.MdcAddDictItemDto;
+import com.ananops.provider.model.dto.SysDictItemsDto;
 import com.ananops.provider.service.MdcDictItemService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
@@ -51,8 +52,22 @@ public class MdcDictItemController extends BaseController {
     @GetMapping(value = "/getDictItemListByDictId")
     @ApiOperation(httpMethod = "GET",value = "根据字典库id获取字典项列表")
     public Wrapper<List<MdcSysDictItem>> getDictItemListByDictId(@RequestParam("dictId") Long dictId){
-        List<MdcSysDictItem> dictItemList=dictItemService.getDictItemListByDictId(dictId);
+        LoginAuthDto loginAuthDto = super.getLoginAuthDto();
+        List<MdcSysDictItem> dictItemList=dictItemService.getDictItemListByDictId(dictId, loginAuthDto.getUserId());
         return WrapMapper.ok(dictItemList);
+    }
+
+    /**
+     * 为维修工单页面提供准备数据
+     *
+     * @return 返回
+     */
+    @GetMapping(value = "/getSysDictItemList")
+    @ApiOperation(httpMethod = "GET",value = "为维修工单页面提供准备数据")
+    public Wrapper<SysDictItemsDto> getSysDictItemList(){
+        LoginAuthDto loginAuthDto = super.getLoginAuthDto();
+        SysDictItemsDto sysDictItemsDto = dictItemService.getSysDictItems(loginAuthDto.getUserId());
+        return WrapMapper.ok(sysDictItemsDto);
     }
 
     /**

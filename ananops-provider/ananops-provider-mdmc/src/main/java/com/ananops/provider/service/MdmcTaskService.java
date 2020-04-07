@@ -55,7 +55,7 @@ public interface MdmcTaskService extends IService<MdmcTask> {
      * @param userId
      * @return
      */
-    MdmcAddTroubleInfoDto getTroubleList(Long userId);
+    MdmcAddTroubleInfoDto getTroubleList(Long userId, LoginAuthDto loginAuthDto);
     /**
      * 工程师提交维修信息
      * @param mdmcTaskDto

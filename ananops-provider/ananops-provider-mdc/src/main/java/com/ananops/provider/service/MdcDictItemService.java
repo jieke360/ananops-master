@@ -4,6 +4,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.MdcSysDictItem;
 import com.ananops.provider.model.dto.MdcAddDictItemDto;
+import com.ananops.provider.model.dto.SysDictItemsDto;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface MdcDictItemService extends IService<MdcSysDictItem> {
      * @param dictId
      * @return
      */
-    List<MdcSysDictItem> getDictItemListByDictId(Long dictId);
+    List<MdcSysDictItem> getDictItemListByDictId(Long dictId, Long userId);
 
     /**
      * 根据字典项id删除字典项
@@ -32,4 +33,13 @@ public interface MdcDictItemService extends IService<MdcSysDictItem> {
      * @return
      */
     MdcSysDictItem deleteDictItemByItemId(Long itemId,LoginAuthDto loginAuthDto);
+
+    /**
+     * 为维修工单页面提供准备数据
+     *
+     * @param userId 用户Id
+     *
+     * @return
+     */
+    SysDictItemsDto getSysDictItems(Long userId);
 }

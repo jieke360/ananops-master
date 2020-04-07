@@ -363,8 +363,14 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
     }
 
     @Override
-    public MdmcAddTroubleInfoDto getTroubleList(Long userId) {
-        Long groupId=uacGroupBindUserFeignApi.getCompanyGroupIdByUserId(userId).getResult();
+    public MdmcAddTroubleInfoDto getTroubleList(Long userId, LoginAuthDto loginAuthDto) {
+        if (userId == null) {
+            userId = loginAuthDto.getUserId();
+        }
+        // 获取该用户所属的公司ID
+        Long groupId = uacGroupBindUserFeignApi.getCompanyGroupIdByUserId(userId).getResult();
+        // 查询系统所需字典项内容
+
         MdmcAddTroubleInfoDto mdmcAddTroubleInfoDto=new MdmcAddTroubleInfoDto();
         mdmcAddTroubleInfoDto.setUserId(userId);
         Example example=new Example(MdmcTroubleAddress.class);
@@ -373,11 +379,11 @@ public class MdmcTaskServiceImpl extends BaseService<MdmcTask> implements MdmcTa
         List<MdmcTroubleAddressDto> troubleAddressDtoList=new ArrayList<>();
         List<MdmcTroubleAddress> troubleAddressList=troubleAddressMapper.selectByExample(example);
         if (troubleAddressList!=null){
-        for (MdmcTroubleAddress troubleAddress:troubleAddressList){
-            MdmcTroubleAddressDto troubleAddressDto=new MdmcTroubleAddressDto();
-            BeanUtils.copyProperties(troubleAddress,troubleAddressDto);
-            troubleAddressDtoList.add(troubleAddressDto);
-        }
+            for (MdmcTroubleAddress troubleAddress:troubleAddressList){
+                MdmcTroubleAddressDto troubleAddressDto=new MdmcTroubleAddressDto();
+                BeanUtils.copyProperties(troubleAddress,troubleAddressDto);
+                troubleAddressDtoList.add(troubleAddressDto);
+            }
         }
         else {
             List<MdmcTroubleAddress> troubleAddressList1=troubleAddressMapper.selectAll();
