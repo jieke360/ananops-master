@@ -6,6 +6,8 @@ import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.UacApi;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 /**
  * Created By ChengHao On 2020/4/7
  */
@@ -20,12 +22,19 @@ public interface UacApiService extends IService<UacApi> {
     void saveApi(UacApi uacApi, LoginAuthDto loginAuthDto);
 
     /**
-     * 查询 api 列表
+     * 分页查询 api 列表
      *
      * @param baseQuery
      * @return
      */
     PageInfo getApiList(BaseQuery baseQuery);
+
+    /**
+     * 查询 apis
+     *
+     * @return
+     */
+    List<UacApi> getApi();
 
     /**
      * 查看 api
@@ -42,4 +51,6 @@ public interface UacApiService extends IService<UacApi> {
      * @return
      */
     int deleteApiById(Long id);
+
+
 }
