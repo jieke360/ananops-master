@@ -10,8 +10,11 @@ import com.ananops.provider.manager.ImcTaskManager;
 import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
+import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.dto.group.GroupSaveDto;
+import com.ananops.provider.model.dto.oss.*;
 import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 import com.ananops.provider.model.enums.TaskStatusEnum;
@@ -21,9 +24,17 @@ import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.mq.producer.TaskMsgProducer;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
+import com.ananops.provider.service.OpcOssFeignApi;
 import com.ananops.provider.service.PmcProjectFeignApi;
+import com.ananops.provider.utils.PdfUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.LineSeparator;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -31,7 +42,15 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by rongshuai on 2019/11/27 19:31
@@ -71,6 +90,12 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
 
     @Resource
     private PmcProjectFeignApi pmcProjectFeignApi;
+
+    @Resource
+    private OpcOssFeignApi opcOssFeignApi;
+
+    @Resource
+    private ImcTaskReportMapper imcTaskReportMapper;
 
     /**
      * 插入一条巡检任务记录
@@ -215,6 +240,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             //如果当前状态处于巡检完成等待甲方负责人确认的阶段
             //更新巡检完成的实际时间
             imcInspectionTask.setActualFinishTime(new Date(System.currentTimeMillis()));
+        }else if(TaskStatusEnum.INSPECTION_OVER.getStatusNum()==status){
+            //如果巡检结束，自动生成附件
+            this.generateImcTaskPdf(taskId,loginAuthDto);
         }
         imcInspectionTask.setStatus(status);
         imcInspectionTask.setUpdateInfo(loginAuthDto);
@@ -910,6 +938,218 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     }
 
     /**
+     * 获取巡检任务报表信息
+     * @param taskId
+     * @return
+     */
+    @Override
+    public OptUploadFileRespDto generateImcTaskPdf(Long taskId,LoginAuthDto loginAuthDto){
+        ImcInspectionTask task = imcInspectionTaskMapper.selectByPrimaryKey(taskId);
+        if(null==task) throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+        List<ImcInspectionTask> list = new ArrayList<>();
+        list.add(task);
+        //获取巡检任务信息
+        ImcInspectionTaskDto imcInspectionTaskDto = this.transform(list).get(0);
+        //获取巡检任务对应的全部子项信息
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("inspectionTaskId",taskId);
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example);
+        List<ImcInspectionItemDto> imcInspectionItemDtos = this.itemTransform(imcInspectionItems);
+        ImcTaskReportDto imcTaskReportDto = new ImcTaskReportDto();
+        imcTaskReportDto.setImcInspectionTaskDto(imcInspectionTaskDto);
+        imcTaskReportDto.setImcInspectionItemDtos(imcInspectionItemDtos);
+        return createPdf(imcTaskReportDto,loginAuthDto);
+    }
+
+    private OptUploadFileRespDto createPdf(ImcTaskReportDto imcTaskReportDto,LoginAuthDto loginAuthDto){
+        OptUploadFileRespDto optUploadFileRespDto = new OptUploadFileRespDto();
+        ImcInspectionTaskDto imcInspectionTaskDto = imcTaskReportDto.getImcInspectionTaskDto();
+        List<ImcInspectionItemDto> imcInspectionItemDtos = imcTaskReportDto.getImcInspectionItemDtos();
+        logger.info("imcTaskReportDto={}",imcTaskReportDto);
+        //创建文档对象
+        Document document = new Document(PageSize.A4);
+        try{
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document,out);
+            document.open();
+            document.addTitle("安安运维巡检报告");
+            //基本文字格式
+            BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+            Font titlefont = new Font(bfChinese, 16, Font.BOLD);
+            Font headfont = new Font(bfChinese, 14, Font.BOLD);
+            Font keyfont = new Font(bfChinese, 10, Font.BOLD);
+            Font textfont = new Font(bfChinese, 10, Font.NORMAL);
+
+            //日期转化工具
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            // 段落
+            Paragraph paragraph = PdfUtil.createParagraph("安安运维巡检报告");
+
+            //直线
+            Paragraph p1 = new Paragraph();
+            p1.add(new Chunk(new LineSeparator()));
+
+            document.add(paragraph);
+            document.add(p1);
+
+            //增添巡检任务表单
+            PdfPTable table = PdfUtil.createTable(2,10);
+            table.addCell(PdfUtil.createCell("巡检报告：",headfont, Element.ALIGN_LEFT, 6, false));
+
+            table.addCell(PdfUtil.createCell("巡检任务Id", textfont));
+
+            table.addCell(PdfUtil.createCell(String.valueOf(imcInspectionTaskDto.getId()), textfont));
+
+            table.addCell(PdfUtil.createCell("巡检任务名称", textfont));
+
+            table.addCell(PdfUtil.createCell(imcInspectionTaskDto.getTaskName(), textfont));
+
+            table.addCell(PdfUtil.createCell("巡检类型", textfont));
+
+            table.addCell(PdfUtil.createCell(imcInspectionTaskDto.getInspectionType()==1? "计划巡检":"临时巡检", textfont));
+
+            table.addCell(PdfUtil.createCell("项目名称", textfont));
+
+            table.addCell(PdfUtil.createCell(imcInspectionTaskDto.getProjectName(), textfont));
+
+            table.addCell(PdfUtil.createCell("项目负责人姓名", textfont));
+
+            table.addCell(PdfUtil.createCell(imcInspectionTaskDto.getPrincipalName(), textfont));
+
+            table.addCell(PdfUtil.createCell("服务商名称", textfont));
+
+            table.addCell(PdfUtil.createCell(imcInspectionTaskDto.getFacilitatorName(), textfont));
+
+            table.addCell(PdfUtil.createCell("计划起始时间", textfont));
+
+            table.addCell(PdfUtil.createCell(formatter.format(imcInspectionTaskDto.getScheduledStartTime()), textfont));
+
+            table.addCell(PdfUtil.createCell("巡检周期", textfont));
+
+            table.addCell(PdfUtil.createCell(String.valueOf(imcInspectionTaskDto.getFrequency()), textfont));
+
+            table.addCell(PdfUtil.createCell("实际完成时间", textfont));
+
+            table.addCell(PdfUtil.createCell(formatter.format(imcInspectionTaskDto.getActualFinishTime()), textfont));
+
+            table.addCell(PdfUtil.createCell("巡检任务内容", textfont));
+
+            table.addCell(PdfUtil.createCell(imcInspectionTaskDto.getContent(), textfont));
+
+            document.add(table);
+
+            //添加巡检任务子项表
+            ImcInspectionItemDto imcInspectionItemDto;
+            for(int i=0;i<imcInspectionItemDtos.size();i++){
+                imcInspectionItemDto = imcInspectionItemDtos.get(i);
+                table = PdfUtil.createTable(2,10);
+                table.addCell(PdfUtil.createCell("巡检子项" + (i+1) + ":",headfont, Element.ALIGN_LEFT, 6, false));
+
+                table.addCell(PdfUtil.createCell("巡检子项Id", textfont));
+
+                table.addCell(PdfUtil.createCell(String.valueOf(imcInspectionItemDto.getId()), textfont));
+
+                table.addCell(PdfUtil.createCell("巡检子项名称", textfont));
+
+                table.addCell(PdfUtil.createCell(imcInspectionItemDto.getItemName(), textfont));
+
+                table.addCell(PdfUtil.createCell("巡检网点", textfont));
+
+                table.addCell(PdfUtil.createCell(imcInspectionItemDto.getLocation(), textfont));
+
+                table.addCell(PdfUtil.createCell("计划起始时间", textfont));
+
+                table.addCell(PdfUtil.createCell(formatter.format(imcInspectionItemDto.getScheduledStartTime()), textfont));
+
+                table.addCell(PdfUtil.createCell("计划完成天数", textfont));
+
+                table.addCell(PdfUtil.createCell(String.valueOf(imcInspectionItemDto.getDays()), textfont));
+
+                table.addCell(PdfUtil.createCell("实际起始时间", textfont));
+
+                table.addCell(PdfUtil.createCell(formatter.format(imcInspectionItemDto.getActualStartTime()), textfont));
+
+                table.addCell(PdfUtil.createCell("实际完成时间", textfont));
+
+                table.addCell(PdfUtil.createCell(formatter.format(imcInspectionItemDto.getActualFinishTime()), textfont));
+
+                table.addCell(PdfUtil.createCell("维修工姓名", textfont));
+
+                table.addCell(PdfUtil.createCell(imcInspectionItemDto.getMaintainerName(), textfont));
+
+                table.addCell(PdfUtil.createCell("巡检子项内容", textfont));
+
+                table.addCell(PdfUtil.createCell(imcInspectionItemDto.getDescription(), textfont));
+
+                table.addCell(PdfUtil.createCell("巡检结果描述", textfont));
+
+                table.addCell(PdfUtil.createCell(imcInspectionItemDto.getResult(), textfont));
+
+                document.add(table);
+            }
+            document.close();
+
+            String filename = "巡检任务报表" + imcInspectionTaskDto.getId() + ".pdf";
+
+            optUploadFileRespDto = uploadReportPdf(out,filename,"pdf",loginAuthDto,imcInspectionTaskDto.getId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            document.close();
+        }
+        return optUploadFileRespDto;
+    }
+
+    public OptUploadFileRespDto uploadReportPdf(ByteArrayOutputStream out,String fileName,String fileType,LoginAuthDto loginAuthDto,Long taskId){
+        Long userId = loginAuthDto.getUserId();
+        String userName = loginAuthDto.getUserName();
+        OptUploadFileReqDto optUploadFileReqDto = new OptUploadFileReqDto();
+        // 将上传文件的字节流封装到到Dto对象中
+        OptUploadFileByteInfoReqDto optUploadFileByteInfoReqDto = new OptUploadFileByteInfoReqDto();
+        optUploadFileByteInfoReqDto.setFileByteArray(out.toByteArray());
+        optUploadFileByteInfoReqDto.setFileName(fileName);
+        optUploadFileByteInfoReqDto.setFileType(fileType);
+        optUploadFileReqDto.setUploadFileByteInfoReqDto(optUploadFileByteInfoReqDto);
+
+        // 设置不同文件路径来区分pdf
+        optUploadFileReqDto.setFilePath("ananops/imc/"+ fileName + "/");
+        optUploadFileReqDto.setUserId(userId);
+        optUploadFileReqDto.setUserName(userName);
+        optUploadFileReqDto.setBucketName("ananops");
+        optUploadFileReqDto.setFileType("pdf");
+        OptUploadFileRespDto optUploadFileRespDto = opcOssFeignApi.uploadFile(optUploadFileReqDto).getResult();
+        logger.info("optUploadFileRespDto={}",optUploadFileRespDto);
+        //为附件添加工单号
+        Long attachmentId = optUploadFileRespDto.getAttachmentId();
+        OptAttachmentUpdateReqDto optAttachmentUpdateReqDto = new OptAttachmentUpdateReqDto();
+        optAttachmentUpdateReqDto.setId(attachmentId);
+        optAttachmentUpdateReqDto.setLoginAuthDto(loginAuthDto);
+        optAttachmentUpdateReqDto.setRefNo(String.valueOf(taskId));
+        String result = opcOssFeignApi.updateAttachmentInfo(optAttachmentUpdateReqDto).getResult();
+        logger.info("bindResult={}",result);
+        //为报表和巡检任务建立绑定关系
+        ImcTaskReport imcTaskReport = new ImcTaskReport();
+        imcTaskReport.setAttachmentId(attachmentId);
+        imcTaskReport.setTaskId(taskId);
+        imcTaskReport.setRefNo(String.valueOf(taskId));
+        imcTaskReportMapper.insert(imcTaskReport);
+        logger.info("imcTaskReport={}",imcTaskReport);
+        return optUploadFileRespDto;
+    }
+
+    @Override
+    public List<ElementImgUrlDto> getReportUrlList(Long taskId){
+        ImcTaskReport imcTaskReport = imcTaskReportMapper.selectByPrimaryKey(taskId);
+        if(null == imcTaskReport) throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+        String refNo = imcTaskReport.getRefNo();
+        OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
+        optBatchGetUrlRequest.setRefNo(refNo);
+        optBatchGetUrlRequest.setEncrypt(true);
+        return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+    }
+    /**
      * 判断巡检任务是否完成
      * @param taskId
      * @return
@@ -992,5 +1232,28 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             imcInspectionTaskDtos.add(inspectionTaskDto);
         }
         return imcInspectionTaskDtos;
+    }
+
+
+    private List<ImcInspectionItemDto> itemTransform(List<ImcInspectionItem> imcInspectionItems){
+        List<ImcInspectionItemDto> imcInspectionItemDtos = new ArrayList<>();
+        Map<Long,String> nameMap = new HashMap<>();
+        for(ImcInspectionItem imcInspectionItem:imcInspectionItems){
+            ImcInspectionItemDto imcInspectionItemDto = new ImcInspectionItemDto();
+            BeanUtils.copyProperties(imcInspectionItem,imcInspectionItemDto);
+            Long maintainerId = imcInspectionItem.getMaintainerId();
+            //转换工程师名称
+            if(nameMap.containsKey(maintainerId)){
+                imcInspectionItemDto.setMaintainerName(nameMap.get(maintainerId));
+            }else{
+                UserInfoDto user = uacUserFeignApi.getUacUserById(maintainerId).getResult();
+                if (user != null) {
+                    nameMap.put(maintainerId, user.getUserName());
+                    imcInspectionItemDto.setMaintainerName(user.getUserName());
+                }
+            }
+            imcInspectionItemDtos.add(imcInspectionItemDto);
+        }
+        return imcInspectionItemDtos;
     }
 }

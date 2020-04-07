@@ -6,6 +6,8 @@ import com.ananops.core.support.BaseController;
 import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.ananops.provider.model.vo.TaskLogVo;
 import com.ananops.provider.service.ImcInspectionTaskLogService;
 import com.ananops.provider.service.ImcInspectionTaskService;
@@ -211,4 +213,11 @@ public class ImcInspectionTaskController extends BaseController {
     public Wrapper<List<UndistributedImcTaskDto>> getUndistributeTaskList(){
         return WrapMapper.ok(imcInspectionTaskService.queryAllUndistributedTask());
     }
+
+    @GetMapping(value = "/getImcTaskReport/{taskId}")
+    @ApiOperation(httpMethod = "GET",value = "获取巡检任务报告")
+    public Wrapper<List<ElementImgUrlDto>> getImcTaskReport(@PathVariable Long taskId){
+        return WrapMapper.ok(imcInspectionTaskService.getReportUrlList(taskId));
+    }
+
 }

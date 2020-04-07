@@ -5,8 +5,11 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.ImcInspectionTask;
 import com.ananops.provider.model.dto.*;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 import com.github.pagehelper.PageInfo;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -72,6 +75,10 @@ public interface ImcInspectionTaskService extends IService<ImcInspectionTask> {
     Integer getItemNumberByTaskId(Long taskId);
 
     List<UndistributedImcTaskDto> queryAllUndistributedTask();
+
+    OptUploadFileRespDto generateImcTaskPdf(Long taskId, LoginAuthDto loginAuthDto);
+
+    List<ElementImgUrlDto> getReportUrlList(Long taskId);
 //    List<ImcInspectionTask> getTaskByFacilitatorId(TaskQueryDto taskQueryDto);//根据服务商id查询对应的巡检任务
 //
 //    List<ImcInspectionTask> getTaskByFacilitatorIdAndStatus(TaskQueryDto taskQueryDto);//根据服务商id查询指定状态的巡检任务
