@@ -121,6 +121,7 @@ public class UacMenuServiceImpl extends BaseService<UacMenu> implements UacMenuS
 			BeanUtils.copyProperties(uacMenu, menuVo);
 			menuVo.setUrl(uacMenu.getUrl());
 			menuVo.setMenuName(uacMenu.getMenuName());
+			menuVo.setKey(uacMenu.getId());
 			menuVoList.add(menuVo);
 		}
 		return menuVoList;

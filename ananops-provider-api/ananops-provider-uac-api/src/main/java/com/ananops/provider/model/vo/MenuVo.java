@@ -91,4 +91,6 @@ public class MenuVo implements Serializable {
 
 	private boolean hasMenu = false;
 
+	private Long key;
+
 }
