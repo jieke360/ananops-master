@@ -2,8 +2,8 @@ package com.ananops.provider.service.impl;
 
 import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.constant.RoleConstant;
-import com.ananops.provider.model.vo.GroupZtreeVo;
-import com.ananops.provider.model.vo.UserVo;
+import com.ananops.provider.model.dto.role.QueryGroupRoleDto;
+import com.ananops.provider.model.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Preconditions;
@@ -28,8 +28,6 @@ import com.ananops.provider.model.enums.UacUserSourceEnum;
 import com.ananops.provider.model.enums.UacUserStatusEnum;
 import com.ananops.provider.model.enums.UacUserTypeEnum;
 import com.ananops.provider.model.exceptions.UacBizException;
-import com.ananops.provider.model.vo.MenuVo;
-import com.ananops.provider.model.vo.UserBindRoleVo;
 import com.ananops.provider.mq.producer.EmailProducer;
 import com.ananops.provider.service.*;
 import com.ananops.provider.utils.Md5Util;
@@ -847,11 +845,30 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		}
 		List<BindRoleDto> bindRoleDtoList = new ArrayList<>();
 		if(roleId == 1L){
+			// 查询所有角色，只是把超级用户管理员禁止掉。
 			bindRoleDtoList = uacUserMapper.selectAllNeedBindRole(GlobalConstant.Sys.SUPER_MANAGER_ROLE_ID);
 		}else{
-			UacRole uacRole = uacRoleMapper.selectByPrimaryKey(roleId);
-			// 查询该用户可以绑定的角色
-			bindRoleDtoList = uacUserMapper.selectAllPermitBindRole(uacRole.getVersion()+1);
+//			UacRole uacRole = uacRoleMapper.selectByPrimaryKey(roleId);
+//			// 查询该用户可以绑定的角色
+//			bindRoleDtoList = uacUserMapper.selectAllPermitBindRole(uacRole.getVersion()+1);
+			// 默认该用户是公司管理员账号，所以其groupId就是公司组织Id
+			Long groupId = uacUser.getGroupId();
+			Long companyId = uacGroupService.getCompanyInfo(groupId).getId();
+			// 获取该Group下的所有角色；
+			List<Long> roleIds = uacRoleGroupService.listByGroupId(companyId);
+			if (!roleIds.isEmpty()) {
+				List<BindRoleDto> res = new ArrayList<>();
+				List<RoleVo> roleVos = uacRoleMapper.queryRoleListWithBatchRoleId(roleIds);
+				for (RoleVo roleVo : roleVos) {
+					BindRoleDto bindRoleDto = new BindRoleDto();
+					bindRoleDto.setDisabled(false);
+					bindRoleDto.setRoleId(roleVo.getId());
+					bindRoleDto.setRoleCode(roleVo.getRoleCode());
+					bindRoleDto.setRoleName(roleVo.getRoleName());
+					res.add(bindRoleDto);
+				}
+				bindRoleDtoList = res;
+			}
 		}
 
 		// 该角色已经绑定的用户

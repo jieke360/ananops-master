@@ -147,22 +147,24 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
         role.setUpdateInfo(loginAuthDto);
         if (role.isNew()) {
             Long roleId = super.generateId();
-            List<UacRoleUser> roles = uacRoleUserService.queryByUserId(loginAuthDto.getUserId());
-            if (roles != null) {
-                Iterator<UacRoleUser> iterator = roles.iterator();
-                if (iterator.hasNext()) {
-                    UacRoleUser uacRoleUser = iterator.next();
-                    UacRole uacRoleQuery = new UacRole();
-                    uacRoleQuery.setId(uacRoleUser.getRoleId());
-                    UacRole uacRole = uacRoleMapper.selectOne(uacRoleQuery);
-                    role.setVersion(uacRole.getVersion() + 1);
-                }
-            }
+//            List<UacRoleUser> roles = uacRoleUserService.queryByUserId(loginAuthDto.getUserId());
+//            if (roles != null) {
+//                Iterator<UacRoleUser> iterator = roles.iterator();
+//                if (iterator.hasNext()) {
+//                    UacRoleUser uacRoleUser = iterator.next();
+//                    UacRole uacRoleQuery = new UacRole();
+//                    uacRoleQuery.setId(uacRoleUser.getRoleId());
+//                    UacRole uacRole = uacRoleMapper.selectOne(uacRoleQuery);
+//                    role.setVersion(uacRole.getVersion() + 1);
+//                }
+//            }
+            role.setVersion(0);
             role.setId(roleId);
             uacRoleMapper.insertSelective(role);
             // 插入组织和角色的关系
             UacRoleGroup uacRoleGroup = new UacRoleGroup();
             uacRoleGroup.setRoleId(roleId);
+            // 这里默认登录账号的组织就是公司组织，意味着公司管理员账号都只能挂在公司组织下。
             uacRoleGroup.setGroupId(loginAuthDto.getGroupId());
             uacRoleGroupService.save(uacRoleGroup);
         } else {
