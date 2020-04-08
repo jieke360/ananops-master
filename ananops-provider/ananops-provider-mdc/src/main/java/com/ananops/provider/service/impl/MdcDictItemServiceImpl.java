@@ -142,7 +142,7 @@ public class MdcDictItemServiceImpl extends BaseService<MdcSysDictItem> implemen
 
         SysDictItemsDto sysDictItemsDto = new SysDictItemsDto();
         // 该用户所属的公司ID
-        Long groupId = uacGroupBindUserFeignApi.getGroupIdByUserId(userId).getResult();
+        Long groupId = uacGroupBindUserFeignApi.getCompanyGroupIdByUserId(userId).getResult();
 
         // 装入故障类型数据子项
         Long troubleTypeDictId = SysDictConstant.SysDictEnum.TROUBLE_TYPE.getId();
