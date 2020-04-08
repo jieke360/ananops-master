@@ -888,6 +888,11 @@ public enum ErrorCodeEnum {
 	 */
 	PMC10081025(10081025, "更新失败, InspectDetailId=%s"),
 
+	/**
+	 * Pmc 10021026 error code enum.
+	 */
+	PMC10081026(10081026, "公司组织Id不能为空"),
+
 	//报警管理 1009
 	/**
 	 * Amc 10091011 error code enum.

@@ -12,6 +12,7 @@ import com.ananops.provider.mapper.PmcProjectUserMapper;
 import com.ananops.provider.model.domain.PmcContract;
 import com.ananops.provider.model.domain.PmcProject;
 import com.ananops.provider.model.domain.PmcProjectUser;
+import com.ananops.provider.model.dto.PmcProReqQueryDto;
 import com.ananops.provider.model.dto.PmcProjectDto;
 import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
@@ -211,5 +212,28 @@ public class PmcProjectServiceImpl extends BaseService<PmcProject> implements Pm
         return pmcProjectMapper.selectCountByExample(example);
     }
 
-
+    @Override
+    public List<PmcProject> getProjectList(PmcProReqQueryDto pmcProReqQueryDto) {
+        if (pmcProReqQueryDto.getGroupId() == null) {
+            throw new PmcBizException(ErrorCodeEnum.PMC10081026);
+        }
+        CompanyDto companyDto = uacGroupFeignApi.getCompanyInfoById(pmcProReqQueryDto.getGroupId()).getResult();
+        //公司ID
+        Long groupId = companyDto.getId();
+        Example example = new Example(PmcProject.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("partyAId", groupId);
+        if (pmcProReqQueryDto.getProjectType() != null) {
+            criteria.andEqualTo("projectType", pmcProReqQueryDto.getProjectType());
+        }
+        Example.Criteria criteria2 = example.createCriteria();
+        criteria2.andEqualTo("partyBId", groupId);
+        if (pmcProReqQueryDto.getProjectType() != null) {
+            criteria2.andEqualTo("projectType", pmcProReqQueryDto.getProjectType());
+        }
+        example.or(criteria2);
+        example.setOrderByClause("created_time desc");
+        List<PmcProject> pmcProjectList = pmcProjectMapper.selectByExample(example);
+        return pmcProjectList;
+    }
 }

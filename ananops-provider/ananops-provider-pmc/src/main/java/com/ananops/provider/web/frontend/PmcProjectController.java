@@ -6,6 +6,7 @@ import com.ananops.core.support.BaseController;
 import com.ananops.core.utils.RequestUtil;
 import com.ananops.provider.model.domain.PmcProject;
 import com.ananops.provider.model.domain.PmcProjectUser;
+import com.ananops.provider.model.dto.PmcProReqQueryDto;
 import com.ananops.provider.model.dto.PmcProjectDto;
 import com.ananops.provider.service.PmcProjectService;
 import com.ananops.wrapper.WrapMapper;
@@ -57,6 +58,14 @@ public class PmcProjectController extends BaseController {
     @ApiOperation(httpMethod = "POST",value = "获取某个组织的项目列表")
     public Wrapper<List<PmcProject>> getProjectListByGroupId(@PathVariable Long groupId){
         List<PmcProject> pmcProjectList = pmcProjectService.getProjectListByGroupId(groupId);
+        return WrapMapper.ok(pmcProjectList);
+    }
+
+    @PostMapping("/getProjectList")
+    @ApiOperation(httpMethod = "POST",value = "获取某个组织某种类型的项目列表")
+    public Wrapper<List<PmcProject>> getProjectList(@ApiParam(value = "分页排序参数") @RequestBody PmcProReqQueryDto pmcProReqQueryDto){
+        logger.info("获取某个组织某种类型的项目列表: pmcProReqQueryDto={}", pmcProReqQueryDto);
+        List<PmcProject> pmcProjectList = pmcProjectService.getProjectList(pmcProReqQueryDto);
         return WrapMapper.ok(pmcProjectList);
     }
 
