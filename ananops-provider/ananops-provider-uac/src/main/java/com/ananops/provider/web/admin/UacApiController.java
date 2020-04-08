@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Created By ChengHao On 2020/4/7
  */
@@ -41,17 +43,30 @@ public class UacApiController extends BaseController {
     }
 
     /**
-     * 查询 api 列表
+     * 分页查询 api 列表
      *
      * @param baseQuery
      * @return
      */
     @PostMapping("/getApiList")
-    @ApiOperation(httpMethod = "POST", value = "获取Api列表")
+    @ApiOperation(httpMethod = "POST", value = "分页获取Api列表")
     public Wrapper<PageInfo> getApiList(@RequestBody BaseQuery baseQuery) {
         PageInfo pageInfo = uacApiService.getApiList(baseQuery);
         return WrapMapper.ok(pageInfo);
     }
+
+    /**
+     * 查询 apis
+     *
+     * @return
+     */
+    @PostMapping("/getApis")
+    @ApiOperation(httpMethod = "POST", value = "获取Api列表")
+    public Wrapper<List<UacApi>> getApis() {
+        List<UacApi> uacApis = uacApiService.getApi();
+        return WrapMapper.ok(uacApis);
+    }
+
 
     /**
      * 查看 api

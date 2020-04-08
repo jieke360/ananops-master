@@ -48,6 +48,11 @@ public class UacApiServiceImpl extends BaseService<UacApi> implements UacApiServ
     }
 
     @Override
+    public List<UacApi> getApi() {
+        return uacApiMapper.selectAll();
+    }
+
+    @Override
     public UacApi getApiById(Long id) {
         return uacApiMapper.selectByPrimaryKey(id);
     }
@@ -56,4 +61,6 @@ public class UacApiServiceImpl extends BaseService<UacApi> implements UacApiServ
     public int deleteApiById(Long id) {
         return uacApiMapper.deleteByPrimaryKey(id);
     }
+
+
 }
