@@ -217,7 +217,7 @@ public class ImcInspectionTaskController extends BaseController {
     @GetMapping(value = "/getImcTaskReport/{taskId}")
     @ApiOperation(httpMethod = "GET",value = "获取巡检任务报告")
     public Wrapper<List<ElementImgUrlDto>> getImcTaskReport(@PathVariable Long taskId){
-        return WrapMapper.ok(imcInspectionTaskService.getReportUrlList(taskId));
+        return WrapMapper.ok(imcInspectionTaskService.getReportUrlList(taskId,getLoginAuthDto()));
     }
 
 }

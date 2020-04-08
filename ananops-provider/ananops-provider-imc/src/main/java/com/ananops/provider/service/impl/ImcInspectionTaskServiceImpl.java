@@ -27,6 +27,7 @@ import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.provider.service.OpcOssFeignApi;
 import com.ananops.provider.service.PmcProjectFeignApi;
 import com.ananops.provider.utils.PdfUtil;
+import com.ananops.provider.utils.WaterMark;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.itextpdf.text.*;
@@ -971,7 +972,10 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         Document document = new Document(PageSize.A4);
         try{
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            PdfWriter.getInstance(document,out);
+            PdfWriter writer = PdfWriter.getInstance(document,out);
+
+            writer.setPageEvent(new WaterMark("安安运维（北京）科技有限公司"));// 水印
+
             document.open();
             document.addTitle("安安运维巡检报告");
             //基本文字格式
@@ -1089,6 +1093,14 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
 
                 document.add(table);
             }
+
+            // 添加图片
+            Image image = Image.getInstance("classpath:/static/Logo.png");
+            image.setAlignment(Image.ALIGN_CENTER);
+            image.scalePercent(40); //依照比例缩放
+
+            document.add(image);
+
             document.close();
 
             String filename = "巡检任务报表" + imcInspectionTaskDto.getId() + ".pdf";
@@ -1140,9 +1152,12 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     }
 
     @Override
-    public List<ElementImgUrlDto> getReportUrlList(Long taskId){
+    public List<ElementImgUrlDto> getReportUrlList(Long taskId,LoginAuthDto loginAuthDto){
         ImcTaskReport imcTaskReport = imcTaskReportMapper.selectByPrimaryKey(taskId);
-        if(null == imcTaskReport) throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
+        if(null == imcTaskReport){
+            generateImcTaskPdf(taskId,loginAuthDto);
+            imcTaskReport = imcTaskReportMapper.selectByPrimaryKey(taskId);
+        }
         String refNo = imcTaskReport.getRefNo();
         OptBatchGetUrlRequest optBatchGetUrlRequest = new OptBatchGetUrlRequest();
         optBatchGetUrlRequest.setRefNo(refNo);
