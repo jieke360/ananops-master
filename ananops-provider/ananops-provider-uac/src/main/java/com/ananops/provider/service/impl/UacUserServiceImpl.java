@@ -237,13 +237,16 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	@Transactional
 	@Override
 	public int deleteUserById(Long userId) {
+		if (userId == null) {
+			throw new UacBizException(ErrorCodeEnum.UAC10011001);
+		}
 		// 删除用户组织绑定表
 		UacGroupUser deleteUacGroupUser = new UacGroupUser();
 		deleteUacGroupUser.setUserId(userId);
 		uacGroupUserMapper.delete(deleteUacGroupUser);
 		// 删除用户角色绑定表
 		UacRoleUser deleteUacRoleUser = new UacRoleUser();
-		deleteUacGroupUser.setUserId(userId);
+		deleteUacRoleUser.setUserId(userId);
 		uacRoleUserMapper.delete(deleteUacRoleUser);
 		return uacUserMapper.deleteByPrimaryKey(userId);
 	}

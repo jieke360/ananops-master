@@ -579,6 +579,9 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
     @Transactional
     @Override
     public int deleteEngineerById(Long engineerId) {
+        if (engineerId == null) {
+            throw new SpcBizException(ErrorCodeEnum.SPC100850022);
+        }
         // 删除工程师账号在UAC中的记录
         SpcEngineer spcEngineer = spcEngineerMapper.selectByPrimaryKey(engineerId);
         if (spcEngineer == null) {
@@ -591,8 +594,10 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
         spcEngineerCertificateMapper.delete(deleteSpcEngineerCertificate);
         // 删除工程师业绩记录
         SpcEngineerPerformance deleteSpcEngineerPerformance = new SpcEngineerPerformance();
-        deleteSpcEngineerCertificate.setEngineerId(engineerId);
+        deleteSpcEngineerPerformance.setEngineerId(engineerId);
         spcEngineerPerformanceMapper.delete(deleteSpcEngineerPerformance);
+        // 删除工程师在SPC中的记录
+        spcEngineerMapper.deleteByPrimaryKey(engineerId);
         return 1;
     }
 

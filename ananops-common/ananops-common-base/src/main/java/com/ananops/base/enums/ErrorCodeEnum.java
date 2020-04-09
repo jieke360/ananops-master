@@ -951,6 +951,10 @@ public enum ErrorCodeEnum {
 	 * Spc 100850021 error code enum.
 	 */
 	SPC100850021(100850021, "该工程师不存在，engineerId=%s"),
+	/**
+	 * Spc 100850022 error code enum.
+	 */
+	SPC100850022(100850022, "工程师Id不能为空，engineerId=%s"),
 
 	/**
 	 * Imc 10090000 error code enum
