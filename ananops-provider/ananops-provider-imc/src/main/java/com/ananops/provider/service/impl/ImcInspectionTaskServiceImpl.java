@@ -28,6 +28,7 @@ import com.ananops.provider.service.OpcOssFeignApi;
 import com.ananops.provider.service.PmcProjectFeignApi;
 import com.ananops.provider.utils.PdfUtil;
 import com.ananops.provider.utils.WaterMark;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.itextpdf.text.*;
@@ -527,7 +528,8 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     @Override
     public PageInfo getTaskByUserIdAndStatusAndPage(TaskQueryDto taskQueryDto){
         Integer role = taskQueryDto.getRole();
-        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        Page page = PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        PageInfo pageInfo;
         String taskName = taskQueryDto.getTaskName();
         List<ImcInspectionTask> imcInspectionTaskList;
         if(StringUtils.isNotBlank(taskName)){
@@ -535,16 +537,28 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             switch (role){
                 case 1://如果角色是甲方用户
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByUserIdAndStatusAndTaskName(taskQueryDto.getUserId(),taskQueryDto.getStatus(),taskName);
-                    return new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 2://如果角色是服务商
                     imcInspectionTaskList = this.getTaskByFacilitatorIdAndStatus(taskQueryDto);
-                    return new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 3://如果角色是服务商管理员
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndStatusAndTaskName(taskQueryDto.getUserId(),taskQueryDto.getStatus(),taskName);
-                    return new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 4://如果角色是服务商组织
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatusAndTaskName(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskQueryDto.getStatus(),taskName);
-                    return new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
@@ -552,16 +566,28 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             switch (role){
                 case 1://如果角色是甲方用户
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByUserIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
-                    return new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 2://如果角色是服务商
                     imcInspectionTaskList = this.getTaskByFacilitatorIdAndStatus(taskQueryDto);
-                    return new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 3://如果角色是服务商管理员
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndStatus(taskQueryDto.getUserId(),taskQueryDto.getStatus());
-                    return new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 4://如果角色是服务商组织
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndStatus(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskQueryDto.getStatus());
-                    return new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
@@ -684,7 +710,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
      * @return
      */
     @Override
-    public PageInfo getAllUnConfirmedTask(LoginAuthDto loginAuthDto){
+    public PageInfo getAllUnConfirmedTask(LoginAuthDto loginAuthDto,TaskQueryDto taskQueryDto){
         // 获取登录用户的组织Id
         Long userGroupId = loginAuthDto.getGroupId();
         // 根据组织Id查询公司Id
@@ -693,8 +719,12 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("facilitatorId",groupId);
         criteria.andEqualTo("status",TaskStatusEnum.WAITING_FOR_ACCEPT.getStatusNum());
+        Page page = PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
-        return new PageInfo<>(transform(imcInspectionTaskList));
+        PageInfo pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+        pageInfo.setTotal(page.getTotal());
+        pageInfo.setPages(page.getPages());
+        return pageInfo;
     }
 
     /**
@@ -703,13 +733,17 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
      * @return
      */
     @Override
-    public PageInfo getAllUnDistributedTask(LoginAuthDto loginAuthDto){
+    public PageInfo getAllUnDistributedTask(LoginAuthDto loginAuthDto,TaskQueryDto taskQueryDto){
         // 获取登录用户的组织Id
         Long userGroupId = loginAuthDto.getGroupId();
         // 根据组织Id查询公司Id
         Long groupId = uacGroupFeignApi.getCompanyInfoById(userGroupId).getResult().getId();
+        Page page = PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.queryAllUnDistributedTask(groupId);
-        return new PageInfo<>(transform(imcInspectionTaskList));
+        PageInfo pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+        pageInfo.setTotal(page.getTotal());
+        pageInfo.setPages(page.getPages());
+        return pageInfo;
     }
 
     /**

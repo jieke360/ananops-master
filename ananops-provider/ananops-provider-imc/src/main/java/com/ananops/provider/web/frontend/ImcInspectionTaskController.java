@@ -224,19 +224,13 @@ public class ImcInspectionTaskController extends BaseController {
     @PostMapping(value = "/getAllUnDistributedTask")
     @ApiOperation(httpMethod = "POST",value = "获取全部当前服务商未分配工程师的巡检任务")
     public Wrapper<PageInfo> getAllUnDistributedTask(@RequestBody TaskQueryDto taskQueryDto){
-        if(null!=taskQueryDto){
-            PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
-        }
-        return WrapMapper.ok(imcInspectionTaskService.getAllUnDistributedTask(getLoginAuthDto()));
+        return WrapMapper.ok(imcInspectionTaskService.getAllUnDistributedTask(getLoginAuthDto(),taskQueryDto));
     }
 
     @PostMapping(value = "/getAllUnConfirmedTask")
     @ApiOperation(httpMethod = "POST",value = "获取全部当前服务商未接单的巡检任务")
     public Wrapper<PageInfo> getAllUnConfirmedTask(@RequestBody TaskQueryDto taskQueryDto){
-        if(null!=taskQueryDto){
-            PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
-        }
-        return WrapMapper.ok(imcInspectionTaskService.getAllUnConfirmedTask(getLoginAuthDto()));
+        return WrapMapper.ok(imcInspectionTaskService.getAllUnConfirmedTask(getLoginAuthDto(),taskQueryDto));
     }
 
 }
