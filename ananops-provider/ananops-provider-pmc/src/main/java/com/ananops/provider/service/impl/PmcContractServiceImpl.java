@@ -7,8 +7,10 @@ import com.ananops.core.support.BaseService;
 import com.ananops.provider.exception.PmcBizException;
 import com.ananops.provider.mapper.PmcContractMapper;
 import com.ananops.provider.mapper.PmcContractUserMapper;
+import com.ananops.provider.mapper.PmcProjectMapper;
 import com.ananops.provider.model.domain.PmcContract;
 import com.ananops.provider.model.domain.PmcContractUser;
+import com.ananops.provider.model.domain.PmcProject;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.group.CompanyDto;
 import com.ananops.provider.model.service.UacGroupFeignApi;
@@ -32,12 +34,19 @@ import java.util.List;
 @Slf4j
 @Service
 public class PmcContractServiceImpl extends BaseService<PmcContract> implements PmcContractService {
+
     @Resource
-    PmcContractMapper pmcContractMapper;
+    private PmcContractMapper pmcContractMapper;
+
     @Resource
-    PmcContractUserMapper pmcContractUserMapper;
+    private PmcProjectMapper pmcProjectMapper;
+
+    @Resource
+    private PmcContractUserMapper pmcContractUserMapper;
+
     @Resource
     private OpcOssFeignApi opcOssFeignApi;
+
     @Resource
     private UacGroupFeignApi uacGroupFeignApi;
 
@@ -85,6 +94,10 @@ public class PmcContractServiceImpl extends BaseService<PmcContract> implements 
 
     @Override
     public void deleteContractById(Long id) {
+        List<PmcProject> pmcProjects = pmcProjectMapper.getProjectByContractId(id);
+        if (pmcProjects.size() > 0) {
+            throw new PmcBizException(ErrorCodeEnum.PMC10081027, id);
+        }
         Integer result = pmcContractMapper.deleteByPrimaryKey(id);
         if (result<1){
             throw new PmcBizException(ErrorCodeEnum.PMC10081012,id);

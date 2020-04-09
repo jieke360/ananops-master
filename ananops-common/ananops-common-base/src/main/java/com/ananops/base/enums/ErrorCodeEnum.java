@@ -893,6 +893,11 @@ public enum ErrorCodeEnum {
 	 */
 	PMC10081026(10081026, "公司组织Id不能为空"),
 
+	/**
+	 * Pmc 10021027 error code enum.
+	 */
+	PMC10081027(10081027, "该合同下包含项目，请先删除关联项目, contractId=%s"),
+
 	//报警管理 1009
 	/**
 	 * Amc 10091011 error code enum.
