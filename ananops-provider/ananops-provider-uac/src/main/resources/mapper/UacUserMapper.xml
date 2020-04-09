@@ -255,7 +255,7 @@
         LEFT JOIN an_uac_group g ON g.id = gu.group_id
         LEFT JOIN an_uac_role_user ru ON ru.user_id = u.id
         LEFT JOIN an_uac_role r ON r.id = ru.role_id
-        WHERE 1 = 1
+        WHERE 1 = 1 AND u.type != 'engineer'
         <if test="userName != null and userName != ''">
             AND u.user_name LIKE concat('%',#{userName},'%')
         </if>
