@@ -414,6 +414,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
             menuVo = new MenuVo();
             BeanUtils.copyProperties(uacMenu, menuVo);
             menuVo.setRemark("菜单");
+            menuVo.setKey(menuVo.getId());
             menuVoList.add(menuVo);
         }
         if (PublicUtil.isNotEmpty(uacActions)) {
@@ -426,6 +427,7 @@ public class UacRoleServiceImpl extends BaseService<UacRole> implements UacRoleS
                 menuVo.setUrl(uacAction.getUrl());
                 menuVo.setStatus(uacAction.getStatus());
                 menuVo.setRemark("按钮");
+                menuVo.setKey(menuVo.getId());
                 menuVoList.add(menuVo);
             }
         }
