@@ -180,4 +180,23 @@
     AND DATEDIFF(DATE_ADD(item.scheduled_start_time,INTERVAL item.days DAY),NOW())>=0
     AND DATEDIFF(DATE_ADD(item.scheduled_start_time,INTERVAL item.days DAY),NOW()) &lt;=10
   </select>
+  <!--根据服务商组织的id查询全部未分配维修工的巡检任务-->
+  <select id="queryAllUnDistributedTask" resultType="com.ananops.provider.model.domain.ImcInspectionTask">
+    SELECT
+    <include refid="Base_Column_List">
+      <property name="alias" value="task"></property>
+    </include>
+    FROM
+    an_imc_inspection_task as task
+    WHERE 1=1
+    AND task.facilitator_id = #{facilitatorId}
+    AND task.status = 3
+    AND task.id IN
+    (
+      SELECT DISTINCT item.inspection_task_id
+      FROM an_imc_inspection_item as item
+      WHERE item.inspection_task_id = task.id
+      AND item.status = 1
+    )
+  </select>
 </mapper>

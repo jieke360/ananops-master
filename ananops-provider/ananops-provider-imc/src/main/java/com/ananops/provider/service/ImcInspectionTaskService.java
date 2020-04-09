@@ -79,6 +79,10 @@ public interface ImcInspectionTaskService extends IService<ImcInspectionTask> {
     OptUploadFileRespDto generateImcTaskPdf(Long taskId, LoginAuthDto loginAuthDto);
 
     List<ElementImgUrlDto> getReportUrlList(Long taskId,LoginAuthDto loginAuthDto);
+
+    PageInfo getAllUnDistributedTask(LoginAuthDto loginAuthDto);
+
+    PageInfo getAllUnConfirmedTask(LoginAuthDto loginAuthDto);
 //    List<ImcInspectionTask> getTaskByFacilitatorId(TaskQueryDto taskQueryDto);//根据服务商id查询对应的巡检任务
 //
 //    List<ImcInspectionTask> getTaskByFacilitatorIdAndStatus(TaskQueryDto taskQueryDto);//根据服务商id查询指定状态的巡检任务
