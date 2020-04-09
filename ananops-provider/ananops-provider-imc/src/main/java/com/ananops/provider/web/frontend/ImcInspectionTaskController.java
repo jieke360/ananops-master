@@ -13,6 +13,7 @@ import com.ananops.provider.service.ImcInspectionTaskLogService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -218,6 +219,24 @@ public class ImcInspectionTaskController extends BaseController {
     @ApiOperation(httpMethod = "GET",value = "获取巡检任务报告")
     public Wrapper<List<ElementImgUrlDto>> getImcTaskReport(@PathVariable Long taskId){
         return WrapMapper.ok(imcInspectionTaskService.getReportUrlList(taskId,getLoginAuthDto()));
+    }
+
+    @PostMapping(value = "/getAllUnDistributedTask")
+    @ApiOperation(httpMethod = "POST",value = "获取全部当前服务商未分配工程师的巡检任务")
+    public Wrapper<PageInfo> getAllUnDistributedTask(@RequestBody TaskQueryDto taskQueryDto){
+        if(null!=taskQueryDto){
+            PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        }
+        return WrapMapper.ok(imcInspectionTaskService.getAllUnDistributedTask(getLoginAuthDto()));
+    }
+
+    @PostMapping(value = "/getAllUnConfirmedTask")
+    @ApiOperation(httpMethod = "POST",value = "获取全部当前服务商未接单的巡检任务")
+    public Wrapper<PageInfo> getAllUnConfirmedTask(@RequestBody TaskQueryDto taskQueryDto){
+        if(null!=taskQueryDto){
+            PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        }
+        return WrapMapper.ok(imcInspectionTaskService.getAllUnConfirmedTask(getLoginAuthDto()));
     }
 
 }

@@ -40,6 +40,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.rmi.runtime.Log;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -675,6 +676,40 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         criteria.andEqualTo("status",status);
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
         return new PageInfo<>(imcInspectionTaskList);
+    }
+
+    /**
+     * 查询全部当前服务商未接单的巡检任务
+     * @param loginAuthDto
+     * @return
+     */
+    @Override
+    public PageInfo getAllUnConfirmedTask(LoginAuthDto loginAuthDto){
+        // 获取登录用户的组织Id
+        Long userGroupId = loginAuthDto.getGroupId();
+        // 根据组织Id查询公司Id
+        Long groupId = uacGroupFeignApi.getCompanyInfoById(userGroupId).getResult().getId();
+        Example example = new Example(ImcInspectionTask.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("facilitatorId",groupId);
+        criteria.andEqualTo("status",TaskStatusEnum.WAITING_FOR_ACCEPT.getStatusNum());
+        List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
+        return new PageInfo<>(transform(imcInspectionTaskList));
+    }
+
+    /**
+     * 查询全部当前服务商未分配工程师的工单
+     * @param loginAuthDto
+     * @return
+     */
+    @Override
+    public PageInfo getAllUnDistributedTask(LoginAuthDto loginAuthDto){
+        // 获取登录用户的组织Id
+        Long userGroupId = loginAuthDto.getGroupId();
+        // 根据组织Id查询公司Id
+        Long groupId = uacGroupFeignApi.getCompanyInfoById(userGroupId).getResult().getId();
+        List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.queryAllUnDistributedTask(groupId);
+        return new PageInfo<>(transform(imcInspectionTaskList));
     }
 
     /**
