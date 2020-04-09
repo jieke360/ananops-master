@@ -182,4 +182,11 @@ public class UacUserFeignClient extends BaseController implements UacUserFeignAp
 
         return WrapMapper.wrap(Wrapper.SUCCESS_CODE, message, result);
     }
+
+    @Override
+    @ApiOperation(httpMethod = "POST", value = "根据用户Id删除用户记录")
+    public Wrapper<Integer> deleteUserById(@RequestParam("userId") Long userId) {
+        int result = uacUserService.deleteUserById(userId);
+        return WrapMapper.ok(result);
+    }
 }

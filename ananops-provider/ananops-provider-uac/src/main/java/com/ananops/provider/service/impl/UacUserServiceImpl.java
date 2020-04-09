@@ -133,6 +133,9 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 	@Resource
 	private UacRoleGroupService uacRoleGroupService;
 
+	@Resource
+	private UacRoleUserMapper uacRoleUserMapper;
+
 	@Override
 	@Transactional(readOnly = true, rollbackFor = Exception.class)
 	public UacUser findByLoginName(String loginName) {
@@ -231,8 +234,17 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		return new PageInfo<>(uacUserList);
 	}
 
+	@Transactional
 	@Override
 	public int deleteUserById(Long userId) {
+		// 删除用户组织绑定表
+		UacGroupUser deleteUacGroupUser = new UacGroupUser();
+		deleteUacGroupUser.setUserId(userId);
+		uacGroupUserMapper.delete(deleteUacGroupUser);
+		// 删除用户角色绑定表
+		UacRoleUser deleteUacRoleUser = new UacRoleUser();
+		deleteUacGroupUser.setUserId(userId);
+		uacRoleUserMapper.delete(deleteUacRoleUser);
 		return uacUserMapper.deleteByPrimaryKey(userId);
 	}
 

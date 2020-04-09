@@ -6,10 +6,15 @@ import com.ananops.base.dto.CheckValidDto;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.core.support.BaseService;
+import com.ananops.provider.exception.SpcBizException;
 import com.ananops.provider.mapper.SpcCompanyMapper;
+import com.ananops.provider.mapper.SpcEngineerCertificateMapper;
 import com.ananops.provider.mapper.SpcEngineerMapper;
+import com.ananops.provider.mapper.SpcEngineerPerformanceMapper;
 import com.ananops.provider.model.domain.SpcCompany;
 import com.ananops.provider.model.domain.SpcEngineer;
+import com.ananops.provider.model.domain.SpcEngineerCertificate;
+import com.ananops.provider.model.domain.SpcEngineerPerformance;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
@@ -43,6 +48,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -84,6 +90,12 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
 
     @Resource
     private OpcOssFeignApi opcOssFeignApi;
+
+    @Resource
+    private SpcEngineerCertificateMapper spcEngineerCertificateMapper;
+
+    @Resource
+    private SpcEngineerPerformanceMapper spcEngineerPerformanceMapper;
 
     @Override
     public List<EngineerDto> getEngineersByProjectId(Long projectId) {
@@ -562,6 +574,26 @@ public class SpcEngineerServiceImpl extends BaseService<SpcEngineer> implements 
             }
         }
         return result;
+    }
+
+    @Transactional
+    @Override
+    public int deleteEngineerById(Long engineerId) {
+        // 删除工程师账号在UAC中的记录
+        SpcEngineer spcEngineer = spcEngineerMapper.selectByPrimaryKey(engineerId);
+        if (spcEngineer == null) {
+            throw new SpcBizException(ErrorCodeEnum.SPC100850021, engineerId);
+        }
+        uacUserFeignApi.deleteUserById(spcEngineer.getUserId());
+        // 删除工程师证书记录
+        SpcEngineerCertificate deleteSpcEngineerCertificate = new SpcEngineerCertificate();
+        deleteSpcEngineerCertificate.setEngineerId(engineerId);
+        spcEngineerCertificateMapper.delete(deleteSpcEngineerCertificate);
+        // 删除工程师业绩记录
+        SpcEngineerPerformance deleteSpcEngineerPerformance = new SpcEngineerPerformance();
+        deleteSpcEngineerCertificate.setEngineerId(engineerId);
+        spcEngineerPerformanceMapper.delete(deleteSpcEngineerPerformance);
+        return 1;
     }
 
     private void validateCompanyVo(EngineerVo engineerVo) {

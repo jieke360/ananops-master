@@ -188,6 +188,22 @@ public class SpcEngineerController extends BaseController {
     }
 
     /**
+     * 根据Id删除工程师.
+     *
+     * @param engineerId 工程师Id
+     *
+     * @return the wrapper
+     */
+    @PostMapping(value = "/deleteEngineerById/{engineerId}")
+    @LogAnnotation
+    @ApiOperation(httpMethod = "POST", value = "根据工程师Id（不是UserId）删除工程师账号")
+    public Wrapper<Integer> deleteEngineerById(@ApiParam(name = "engineerId", value = "工程师禁用/激活Dto") @PathVariable Long engineerId) {
+        logger.info(" 根据工程师Id（不是UserId）删除工程师账号 engineerId={}", engineerId);
+        int result = spcEngineerService.deleteEngineerById(engineerId);
+        return handleResult(result);
+    }
+
+    /**
      * 根据工程师Id保存工程师信息.
      *
      * @param engineerVo 编辑之后的对象

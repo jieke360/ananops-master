@@ -94,4 +94,14 @@ public interface UacUserFeignApi {
      */
     @PostMapping(value = "/api/uac/user/checkUserValid")
     Wrapper checkValid(@RequestBody CheckValidDto checkValidDto);
+
+    /**
+     * 根据用户Id删除用户记录
+     *
+     * @param userId
+     *
+     * @return
+     */
+    @PostMapping(value = "/api/uac/user/deleteByUserId")
+    Wrapper<Integer> deleteUserById(@RequestParam("userId") Long userId);
 }

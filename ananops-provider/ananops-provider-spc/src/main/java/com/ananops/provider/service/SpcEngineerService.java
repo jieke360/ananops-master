@@ -147,4 +147,13 @@ public interface SpcEngineerService extends IService<SpcEngineer> {
      * @return
      */
     List<EngineerDto> queryListByGroupId(EngineerQueryDto engineerQueryDto, LoginAuthDto loginAuthDto);
+
+    /**
+     * 根据工程师Id删除工程师信息
+     *
+     * @param engineerId 工程师Id
+     *
+     * @return
+     */
+    int deleteEngineerById(Long engineerId);
 }

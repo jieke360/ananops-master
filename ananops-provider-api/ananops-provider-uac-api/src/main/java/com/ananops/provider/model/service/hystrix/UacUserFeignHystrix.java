@@ -60,4 +60,9 @@ public class UacUserFeignHystrix implements UacUserFeignApi {
     public Wrapper checkValid(CheckValidDto checkValidDto) {
         return null;
     }
+
+    @Override
+    public Wrapper<Integer> deleteUserById(Long userId) {
+        return null;
+    }
 }
