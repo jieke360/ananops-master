@@ -197,6 +197,10 @@
       FROM an_imc_inspection_item as item
       WHERE item.inspection_task_id = task.id
       AND item.status = 1
+      UNION
+      SELECT task2.id
+      FROM an_imc_inspection_task as task2,an_imc_inspection_item as item
+      WHERE task2.id != item.inspection_task_id
     )
   </select>
 </mapper>
