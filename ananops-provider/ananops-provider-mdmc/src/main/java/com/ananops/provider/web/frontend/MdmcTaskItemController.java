@@ -52,6 +52,13 @@ public class MdmcTaskItemController extends BaseController {
 //        return WrapMapper.ok(taskItemService.getItemByTaskId(statusDto));
 //    }
 
+    @GetMapping(value = "/getItemByItemId")
+    @ApiOperation(httpMethod = "GET",value = "根据任务子项的ID，获取当前的任务子项详情")
+    public Wrapper<MdmcTaskItem> getItemByItemId(@RequestParam("itemId") Long itemId){
+        MdmcTaskItem taskItem = taskItemService.getItemById(itemId);
+        return WrapMapper.ok(taskItem);
+    }
+
     @PostMapping(value = "/modifyItemStatusByItemId")
     @ApiOperation(httpMethod = "POST",value = "更改任务子项的状态")
     public Wrapper<MdmcItemChangeStatusDto> modifyItemStatusByItemId(@ApiParam(name = "modifyItemStatus",value = "根据任务子项ID，更改子项的状态")@RequestBody MdmcItemChangeStatusDto itemChangeStatusDto){
