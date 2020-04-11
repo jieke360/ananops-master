@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 
 @Data
@@ -38,4 +39,9 @@ public class MdmcAddReviewDto implements Serializable {
     @ApiModelProperty(value = "服务评论")
     private String contents;
 
+    /**
+     * 验收内容
+     */
+    @ApiModelProperty(value = "服务评论")
+    private String checkContens;
 }
