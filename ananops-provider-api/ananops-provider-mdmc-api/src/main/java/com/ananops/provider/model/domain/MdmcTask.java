@@ -161,6 +161,12 @@ public class MdmcTask extends BaseEntity {
     private String troubleReason;
 
     /**
+     * 超时原因
+     */
+    @Column(name = "delay_reason")
+    private String delayReason;
+
+    /**
      * 紧急程度
      */
     @Column(name = "level")
@@ -170,7 +176,7 @@ public class MdmcTask extends BaseEntity {
     private String suggestion;
 
     @Column(name = "result")
-    private Integer result;
+    private String result;
 
     private String note;
 
