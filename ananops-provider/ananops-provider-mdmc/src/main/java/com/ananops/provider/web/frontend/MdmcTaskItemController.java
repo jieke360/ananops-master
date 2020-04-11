@@ -41,7 +41,7 @@ public class MdmcTaskItemController extends BaseController {
 
     @PostMapping(value = "/save")
     @ApiOperation(httpMethod = "POST",value = "编辑任务子项记录")
-    public Wrapper<MdmcTaskItem> saveInspectionItem(@ApiParam(name = "saveTaskItem",value = "新增一条任务子项记录")@RequestBody MdmcAddTaskItemDto mdmcAddTaskItemDto){
+    public Wrapper<MdmcTaskItem> saveItem(@ApiParam(name = "saveTaskItem",value = "新增一条任务子项记录")@RequestBody MdmcAddTaskItemDto mdmcAddTaskItemDto){
         LoginAuthDto loginAuthDto = getLoginAuthDto();
         return WrapMapper.ok(taskItemService.saveItem(mdmcAddTaskItemDto,loginAuthDto));
     }
@@ -114,4 +114,17 @@ public class MdmcTaskItemController extends BaseController {
         return WrapMapper.ok(taskItemService.getTaskItemCount(taskId));
     }
 
+    /**
+     * 根据任务子项id删除任务子项
+     *
+     * @param itemId HTTP请求参数
+     *
+     * @return 返回
+     */
+    @PostMapping(value = "/deleteItemByItemId/{itemId}")
+    @ApiOperation(httpMethod = "POST",value = "根据任务子项id删除任务子项")
+    public Wrapper<MdmcTaskItem> deleteItemByItemId(@PathVariable Long itemId) {
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        return WrapMapper.ok(taskItemService.deleteItemById(itemId,loginAuthDto));
+    }
 }

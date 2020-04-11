@@ -21,4 +21,6 @@ public interface MdmcTaskItemService extends IService<MdmcTaskItem> {
     MdmcPageItemDto getItemList(MdmcStatusDto statusDto);
 
     int getTaskItemCount(Long taskId);
+
+    MdmcTaskItem deleteItemById(Long itemId,LoginAuthDto loginAuthDto);
 }
