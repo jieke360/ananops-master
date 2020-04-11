@@ -32,7 +32,7 @@ public class MdmcAddTaskItemDto implements Serializable {
     private Long taskId;
 
     @ApiModelProperty("故障等级")
-    private String level;
+    private Integer level;
 
     @ApiModelProperty("故障描述")
     private String description;
