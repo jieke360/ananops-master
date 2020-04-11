@@ -654,6 +654,20 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return new PageInfo<>(imcInspectionTaskList);
     }
 
+    @Override
+    public PageInfo getAllFinishedTaskByFacilitatorIdAndPage(LoginAuthDto loginAuthDto,TaskQueryDto taskQueryDto){
+        // 获取登录用户的组织Id
+        Long userGroupId = loginAuthDto.getGroupId();
+        // 根据组织Id查询公司Id
+        Long groupId = uacGroupFeignApi.getCompanyInfoById(userGroupId).getResult().getId();
+        Page page = PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.queryAllFinishedTaskByFacilitatorId(groupId);
+        PageInfo pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+        pageInfo.setTotal(page.getTotal());
+        pageInfo.setPages(page.getPages());
+        return pageInfo;
+    }
+
     /**
      * 根据服务商Id查询服务商对应的巡检任务
      * @param taskQueryDto

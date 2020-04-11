@@ -41,4 +41,6 @@ public interface ImcInspectionTaskMapper extends MyMapper<ImcInspectionTask> {
     List<UndistributedImcTaskDto> queryAllUndistributedTask();
 
     List<ImcInspectionTask> queryAllUnDistributedTask(@Param(value = "facilitatorId")Long facilitatorId);
+
+    List<ImcInspectionTask> queryAllFinishedTaskByFacilitatorId(@Param(value = "facilitatorId")Long facilitatorId);
 }

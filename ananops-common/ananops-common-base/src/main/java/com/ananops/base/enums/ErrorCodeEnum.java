@@ -66,11 +66,11 @@ public enum ErrorCodeEnum {
 	/**
 	 * MDMC 9998097 error code enum.
 	 */
-	MDMC9998097(9998097,"当前任务子项不存在"),
+	MDMC9998097(9998097,"当前任务子项不存在,itemId=%s"),
 	/**
 	 * MDMC 9998098 error code enum.
 	 */
-	MDMC9998098(9998098,"当前任务不存在"),
+	MDMC9998098(9998098,"当前任务不存在,taskId=%s"),
 	/**
 	 * MDMC 9998099 error code enum.
 	 */

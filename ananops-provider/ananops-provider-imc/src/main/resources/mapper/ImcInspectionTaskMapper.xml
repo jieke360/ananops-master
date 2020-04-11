@@ -197,6 +197,48 @@
       FROM an_imc_inspection_item as item
       WHERE item.inspection_task_id = task.id
       AND item.status = 1
+      UNION
+      SELECT task2.id
+      FROM an_imc_inspection_task as task2,an_imc_inspection_item as item
+      WHERE
+      task2.facilitator_id = #{facilitatorId}
+      AND task2.status = 3
+      AND task2.id not in
+      (
+          SELECT inspection_task_id
+          FROM an_imc_inspection_item
+      )
     )
   </select>
+
+    <!--根据服务商组织的id查询全部服务商已完成的巡检任务-->
+    <select id="queryAllFinishedTaskByFacilitatorId" resultType="com.ananops.provider.model.domain.ImcInspectionTask">
+        SELECT
+        <include refid="Base_Column_List">
+            <property name="alias" value="task"></property>
+        </include>
+        FROM
+        an_imc_inspection_task as task
+        WHERE 1=1
+        AND task.status &gt; 2
+        AND task.facilitator_id = #{facilitatorId}
+        AND task.id NOT IN
+        (
+            SELECT DISTINCT item.inspection_task_id
+            FROM an_imc_inspection_item as item
+            WHERE item.inspection_task_id = task.id
+            AND item.status = 1
+            UNION
+            SELECT task2.id
+            FROM an_imc_inspection_task as task2,an_imc_inspection_item as item
+            WHERE
+            task2.facilitator_id = #{facilitatorId}
+            AND task.status &gt; 2
+            AND task2.id not in
+            (
+                SELECT inspection_task_id
+                FROM an_imc_inspection_item
+            )
+        )
+    </select>
 </mapper>
