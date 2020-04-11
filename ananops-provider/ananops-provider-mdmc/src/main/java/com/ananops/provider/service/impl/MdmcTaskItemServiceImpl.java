@@ -144,5 +144,10 @@ public class MdmcTaskItemServiceImpl extends BaseService<MdmcTaskItem> implement
         return mdmcTaskItemMapper.selectByPrimaryKey(itemId);
     }
 
+    @Override
+    public MdmcTaskItem getItemById(Long itemId) {
+        return mdmcTaskItemMapper.selectByPrimaryKey(itemId);
+    }
+
 
 }
