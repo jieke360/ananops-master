@@ -1308,4 +1308,25 @@ public class UacUserServiceImpl extends BaseService<UacUser> implements UacUserS
 		//2.绑定新组织
 		uacGroupUserMapper.insertSelective(uacGroupUser);
     }
+
+	@Override
+	public PageInfo queryUserListByGroupId(UserQueryDto userQueryDto) {
+		UacUser uacUser = new UacUser();
+		uacUser.setPageNum(userQueryDto.getPageNum());
+		uacUser.setPageSize(userQueryDto.getPageSize());
+		uacUser.setGroupId(userQueryDto.getGroupId());
+		uacUser.setStatus("ENABLE");
+		uacUser.setOrderBy("u.update_time desc");
+
+		PageHelper.startPage(uacUser.getPageNum(), uacUser.getPageSize());
+		List<UacUser> uacUserList = uacUserMapper.selectUserList(uacUser);
+
+		// 处理返回的用户用户密码
+		if (!uacUserList.isEmpty()) {
+			for (UacUser user : uacUserList) {
+				user.setLoginPwd("");
+			}
+		}
+		return new PageInfo<>(uacUserList);
+	}
 }

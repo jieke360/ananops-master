@@ -268,14 +268,17 @@
         <if test="groupId != null and groupId != ''">
             AND g.id LIKE concat('%',#{groupId},'%')
         </if>
+        <if test="status != null and status != ''">
+            AND u.status LIKE concat('%',#{status},'%')
+        </if>
         <if test="roleId != null and roleId != ''">
-            AND g.id LIKE concat('%',#{roleId},'%')
+            AND r.id LIKE concat('%',#{roleId},'%')
         </if>
         <if test="roleCode != null and roleCode != ''">
-            AND g.id LIKE concat('%',#{roleCode},'%')
+            AND r.role_code LIKE concat('%',#{roleCode},'%')
         </if>
         <if test="roleName != null and roleName != ''">
-            AND g.id LIKE concat('%',#{roleCode},'%')
+            AND r.role_name LIKE concat('%',#{roleName},'%')
         </if>
         <!--        <include refid="Base_Where_Condition">-->
         <!--            <property name="alias" value="u"></property>-->

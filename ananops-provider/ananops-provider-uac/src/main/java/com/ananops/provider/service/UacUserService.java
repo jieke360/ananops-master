@@ -377,4 +377,13 @@ public interface UacUserService extends IService<UacUser> {
 	 * @param loginAuthDto
 	 */
     void bindUserGroup(UacGroupUser uacGroupUser, LoginAuthDto loginAuthDto);
+
+	/**
+	 * 查询组织下的用户列表
+	 *
+	 * @param userQueryDto 查询参数
+	 *
+	 * @return 返回成员列表
+	 */
+	PageInfo queryUserListByGroupId(UserQueryDto userQueryDto);
 }
