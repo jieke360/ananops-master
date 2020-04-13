@@ -87,6 +87,11 @@ public class ImcInspectionItemDto implements Serializable {
     private String itemName;
 
     /**
+     * 巡检子项对应的维修工ID
+     */
+    private Long maintainerId;
+
+    /**
      * 巡检子项对应的维修工
      */
     private String maintainerName;

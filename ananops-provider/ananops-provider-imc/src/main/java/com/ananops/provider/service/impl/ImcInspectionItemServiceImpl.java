@@ -17,14 +17,17 @@ import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
 import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.oss.*;
+import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
 
 import com.ananops.provider.model.enums.TaskStatusEnum;
+import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.mq.producer.ItemMsgProducer;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
 import com.ananops.provider.service.OpcOssFeignApi;
 import com.ananops.wrapper.WrapMapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Preconditions;
@@ -71,6 +74,9 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
 
     @Resource
     private ItemMsgProducer itemMsgProducer;
+
+    @Resource
+    private UacUserFeignApi uacUserFeignApi;
 
     /**
      *
@@ -155,9 +161,12 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Example example2 = new Example(ImcInspectionItem.class);
         Example.Criteria criteria2 = example2.createCriteria();
         criteria2.andEqualTo("inspectionTaskId",taskId);
-        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        Page page = PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example2);
-        return new PageInfo<>(imcInspectionItems);
+        PageInfo pageInfo = new PageInfo<>(itemTransform(imcInspectionItems));
+        pageInfo.setTotal(page.getTotal());
+        pageInfo.setPages(page.getPages());
+        return pageInfo;
     }
     /**
      *
@@ -650,5 +659,27 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
     }
     public Integer setBasicInfoFromContract(){//将从合同中获取到的基本信息填写到巡检任务中
         return 1;
+    }
+
+    private List<ImcInspectionItemDto> itemTransform(List<ImcInspectionItem> imcInspectionItems){
+        List<ImcInspectionItemDto> imcInspectionItemDtos = new ArrayList<>();
+        Map<Long,String> nameMap = new HashMap<>();
+        for(ImcInspectionItem imcInspectionItem:imcInspectionItems){
+            ImcInspectionItemDto imcInspectionItemDto = new ImcInspectionItemDto();
+            BeanUtils.copyProperties(imcInspectionItem,imcInspectionItemDto);
+            Long maintainerId = imcInspectionItem.getMaintainerId();
+            //转换工程师名称
+            if(nameMap.containsKey(maintainerId)){
+                imcInspectionItemDto.setMaintainerName(nameMap.get(maintainerId));
+            }else{
+                UserInfoDto user = uacUserFeignApi.getUacUserById(maintainerId).getResult();
+                if (user != null) {
+                    nameMap.put(maintainerId, user.getUserName());
+                    imcInspectionItemDto.setMaintainerName(user.getUserName());
+                }
+            }
+            imcInspectionItemDtos.add(imcInspectionItemDto);
+        }
+        return imcInspectionItemDtos;
     }
 }
