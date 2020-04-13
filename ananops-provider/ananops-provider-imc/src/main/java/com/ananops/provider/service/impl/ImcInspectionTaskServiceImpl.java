@@ -206,6 +206,16 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         return imcInspectionTaskMapper.selectByPrimaryKey(taskId);
     }
 
+    @Override
+    public ImcInspectionTaskDto getTaskDtoByTaskId(Long taskId) {
+        ImcInspectionTask imcInspectionTask = imcInspectionTaskMapper.selectByPrimaryKey(taskId);
+        if (imcInspectionTask == null) {
+            return new ImcInspectionTaskDto();
+        }
+        List<ImcInspectionTask> imcInspectionTasks = new ArrayList<>();
+        imcInspectionTasks.add(imcInspectionTask);
+        return (ImcInspectionTaskDto)transform(imcInspectionTasks).get(0);
+    }
 
     /**
      * 修改巡检任务的状态

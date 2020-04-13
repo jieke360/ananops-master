@@ -47,9 +47,9 @@ public class ImcInspectionTaskController extends BaseController {
 
     @GetMapping(value = "/getTaskByTaskId/{taskId}")
     @ApiOperation(httpMethod = "GET",value = "根据任务的ID，获取当前的任务详情")
-    public Wrapper<ImcInspectionTask> getTaskByTaskId(@PathVariable Long taskId){
-        ImcInspectionTask imcInspectionTask = imcInspectionTaskService.getTaskByTaskId(taskId);
-        return WrapMapper.ok(imcInspectionTask);
+    public Wrapper<ImcInspectionTaskDto> getTaskDtoByTaskId(@PathVariable Long taskId){
+        ImcInspectionTaskDto imcInspectionTaskDto = imcInspectionTaskService.getTaskDtoByTaskId(taskId);
+        return WrapMapper.ok(imcInspectionTaskDto);
     }
 
     @PostMapping(value = "/modifyTaskStatusByTaskId")

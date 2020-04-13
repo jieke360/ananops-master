@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -20,14 +21,29 @@ public class ImcInspectionTaskDto {
     private Long id;
 
     /**
+     * 项目负责人ID
+     */
+    private Long principalId;
+
+    /**
      * 项目负责人
      */
     private String principalName;
 
     /**
+     * 服务商ID
+     */
+    private Long facilitatorId;
+
+    /**
      * 服务商名称
      */
     private String facilitatorName;
+
+    /**
+     * 项目ID
+     */
+    private Long projectId;
 
     /**
      * 项目名称
