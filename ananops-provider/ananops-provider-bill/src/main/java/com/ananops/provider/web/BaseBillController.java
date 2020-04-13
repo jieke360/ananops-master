@@ -142,6 +142,35 @@ public class BaseBillController extends BaseController {
         return pmcContractFeignApi.getContractById(contractId).getResult().getPaymentMoney();
     }
 
+
+    /**
+     * 用于获取统计信息
+     * @param userId 用户ID
+     * @param amount 金额
+     * @param year 年
+     * @param month 月
+     * @param length 时间跨度（月）
+     * @return 最终计算得到的统计信息
+     */
+    @GetMapping(value = "/getStatistics/{userId}/{amount}/{year}/{month}/{length}")
+    @ApiOperation(httpMethod = "Get",value = "获取统计信息")
+    public Wrapper<BillStatistics> getStatistics(@ApiParam(name = "userId", value = "用户ID") @RequestParam Long userId,
+                                                 @ApiParam(name = "amount", value = "金额") @RequestParam BigDecimal amount,
+                                                 @ApiParam(name = "year", value = "年") @RequestParam int year,
+                                                 @ApiParam(name = "month", value = "月") @RequestParam int month,
+                                                 @ApiParam(name = "length", value = "时间跨度（月）") @RequestParam int length){
+        BillStatistics billStatistics = new BillStatistics();
+        billStatistics.setBillNum(baseServiceImpl.getBillNumByUserId(userId));
+        billStatistics.setBillNumByUserIdAndAmount(baseServiceImpl.getBillNumByUserIdAndAmount(userId, amount));
+        billStatistics.setBillNumByUserIdAndStateCreating(baseServiceImpl.getBillNumByUserIdAndState(userId, "创建中"));
+        billStatistics.setBillNumByUserIdAndStateFinished(baseServiceImpl.getBillNumByUserIdAndState(userId, "已完成"));
+        billStatistics.setBillNumByUserIdAndStateNowPay(baseServiceImpl.getBillNumByUserIdAndTransactionMethod(userId, "现结"));
+        billStatistics.setBillNumByUserIdAndStatePeriodPay(baseServiceImpl.getBillNumByUserIdAndTransactionMethod(userId, "账期"));
+        billStatistics.setBillNumByUserIdAndStateYearPay(baseServiceImpl.getBillNumByUserIdAndTransactionMethod(userId, "年结"));
+        billStatistics.setMoneySum(baseServiceImpl.getMoneySumByUserIdYearMonthAndLength(userId, year, month, length));
+        return WrapMapper.ok(billStatistics);
+    }
+
     /**
      * 根据用户ID获取该用户下所产生的所有账单
      * @param userId 用户ID
