@@ -35,7 +35,7 @@ public class ImcInspectionTaskLogServiceImpl extends BaseService<ImcInspectionTa
         ImcInspectionTaskLog imcInspectionTaskLog = new ImcInspectionTaskLog();
         Long taskId = taskLogQueryDto.getTaskId();
         imcInspectionTaskLog.setTaskId(taskId);
-        String orderBy = "status_timestamp asc";//设置为根据时间戳进行排序
+        String orderBy = "status_timestamp DESC";//设置为根据时间戳进行排序
         imcInspectionTaskLog.setOrderBy(orderBy);
         PageHelper.startPage(taskLogQueryDto.getPageNum(),taskLogQueryDto.getPageSize());
         List<TaskLogVo> taskLogVoList = imcInspectionTaskLogMapper.queryTaskLogListWithPage(imcInspectionTaskLog);
