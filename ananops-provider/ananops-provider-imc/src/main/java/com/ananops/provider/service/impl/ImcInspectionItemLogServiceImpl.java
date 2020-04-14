@@ -47,7 +47,7 @@ public class ImcInspectionItemLogServiceImpl extends BaseService<ImcInspectionIt
         Long taskId = imcInspectionItemLogMapper.selectByExample(example).get(0).getTaskId();
         imcInspectionItemLog.setTaskId(taskId);
         imcInspectionItemLog.setItemId(itemId);
-        String orderBy = "status_timestamp asc";
+        String orderBy = "status_timestamp DESC";
         imcInspectionItemLog.setOrderBy(orderBy);
         PageHelper.startPage(itemLogQueryDto.getPageNum(),itemLogQueryDto.getPageSize());
         List<ItemLogVo> itemLogVoList = imcInspectionItemLogMapper.queryItemLogListWithPage(imcInspectionItemLog);
