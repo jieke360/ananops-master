@@ -38,8 +38,8 @@ public class TaskReminderJob implements SimpleJob {
 
     @Override
     public void execute(final ShardingContext shardingContext){
-        log.info("定时任务>>>>>>>>>>:获取全部未分配工程师，且距离截止日期<=10天的全部巡检任务" );
-        List<UndistributedImcTaskDto> undistributedImcTaskDtoList = imcInspectionTaskMapper.queryAllUndistributedTask();
+        log.info("定时任务>>>>>>>>>>:获取全部未分配工程师，且距离截止日期<=3天的全部巡检任务" );
+        List<UndistributedImcTaskDto> undistributedImcTaskDtoList = imcInspectionTaskMapper.queryAllUndistributedTaskWithTime();
         log.info("任务列表：");
         undistributedImcTaskDtoList.forEach(item->{
             log.info("taskName={},taskId={},ScheduledStartTime={},endDate={},remainDays={}",item.getTaskName(),item.getId(),item.getScheduledStartTime(),item.getEndDate(),item.getRemainDays());

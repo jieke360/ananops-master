@@ -167,7 +167,7 @@
     <result column="endDate" jdbcType="TIMESTAMP" property="endDate" />
     <result column="remainDays" jdbcType="INTEGER" property="remainDays" />
   </resultMap>
-  <select id="queryAllUndistributedTask" resultMap="undistributedTaskList">
+  <select id="queryAllUndistributedTaskWithTime" resultMap="undistributedTaskList">
     SELECT
     <include refid="Base_Column_List">
       <property name="alias" value="task"></property>
@@ -178,7 +178,7 @@
     an_imc_inspection_task as task,an_imc_inspection_item as item
     WHERE 1=1 AND item.status = 1 and item.inspection_task_id = task.id
     AND DATEDIFF(DATE_ADD(item.scheduled_start_time,INTERVAL item.days DAY),NOW())>=0
-    AND DATEDIFF(DATE_ADD(item.scheduled_start_time,INTERVAL item.days DAY),NOW()) &lt;=10
+    AND DATEDIFF(DATE_ADD(item.scheduled_start_time,INTERVAL item.days DAY),NOW()) &lt;=3
   </select>
   <!--根据服务商组织的id查询全部未分配维修工的巡检任务-->
   <select id="queryAllUnDistributedTask" resultType="com.ananops.provider.model.domain.ImcInspectionTask">
