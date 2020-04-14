@@ -210,7 +210,7 @@ public class ImcInspectionTaskController extends BaseController {
     }
 
     @GetMapping(value = "/getUndistributeTaskList")
-    @ApiOperation(httpMethod = "GET",value = "获取全部未分配工程师，且还剩10天截止的巡检任务")
+    @ApiOperation(httpMethod = "GET",value = "获取全部未分配工程师，且还剩3天截止的巡检任务")
     public Wrapper<List<UndistributedImcTaskDto>> getUndistributeTaskList(){
         return WrapMapper.ok(imcInspectionTaskService.queryAllUndistributedTask());
     }
