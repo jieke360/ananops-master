@@ -303,6 +303,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             criteria.andLike("taskName",taskName);
         }
         criteria.andEqualTo("status",status);
+        example.setOrderByClause("update_time DESC");
         if(imcInspectionTaskMapper.selectCountByExample(example)==0){
             //当前状态没有对应的任务
             throw new BusinessException(ErrorCodeEnum.GL9999091);
@@ -374,10 +375,12 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             criteria.andLike("taskName",taskName);
         }
         criteria.andEqualTo("projectId",projectId);
+
         if(imcInspectionTaskMapper.selectCountByExample(example)==0){
             //当前状态没有对应的任务
             throw new BusinessException(ErrorCodeEnum.GL9999091);
         }
+        example.setOrderByClause("update_time DESC");
         PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
         return new PageInfo<>(imcInspectionTaskList);
@@ -660,6 +663,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             criteria.andLike("taskName",taskName);
         }
         criteria.andEqualTo("facilitatorId",facilitatorId);
+        example.setOrderByClause("update_time DESC");
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
         return new PageInfo<>(imcInspectionTaskList);
     }
@@ -724,6 +728,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         }
         criteria.andEqualTo("facilitatorId",facilitatorId);
         criteria.andEqualTo("status",status);
+        example.setOrderByClause("update_time DESC");
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
         return new PageInfo<>(imcInspectionTaskList);
     }
@@ -743,6 +748,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("facilitatorId",groupId);
         criteria.andEqualTo("status",TaskStatusEnum.WAITING_FOR_ACCEPT.getStatusNum());
+        example.setOrderByClause("update_time DESC");
         Page page = PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
         PageInfo pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
@@ -808,6 +814,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("principalId",principalId);
         criteria.andEqualTo("status",TaskStatusEnum.WAITING_FOR_PRINCIPAL.getStatusNum());
+        example.setOrderByClause("update_time DESC");
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
         return new PageInfo<>(imcInspectionTaskList);
     }
@@ -840,6 +847,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("principalId",principalId);
         criteria.andEqualTo("status",TaskStatusEnum.NO_SUCH_STATUS.getStatusNum());
+        example.setOrderByClause("update_time DESC");
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
         return new PageInfo<>(imcInspectionTaskList);
     }
