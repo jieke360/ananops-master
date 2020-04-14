@@ -162,6 +162,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Example.Criteria criteria2 = example2.createCriteria();
         criteria2.andEqualTo("inspectionTaskId",taskId);
         Page page = PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        example2.setOrderByClause("update_time DESC");
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example2);
         PageInfo pageInfo = new PageInfo<>(itemTransform(imcInspectionItems));
         pageInfo.setTotal(page.getTotal());
@@ -205,6 +206,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Example.Criteria criteria2 = example2.createCriteria();
         criteria2.andEqualTo("inspectionTaskId",taskId);
         criteria2.andEqualTo("status",status);
+        example2.setOrderByClause("update_time DESC");
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example2);
         return new PageInfo<>(imcInspectionItems);
@@ -293,6 +295,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Example example = new Example(ImcInspectionItem.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("maintainerId",maintainerId);
+        example.setOrderByClause("update_time DESC");
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example);
         return new PageInfo<>(imcInspectionItems);
@@ -315,6 +318,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("maintainerId",maintainerId);
         criteria.andEqualTo("status",status);
+        example.setOrderByClause("update_time DESC");
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example);
         return new PageInfo<>(imcInspectionItems);
@@ -490,6 +494,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("maintainerId",maintainerId);
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        example.setOrderByClause("update_time DESC");
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example);
         List<ImcInspectionItem> imcInspectionItemsResult = new ArrayList<>();
         imcInspectionItems.forEach(imcInspectionItem -> {
@@ -506,6 +511,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         Example example = new Example(ImcInspectionItem.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("maintainerId",maintainerId);
+        example.setOrderByClause("update_time DESC");
         PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
         List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.selectByExample(example);
         List<ImcInspectionItem> imcInspectionItemsResult = new ArrayList<>();

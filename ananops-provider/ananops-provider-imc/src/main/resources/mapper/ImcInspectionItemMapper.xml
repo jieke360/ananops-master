@@ -43,6 +43,7 @@
     FROM
     an_imc_inspection_item as item , an_imc_user_item as userItem
     WHERE 1=1 AND userItem.user_id = #{userId} AND item.id = userItem.item_id
+    ORDER BY update_time
   </select>
 
   <select id="queryItemByUserIdAndStatus" resultType="com.ananops.provider.model.domain.ImcInspectionItem">
@@ -53,5 +54,6 @@
     FROM
     an_imc_inspection_item as item , an_imc_user_item as userItem
     WHERE 1=1 AND userItem.user_id = #{userId} AND item.id = userItem.item_id AND item.status = #{status}
+    ORDER BY update_time
   </select>
 </mapper>
