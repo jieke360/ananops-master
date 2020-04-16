@@ -431,7 +431,8 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             //如果当前任务的状态是等待工程师接单，才允许工程师接单
             imcInspectionItem.setStatus(ItemStatusEnum.IN_THE_INSPECTION.getStatusNum());
             imcInspectionItem.setUpdateInfo(loginAuthDto);
-            imcInspectionItem.setActualStartTime(new Date(System.currentTimeMillis()));
+            // 这里注释掉实际开始时间，接单之后，不一定开始。实际开始时候巡检任务执行的时候自行填写
+//            imcInspectionItem.setActualStartTime(new Date(System.currentTimeMillis()));
             imcInspectionItemMapper.updateByPrimaryKeySelective(imcInspectionItem);
             //推送消息
             MqMessageData mqMessageData = itemMsgProducer.sendItemStatusMsgMq(imcInspectionItem);
