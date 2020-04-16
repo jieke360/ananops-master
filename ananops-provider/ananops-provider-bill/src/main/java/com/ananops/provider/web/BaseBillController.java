@@ -153,7 +153,7 @@ public class BaseBillController extends BaseController {
      * @return 最终计算得到的统计信息
      */
     @GetMapping(value = "/getStatistics/{userId}/{amount}/{year}/{month}/{length}")
-    @ApiOperation(httpMethod = "Get",value = "获取统计信息")
+    @ApiOperation(httpMethod = "GET",value = "获取统计信息")
     public Wrapper<BillStatistics> getStatistics(@ApiParam(name = "userId", value = "用户ID") @RequestParam Long userId,
                                                  @ApiParam(name = "amount", value = "金额") @RequestParam BigDecimal amount,
                                                  @ApiParam(name = "year", value = "年") @RequestParam int year,
