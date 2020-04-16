@@ -247,6 +247,18 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         return imcInspectionItemMapper.selectByExample(example).get(0);
     }
 
+    @Override
+    public ImcInspectionItemDto getItemDtoByItemId(Long itemId) {
+        Example example = new Example(ImcInspectionItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",itemId);
+        if(imcInspectionItemMapper.selectCountByExample(example)==0){
+            throw new BusinessException(ErrorCodeEnum.GL9999097,itemId);
+        }
+        List<ImcInspectionItem> items = imcInspectionItemMapper.selectByExample(example);
+        return itemTransform(items).get(0);
+    }
+
     public List<ImcInspectionItem> getItemByItemStatusAndTaskId(ItemQueryDto itemQueryDto){
         Long taskId = itemQueryDto.getTaskId();
         Integer status = itemQueryDto.getStatus();
@@ -675,13 +687,15 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             BeanUtils.copyProperties(imcInspectionItem,imcInspectionItemDto);
             Long maintainerId = imcInspectionItem.getMaintainerId();
             //转换工程师名称
-            if(nameMap.containsKey(maintainerId)){
-                imcInspectionItemDto.setMaintainerName(nameMap.get(maintainerId));
-            }else{
-                UserInfoDto user = uacUserFeignApi.getUacUserById(maintainerId).getResult();
-                if (user != null) {
-                    nameMap.put(maintainerId, user.getUserName());
-                    imcInspectionItemDto.setMaintainerName(user.getUserName());
+            if (maintainerId != null) {
+                if(nameMap.containsKey(maintainerId)){
+                    imcInspectionItemDto.setMaintainerName(nameMap.get(maintainerId));
+                }else{
+                    UserInfoDto user = uacUserFeignApi.getUacUserById(maintainerId).getResult();
+                    if (user != null) {
+                        nameMap.put(maintainerId, user.getUserName());
+                        imcInspectionItemDto.setMaintainerName(user.getUserName());
+                    }
                 }
             }
             imcInspectionItemDtos.add(imcInspectionItemDto);

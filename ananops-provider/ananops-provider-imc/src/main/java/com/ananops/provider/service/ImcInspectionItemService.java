@@ -68,4 +68,13 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
     PageInfo getItemByMaintainerIdAndStatusAndPage(ItemQueryDto itemQueryDto);
 
     PageInfo getAcceptedItemOfMaintainerAndPage(ItemQueryDto itemQueryDto);
+
+    /**
+     * 与getItemByItemId接口逻辑一致，只是封装了工程师名称
+     *
+     * @param itemId 子项Id
+     *
+     * @return 包装对象
+     */
+    ImcInspectionItemDto getItemDtoByItemId(Long itemId);//根据巡检任务子项ID，获取对应的巡检任务子项(封装工程师名称返回)
 }

@@ -98,8 +98,8 @@ public class ImcInspectionItemController extends BaseController {
 
     @GetMapping(value = "/getItemByItemId/{itemId}")
     @ApiOperation(httpMethod = "GET",value = "根据巡检任务子项的ID，获取对应的巡检任务子项")
-    public Wrapper<ImcInspectionItem> getItemByItemId(@PathVariable Long itemId){
-        return WrapMapper.ok(imcInspectionItemService.getItemByItemId(itemId));
+    public Wrapper<ImcInspectionItemDto> getItemByItemId(@PathVariable Long itemId){
+        return WrapMapper.ok(imcInspectionItemService.getItemDtoByItemId(itemId));
     }
 
     @PostMapping(value = "/modifyItemStatusByItemId")
