@@ -54,6 +54,8 @@ public class ImcItemFeiginClient extends BaseController implements ImcItemFeignA
         }
         ImcInspectionItem imcInspectionItem = imcInspectionItemService.getItemByItemId(itemId);
         imcInspectionItem.setMaintainerId(maintainerId);
+        // 分配工程师的时候设置巡检相关单据关联信息
+        imcInspectionItemService.handleInvoice(itemChangeMaintainerDto);
         int result = imcInspectionItemService.update(imcInspectionItem);
         if(result == 1){
             return WrapMapper.ok(itemChangeMaintainerDto);

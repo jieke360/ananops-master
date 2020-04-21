@@ -38,4 +38,9 @@ public class MdcFormTemplateItem extends BaseEntity {
      * 内容描述
      */
     private String content;
+
+    /**
+     * 模板单项序号
+     */
+    private Integer sort;
 }

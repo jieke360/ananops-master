@@ -154,6 +154,10 @@
             <artifactId>itext-asian</artifactId>
             <version>5.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-mdc-api</artifactId>
+        </dependency>
     </dependencies>
 
 

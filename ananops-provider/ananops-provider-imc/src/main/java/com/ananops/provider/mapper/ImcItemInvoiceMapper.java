@@ -1,12 +1,12 @@
 package com.ananops.provider.mapper;
 
 import com.ananops.core.mybatis.MyMapper;
-import com.ananops.provider.model.domain.MdcFormInstanceDevice;
+import com.ananops.provider.model.domain.ImcItemInvoice;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
 /**
- * 巡检记录表实例设备
+ * 巡检记录表实例，每个点位一个实例
  *
  * @author Bingyue Duan
  *
@@ -16,6 +16,6 @@ import org.springframework.stereotype.Component;
  */
 @Mapper
 @Component
-public interface MdcFormInstanceDeviceMapper extends MyMapper<MdcFormInstanceDevice> {
+public interface ImcItemInvoiceMapper extends MyMapper<ImcItemInvoice> {
 
 }

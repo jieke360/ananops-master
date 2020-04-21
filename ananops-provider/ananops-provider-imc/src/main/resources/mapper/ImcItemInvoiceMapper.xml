@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ananops.provider.mapper.MdcFormInstanceMapper" >
-  <resultMap id="BaseResultMap" type="com.ananops.provider.model.domain.MdcFormInstance" >
+<mapper namespace="com.ananops.provider.mapper.ImcItemInvoiceMapper" >
+  <resultMap id="BaseResultMap" type="com.ananops.provider.model.domain.ImcItemInvoice" >
     <!--
       WARNING - @mbg.generated
     -->
@@ -17,6 +17,7 @@
     <result column="user_confirm" property="userConfirm" jdbcType="VARCHAR" />
     <result column="engineer_id" property="engineerId" jdbcType="BIGINT" />
     <result column="engineer" property="engineer" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
     <result column="dr" property="dr" jdbcType="CHAR" />
     <result column="version" property="version" jdbcType="INTEGER" />
     <result column="creator" property="creator" jdbcType="VARCHAR" />

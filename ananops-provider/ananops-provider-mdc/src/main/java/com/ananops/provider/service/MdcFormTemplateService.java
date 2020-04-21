@@ -3,6 +3,7 @@ package com.ananops.provider.service;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.MdcFormTemplate;
+import com.ananops.provider.model.dto.FormTemplateItemDto;
 import com.ananops.provider.model.dto.MdcFormDataDto;
 
 import java.util.List;
@@ -71,4 +72,15 @@ public interface MdcFormTemplateService extends IService<MdcFormTemplate> {
      * @return
      */
     Integer deleteById(Long templateId);
+
+    /**
+     * 根据TemplateId查询模板子项
+     *
+     * @param id
+     *
+     * @param device
+     *
+     * @return
+     */
+    List<FormTemplateItemDto> queryItemsByTemplateId(Long templateId, String type);
 }

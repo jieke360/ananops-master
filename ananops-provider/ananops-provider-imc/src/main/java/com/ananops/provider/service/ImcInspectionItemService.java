@@ -77,4 +77,11 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
      * @return 包装对象
      */
     ImcInspectionItemDto getItemDtoByItemId(Long itemId);//根据巡检任务子项ID，获取对应的巡检任务子项(封装工程师名称返回)
+
+    /**
+     * 处理单据相关关联信息
+     *
+     * @param itemChangeMaintainerDto
+     */
+    void handleInvoice(ItemChangeMaintainerDto itemChangeMaintainerDto);
 }

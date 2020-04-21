@@ -234,6 +234,11 @@ public enum ErrorCodeEnum {
 	GL99990005(99990005,"故障类型和故障位置内容不能为空"),
 
 	/**
+	 * GL 99990006 error code enum.
+	 */
+	GL99990006(99990006,"该项目未绑定巡检单模板，需用户管理员配置项目巡检单，projectId=%s"),
+
+	/**
 	 * Uac 10010001 error code enum.
 	 */
 //	 1001 用户中心
@@ -644,6 +649,10 @@ public enum ErrorCodeEnum {
 	MDC10021037(10021037,"该动态表单模板不存在，templateId=%s"),
 
 	MDC10021038(10021038,"该项目已绑定动态表单模板，templateId=%s"),
+
+	MDC10021039(10021039,"查询模板使用关联的项目ID不能为空，projectId=%s"),
+
+	MDC10021040(10021040,"该项目未绑定动态表单模板，projectId=%s"),
 	/**
 	 * Omc 10031001 error code enum.
 	 */

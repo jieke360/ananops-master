@@ -9,10 +9,12 @@ import com.ananops.provider.mapper.MdcFormTemplateItemMapper;
 import com.ananops.provider.mapper.MdcFormTemplateMapper;
 import com.ananops.provider.model.domain.MdcFormTemplate;
 import com.ananops.provider.model.domain.MdcFormTemplateItem;
+import com.ananops.provider.model.dto.FormTemplateItemDto;
 import com.ananops.provider.model.dto.MdcDeviceDesc;
 import com.ananops.provider.model.dto.MdcFormDataDto;
 import com.ananops.provider.model.dto.MdcInspcDetail;
 import com.ananops.provider.service.MdcFormTemplateService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -80,6 +82,7 @@ public class MdcFormTemplateServiceImpl extends BaseService<MdcFormTemplate> imp
         List<MdcInspcDetail> mdcInspcDetails = mdcFormDataDto.getInspcDetailList();
         // 存储资产列表模板子项
         if (mdcDeviceDescs != null) {
+            int i = 1;
             for (MdcDeviceDesc mdcDeviceDesc : mdcDeviceDescs) {
                 Long deviceItemId = super.generateId();
                 MdcFormTemplateItem mdcFormTemplateItem = new MdcFormTemplateItem();
@@ -87,11 +90,13 @@ public class MdcFormTemplateServiceImpl extends BaseService<MdcFormTemplate> imp
                 mdcFormTemplateItem.setTemplateId(templateId);
                 mdcFormTemplateItem.setType("device");
                 mdcFormTemplateItem.setContent(mdcDeviceDesc.getDevice());
+                mdcFormTemplateItem.setSort(i++);
                 mdcFormTemplateItemMapper.insert(mdcFormTemplateItem);
             }
         }
         // 存储巡检内容模板子项
         if (mdcInspcDetails != null) {
+            int i = 1;
             for (MdcInspcDetail mdcInspcDetail : mdcInspcDetails) {
                 Long itemId = super.generateId();
                 MdcFormTemplateItem mdcFormTemplateItem = new MdcFormTemplateItem();
@@ -99,6 +104,7 @@ public class MdcFormTemplateServiceImpl extends BaseService<MdcFormTemplate> imp
                 mdcFormTemplateItem.setTemplateId(templateId);
                 mdcFormTemplateItem.setType("inspcContent");
                 mdcFormTemplateItem.setContent(mdcInspcDetail.getItemContent());
+                mdcFormTemplateItem.setSort(i++);
                 mdcFormTemplateItemMapper.insert(mdcFormTemplateItem);
             }
         }
@@ -168,6 +174,7 @@ public class MdcFormTemplateServiceImpl extends BaseService<MdcFormTemplate> imp
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("templateId", mdcFormTemplate.getId());
         criteria.andEqualTo("type", "device");
+        example.setOrderByClause("`sort` ASC");
         List<MdcFormTemplateItem> devices = mdcFormTemplateItemMapper.selectByExample(example);
         if (devices != null) {
             List<MdcDeviceDesc> mdcDeviceDescs = new ArrayList<>();
@@ -183,6 +190,7 @@ public class MdcFormTemplateServiceImpl extends BaseService<MdcFormTemplate> imp
         Example.Criteria criteria1 = example1.createCriteria();
         criteria1.andEqualTo("templateId", mdcFormTemplate.getId());
         criteria1.andEqualTo("type", "inspcContent");
+        example1.setOrderByClause("`sort` ASC");
         List<MdcFormTemplateItem> inspcs = mdcFormTemplateItemMapper.selectByExample(example1);
         if (inspcs != null) {
             List<MdcInspcDetail> mdcInspcDetails = new ArrayList<>();
@@ -209,5 +217,24 @@ public class MdcFormTemplateServiceImpl extends BaseService<MdcFormTemplate> imp
         mdcFormTemplateItemMapper.deleteByExample(example);
         // 再删除模板
         return mdcFormTemplateMapper.deleteByPrimaryKey(mdcFormTemplate.getId());
+    }
+
+    @Override
+    public List<FormTemplateItemDto> queryItemsByTemplateId(Long templateId, String type) {
+        List<FormTemplateItemDto> formTemplateItemDtos = new ArrayList<>();
+        Example example = new Example(MdcFormTemplateItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("templateId", templateId);
+        criteria.andEqualTo("type", type);
+        example.setOrderByClause("`sort` ASC");
+        List<MdcFormTemplateItem> list = mdcFormTemplateItemMapper.selectByExample(example);
+        if (list != null) {
+            for (MdcFormTemplateItem mdcFormTemplateItem : list) {
+                FormTemplateItemDto formTemplateItemDto = new FormTemplateItemDto();
+                BeanUtils.copyProperties(mdcFormTemplateItem,formTemplateItemDto);
+                formTemplateItemDtos.add(formTemplateItemDto);
+            }
+        }
+        return formTemplateItemDtos;
     }
 }

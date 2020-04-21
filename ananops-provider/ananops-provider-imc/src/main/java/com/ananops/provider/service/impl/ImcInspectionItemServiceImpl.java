@@ -8,10 +8,7 @@ import com.ananops.base.enums.ErrorCodeEnum;
 import com.ananops.base.exception.BusinessException;
 import com.ananops.core.support.BaseService;
 import com.ananops.provider.manager.ImcItemManager;
-import com.ananops.provider.mapper.ImcFileTaskItemStatusMapper;
-import com.ananops.provider.mapper.ImcInspectionItemMapper;
-import com.ananops.provider.mapper.ImcInspectionTaskMapper;
-import com.ananops.provider.mapper.ImcUserItemMapper;
+import com.ananops.provider.mapper.*;
 import com.ananops.provider.model.domain.*;
 import com.ananops.provider.model.dto.*;
 import com.ananops.provider.model.dto.attachment.OptAttachmentUpdateReqDto;
@@ -25,8 +22,8 @@ import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.mq.producer.ItemMsgProducer;
 import com.ananops.provider.service.ImcInspectionItemService;
 import com.ananops.provider.service.ImcInspectionTaskService;
+import com.ananops.provider.service.MdcFormTemplateFeignApi;
 import com.ananops.provider.service.OpcOssFeignApi;
-import com.ananops.wrapper.WrapMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -78,6 +75,18 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
     @Resource
     private UacUserFeignApi uacUserFeignApi;
 
+    @Resource
+    private MdcFormTemplateFeignApi mdcFormTemplateFeignApi;
+
+    @Resource
+    private ImcItemInvoiceMapper imcItemInvoiceMapper;
+
+    @Resource
+    private ImcItemInvoiceDescMapper imcItemInvoiceDescMapper;
+
+    @Resource
+    private ImcItemInvoiceDeviceMapper imcItemInvoiceDeviceMapper;
+
     /**
      *
      * @param imcAddInspectionItemDto
@@ -107,6 +116,55 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                 imcInspectionItem.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
             }
             imcInspectionItemMapper.insert(imcInspectionItem);
+
+            //新建任务子项的时候根据点位数量创建需要提交的巡检单据
+            Integer count = imcAddInspectionItemDto.getCount();
+            if (count != null && count>0) {
+                Long projectId = imcInspectionTasks.get(0).getProjectId();
+                FormTemplateDto formTemplateDto = mdcFormTemplateFeignApi.getFormTemplateByProjectId(projectId).getResult();
+                if (formTemplateDto == null) {
+                    throw new BusinessException(ErrorCodeEnum.GL99990006,projectId);
+                }
+                for (int i=0; i<count; i++) {
+                    Long invoiceId = super.generateId();
+                    ImcItemInvoice imcItemInvoice = new ImcItemInvoice();
+                    imcItemInvoice.setId(invoiceId);
+                    imcItemInvoice.setTemplateId(formTemplateDto.getId());
+                    imcItemInvoice.setInspcItemId(itemId);
+                    imcItemInvoice.setStatus("N");
+                    imcItemInvoice.setDr("0");
+                    imcItemInvoice.setUpdateInfo(loginAuthDto);
+                    imcItemInvoiceMapper.insert(imcItemInvoice);
+                    // 创建资产清单部分
+                    List<FormTemplateItemDto> assetList = formTemplateDto.getAssetList();
+                    if (assetList != null) {
+                        for (FormTemplateItemDto formTemplateItemDto : assetList) {
+                            Long deviceId = super.generateId();
+                            ImcItemInvoiceDevice imcItemInvoiceDevice = new ImcItemInvoiceDevice();
+                            imcItemInvoiceDevice.setId(deviceId);
+                            imcItemInvoiceDevice.setInvoiceId(invoiceId);
+                            imcItemInvoiceDevice.setContent(formTemplateItemDto.getContent());
+                            imcItemInvoiceDevice.setSort(formTemplateItemDto.getSort());
+                            imcItemInvoiceDevice.setUpdateInfo(loginAuthDto);
+                            imcItemInvoiceDeviceMapper.insert(imcItemInvoiceDevice);
+                        }
+                    }
+                    // 创建巡检内容项部分
+                    List<FormTemplateItemDto> inspcDetailList = formTemplateDto.getInspcDetailList();
+                    if (inspcDetailList != null) {
+                        for (FormTemplateItemDto formItemDto : inspcDetailList) {
+                            Long descId = super.generateId();
+                            ImcItemInvoiceDesc imcItemInvoiceDesc = new ImcItemInvoiceDesc();
+                            imcItemInvoiceDesc.setId(descId);
+                            imcItemInvoiceDesc.setInvoiceId(invoiceId);
+                            imcItemInvoiceDesc.setItemContent(formItemDto.getContent());
+                            imcItemInvoiceDesc.setSort(formItemDto.getSort());
+                            imcItemInvoiceDesc.setUpdateInfo(loginAuthDto);
+                            imcItemInvoiceDescMapper.insert(imcItemInvoiceDesc);
+                        }
+                    }
+                }
+            }
             //新增一条巡检任务子项和甲方用户的关系记录
             ImcUserItem imcUserItem = new ImcUserItem();
             imcUserItem.setItemId(itemId);
@@ -702,5 +760,27 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             imcInspectionItemDtos.add(imcInspectionItemDto);
         }
         return imcInspectionItemDtos;
+    }
+
+    @Override
+    public void handleInvoice(ItemChangeMaintainerDto itemChangeMaintainerDto) {
+        Long itemId = itemChangeMaintainerDto.getItemId();
+        Long maintainerId = itemChangeMaintainerDto.getMaintainerId();
+        // 根据子项任务Id查找相关的单据列表
+        Example example = new Example(ImcItemInvoice.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("inspcItemId",itemId);
+        List<ImcItemInvoice> imcItemInvoices = imcItemInvoiceMapper.selectByExample(example);
+        if (imcItemInvoices != null) {
+            // 查询工程师信息，工程师是直接挂在公司组织下的，未分部门，所以这里的工程师组织Id就是公司组织Id，组织名称就是公司名称
+            UserInfoDto user = uacUserFeignApi.getUacUserById(maintainerId).getResult();
+            for (ImcItemInvoice imcItemInvoice : imcItemInvoices) {
+                imcItemInvoice.setInspcCompanyId(user.getGroupId());
+                imcItemInvoice.setInspcCompany(user.getGroupName());
+                imcItemInvoice.setEngineerId(maintainerId);
+                imcItemInvoice.setEngineer(user.getUserName());
+                imcItemInvoiceMapper.updateByPrimaryKeySelective(imcItemInvoice);
+            }
+        }
     }
 }

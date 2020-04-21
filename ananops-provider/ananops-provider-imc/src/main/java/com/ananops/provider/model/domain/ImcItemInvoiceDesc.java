@@ -4,8 +4,8 @@ import com.ananops.core.mybatis.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Table;
 
 /**
  * 表单实例设备统计
@@ -18,16 +18,16 @@ import javax.persistence.*;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Table(name = "an_mdc_form_instance_item")
-public class MdcFormInstanceItem extends BaseEntity {
+@Table(name = "an_imc_item_invoice_desc")
+public class ImcItemInvoiceDesc extends BaseEntity {
 
     private static final long serialVersionUID = 4242728413039942983L;
 
     /**
      * 实例ID
      */
-    @Column(name = "instace_id")
-    private Long instaceId;
+    @Column(name = "invoice_id")
+    private Long invoiceId;
 
     /**
      * 巡检内容
@@ -46,4 +46,9 @@ public class MdcFormInstanceItem extends BaseEntity {
      */
     @Column(name = "item_result")
     private String itemResult;
+
+    /**
+     * 对应序号
+     */
+    private Integer sort;
 }
