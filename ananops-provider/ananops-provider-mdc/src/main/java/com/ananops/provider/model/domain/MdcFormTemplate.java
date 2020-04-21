@@ -57,6 +57,12 @@ public class MdcFormTemplate extends BaseEntity {
     private Long projectId;
 
     /**
+     * 关联的项目名称
+     */
+    @Column(name = "project_name")
+    private String projectName;
+
+    /**
      * 逻辑删除
      */
     private String dr;

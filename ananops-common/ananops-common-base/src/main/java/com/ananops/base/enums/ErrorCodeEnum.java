@@ -640,6 +640,8 @@ public enum ErrorCodeEnum {
 	MDC10021035(10021035,"字典项编码不能是空"),
 
 	MDC10021036(10021036,"字典项排序码不能是空"),
+
+	MDC10021037(10021037,"该动态表单模板不存在，templateId=%s"),
 	/**
 	 * Omc 10031001 error code enum.
 	 */

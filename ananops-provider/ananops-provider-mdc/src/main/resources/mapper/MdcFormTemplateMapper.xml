@@ -12,6 +12,7 @@
     <result column="mark" property="mark" jdbcType="VARCHAR" />
     <result column="group_id" property="groupId" jdbcType="BIGINT" />
     <result column="project_id" property="projectId" jdbcType="BIGINT" />
+    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
     <result column="dr" property="dr" jdbcType="CHAR" />
     <result column="version" property="version" jdbcType="INTEGER" />
     <result column="creator" property="creator" jdbcType="VARCHAR" />
