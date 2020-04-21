@@ -104,7 +104,7 @@ public class MdcFormTemplateController extends BaseController {
      *
      * @return 返回
      */
-    @PostMapping(value = "/deleteDictByDictId/{templateId}")
+    @PostMapping(value = "/deleteFormTemplateById/{templateId}")
     @ApiOperation(httpMethod = "GET",value = "根据表单模板Id删除动态表单模板")
     public Wrapper<Integer> deleteById(@PathVariable Long templateId) {
         logger.info("根据表单模板Id删除动态表单模板,templateId={}",templateId);

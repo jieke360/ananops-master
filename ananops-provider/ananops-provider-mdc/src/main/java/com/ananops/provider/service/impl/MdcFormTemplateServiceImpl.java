@@ -13,7 +13,6 @@ import com.ananops.provider.model.dto.MdcDeviceDesc;
 import com.ananops.provider.model.dto.MdcFormDataDto;
 import com.ananops.provider.model.dto.MdcInspcDetail;
 import com.ananops.provider.service.MdcFormTemplateService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -107,6 +106,16 @@ public class MdcFormTemplateServiceImpl extends BaseService<MdcFormTemplate> imp
 
     @Override
     public Integer updateFormTemplate(MdcFormTemplate mdcFormTemplate, LoginAuthDto loginAuthDto) {
+        // 关联的项目查询
+        if (mdcFormTemplate.getProjectId() != null) {
+            Example example = new Example(MdcFormTemplate.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("projectId", mdcFormTemplate.getProjectId());
+            List<MdcFormTemplate> mdcFormTemplates = mdcFormTemplateMapper.selectByExample(example);
+            if (mdcFormTemplates.size() > 0) {
+                throw new BusinessException(ErrorCodeEnum.MDC10021038,mdcFormTemplates.get(0).getId());
+            }
+        }
         mdcFormTemplate.setUpdateInfo(loginAuthDto);
         // 首先增量更新变动项
         mdcFormTemplateMapper.updateByPrimaryKeySelective(mdcFormTemplate);
