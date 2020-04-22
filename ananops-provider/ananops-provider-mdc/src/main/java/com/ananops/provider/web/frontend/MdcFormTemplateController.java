@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.BaseController;
 import com.ananops.provider.model.domain.MdcFormTemplate;
-import com.ananops.provider.model.dto.MdcFormDataDto;
+import com.ananops.provider.model.dto.FormDataDto;
 import com.ananops.provider.service.MdcFormTemplateService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
@@ -43,7 +43,7 @@ public class MdcFormTemplateController extends BaseController {
     @PostMapping(value = "/saveFormTemplate")
     @ApiOperation(httpMethod = "POST",value = "保存全部模板内容")
     public Wrapper<Integer> saveFullFormTemplate(@ApiParam(name = "mdcFormDataDto",value = "添加或编辑动态表单模板")@RequestBody JSONObject jsonObject) {
-        MdcFormDataDto mdcFormDataDto = JSON.parseObject(jsonObject.toJSONString(), MdcFormDataDto.class);
+        FormDataDto mdcFormDataDto = JSON.parseObject(jsonObject.toJSONString(), FormDataDto.class);
         logger.info("保存全部模板内容,mdcFormDataDto={}",jsonObject);
         LoginAuthDto loginAuthDto = super.getLoginAuthDto();
         return WrapMapper.ok(mdcFormTemplateService.saveFormTemplate(mdcFormDataDto, loginAuthDto));
@@ -94,7 +94,7 @@ public class MdcFormTemplateController extends BaseController {
      */
     @PostMapping(value = "/queryDetailsById/{templateId}")
     @ApiOperation(httpMethod = "GET",value = "查询表单模板详情（包括内容项）")
-    public Wrapper<MdcFormDataDto> queryDetailsById(@PathVariable Long templateId) {
+    public Wrapper<FormDataDto> queryDetailsById(@PathVariable Long templateId) {
         logger.info("查询表单模板详情（包括内容项）,templateId={}",templateId);
         return WrapMapper.ok(mdcFormTemplateService.queryDetailsById(templateId));
     }

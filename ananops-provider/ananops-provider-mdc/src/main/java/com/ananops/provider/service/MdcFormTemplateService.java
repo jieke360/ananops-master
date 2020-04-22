@@ -4,7 +4,7 @@ import com.ananops.base.dto.LoginAuthDto;
 import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.MdcFormTemplate;
 import com.ananops.provider.model.dto.FormTemplateItemDto;
-import com.ananops.provider.model.dto.MdcFormDataDto;
+import com.ananops.provider.model.dto.FormDataDto;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public interface MdcFormTemplateService extends IService<MdcFormTemplate> {
      *
      * @return
      */
-    Integer saveFormTemplate(MdcFormDataDto mdcFormDataDto, LoginAuthDto loginAuthDto);
+    Integer saveFormTemplate(FormDataDto mdcFormDataDto, LoginAuthDto loginAuthDto);
 
     /**
      * 更新单个表单模板
@@ -62,7 +62,7 @@ public interface MdcFormTemplateService extends IService<MdcFormTemplate> {
      *
      * @return
      */
-    MdcFormDataDto queryDetailsById(Long templateId);
+    FormDataDto queryDetailsById(Long templateId);
 
     /**
      * 根据模板Id删除动态表单模板

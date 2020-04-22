@@ -7,7 +7,7 @@
     -->
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="invoice_id" property="invoiceId" jdbcType="BIGINT" />
-    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="device" property="device" jdbcType="VARCHAR" />
     <result column="sort" property="sort" jdbcType="INTEGER" />
     <result column="version" property="version" jdbcType="INTEGER" />
     <result column="creator" property="creator" jdbcType="VARCHAR" />

@@ -16,7 +16,6 @@ import com.ananops.provider.model.dto.attachment.OptUploadFileByteInfoReqDto;
 import com.ananops.provider.model.dto.oss.*;
 import com.ananops.provider.model.dto.user.UserInfoDto;
 import com.ananops.provider.model.enums.ItemStatusEnum;
-
 import com.ananops.provider.model.enums.TaskStatusEnum;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.mq.producer.ItemMsgProducer;
@@ -115,11 +114,12 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                 //将巡检任务子项的状态设置为等待分配工程师
                 imcInspectionItem.setStatus(ItemStatusEnum.WAITING_FOR_MAINTAINER.getStatusNum());
             }
-            imcInspectionItemMapper.insert(imcInspectionItem);
 
             //新建任务子项的时候根据点位数量创建需要提交的巡检单据
             Integer count = imcAddInspectionItemDto.getCount();
             if (count != null && count>0) {
+                // 使用子项中的Result字段来保存待填写的巡检表单数，均填写完成后写入finish字符串表示已完成
+                imcInspectionItem.setResult(String.valueOf(count));
                 Long projectId = imcInspectionTasks.get(0).getProjectId();
                 FormTemplateDto formTemplateDto = mdcFormTemplateFeignApi.getFormTemplateByProjectId(projectId).getResult();
                 if (formTemplateDto == null) {
@@ -143,7 +143,7 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                             ImcItemInvoiceDevice imcItemInvoiceDevice = new ImcItemInvoiceDevice();
                             imcItemInvoiceDevice.setId(deviceId);
                             imcItemInvoiceDevice.setInvoiceId(invoiceId);
-                            imcItemInvoiceDevice.setContent(formTemplateItemDto.getContent());
+                            imcItemInvoiceDevice.setDevice(formTemplateItemDto.getContent());
                             imcItemInvoiceDevice.setSort(formTemplateItemDto.getSort());
                             imcItemInvoiceDevice.setUpdateInfo(loginAuthDto);
                             imcItemInvoiceDeviceMapper.insert(imcItemInvoiceDevice);
@@ -165,6 +165,9 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                     }
                 }
             }
+            // 巡检单据创建完成之后再创建任务子项。
+            imcInspectionItemMapper.insert(imcInspectionItem);
+
             //新增一条巡检任务子项和甲方用户的关系记录
             ImcUserItem imcUserItem = new ImcUserItem();
             imcUserItem.setItemId(itemId);

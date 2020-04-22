@@ -1,8 +1,10 @@
 package com.ananops.provider.model.domain;
 
 import com.ananops.core.mybatis.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -70,6 +72,8 @@ public class ImcItemInvoice extends BaseEntity {
      * 巡检日期
      */
     @Column(name = "inspc_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date inspcDate;
 
     /**

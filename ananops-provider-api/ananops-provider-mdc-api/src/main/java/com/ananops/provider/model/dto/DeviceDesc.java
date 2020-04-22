@@ -15,9 +15,15 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel
-public class MdcDeviceDesc implements Serializable {
+public class DeviceDesc implements Serializable {
 
     private static final long serialVersionUID = 2460857371658814707L;
+
+    /**
+     * 设备描述项Id
+     */
+    @ApiModelProperty(value = "设备描述项Id")
+    private Long id;
 
     /**
      * 设备描述项

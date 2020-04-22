@@ -18,9 +18,15 @@ import java.util.List;
  */
 @Data
 @ApiModel
-public class MdcFormDataDto implements Serializable {
+public class FormDataDto implements Serializable {
 
     private static final long serialVersionUID = -5189360285416364171L;
+
+    /**
+     * 表单数据项Id
+     */
+    @ApiModelProperty(value = "表单数据项Id")
+    private Long id;
 
     /**
      * 表单Schema Id
@@ -56,17 +62,17 @@ public class MdcFormDataDto implements Serializable {
      * 资产描述列表
      */
     @ApiModelProperty(value = "资产描述列表")
-    private List<MdcDeviceDesc> assetList;
+    private List<DeviceDesc> assetList;
 
     /**
      * 常规巡检详情
      */
     @ApiModelProperty(value = "常规巡检详情")
-    private List<MdcInspcDetail> inspcDetailList;
+    private List<InspcDetail> inspcDetailList;
 
     /**
      * 确认内容
      */
     @ApiModelProperty(value = "确认内容")
-    private MdcInspcFeedBack feedback;
+    private InspcFeedBack feedback;
 }

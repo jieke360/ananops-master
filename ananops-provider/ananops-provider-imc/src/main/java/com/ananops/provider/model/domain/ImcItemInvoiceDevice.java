@@ -32,7 +32,7 @@ public class ImcItemInvoiceDevice extends BaseEntity {
     /**
      * 设备状态描述
      */
-    private String content;
+    private String device;
 
     /**
      * 对应序号

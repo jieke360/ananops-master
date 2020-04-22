@@ -1,10 +1,13 @@
 package com.ananops.provider.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 巡检表单反馈确认部分
@@ -17,7 +20,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel
-public class MdcInspcFeedBack implements Serializable {
+public class InspcFeedBack implements Serializable {
 
     private static final long serialVersionUID = 1483466439244098379L;
 
@@ -31,7 +34,9 @@ public class MdcInspcFeedBack implements Serializable {
      * 巡检日期
      */
     @ApiModelProperty(value = "巡检日期")
-    private Data inspcDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date inspcDate;
 
     /**
      * 用户确认

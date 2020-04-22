@@ -17,9 +17,15 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel
-public class MdcInspcDetail implements Serializable {
+public class InspcDetail implements Serializable {
 
     private static final long serialVersionUID = -2677421198416899983L;
+
+    /**
+     * 巡检内容项Id
+     */
+    @ApiModelProperty(value = "巡检内容项Id")
+    private Long id;
 
     /**
      * 巡检内容
