@@ -786,4 +786,19 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
             }
         }
     }
+
+    @Override
+    public ImcItemChangeStatusDto putResultByItemId(ItemResultDto itemResultDto, LoginAuthDto loginAuthDto) {
+        // 增量更新子项实际工作起始时间
+        ImcInspectionItem imcInspectionItem = new ImcInspectionItem();
+        imcInspectionItem.setId(itemResultDto.getItemId());
+        imcInspectionItem.setActualStartTime(itemResultDto.getActualStartTime());
+        imcInspectionItem.setActualFinishTime(itemResultDto.getActualFinishTime());
+        imcInspectionItemMapper.updateByPrimaryKeySelective(imcInspectionItem);
+        // 走原接口逻辑
+        ImcItemChangeStatusDto imcItemChangeStatusDto = new ImcItemChangeStatusDto();
+        BeanUtils.copyProperties(itemResultDto, imcItemChangeStatusDto);
+        imcItemChangeStatusDto.setLoginAuthDto(loginAuthDto);
+        return this.modifyImcItemStatusByItemId(imcItemChangeStatusDto);
+    }
 }

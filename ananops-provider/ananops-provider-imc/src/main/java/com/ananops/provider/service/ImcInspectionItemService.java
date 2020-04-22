@@ -84,4 +84,15 @@ public interface ImcInspectionItemService extends IService<ImcInspectionItem> {
      * @param itemChangeMaintainerDto
      */
     void handleInvoice(ItemChangeMaintainerDto itemChangeMaintainerDto);
+
+    /**
+     * 提交巡检结果相关信息
+     *
+     * @param itemResultDto
+     *
+     * @param loginAuthDto
+     *
+     * @return
+     */
+    ImcItemChangeStatusDto putResultByItemId(ItemResultDto itemResultDto, LoginAuthDto loginAuthDto);
 }

@@ -111,6 +111,15 @@ public class ImcInspectionItemController extends BaseController {
         return WrapMapper.ok(imcInspectionItemService.modifyImcItemStatusByItemId(imcItemChangeStatusDto));
     }
 
+    @PostMapping(value = "/putResultByItemId")
+    @ApiOperation(httpMethod = "POST",value = "提交巡检结果相关信息")
+    @AnanLogAnnotation
+    public Wrapper<ImcItemChangeStatusDto> putResultByItemId(@ApiParam(name = "itemResultDto",value = "巡检任务子项结果相关资料提交")@RequestBody ItemResultDto itemResultDto){
+        logger.info("提交巡检结果相关信息,itemResultDto={}",itemResultDto);
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        return WrapMapper.ok(imcInspectionItemService.putResultByItemId(itemResultDto, loginAuthDto));
+    }
+
     @PostMapping(value = "/getItemLogs")
     @ApiOperation(httpMethod = "POST",value = "根据巡检任务子项的ID查询对应的日志")
     public Wrapper<List<ItemLogVo>> getItemLogs(@ApiParam(name = "getItemLogs",value = "根据巡检任务子项的ID查询对应的日志")@RequestBody ItemLogQueryDto itemLogQueryDto){
