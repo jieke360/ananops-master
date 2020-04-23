@@ -3,6 +3,10 @@ package com.ananops.provider.service;
 import com.alipay.api.AlipayApiException;
 import com.ananops.provider.alipay.AlipayBean;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * @author Bridge Wang
  * @version 1.0
@@ -16,5 +20,12 @@ public interface AlipayService {
      * @throws AlipayApiException
      */
     String aliPay(AlipayBean alipayBean) throws AlipayApiException;
+
+    /**
+     * 付款异步通知调用地址
+     * @param request 新增参数
+     * @return 新增返回值
+     */
+    void notify(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }
 
