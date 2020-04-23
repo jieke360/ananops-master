@@ -246,9 +246,9 @@ public class ImcItemInvoiceServiceImpl extends BaseService<ImcItemInvoice> imple
                 document.add(image);
                 // 增添系统维护保养巡检记录表
                 PdfPTable table = PdfUtil.createTable(4,10);
-                table.setSpacingBefore(60f);
+                table.setSpacingBefore(15f);
 
-                table.addCell(PdfUtil.createCell(invoiceAllInfo.getImcInspectionItem().getItemName() + "-维护保养巡检记录表",headfont, Element.ALIGN_CENTER, 4, 2));
+                table.addCell(PdfUtil.createCell(invoiceAllInfo.getImcInspectionItem().getItemName() + "-维护保养巡检记录表",headfont, Element.ALIGN_CENTER, 4, 50f));
 
                 table.addCell(PdfUtil.createCell("点位名称", keyfont, Element.ALIGN_CENTER, 2));
 
@@ -298,7 +298,7 @@ public class ImcItemInvoiceServiceImpl extends BaseService<ImcItemInvoice> imple
 
                 table.addCell(PdfUtil.createCell(invoice.getEngineer(), textfont, Element.ALIGN_CENTER, 1));
 
-                table.setSpacingAfter(60f);
+                table.setSpacingAfter(15f);
                 document.add(table);
                 document.newPage();
             }

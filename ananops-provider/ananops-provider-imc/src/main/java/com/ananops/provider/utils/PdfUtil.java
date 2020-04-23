@@ -99,6 +99,16 @@ public class PdfUtil {
         cell.setPhrase(new Phrase(value, font));
         return cell;
     }
+
+    public static PdfPCell createCell(String value, Font font, int align, int colspan, float fixedHeight) {
+        PdfPCell cell = new PdfPCell();
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(align);
+        cell.setColspan(colspan);
+        cell.setFixedHeight(fixedHeight);
+        cell.setPhrase(new Phrase(value, font));
+        return cell;
+    }
     /**
      * 创建单元格（指定字体、水平居..、单元格跨x列合并、单元格跨x行合并、）
      * @param value
