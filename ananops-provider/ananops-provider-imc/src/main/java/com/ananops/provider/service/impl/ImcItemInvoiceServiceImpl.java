@@ -221,7 +221,7 @@ public class ImcItemInvoiceServiceImpl extends BaseService<ImcItemInvoice> imple
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             PdfWriter writer = PdfWriter.getInstance(document,out);
 
-            writer.setPageEvent(new WaterMark(oneInvoiceAllInfo.getInvoice().getInspcCompany()));// 水印
+            writer.setPageEvent(new WaterMark("安安运维"));// 水印
 
             document.open();
             document.addTitle("系统维护保养巡检记录");
@@ -246,7 +246,7 @@ public class ImcItemInvoiceServiceImpl extends BaseService<ImcItemInvoice> imple
                 document.add(image);
                 // 增添系统维护保养巡检记录表
                 PdfPTable table = PdfUtil.createTable(4,10);
-                table.setSpacingBefore(15f);
+                table.setSpacingBefore(10f);
 
                 table.addCell(PdfUtil.createCell(invoiceAllInfo.getImcInspectionItem().getItemName() + "-维护保养巡检记录表",headfont, Element.ALIGN_CENTER, 4, 50f));
 
@@ -298,7 +298,7 @@ public class ImcItemInvoiceServiceImpl extends BaseService<ImcItemInvoice> imple
 
                 table.addCell(PdfUtil.createCell(invoice.getEngineer(), textfont, Element.ALIGN_CENTER, 1));
 
-                table.setSpacingAfter(15f);
+                table.setSpacingAfter(10f);
                 document.add(table);
                 document.newPage();
             }
