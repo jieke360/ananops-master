@@ -8,6 +8,7 @@ import com.ananops.provider.core.annotation.AnanLogAnnotation;
 import com.ananops.provider.model.domain.ImcItemInvoice;
 import com.ananops.provider.model.dto.FormDataDto;
 import com.ananops.provider.model.dto.ImcInvoiceQueryDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
 import com.ananops.provider.service.ImcItemInvoiceService;
 import com.ananops.wrapper.WrapMapper;
 import com.ananops.wrapper.Wrapper;
@@ -79,5 +80,20 @@ public class ImcItemInvoiceController extends BaseController {
         FormDataDto formDataDto = JSON.parseObject(jsonObject.toJSONString(), FormDataDto.class);
         LoginAuthDto loginAuthDto = super.getLoginAuthDto();
         return WrapMapper.ok(imcItemInvoiceService.saveData(formDataDto, loginAuthDto));
+    }
+
+    /**
+     * 查看已完成的巡检单预览文件
+     *
+     * @param itemId 巡检任务子项ID
+     *
+     * @return
+     */
+    @GetMapping(value = "/getInvoicePreview/{itemId}")
+    @ApiOperation(httpMethod = "GET",value = "查看已完成的巡检单预览文件")
+    public Wrapper<List<ElementImgUrlDto>> getInvoicePreview(@PathVariable Long itemId){
+        logger.info("查看已完成的巡检单预览文件,itemId={}",itemId);
+        LoginAuthDto loginAuthDto = super.getLoginAuthDto();
+        return WrapMapper.ok(imcItemInvoiceService.getInvoicePreview(itemId, loginAuthDto));
     }
 }

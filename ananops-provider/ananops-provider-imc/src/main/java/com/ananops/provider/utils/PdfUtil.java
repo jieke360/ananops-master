@@ -64,6 +64,7 @@ public class PdfUtil {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setPhrase(new Phrase(value, font));
+        cell.setFixedHeight(30f);
         return cell;
     }
     /**
@@ -78,6 +79,7 @@ public class PdfUtil {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(align);
         cell.setPhrase(new Phrase(value, font));
+        cell.setFixedHeight(30f);
         return cell;
     }
     /**
@@ -93,6 +95,25 @@ public class PdfUtil {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(align);
         cell.setColspan(colspan);
+        cell.setFixedHeight(30f);
+        cell.setPhrase(new Phrase(value, font));
+        return cell;
+    }
+    /**
+     * 创建单元格（指定字体、水平居..、单元格跨x列合并、单元格跨x行合并、）
+     * @param value
+     * @param font
+     * @param align
+     * @param colspan
+     * @return
+     */
+    public static PdfPCell createCell(String value, Font font, int align, int colspan, int rowspan) {
+        PdfPCell cell = new PdfPCell();
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(align);
+        cell.setColspan(colspan);
+        cell.setRowspan(rowspan);
+        cell.setFixedHeight(30f);
         cell.setPhrase(new Phrase(value, font));
         return cell;
     }
@@ -110,8 +131,38 @@ public class PdfUtil {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(align);
         cell.setColspan(colspan);
+        cell.setFixedHeight(30f);
         cell.setPhrase(new Phrase(value, font));
         cell.setPadding(3.0f);
+        if (!boderFlag) {
+            cell.setBorder(0);
+            cell.setPaddingTop(15.0f);
+            cell.setPaddingBottom(8.0f);
+        } else if (boderFlag) {
+            cell.setBorder(0);
+            cell.setPaddingTop(0.0f);
+            cell.setPaddingBottom(15.0f);
+        }
+        return cell;
+    }
+    /**
+     * 创建单元格（指定字体、水平居..、单元格跨x列合并、单元格跨x行合并、设置单元格内边距）
+     * @param value
+     * @param font
+     * @param align
+     * @param colspan
+     * @param boderFlag
+     * @return
+     */
+    public static PdfPCell createCell(String value, Font font, int align, int colspan, int rowspan, boolean boderFlag) {
+        PdfPCell cell = new PdfPCell();
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(align);
+        cell.setColspan(colspan);
+        cell.setRowspan(rowspan);
+        cell.setPhrase(new Phrase(value, font));
+        cell.setPadding(3.0f);
+        cell.setFixedHeight(30f);
         if (!boderFlag) {
             cell.setBorder(0);
             cell.setPaddingTop(15.0f);
@@ -144,6 +195,7 @@ public class PdfUtil {
         cell.setBorderWidthBottom(borderWidth[3]);
         cell.setPaddingTop(paddingSize[0]);
         cell.setPaddingBottom(paddingSize[1]);
+        cell.setFixedHeight(30f);
         if (flag) {
             cell.setColspan(2);
         }

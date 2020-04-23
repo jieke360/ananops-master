@@ -5,6 +5,8 @@ import com.ananops.core.support.IService;
 import com.ananops.provider.model.domain.ImcItemInvoice;
 import com.ananops.provider.model.dto.FormDataDto;
 import com.ananops.provider.model.dto.ImcInvoiceQueryDto;
+import com.ananops.provider.model.dto.oss.ElementImgUrlDto;
+import com.ananops.provider.model.dto.oss.OptUploadFileRespDto;
 
 import java.util.List;
 
@@ -46,4 +48,15 @@ public interface ImcItemInvoiceService extends IService<ImcItemInvoice> {
      * @return
      */
     Integer saveData(FormDataDto formDataDto, LoginAuthDto loginAuthDto);
+
+    /**
+     * 查看已完成的巡检单预览文件
+     *
+     * @param itemId 巡检任务子项ID
+     *
+     * @param loginAuthDto 登录用户信息
+     *
+     * @return
+     */
+    List<ElementImgUrlDto> getInvoicePreview(Long itemId, LoginAuthDto loginAuthDto);
 }
