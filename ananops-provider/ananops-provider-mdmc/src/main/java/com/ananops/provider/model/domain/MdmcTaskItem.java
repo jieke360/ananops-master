@@ -92,10 +92,10 @@ public class MdmcTaskItem extends BaseEntity {
     private String result;
 
     /**
-     * 图片url
+     * 设备类型
      */
-    @Column(name = "photo_url")
-    private String photo_url;
+    @Column(name = "device_type")
+    private String deviceType;
 
     /**
      * 故障类型

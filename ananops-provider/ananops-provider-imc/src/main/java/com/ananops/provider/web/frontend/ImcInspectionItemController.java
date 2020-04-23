@@ -259,4 +259,11 @@ public class ImcInspectionItemController extends BaseController {
         logger.info("根据任务Id查询对应的子项的数目 taskId={}",taskId);
         return WrapMapper.ok(imcInspectionItemService.getImcItemNumberByTaskId(taskId));
     }
+
+    @PostMapping(value = "/getAllFinishedImcItemByMaintainerId")
+    @ApiOperation(httpMethod = "POST",value = "根据维修工id查全部维修工已完成的任务")
+    public Wrapper<PageInfo> getAllFinishedImcItemByMaintainerId(@RequestBody ItemQueryDto itemQueryDto){
+        logger.info("根据维修工id查全部维修工已完成的任务 itemQueryDto={}",itemQueryDto);
+        return WrapMapper.ok(imcInspectionItemService.getAllFinishedItemByMaintainerId(itemQueryDto));
+    }
 }

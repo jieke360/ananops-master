@@ -15,4 +15,6 @@ public interface ImcInspectionItemMapper extends MyMapper<ImcInspectionItem> {
     List<ImcInspectionItem> queryItemByUserId(@Param(value = "userId") Long userId);
 
     List<ImcInspectionItem> queryItemByUserIdAndStatus(@Param(value = "userId")Long userId, @Param(value = "status")Integer status);
+
+    List<ImcInspectionItem> queryFinishedItemByMaintainerId(@Param(value = "maintainerId") Long maintainerId);
 }

@@ -56,4 +56,16 @@
     WHERE 1=1 AND userItem.user_id = #{userId} AND item.id = userItem.item_id AND item.status = #{status}
     ORDER BY update_time
   </select>
+
+  <select id="queryFinishedItemByMaintainerId" parameterType="java.lang.Long" resultType="com.ananops.provider.model.domain.ImcInspectionItem">
+    SELECT
+    <include refid="Base_Column_List">
+      <property name="alias" value="item"></property>
+    </include>
+    FROM
+    an_imc_inspection_item as item
+    WHERE 1=1 AND item.maintainer_id = #{maintainerId}
+    AND item.status &gt;= 4
+    ORDER BY update_time
+  </select>
 </mapper>

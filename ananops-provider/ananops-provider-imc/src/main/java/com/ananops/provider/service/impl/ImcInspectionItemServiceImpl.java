@@ -408,6 +408,14 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
         return imcInspectionItemMapper.selectByExample(example);
     }
 
+    @Override
+    public PageInfo getAllFinishedItemByMaintainerId(ItemQueryDto itemQueryDto){
+        Long maintainerId = itemQueryDto.getMaintainerId();
+        PageHelper.startPage(itemQueryDto.getPageNum(),itemQueryDto.getPageSize());
+        List<ImcInspectionItem> imcInspectionItems = imcInspectionItemMapper.queryFinishedItemByMaintainerId(maintainerId);
+        return new PageInfo<>(imcInspectionItems);
+    }
+
     /**
      * 修改巡检任务子项对应的维修工ID
      * @param itemChangeMaintainerDto
