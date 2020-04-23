@@ -147,6 +147,9 @@ public class ImcItemInvoiceServiceImpl extends BaseService<ImcItemInvoice> imple
                 ImcItemInvoiceDesc imcItemInvoiceDesc = new ImcItemInvoiceDesc();
                 BeanUtils.copyProperties(inspcDetail,imcItemInvoiceDesc);
                 imcItemInvoiceDesc.setUpdateInfo(loginAuthDto);
+                if (PublicUtil.isEmpty(imcItemInvoiceDesc.getItemResult())) {
+                    imcItemInvoiceDesc.setItemResult("--");
+                }
                 imcItemInvoiceDescMapper.updateByPrimaryKeySelective(imcItemInvoiceDesc);
             }
         }
