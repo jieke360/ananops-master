@@ -59,4 +59,13 @@ public interface ImcItemInvoiceService extends IService<ImcItemInvoice> {
      * @return
      */
     List<ElementImgUrlDto> getInvoicePreview(Long itemId, LoginAuthDto loginAuthDto);
+
+    /**
+     * 用户确认后，将用户名称填入到巡检单据的用户确认字段中
+     *
+     * @param id
+     *
+     * @param loginAuthDto
+     */
+    void handleUserConfirm(Long itemId, LoginAuthDto loginAuthDto);
 }

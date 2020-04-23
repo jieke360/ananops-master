@@ -22,10 +22,7 @@ import com.ananops.provider.model.exceptions.UacBizException;
 import com.ananops.provider.model.service.UacGroupFeignApi;
 import com.ananops.provider.model.service.UacUserFeignApi;
 import com.ananops.provider.mq.producer.TaskMsgProducer;
-import com.ananops.provider.service.ImcInspectionItemService;
-import com.ananops.provider.service.ImcInspectionTaskService;
-import com.ananops.provider.service.OpcOssFeignApi;
-import com.ananops.provider.service.PmcProjectFeignApi;
+import com.ananops.provider.service.*;
 import com.ananops.provider.utils.PdfUtil;
 import com.ananops.provider.utils.WaterMark;
 import com.github.pagehelper.Page;
@@ -99,6 +96,9 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
 
     @Resource
     private ImcTaskReportMapper imcTaskReportMapper;
+
+    @Resource
+    private ImcItemInvoiceService imcItemInvoiceService;
 
     /**
      * 插入一条巡检任务记录
@@ -247,6 +247,8 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
                 //任务已经巡检完毕，将全部任务子项的状态修改为已完成
                 imcInspectionItem.setStatus(ItemStatusEnum.VERIFIED.getStatusNum());
                 imcInspectionItemService.update(imcInspectionItem);
+                //用户确认完成后需要将巡检单据中的用户确认字段填入
+                imcItemInvoiceService.handleUserConfirm(imcInspectionItem.getId(), loginAuthDto);
             });
         }
         else if(status.equals(TaskStatusEnum.WAITING_FOR_CONFIRM.getStatusNum())){

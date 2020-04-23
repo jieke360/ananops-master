@@ -19,7 +19,6 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.LineSeparator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +28,7 @@ import javax.annotation.Resource;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -332,5 +332,18 @@ public class ImcItemInvoiceServiceImpl extends BaseService<ImcItemInvoice> imple
         optBatchGetUrlRequest.setRefNo(refNo);
         optBatchGetUrlRequest.setEncrypt(true);
         return opcOssFeignApi.listFileUrl(optBatchGetUrlRequest).getResult();
+    }
+
+    @Override
+    public void handleUserConfirm(Long itemId, LoginAuthDto loginAuthDto) {
+        Example example = new Example(ImcItemInvoice.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("inspcItemId",itemId);
+        ImcItemInvoice update = new ImcItemInvoice();
+        update.setUserConfirm(loginAuthDto.getUserName());
+        update.setLastOperatorId(loginAuthDto.getUserId());
+        update.setLastOperator(loginAuthDto.getUserName() == null ? loginAuthDto.getLoginName() : loginAuthDto.getUserName());
+        update.setUpdateTime(new Date());
+        imcItemInvoiceMapper.updateByExampleSelective(update,example);
     }
 }

@@ -26,6 +26,12 @@ public class ImcAddInspectionReviewDto implements Serializable {
     private Long principalId;
 
     /**
+     * 验收服务内容
+     */
+    @ApiModelProperty(value = "验收服务内容")
+    private String checkContens;
+
+    /**
      * 服务评级
      */
     @ApiModelProperty(value = "服务评级")
@@ -37,4 +43,9 @@ public class ImcAddInspectionReviewDto implements Serializable {
     @ApiModelProperty(value = "服务评论")
     private String contents;
 
+    /**
+     * 需要改为的任务目标状态
+     */
+    @ApiModelProperty(value = "目标状态")
+    private Integer status;
 }

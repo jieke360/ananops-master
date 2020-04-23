@@ -45,4 +45,20 @@ public class ImcInspectionReviewController extends BaseController {
         return WrapMapper.ok(imcInspectionReview);
     }
 
+    /**
+     * 合并确认完成的状态更改&验收评价的内容提交
+     *
+     * @param imcAddInspectionReviewDto
+     *
+     * @return
+     */
+    @PostMapping(value = "/confirmRating")
+    @ApiOperation(httpMethod = "POST",value = "合并确认完成的状态更改&验收评价的内容提交")
+    @AnanLogAnnotation
+    public Wrapper<ImcInspectionReview> confirmRating(@ApiParam(name = "imcAddInspectionReviewDto",value = "新增一条当前巡检任务对应用户评价")@RequestBody ImcAddInspectionReviewDto imcAddInspectionReviewDto){
+        logger.info("合并确认完成的状态更改&验收评价的内容提交，imcAddInspectionReviewDto={}",imcAddInspectionReviewDto);
+        LoginAuthDto loginAuthDto = getLoginAuthDto();
+        return WrapMapper.ok(imcInspectionReviewService.confirmRating(imcAddInspectionReviewDto,loginAuthDto));
+    }
+
 }

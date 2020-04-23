@@ -9,7 +9,11 @@ import com.ananops.provider.mapper.ImcInspectionReviewMapper;
 import com.ananops.provider.mapper.ImcInspectionTaskMapper;
 import com.ananops.provider.model.domain.ImcInspectionReview;
 import com.ananops.provider.model.domain.ImcInspectionTask;
+import com.ananops.provider.model.dto.ImcAddInspectionReviewDto;
+import com.ananops.provider.model.dto.ImcTaskChangeStatusDto;
 import com.ananops.provider.service.ImcInspectionReviewService;
+import com.ananops.provider.service.ImcInspectionTaskService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -22,11 +26,15 @@ import javax.annotation.Resource;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class ImcInspectionReviewServiceImpl extends BaseService<ImcInspectionReview> implements ImcInspectionReviewService {
+
     @Resource
     ImcInspectionReviewMapper imcInspectionReviewMapper;
 
     @Resource
     ImcInspectionTaskMapper imcInspectionTaskMapper;
+
+    @Resource
+    ImcInspectionTaskService imcInspectionTaskService;
 
     public ImcInspectionReview addInspectionReview(ImcInspectionReview imcInspectionReview, LoginAuthDto loginAuthDto) {
         imcInspectionReview.setUpdateInfo(loginAuthDto);
@@ -63,5 +71,20 @@ public class ImcInspectionReviewServiceImpl extends BaseService<ImcInspectionRev
             throw new BusinessException(ErrorCodeEnum.GL9999098,taskId);
         }
         return imcInspectionReviewMapper.selectByExample(example).get(0);
+    }
+
+    @Override
+    public ImcInspectionReview confirmRating(ImcAddInspectionReviewDto imcAddInspectionReviewDto, LoginAuthDto loginAuthDto) {
+        // 处理确认完成的逻辑
+        ImcTaskChangeStatusDto imcTaskChangeStatusDto = new ImcTaskChangeStatusDto();
+        imcTaskChangeStatusDto.setTaskId(imcAddInspectionReviewDto.getInspectionTaskId());
+        imcTaskChangeStatusDto.setStatus(imcAddInspectionReviewDto.getStatus());
+        imcTaskChangeStatusDto.setLoginAuthDto(loginAuthDto);
+        imcInspectionTaskService.modifyTaskStatus(imcTaskChangeStatusDto, loginAuthDto);
+
+        // 处理原提交评论逻辑
+        ImcInspectionReview imcInspectionReview = new ImcInspectionReview();
+        BeanUtils.copyProperties(imcAddInspectionReviewDto,imcInspectionReview);
+        return this.addInspectionReview(imcInspectionReview, loginAuthDto);
     }
 }

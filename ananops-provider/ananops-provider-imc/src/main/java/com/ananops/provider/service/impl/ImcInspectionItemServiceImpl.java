@@ -141,11 +141,11 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                         for (FormTemplateItemDto formTemplateItemDto : assetList) {
                             Long deviceId = super.generateId();
                             ImcItemInvoiceDevice imcItemInvoiceDevice = new ImcItemInvoiceDevice();
+                            imcItemInvoiceDevice.setUpdateInfo(loginAuthDto);
                             imcItemInvoiceDevice.setId(deviceId);
                             imcItemInvoiceDevice.setInvoiceId(invoiceId);
                             imcItemInvoiceDevice.setDevice(formTemplateItemDto.getContent());
                             imcItemInvoiceDevice.setSort(formTemplateItemDto.getSort());
-                            imcItemInvoiceDevice.setUpdateInfo(loginAuthDto);
                             imcItemInvoiceDeviceMapper.insert(imcItemInvoiceDevice);
                         }
                     }
@@ -155,11 +155,11 @@ public class ImcInspectionItemServiceImpl extends BaseService<ImcInspectionItem>
                         for (FormTemplateItemDto formItemDto : inspcDetailList) {
                             Long descId = super.generateId();
                             ImcItemInvoiceDesc imcItemInvoiceDesc = new ImcItemInvoiceDesc();
+                            imcItemInvoiceDesc.setUpdateInfo(loginAuthDto);
                             imcItemInvoiceDesc.setId(descId);
                             imcItemInvoiceDesc.setInvoiceId(invoiceId);
                             imcItemInvoiceDesc.setItemContent(formItemDto.getContent());
                             imcItemInvoiceDesc.setSort(formItemDto.getSort());
-                            imcItemInvoiceDesc.setUpdateInfo(loginAuthDto);
                             imcItemInvoiceDescMapper.insert(imcItemInvoiceDesc);
                         }
                     }
