@@ -66,7 +66,7 @@ public interface ImcInspectionTaskService extends IService<ImcInspectionTask> {
 
     PageInfo getTaskByUserIdAndStatusAndPage(TaskQueryDto taskQueryDto);
 
-    PageInfo getTaskByFacilitatorIdAndPage(TaskQueryDto taskQueryDto);
+    PageInfo getTaskByFacilitatorIdAndPage(TaskQueryDto taskQueryDto,LoginAuthDto loginAuthDto);
 
     PageInfo getTaskByFacilitatorIdAndStatusAndPage(TaskQueryDto taskQueryDto);
 

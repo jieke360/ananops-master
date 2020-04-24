@@ -654,9 +654,11 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
      * @return
      */
     @Override
-    public PageInfo getTaskByFacilitatorIdAndPage(TaskQueryDto taskQueryDto){
-        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
-        Long facilitatorId = taskQueryDto.getUserId();
+    public PageInfo getTaskByFacilitatorIdAndPage(TaskQueryDto taskQueryDto,LoginAuthDto loginAuthDto){
+        // 获取登录用户的组织Id
+        Long userGroupId = loginAuthDto.getGroupId();
+        // 根据组织Id查询公司Id
+        Long groupId = uacGroupFeignApi.getCompanyInfoById(userGroupId).getResult().getId();
         Example example = new Example(ImcInspectionTask.class);
         Example.Criteria criteria = example.createCriteria();
         String taskName = taskQueryDto.getTaskName();
@@ -664,9 +666,13 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             taskName = "%" + taskName + "%";
             criteria.andLike("taskName",taskName);
         }
-        criteria.andEqualTo("facilitatorId",facilitatorId);
+        criteria.andEqualTo("facilitatorId",groupId);
         example.setOrderByClause("update_time DESC");
+        Page page = PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
         List<ImcInspectionTask> imcInspectionTaskList = imcInspectionTaskMapper.selectByExample(example);
+        PageInfo pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+        pageInfo.setTotal(page.getTotal());
+        pageInfo.setPages(page.getPages());
         return new PageInfo<>(imcInspectionTaskList);
     }
 

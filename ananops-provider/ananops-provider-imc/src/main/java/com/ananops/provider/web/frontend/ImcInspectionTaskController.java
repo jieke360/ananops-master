@@ -238,4 +238,10 @@ public class ImcInspectionTaskController extends BaseController {
     public Wrapper<PageInfo> getAllFinishedTaskByFacilitatorId(@RequestBody TaskQueryDto taskQueryDto){
         return WrapMapper.ok(imcInspectionTaskService.getAllFinishedTaskByFacilitatorIdAndPage(getLoginAuthDto(),taskQueryDto));
     }
+
+    @PostMapping(value = "/getAllTaskByFacilitatorId")
+    @ApiOperation(httpMethod = "POST",value = "获取全部当前服务商的巡检任务")
+    public Wrapper<PageInfo> getAllTaskByFacilitatorId(@RequestBody TaskQueryDto taskQueryDto){
+        return WrapMapper.ok(imcInspectionTaskService.getTaskByFacilitatorIdAndPage(taskQueryDto,getLoginAuthDto()));
+    }
 }
