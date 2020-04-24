@@ -249,7 +249,8 @@ public class ImcItemInvoiceServiceImpl extends BaseService<ImcItemInvoice> imple
                 document.add(image);
                 // 增添系统维护保养巡检记录表
                 PdfPTable table = PdfUtil.createTable(4,10);
-                table.setSpacingBefore(10f);
+
+                table.addCell(PdfUtil.createCell("唯一编号："+invoice.getId(),headfont, Element.ALIGN_LEFT, 4, false));
 
                 table.addCell(PdfUtil.createCell(invoiceAllInfo.getImcInspectionItem().getItemName() + "-维护保养巡检记录表",headfont, Element.ALIGN_CENTER, 4, 50f));
 
