@@ -141,7 +141,6 @@ public class PdfUtil {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(align);
         cell.setColspan(colspan);
-        cell.setFixedHeight(30f);
         cell.setPhrase(new Phrase(value, font));
         cell.setPadding(3.0f);
         if (!boderFlag) {

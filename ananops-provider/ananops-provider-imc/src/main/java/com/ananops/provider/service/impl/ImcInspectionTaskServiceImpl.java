@@ -443,7 +443,8 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
     @Override
     public PageInfo getTaskByUserIdAndPage(TaskQueryDto taskQueryDto){
         Integer role = taskQueryDto.getRole();
-        PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        Page page = PageHelper.startPage(taskQueryDto.getPageNum(),taskQueryDto.getPageSize());
+        PageInfo pageInfo;
         String taskName = taskQueryDto.getTaskName();
         List<ImcInspectionTask> imcInspectionTaskList;
         if(StringUtils.isNotBlank(taskName)){
@@ -454,16 +455,28 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             switch (role){
                 case 1://如果角色是甲方用户
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByUserIdAndTaskName(taskQueryDto.getUserId(),taskName);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 2://如果角色是服务商
                     imcInspectionTaskList = this.getTaskByFacilitatorId(taskQueryDto);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 3://如果角色是服务商管理员
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerIdAndTaskName(taskQueryDto.getUserId(),taskName);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 4://如果角色是服务商组织
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupIdAndTaskName(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()),taskName);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
@@ -474,16 +487,28 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
             switch (role){
                 case 1://如果角色是甲方用户
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByUserId(taskQueryDto.getUserId());
-                    return new PageInfo<>(imcInspectionTaskList);
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 2://如果角色是服务商
                     imcInspectionTaskList = this.getTaskByFacilitatorId(taskQueryDto);
-                    return new PageInfo<>(imcInspectionTaskList);
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 3://如果角色是服务商管理员
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorManagerId(taskQueryDto.getUserId());
-                    return new PageInfo<>(imcInspectionTaskList);
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 case 4://如果角色是服务商组织
                     imcInspectionTaskList = imcInspectionTaskMapper.queryTaskByFacilitatorGroupId(getCompanyGroupIdFromUserGroupId(taskQueryDto.getUserId()));
-                    return new PageInfo<>(imcInspectionTaskList);
+                    pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
+                    pageInfo.setTotal(page.getTotal());
+                    pageInfo.setPages(page.getPages());
+                    return pageInfo;
                 default:
                     throw new BusinessException(ErrorCodeEnum.GL9999089);
             }
