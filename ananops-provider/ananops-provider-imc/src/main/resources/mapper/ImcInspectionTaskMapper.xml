@@ -206,21 +206,22 @@
     AND task.status = 3
     AND task.id IN
     (
-      SELECT DISTINCT item.inspection_task_id
-      FROM an_imc_inspection_item as item
-      WHERE item.inspection_task_id = task.id
-      AND item.status &lt; 4
-      UNION
-      SELECT task2.id
-      FROM an_imc_inspection_task as task2,an_imc_inspection_item as item
-      WHERE
-      task2.facilitator_id = #{facilitatorId}
-      AND task2.status = 3
-      AND task2.id not in
-      (
-          SELECT inspection_task_id
-          FROM an_imc_inspection_item
-      )
+    SELECT DISTINCT item.inspection_task_id
+    FROM an_imc_inspection_item as item
+    WHERE item.inspection_task_id = task.id
+    AND item.status &lt; 4
+    UNION
+    SELECT task2.id
+    FROM an_imc_inspection_task as task2,an_imc_inspection_item as item
+    WHERE
+    task2.facilitator_id = #{facilitatorId}
+    AND task2.status = 3
+    AND task2.id not in
+    (
+    SELECT inspection_task_id
+    FROM an_imc_inspection_item
+    WHERE inspection_task_id is not NULL
+    )
     )
     ORDER BY update_time DESC
   </select>
