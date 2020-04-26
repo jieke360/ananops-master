@@ -137,10 +137,10 @@ public class ImcAddInspectionTaskDto implements Serializable {
     private LoginAuthDto loginAuthDto;
 
     /**
-     * 巡检任务的执行次数
+     * 本次巡检任务所需巡检点位总数
      */
-    @ApiModelProperty(value = "巡检执行次数")
-    private Integer times;
+    @ApiModelProperty(value = "本次巡检任务所需巡检点位总数")
+    private Integer pointSum;
 
     @ApiModelProperty(value = "巡检内容")
     private String content;

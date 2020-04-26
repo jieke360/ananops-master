@@ -104,6 +104,9 @@ public class PmcInspectTask extends BaseEntity {
     @Column(name = "is_now")
     private Integer isNow;
 
+    @Column(name = "point_sum")
+    private Integer pointSum;
+
     /**
      * 描述
      */

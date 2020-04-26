@@ -28,12 +28,13 @@
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="frequency" jdbcType="INTEGER" property="frequency" />
     <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="point_sum" jdbcType="INTEGER" property="pointSum" />
   </resultMap>
   <sql id="Base_Column_List">
     ${alias}.id,${alias}.version,${alias}.creator,${alias}.creator_id,${alias}.created_time,${alias}.last_operator,${alias}.last_operator_id,
     ${alias}.update_time,${alias}.principal_id,${alias}.facilitator_id,${alias}.project_id,${alias}.location,${alias}.status,${alias}.total_cost,
     ${alias}.maintenance_cost,${alias}.scheduled_start_time,${alias}.actual_finish_time,${alias}.days,${alias}.inspection_type,${alias}.remark,
-    ${alias}.task_name,${alias}.frequency
+    ${alias}.task_name,${alias}.frequency,${alias}.point_sum
   </sql>
 <!--  根据甲方用户id查询对应的巡检任务-->
   <select id="queryTaskByUserId" resultType="com.ananops.provider.model.domain.ImcInspectionTask">

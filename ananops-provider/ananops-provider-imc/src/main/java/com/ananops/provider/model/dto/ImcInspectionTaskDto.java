@@ -113,4 +113,14 @@ public class ImcInspectionTaskDto {
      * 巡检任务内容
      */
     private String content;
+
+    /**
+     * 本次巡检任务所需巡检点位总数
+     */
+    private Integer pointSum;
+
+    /**
+     * 已安排点位数
+     */
+    private Integer alreadyPoint;
 }

@@ -97,6 +97,12 @@ public class PmcInspectTaskDto implements Serializable {
     private Integer isNow;
 
     /**
+     * 本次巡检任务应巡的总点位数
+     */
+    @ApiModelProperty(value = "本次巡检任务应巡的总点位数")
+    private Integer pointSum;
+
+    /**
      * 描述
      */
     @ApiModelProperty(value = "描述")

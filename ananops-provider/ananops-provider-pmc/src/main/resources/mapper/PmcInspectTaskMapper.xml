@@ -19,6 +19,7 @@
     <result column="deadline_time" property="deadlineTime" jdbcType="TIMESTAMP" />
     <result column="scheduled_finish_time" property="scheduledFinishTime" jdbcType="INTEGER" />
     <result column="is_now" property="isNow" jdbcType="INTEGER" />
+    <result column="point_sum" property="pointSum" jdbcType="INTEGER" />
     <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="creator" property="creator" jdbcType="VARCHAR" />
     <result column="creator_id" property="creatorId" jdbcType="BIGINT" />

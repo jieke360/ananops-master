@@ -104,4 +104,9 @@ public class ImcInspectionTask extends BaseEntity {
      */
     private String content;
 
+    /**
+     * 本次巡检任务所需巡检点位总数
+     */
+    @Column(name = "point_sum")
+    private Integer pointSum;
 }
