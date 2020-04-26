@@ -698,7 +698,7 @@ public class ImcInspectionTaskServiceImpl extends BaseService<ImcInspectionTask>
         PageInfo pageInfo = new PageInfo<>(transform(imcInspectionTaskList));
         pageInfo.setTotal(page.getTotal());
         pageInfo.setPages(page.getPages());
-        return new PageInfo<>(imcInspectionTaskList);
+        return pageInfo;
     }
 
     @Override
