@@ -1018,6 +1018,8 @@ public enum ErrorCodeEnum {
 
 	RDC100000004(10000004, "备品备件订单处理异常，请稍后重试"),
 
+	RDC100000005(10000005,"场景不存在"),
+
 	/**
 	 * WebSocket error code enum
 	 */

@@ -97,6 +97,10 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.ananops.provider.api</groupId>
+            <artifactId>ananops-provider-uac-api</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
